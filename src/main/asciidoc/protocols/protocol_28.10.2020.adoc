@@ -1,0 +1,28 @@
+= Protokoll Gruppe 10
+
+Treffen am 28.10.2020
+
+Ort:      Online +
+Beginn:   18:30 Uhr +
+Ende:     19:15 Uhr
+
+__Schriftführer:__ Florian Hauptmann
+
+*Nächstes Treffen:* +
+02.11.2020, 16:40 Uhr, Online BigBlueButton
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig (Scrum Master)
+- Florian Hauptmann (Protokollant)
+- Florian Mehnert
+- Ahmad Abu Zahra
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+
+ - Konstantin Holzweißig wurde zum Scrum Master ernannt
+ - Florian Hauptmann wurde zum Schriftführer für das Protokoll
