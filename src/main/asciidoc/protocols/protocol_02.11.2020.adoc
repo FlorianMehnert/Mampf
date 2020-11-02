@@ -1,0 +1,44 @@
+= Protokoll Gruppe 10
+
+Treffen am 02.11.2020
+
+Ort:      Online BigBlueButton +
+Beginn:   16:40 Uhr +
+Ende:     17:10 Uhr
+
+__Schriftführer:__ Florian Mehnert
+
+*Nächstes Treffen:* +
+09.11.2020, 16:40 Uhr, Online BigBlueButton
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig (Scrum Master)
+- Florian Mehnert (Protokollant)
+- Ahmad Abu Zahra
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+- 1.Protokoll fehlt
+- Florian Hauptmann war nicht anwesend
+- noch keine Festlegung auf eine Entwicklungsumgebung
+- Aufgabenverteilung für Videoshop festgelegt:
+- Festlegung auf StarUML als UML-Tool
+- Vorgehensweise für Videoshop besprochen
+
+== Aktueller Stand
+- jedes Gruppenmitglied hat das guestbook erweitert
+
+
+== Planung des nächsten Sprints
+*Issue referenziert die Issue ID von GitHub*
+
+// See http://asciidoctor.org/docs/user-manual/=tables
+[option="headers"]
+|===
+|Issue |Titel |Beschreibung |Verantwortlicher |Status
+|#1     |Erledigung der Videoshop Aufgaben     |die im Issue gelisteten Aufgaben sollen bis zur 4.Woche erledigt werden            |jeder für seine Aufgabe               |-
+|===
