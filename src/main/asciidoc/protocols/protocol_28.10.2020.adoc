@@ -17,7 +17,8 @@ __Teilnehmer:__
 - Leonard Herbst (Product Owner)
 - Konstantin Holzweißig (Scrum Master)
 - Florian Hauptmann (Protokollant)
-- Ahmad Abu Zara
+- Florian Mehnert
+- Ahmad Abu Zahra
 - Patricia Crespo
 - Yannik Weber
 
