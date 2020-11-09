@@ -1,0 +1,47 @@
+= Protokoll Gruppe XX
+
+Treffen am XX.XX.20XX
+
+Ort:      Online Big +
+Beginn:   16:40 Uhr +
+Ende:     17:30 Uhr
+
+__Schriftführer:__ Florian Hauptmann
+
+*Nächstes Treffen:* +
+16.11.2020, 16:40 Uhr, Ort des nächsten Treffens
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig (Scrum Master)
+- Florian Mehnert (Protokollant)
+- Ahmad Abu Zahra
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+- Hinweis von Leonard H. Aufgaben aufholen die versäumt wurden
+- Florian H. bekommt zusätzliche Aufgabe für Videoshoperweiterung, da die Aufgabe 4 zu einfach konzipiert wurde
+- Pflichtenheft wurde nochmals grob erläutert
+- Anforderungen wurden durch Fragen des Teams spezifiziert
+- Team hat im Anschluss ein Treffen für Mittwoch den 11.11.20 ausgemacht im APB
+
+
+== Aktueller Stand
+
+- CRC-Kartenmethode wurde bis dato noch nicht durchgeführt
+- Es bestehen noch keine Klassendiagramme
+- Das Pflichtenheft ist noch nicht erstellt
+- Es gibt eine grobe Analyse der Anforderungen des Produktes in Form eines Google-Docs
+
+== Planung des nächsten Sprints
+*Issue referenziert die Issue ID von GitHub*
+
+// See http://asciidoctor.org/docs/user-manual/=tables
+[option="headers"]
+|===
+|Issue |Titel |Beschreibung |Verantwortlicher |Status
+|#1     |Erledigung der Videoshop Aufgaben     |die im Issue gelisteten Aufgaben sollen bis zur 4.Woche erledigt werden            |jeder für seine Aufgabe               |-
+|===
