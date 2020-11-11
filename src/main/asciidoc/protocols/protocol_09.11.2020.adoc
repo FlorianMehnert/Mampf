@@ -1,4 +1,4 @@
-= Protokoll Gruppe XX
+= Protokoll Gruppe 10
 
 Treffen am 09.11.2020
 
@@ -16,7 +16,8 @@ __Teilnehmer:__
 
 - Leonard Herbst (Product Owner)
 - Konstantin Holzweißig (Scrum Master)
-- Florian Mehnert (Protokollant)
+- Florian Hauptmann (Protokollant)
+- Florian Mehnert
 - Ahmad Abu Zahra
 - Patricia Crespo
 - Yannik Weber
