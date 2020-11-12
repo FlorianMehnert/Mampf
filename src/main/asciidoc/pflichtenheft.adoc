@@ -63,6 +63,121 @@ Die typischen Anwendungsfälle (Anlegen, Ändern, Löschen) können zu einem ein
 === Muss-Kriterien
 Was das zu erstellende Programm auf alle Fälle leisten muss.
 
+[options="header]
+[cols="1,2,3,4"]
+|===
+| ID
+| Version
+| Name
+| Beschreibung
+
+
+|[F0010]
+| v0.1
+| Anmelden
+| Das Programm unterscheidet zwischen öffentlich sichtbaren und nur nach anmeldung sichtbaren Teilen.
+Dabei kann ein im Programm registrierter Nutzer sich mit den Identifikationsmerkmalen anmelden:
+
+* Benutzername
+
+*  Passwort
+
+
+|[F0020]
+| v0.1
+| Registrieren
+| Das Programm soll die Möglichkeit für nicht angemeldete Nutzer bieten,
+sich über ein Menu-Element "Registrieren" im System zu registrieren.
+Dabei müssen folgende Informationen angegeben werden:
+
+* Benutzername (eindeutig)
+
+* Vor- und Nachname (für die Rechnung)
+
+* Passwort
+
+
+|[F0021]
+|v0.1
+| Registrierung validieren
+| Das Programm muss validieren, dass die Eingaben korrekt sind und der Benutzername eindeutig ist.
+
+Bei einem Fehler muss der Benutzer in Kenntnis gesetzt werden.
+
+
+| [F0100]
+| v0.1
+| Inventar von Angeboten
+| Das Programm muss alle Informationen über die verfügbaren Angebote persistent speichern.
+
+
+| [F0101]
+| v0.1
+| Verändern von Angeboten
+| Das Programm muss einem Administrator die Möglichkeit bieten,
+neue Angebote zu erstellen oder bestehende Angebote zu entfernen.
+
+
+| [F0110]
+| v0.1
+| Katalog
+| Das Programm muss alle Angebote in einem Katalog unveränderlich zur Verfügung stellen.
+
+
+| [F0111]
+| v0.1
+| Ansehen der Angebote
+| Das Programm muss einem Benutzer es ermöglichen, den Inhalt des Katalogs sich anzusehen.
+
+
+| [F0112]
+| v0.1
+| Filtern des Katalogs
+| Das Programm muss einem Benutzer es ermöglichen, den Katalog nach verschiedenen Kriterien zu filtern.
+
+Z.b. muss die Filterung nach der Kategorie des Angebots
+(Eventcatering, Partyservice, Mobile Breakfast, Rent a cook) erfolgen.
+
+
+| [F0120]
+| v0.1
+| Ansehen der Angebotsdetails
+| Das Programm muss dem Benutzer die Möglichkeit geben, sich über alle Details eines Angebots zu informieren.
+Dazu gehören:
+* Titel des Angebots
+* Beschreibung des Angebots
+* Preis des Angebots
+* Verfügbarkeit
+
+
+| [F0200]
+| v0.1
+| Warenkorb
+| Jeder registrierte, angemeldete Benutzer muss die Möglichkeit haben,
+in einem Warenkorb temporär seine präferierten Angebote zu speichern.
+
+Der Warenkorb soll für jede Sitzung des Nutzers persistent sein.
+
+Er soll für jeden Nutzer eindeutig sein.
+
+
+| [F0201]
+| v0.1
+| Angebot zum Warenkorb hinzufügen
+| Das Programm muss es einem registrierten, angemeldeten Benutzer ermöglichen, beliebige Angebot zu einem bestimmten Termin
+in einer wählbaren Anzahl zu seinem Warenkorb hinzufügen.
+
+Ein entsprechender Eintrag muss im Warenkorb des Benutzers vorgenommen werden.
+
+Nicht registrierte oder nicht angemeldete Benutzer sollen zur Anmeldeansicht weitergeleitet werden.
+
+
+
+
+
+
+|===
+
 === Kann-Kriterien
 Anforderungen die das Programm leisten können soll, aber für den korrekten Betrieb entbehrlich sind.
 
