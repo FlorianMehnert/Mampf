@@ -1,6 +1,12 @@
 = Pflichtenheft
-:project_name: Projektname
+:project_name: Eventcatering
 == __{project_name}__
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:numbered:
+:toc:
+:toc-title: Inhaltsverzeichnis
 
 [options="header"]
 [cols="1, 1, 1, 1, 4"]
@@ -9,18 +15,17 @@
 |0.1     | In Arbeit   | 10.10.2020          | Autor       | Initiale Version
 |===
 
-== Inhaltsverzeichnis
-Dieses Dokument benötigt ein Inhaltsverzeichnis. Es existieren mehrere Einbindungsmöglichkeiten.
+toc::[]
 
 == Zusammenfassung
-Eine kurze Beschreibung des Dokuments. Wenige Absätze.
+Eine kurze Beschreibung des Dokuments.Wenige Absätze.
 
 == Aufgabenstellung und Zielsetzung
 Text aus Aufgabenstellung kopieren und ggfs. präzisieren.
 Insbesondere ergänzen, welche Ziele mit dem Abschluss des Projektes erreicht werden sollen.
 
 == Produktnutzung
-In welchem Kontext soll das System später genutzt werden? Welche Rahmenbedingungen gelten?
+In welchem Kontext soll das System später genutzt werden?Welche Rahmenbedingungen gelten?
 Zusätzlich kurze Einleitung für fachfremde Personen
 
 == Interessensgruppen (Stakeholders)
@@ -286,9 +291,18 @@ Kann aufgrund fehlender Kapazitäten die Bestellung nicht angenommen werden, ist
 
 | [[F0320]]<<F0320>>
 | v0.1
-| Personalzuteilung
+| Personalzuteilung ansehen
 | Das Programm muss es dem Administrator ermöglichen, sich anzusehen, welches Personal zu welcher Bestellung zugewiesen wurde.
 Dabei muss für jedes Arbeitspaket es möglich sein, das Datum mit Uhrzeit und den Ort anzuzeigen.
+
+| [[F0321]]<<F0321>>
+| v0.1
+| Personal einstellen
+| Das Programm muss es dem Administrator ermöglichen, neues Personal einzustellen und dabei den Typ des Personals festzulegen. +
+Es gibt dabei:
+
+* Köche +
+* Servicepersonal +
 
 
 | [[F0330]]<<F0330>>
@@ -350,7 +364,103 @@ Dieser Abschnitt stellt eine Vereinigung von Glossar und der Beschreibung von Kl
 [options="header"]
 |===
 |Klasse/Enumeration |Beschreibung |
-|…                  |…            |
+
+
+| [[cart]] Cart (Warenkorb)
+| Der Warenkorb speichert temporär, welche <<item,Angebote>> ein Benutzer eventuell kaufen möchte. +
+Wenn der benutzer die Angebote kauft, wird eine <<order,Bestellung ( Order )>> erstellt.
+|
+
+
+| CartItem
+| Ein Element im Warenkorb nennt sich CartItem und repräsentiert ein Angebot mit einer Quantität.
+|
+
+
+| Customer (Benutzer)
+| Ein Benutzer enthält alle Informationen eines realen, registrierten Benutzers im System.
+Es gibt zwei Typen von Benutzern: +
+* Administratoren (admin) +
+* Kunden / "normalen Benutzer"
+|
+
+
+| CustomManager
+| Diese Klasse enthält alle im Programm registrierten Benutzer und kann diese auflisten oder neue Benutzer hinzufügen.
+|
+
+
+| [[employee]] Employee (Personal)
+| Ein employee repräsentiert das Personal. Es gibt zwei grundlegende Personaltypen: +
+* Köche
+* Servicepersonal
+|
+
+
+| EmployeeManager
+| Diese Klasse enthält alles Personal, welches momentan bei der Catering-Firma angestellt ist.
+Sie ermöglicht außerdem das Anstellen von neuen Mitarbeitern.
+|
+
+| EventcateringApp
+| Das ist die zentrale Klasse, die das Programm für die Organisation der Eventcatering-Firma enthält.
+|
+
+| [[inventory]] Inventory
+| Das Inventar listet, welche <<itemCategory,Ausrüstung>> in welcher Stückzahl verfügbar sind.
+|
+
+| [[item]] Item (Angebot)
+| Ein Angebot stellt eine Dienstleistung oder ein Produkt dar, welches der Benutzer kaufen bzw. mieten kann. +
+Angebote werden unterteilt in Personal, Dekoration und Essen. +
+Dabei erfolgt zusätzlich eine <<itemCategory,Kategorisierung>>.
+|
+
+| [[itemType]] Typ des Items
+| Es gibt verschiedene Grundtypen von Angeboten: +
+* Ausrüstung / Dekoration (z.B. Tischdecken) +
+* Personal +
+* Speisen (z.B. Buffet, Dinner, Käseplatten)
+|
+
+| [[itemCategory]] Kategorie eines Angebotes
+| Alle Angebote werden in eine Kategorie eingeteilt: +
+* Eventcatering +
+* Partyservice +
+* Mobile breakfast +
+* Rent a cook +
+|
+
+
+| Katalog
+| Der Katalog speichert alle Angebote. Er ermöglicht das Erstellen neuer Angebote und das Filtern nach <<itemCategory, Kategorien>>.
+|
+
+| [[order]] Order (Bestellung)
+| Eine Bestellung repräsentiert, welche <<item, Angebote>> ein Benutzer mit welchem Datum und welcher
+Adresse kaufen möchte. +
+Außerdem wird bei einer Bestellung die Zahlungsmethode festgelegt.
+
+Eine Bestellung durchläuft während ihrer Bearbeitung mehrere <<order_state,Status>>.
+|
+
+
+| OrderLine
+| Eine OrderLine repräsentiert, welche Angebote in welcher Anzahl ein Benutzer bestellt hat.
+|
+
+| OrderManager
+| Der Bestellungsmanager kennt alle bisher im Programm getätigten Bestellungen.
+|
+
+| [[order_state]] OrderStatus (Bestellstatus)
+| Der Status repräsentiert den momentanen Bestellstatus. +
+*OPEN*: Die Bestellung wurde erstellt, aber noch nicht bezahlt. +
+*PAID*: Die Bestellung wurde bezahlt, aber sie wurde noch nicht bearbeitet (z.B. Personal zugewiesen). +
+*COMPLETED*: Der Bestellung wurde Personal zugewiesen und sie wurde bearbeitet.
+*CANCELLED*: Die Bestellung konnte nicht abgeschlossen werden, weil z.B. kein Personal zur Verfügung stand.
+|
+
 |===
 
 == Akzeptanztestfälle
