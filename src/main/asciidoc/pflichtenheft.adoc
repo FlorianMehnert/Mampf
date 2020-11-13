@@ -72,10 +72,10 @@ Was das zu erstellende Programm auf alle Fälle leisten muss.
 | Beschreibung
 
 
-|[F0010]
+| [[F0010]]<<F0010>>
 | v0.1
 | Anmelden
-| Das Programm unterscheidet zwischen öffentlich sichtbaren und nur nach anmeldung sichtbaren Teilen.
+| Das Programm unterscheidet zwischen öffentlich sichtbaren und nur nach Anmeldung sichtbaren Teilen.
 Dabei kann ein im Programm registrierter Nutzer sich mit den Identifikationsmerkmalen anmelden:
 
 * Benutzername
@@ -83,7 +83,7 @@ Dabei kann ein im Programm registrierter Nutzer sich mit den Identifikationsmerk
 *  Passwort
 
 
-|[F0020]
+| [[F0020]]<<F0020>>
 | v0.1
 | Registrieren
 | Das Programm soll die Möglichkeit für nicht angemeldete Nutzer bieten,
@@ -97,40 +97,49 @@ Dabei müssen folgende Informationen angegeben werden:
 * Passwort
 
 
-|[F0021]
-|v0.1
+| [[F0021]]<<F0021>>
+| v0.1
 | Registrierung validieren
 | Das Programm muss validieren, dass die Eingaben korrekt sind und der Benutzername eindeutig ist.
 
 Bei einem Fehler muss der Benutzer in Kenntnis gesetzt werden.
 
 
-| [F0100]
+| [[F0100]]<<F0100>>
 | v0.1
 | Inventar von Angeboten
-| Das Programm muss alle Informationen über die verfügbaren Angebote persistent speichern.
+| Das Programm muss alle Informationen über die Anzahl der verfügbaren Angebote persistent speichern.
+
+Angebote sind dabei z.B. verschieden Platten, Buffets, Mieten von Ausrüstung / Dekoration und das Mieten von Personal.
 
 
-| [F0101]
+| [[F0101]]<<F0101>>
 | v0.1
 | Verändern von Angeboten
 | Das Programm muss einem Administrator die Möglichkeit bieten,
 neue Angebote zu erstellen oder bestehende Angebote zu entfernen.
 
 
-| [F0110]
+| [[F0102]]<<F0102>>
+| v0.1
+| Verändern vom Inventar
+| Das Programm muss einem Administrator die Möglichkeit bieten,
+die Anzahl von Angeboten im Inventar zu verändern.
+
+
+| [[F0110]]<<F0110>>
 | v0.1
 | Katalog
 | Das Programm muss alle Angebote in einem Katalog unveränderlich zur Verfügung stellen.
 
 
-| [F0111]
+| [[F0111]]<<F0111>>
 | v0.1
 | Ansehen der Angebote
 | Das Programm muss einem Benutzer es ermöglichen, den Inhalt des Katalogs sich anzusehen.
 
 
-| [F0112]
+| [[F0112]]<<F0112>>
 | v0.1
 | Filtern des Katalogs
 | Das Programm muss einem Benutzer es ermöglichen, den Katalog nach verschiedenen Kriterien zu filtern.
@@ -139,18 +148,22 @@ Z.b. muss die Filterung nach der Kategorie des Angebots
 (Eventcatering, Partyservice, Mobile Breakfast, Rent a cook) erfolgen.
 
 
-| [F0120]
+| [[F0120]]<<F0120>>
 | v0.1
 | Ansehen der Angebotsdetails
 | Das Programm muss dem Benutzer die Möglichkeit geben, sich über alle Details eines Angebots zu informieren.
 Dazu gehören:
+
 * Titel des Angebots
+
 * Beschreibung des Angebots
+
 * Preis des Angebots
+
 * Verfügbarkeit
 
 
-| [F0200]
+| [[F0200]]<<F0200>>
 | v0.1
 | Warenkorb
 | Jeder registrierte, angemeldete Benutzer muss die Möglichkeit haben,
@@ -161,7 +174,7 @@ Der Warenkorb soll für jede Sitzung des Nutzers persistent sein.
 Er soll für jeden Nutzer eindeutig sein.
 
 
-| [F0201]
+| [[F0201]]<<F0201>>
 | v0.1
 | Angebot zum Warenkorb hinzufügen
 | Das Programm muss es einem registrierten, angemeldeten Benutzer ermöglichen, beliebige Angebot zu einem bestimmten Termin
@@ -172,9 +185,124 @@ Ein entsprechender Eintrag muss im Warenkorb des Benutzers vorgenommen werden.
 Nicht registrierte oder nicht angemeldete Benutzer sollen zur Anmeldeansicht weitergeleitet werden.
 
 
+| [[F0202]]<<F0202>>
+| v0.1
+| Angebote im Warenkorb ansehen
+| Das Programm muss einem angemeldeten Benutzer die Möglichkeit geben, alle in seinem Warenkorb abgelegten Angebote
+sich anzusehen. Dabei muss dem Benutzer folgendes angezeigt werden:
+
+* Angebotsname
+
+* Ausgewählte Anzahl
+
+* Ausgewähltes Datum
+
+* Gesamtpreis pro Angebot (Angebotspreis * ausgewählte Anzahl)
+
+* Gesamtpreis des Warenkorbs
+
+
+| [[F0220]]<<F0220>>
+| v0.1
+| Angebote aus dem Warenkorb kaufen
+| Das Programm ermöglicht es einem angemeldeten Benutzer, alle Angebote aus seinem Warenkorb zu kaufen.
+Dabei muss validiert werden (<<F0230>>), dass zum angegebenen Zeitpunkt ausreichend Ressourcen
+für die gewünschten Angebote zur Verfügung stehen.
+
+Wenn dies der Fall ist, soll eine Bestellung erstellt werden (<<F0241>>).
+
+
+| [[F0230]]<<F0230>>
+| v0.1
+| Validierung einer Bestellung
+| Das Programm muss überprüfen, ob für einen bestimmten Termin ausreichend Ressourcen verfügbar sind.
+
+
+| [[F0240]]<<F0240>>
+| v0.1
+| Bestellungen
+| Das Programm muss Bestellungen und deren Status persistent speichern.
+
+
+| [[F0241]]<<F0241>>
+| v0.1
+| Bestellung erstellen
+| Das Programm muss Bestellungen mit dem Inhalt des Warenkorbs eines Benutzers erstellen können.
+
+Dabei wird der Status des Bestellvorgangs mit "OPEN" initialisiert.
+
+
+| [[F0242]]<<F0242>>
+| v0.1
+| Bestellungen bezahlen
+| Das Programm muss dem Benutzer die Möglichkeit geben, eine Bestellung mit dem Status "OPEN" mit den Bezahlmöglichkeiten
+"bar", "Nachnahme/Rechnung".
+
+Danach muss das Programm den Status der Bestellung auf "PAID" setzen.
+
+
+| [[F0243]]<<F0243>>
+| v0.1
+| Bestellungsstatus anzeigen
+| Das Programm muss dem Benutzer die Möglichkeit geben, sich über den Status seiner getätigten Bestellungen zu informieren.
+
+Dabei sollte bei Bestellungen mit dem Status "CANCELLED" eine entsprechende Benachrichtigung angezeigt werden.
+
+Bei Bestellungen mit dem Status "COMPLETED" muss die Ansicht der Rechnung möglich sein (<<F0400>>.
 
 
 
+| [[F0244]]<<F0244>>
+| v0.1
+| Bestellungen archivieren
+| Das Programm muss es ermöglichen, Bestellvorgänge zu archivieren. Dabei sollte dies nur erfolgen,
+wenn der betreffende Vorgang keine Zuweisung von Personal erfordert.
+
+Dann soll der Bestellstatus auf "COMPLETED" gesetzt werden.
+
+
+| [[F0300]]<<F0300>>
+| v0.1
+| Liste aller Kunden
+| Das Programm muss einem Administrator eine Ansicht aller registrierten Kunden zur Verfügung stellen.
+
+
+| [[F0310]]<<F0310>>
+| v0.1
+| Liste aller Bestellungen
+| Dem Administrator muss eine Ansicht aller Bestellvorgänge zur Verfügung gestellt werden können.
+Dabei muss der Administrator zwischen den Bestellungen mit dem Status "PAID" und dem Status "COMPLETED" unterscheiden können.
+
+
+| [[F0311]]<<F0311>>
+| v0.1
+| Zuweisung von Personal zu einer Bestellung
+| Dem Administrator muss es möglich sein, zu jeder Bestellung die eine Zuweisung von Personal erfordert, dies zu erledigen.
+
+Anschließend sollte der Status der Bestellung auf "COMPLETED" gesetzt werden.
+
+Kann aufgrund fehlender Kapazitäten die Bestellung nicht angenommen werden, ist der Bestellstatus auf "CANCELLED" zu setzen.
+
+
+| [[F0320]]<<F0320>>
+| v0.1
+| Personalzuteilung
+| Das Programm muss es dem Administrator ermöglichen, sich anzusehen, welches Personal zu welcher Bestellung zugewiesen wurde.
+Dabei muss für jedes Arbeitspaket es möglich sein, das Datum mit Uhrzeit und den Ort anzuzeigen.
+
+
+| [[F0330]]<<F0330>>
+| v0.1
+| Lebensmittelbedarf
+| Das Programm muss es dem Administrator ermöglichen, den Lebensmittelbedarf (Anzahl Gerichte/Platten/
+belegte Brötchen, Menge an Getränken in Litern) für einen bestimmten Zeitraum zu bestimmen.
+
+
+| [[F0400]]<<F0400>>
+| v0.1
+| Rechungsstellung
+| Das Programm soll für jede Bestellung, die den Status "COMPLETED" hat, eine Rechnung dem Kunden und Administrator
+automatisch zur Verfügung stellen.
 
 |===
 
