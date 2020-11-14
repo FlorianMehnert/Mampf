@@ -273,6 +273,25 @@ Dabei werden ihm die Details angezeigt:
 
 
 [cols="1h,3"]
+[[UC0300]]
+|===
+|ID                         |**<<UC0300>>**
+|Name                       | Liste aller Kunden
+|Description                | Dem Administrator soll es möglich sein, sich alle Kunden anzeigen zu lassen.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu auf "Kunden".
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Es hat sich bereits mindestens ein Kunde registriert.
+|Essential Steps           a|
+1.  Der Admin klickt im Menu auf "Kunden".
+2.  Dem Administrator werden alle Kunden angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0300>>
+|===
+
+
+[cols="1h,3"]
 [[UC0310]]
 |===
 |ID                         |**<<UC0310>>**
@@ -292,23 +311,57 @@ Dabei werden ihm die Details angezeigt:
 
 
 [cols="1h,3"]
-[[UC0300]]
+[[UC0320]]
 |===
-|ID                         |**<<UC0300>>**
-|Name                       | Liste aller Kunden
-|Description                | Dem Administrator soll es möglich sein, sich alle Kunden anzeigen zu lassen.
+|ID                         |**<<UC0320>>**
+|Name                       | Ansehen des Inventars
+|Description                | Dem Administrator soll es möglich sein, sich das Inventar und alle verfügbaren Ressourcen anzeigen zu lassen.
 |Actors                     | <<customer,Administrator>>
-|Trigger                    | Admin klickt im Menu auf "Kunden".
+|Trigger                    | Admin klickt im Menu auf "Inventar".
 |Precondition(s)           a|
-- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
-- Es hat sich bereits mindestens ein Kunde registriert.
+Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
 |Essential Steps           a|
-1.  Der Admin klickt im Menu auf "Kunden".
-2.  Dem Administrator werden alle Kunden angezeigt.
+1.  Der Admin klickt im Menu auf "Inventar".
+2.  Dem Administrator wird das Inventar mit allen verfügbaren Ressourcen angezeigt.
 |Extensions                 | -
-|Functional Requirements    | <<F0300>>
+|Functional Requirements    | <<F0100>>, <<F0340>>
 |===
 
+
+[cols="1h,3"]
+[[UC0330]]
+|===
+|ID                         |**<<UC0330>>**
+|Name                       | Übersicht über die Personalzuteilung
+|Description                | Dem Administrator soll es möglich sein, sich die bisher vorgenommene Personalzuteilung ausgeben zu lassen.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu auf "Personal".
+|Precondition(s)           a|
+Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+|Essential Steps           a|
+1.  Der Admin klickt im Menu auf "Personal".
+2.  Dem Administrator wird die Zuteilung des Personals zu allen Bestellungen angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0320>>
+|===
+
+[cols="1h,3"]
+[[UC0331]]
+|===
+|ID                         |**<<UC0331>>**
+|Name                       | Personalzuteilung vornehmen
+|Description                | Dem Administrator soll es möglich sein, Bestellungen sein Personal zuzuteilen.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu "Bestellungen" auf die Details einer Bestellung.
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Der Admin klickt im Menu auf "Bestellungen".
+|Essential Steps           a|
+1.  Der Admin klickt im Menu "Bestellungen" auf eine bestimmte Bestellung.
+2.  Dem Administrator erhält die Möglichkeit, sein Personal dieser Bestellung zuzuteilen.
+|Extensions                 | -
+|Functional Requirements    | <<F0320>>
+|===
 
 
 == Funktionale Anforderungen
@@ -328,7 +381,7 @@ Was das zu erstellende Programm auf alle Fälle leisten muss.
 | [[F0010]]<<F0010>>
 | v0.1
 | Anmelden
-| Das Programm unterscheidet zwischen öffentlich sichtbaren und nur nach Anmeldung sichtbaren Teilen.
+a| Das Programm unterscheidet zwischen öffentlich sichtbaren und nur nach Anmeldung sichtbaren Teilen.
 Dabei kann ein im Programm registrierter Nutzer sich mit den Identifikationsmerkmalen anmelden:
 
 * Benutzername
@@ -339,7 +392,7 @@ Dabei kann ein im Programm registrierter Nutzer sich mit den Identifikationsmerk
 | [[F0020]]<<F0020>>
 | v0.1
 | Registrieren
-| Das Programm soll die Möglichkeit für nicht angemeldete Nutzer bieten,
+a| Das Programm soll die Möglichkeit für nicht angemeldete Nutzer bieten,
 sich über ein Menu-Element "Registrieren" im System zu registrieren.
 Dabei müssen folgende Informationen angegeben werden:
 
@@ -353,7 +406,7 @@ Dabei müssen folgende Informationen angegeben werden:
 | [[F0021]]<<F0021>>
 | v0.1
 | Registrierung validieren
-| Das Programm muss validieren, dass die Eingaben korrekt sind und der Benutzername eindeutig ist.
+a| Das Programm muss validieren, dass die Eingaben korrekt sind und der Benutzername eindeutig ist.
 
 Bei einem Fehler muss der Benutzer in Kenntnis gesetzt werden.
 
@@ -361,7 +414,7 @@ Bei einem Fehler muss der Benutzer in Kenntnis gesetzt werden.
 | [[F0100]]<<F0100>>
 | v0.1
 | Inventar von Angeboten
-| Das Programm muss alle Informationen über die Anzahl der verfügbaren Angebote persistent speichern.
+a| Das Programm muss alle Informationen über die Anzahl der verfügbaren Angebote persistent speichern.
 
 Angebote sind dabei z.B. verschieden Platten, Buffets, Mieten von Ausrüstung / Dekoration und das Mieten von Personal.
 
@@ -369,33 +422,33 @@ Angebote sind dabei z.B. verschieden Platten, Buffets, Mieten von Ausrüstung / 
 | [[F0101]]<<F0101>>
 | v0.1
 | Verändern von Angeboten
-| Das Programm muss einem Administrator die Möglichkeit bieten,
+a| Das Programm muss einem Administrator die Möglichkeit bieten,
 neue Angebote zu erstellen oder bestehende Angebote zu entfernen.
 
 
 | [[F0102]]<<F0102>>
 | v0.1
 | Verändern vom Inventar
-| Das Programm muss einem Administrator die Möglichkeit bieten,
+a| Das Programm muss einem Administrator die Möglichkeit bieten,
 die Anzahl von Angeboten im Inventar zu verändern.
 
 
 | [[F0110]]<<F0110>>
 | v0.1
 | Katalog
-| Das Programm muss alle Angebote in einem Katalog unveränderlich zur Verfügung stellen.
+a| Das Programm muss alle Angebote in einem Katalog unveränderlich zur Verfügung stellen.
 
 
 | [[F0111]]<<F0111>>
 | v0.1
 | Ansehen der Angebote
-| Das Programm muss einem Benutzer es ermöglichen, den Inhalt des Katalogs sich anzusehen.
+a| Das Programm muss einem Benutzer es ermöglichen, den Inhalt des Katalogs sich anzusehen.
 
 
 | [[F0112]]<<F0112>>
 | v0.1
 | Filtern des Katalogs
-| Das Programm muss einem Benutzer es ermöglichen, den Katalog nach verschiedenen Kriterien zu filtern.
+a| Das Programm muss einem Benutzer es ermöglichen, den Katalog nach verschiedenen Kriterien zu filtern.
 
 Z.b. muss die Filterung nach der Kategorie des Angebots
 (Eventcatering, Partyservice, Mobile Breakfast, Rent a cook) erfolgen.
@@ -404,7 +457,7 @@ Z.b. muss die Filterung nach der Kategorie des Angebots
 | [[F0120]]<<F0120>>
 | v0.1
 | Ansehen der Angebotsdetails
-| Das Programm muss dem Benutzer die Möglichkeit geben, sich über alle Details eines Angebots zu informieren.
+a| Das Programm muss dem Benutzer die Möglichkeit geben, sich über alle Details eines Angebots zu informieren.
 Dazu gehören:
 
 * Titel des Angebots
@@ -419,7 +472,7 @@ Dazu gehören:
 | [[F0200]]<<F0200>>
 | v0.1
 | Warenkorb
-| Jeder registrierte, angemeldete Benutzer muss die Möglichkeit haben,
+a| Jeder registrierte, angemeldete Benutzer muss die Möglichkeit haben,
 in einem Warenkorb temporär seine präferierten Angebote zu speichern.
 
 Der Warenkorb soll für jede Sitzung des Nutzers persistent sein.
@@ -430,7 +483,7 @@ Er soll für jeden Nutzer eindeutig sein.
 | [[F0201]]<<F0201>>
 | v0.1
 | Angebot zum Warenkorb hinzufügen
-| Das Programm muss es einem registrierten, angemeldeten Benutzer ermöglichen, beliebige Angebot zu einem bestimmten Termin
+a| Das Programm muss es einem registrierten, angemeldeten Benutzer ermöglichen, beliebige Angebot zu einem bestimmten Termin
 in einer wählbaren Anzahl zu seinem Warenkorb hinzufügen.
 
 Ein entsprechender Eintrag muss im Warenkorb des Benutzers vorgenommen werden.
@@ -441,7 +494,7 @@ Nicht registrierte oder nicht angemeldete Benutzer sollen zur Anmeldeansicht wei
 | [[F0202]]<<F0202>>
 | v0.1
 | Angebote im Warenkorb ansehen
-| Das Programm muss einem angemeldeten Benutzer die Möglichkeit geben, alle in seinem Warenkorb abgelegten Angebote
+a| Das Programm muss einem angemeldeten Benutzer die Möglichkeit geben, alle in seinem Warenkorb abgelegten Angebote
 sich anzusehen. Dabei muss dem Benutzer folgendes angezeigt werden:
 
 * Angebotsname
@@ -458,7 +511,7 @@ sich anzusehen. Dabei muss dem Benutzer folgendes angezeigt werden:
 | [[F0220]]<<F0220>>
 | v0.1
 | Angebote aus dem Warenkorb kaufen
-| Das Programm ermöglicht es einem angemeldeten Benutzer, alle Angebote aus seinem Warenkorb zu kaufen.
+a| Das Programm ermöglicht es einem angemeldeten Benutzer, alle Angebote aus seinem Warenkorb zu kaufen.
 Dabei muss validiert werden (<<F0230>>), dass zum angegebenen Zeitpunkt ausreichend Ressourcen
 für die gewünschten Angebote zur Verfügung stehen.
 
@@ -468,19 +521,19 @@ Wenn dies der Fall ist, soll eine Bestellung erstellt werden (<<F0241>>).
 | [[F0230]]<<F0230>>
 | v0.1
 | Validierung einer Bestellung
-| Das Programm muss überprüfen, ob für einen bestimmten Termin ausreichend Ressourcen verfügbar sind.
+a| Das Programm muss überprüfen, ob für einen bestimmten Termin ausreichend Ressourcen verfügbar sind.
 
 
 | [[F0240]]<<F0240>>
 | v0.1
 | Bestellungen
-| Das Programm muss Bestellungen und deren Status persistent speichern.
+a| Das Programm muss Bestellungen und deren Status persistent speichern.
 
 
 | [[F0241]]<<F0241>>
 | v0.1
 | Bestellung erstellen
-| Das Programm muss Bestellungen mit dem Inhalt des Warenkorbs eines Benutzers erstellen können.
+a| Das Programm muss Bestellungen mit dem Inhalt des Warenkorbs eines Benutzers erstellen können.
 
 Dabei wird der Status des Bestellvorgangs mit "OPEN" initialisiert.
 
@@ -488,7 +541,7 @@ Dabei wird der Status des Bestellvorgangs mit "OPEN" initialisiert.
 | [[F0242]]<<F0242>>
 | v0.1
 | Bestellungen bezahlen
-| Das Programm muss dem Benutzer die Möglichkeit geben, eine Bestellung mit dem Status "OPEN" mit den Bezahlmöglichkeiten
+a| Das Programm muss dem Benutzer die Möglichkeit geben, eine Bestellung mit dem Status "OPEN" mit den Bezahlmöglichkeiten
 "bar", "Nachnahme/Rechnung".
 
 Danach muss das Programm den Status der Bestellung auf "PAID" setzen.
@@ -497,7 +550,7 @@ Danach muss das Programm den Status der Bestellung auf "PAID" setzen.
 | [[F0243]]<<F0243>>
 | v0.1
 | Bestellungsstatus anzeigen
-| Das Programm muss dem Benutzer die Möglichkeit geben, sich über den Status seiner getätigten Bestellungen zu informieren.
+a| Das Programm muss dem Benutzer die Möglichkeit geben, sich über den Status seiner getätigten Bestellungen zu informieren.
 
 Dabei sollte bei Bestellungen mit dem Status "CANCELLED" eine entsprechende Benachrichtigung angezeigt werden.
 
@@ -508,7 +561,7 @@ Bei Bestellungen mit dem Status "COMPLETED" muss die Ansicht der Rechnung mögli
 | [[F0244]]<<F0244>>
 | v0.1
 | Bestellungen archivieren
-| Das Programm muss es ermöglichen, Bestellvorgänge zu archivieren. Dabei sollte dies nur erfolgen,
+a| Das Programm muss es ermöglichen, Bestellvorgänge zu archivieren. Dabei sollte dies nur erfolgen,
 wenn der betreffende Vorgang keine Zuweisung von Personal erfordert.
 
 Dann soll der Bestellstatus auf "COMPLETED" gesetzt werden.
@@ -517,20 +570,20 @@ Dann soll der Bestellstatus auf "COMPLETED" gesetzt werden.
 | [[F0300]]<<F0300>>
 | v0.1
 | Liste aller Kunden
-| Das Programm muss einem Administrator eine Ansicht aller registrierten Kunden zur Verfügung stellen.
+a| Das Programm muss einem Administrator eine Ansicht aller registrierten Kunden zur Verfügung stellen.
 
 
 | [[F0310]]<<F0310>>
 | v0.1
 | Liste aller Bestellungen
-| Dem Administrator muss eine Ansicht aller Bestellvorgänge zur Verfügung gestellt werden können.
+a| Dem Administrator muss eine Ansicht aller Bestellvorgänge zur Verfügung gestellt werden können.
 Dabei muss der Administrator zwischen den Bestellungen mit dem Status "PAID" und dem Status "COMPLETED" unterscheiden können.
 
 
 | [[F0311]]<<F0311>>
 | v0.1
 | Zuweisung von Personal zu einer Bestellung
-| Dem Administrator muss es möglich sein, zu jeder Bestellung die eine Zuweisung von Personal erfordert, dies zu erledigen.
+a| Dem Administrator muss es möglich sein, zu jeder Bestellung die eine Zuweisung von Personal erfordert, dies zu erledigen.
 
 Anschließend sollte der Status der Bestellung auf "COMPLETED" gesetzt werden.
 
@@ -540,13 +593,13 @@ Kann aufgrund fehlender Kapazitäten die Bestellung nicht angenommen werden, ist
 | [[F0320]]<<F0320>>
 | v0.1
 | Personalzuteilung ansehen
-| Das Programm muss es dem Administrator ermöglichen, sich anzusehen, welches Personal zu welcher Bestellung zugewiesen wurde.
+a| Das Programm muss es dem Administrator ermöglichen, sich anzusehen, welches Personal zu welcher Bestellung zugewiesen wurde.
 Dabei muss für jedes Arbeitspaket es möglich sein, das Datum mit Uhrzeit und den Ort anzuzeigen.
 
 | [[F0321]]<<F0321>>
 | v0.1
 | Personal einstellen
-| Das Programm muss es dem Administrator ermöglichen, neues Personal einzustellen und dabei den Typ des Personals festzulegen. +
+a| Das Programm muss es dem Administrator ermöglichen, neues Personal einzustellen und dabei den Typ des Personals festzulegen. +
 Es gibt dabei:
 
 * Köche +
@@ -556,14 +609,20 @@ Es gibt dabei:
 | [[F0330]]<<F0330>>
 | v0.1
 | Lebensmittelbedarf
-| Das Programm muss es dem Administrator ermöglichen, den Lebensmittelbedarf (Anzahl Gerichte/Platten/
+a| Das Programm muss es dem Administrator ermöglichen, den Lebensmittelbedarf (Anzahl Gerichte/Platten/
 belegte Brötchen, Menge an Getränken in Litern) für einen bestimmten Zeitraum zu bestimmen.
+
+
+| [[F0340]]<<F0340>>
+| v0.1
+| Inventar ansehen
+a| Das Programm gibt dem Administrator dir Möglichkeit, sich das Inventar und die verfügbaren Ressourcen anzusehen.
 
 
 | [[F0400]]<<F0400>>
 | v0.1
 | Rechungsstellung
-| Das Programm soll für jede Bestellung, die den Status "COMPLETED" hat, eine Rechnung dem Kunden und Administrator
+a| Das Programm soll für jede Bestellung, die den Status "COMPLETED" hat, eine Rechnung dem Kunden und Administrator
 automatisch zur Verfügung stellen.
 
 |===
@@ -649,96 +708,98 @@ Dieser Abschnitt stellt eine Vereinigung von Glossar und der Beschreibung von Kl
 
 // See http://asciidoctor.org/docs/user-manual/#tables
 [options="header"]
+[cols="1,2"]
 |===
-|Klasse/Enumeration |Beschreibung |
+|Klasse/Enumeration |Beschreibung
 
 
 | [[cart]] Cart (Warenkorb)
-| Der Warenkorb speichert temporär, welche <<item,Angebote>> ein Benutzer eventuell kaufen möchte. +
+a| Der Warenkorb speichert temporär, welche <<item,Angebote>> ein Benutzer eventuell kaufen möchte. +
 Wenn der benutzer die Angebote kauft, wird eine <<order,Bestellung ( Order )>> erstellt.
-|
-
 
 | CartItem
-| Ein Element im Warenkorb nennt sich CartItem und repräsentiert ein Angebot mit einer Quantität.
-|
+a| Ein Element im Warenkorb nennt sich CartItem und repräsentiert ein Angebot mit einer Quantität.
 
 
-| [[customer]]Customer (Benutzer)
-| Ein Benutzer enthält alle Informationen eines realen, registrierten Benutzers im System.
-Es gibt zwei Typen von Benutzern: +
+| [[customer]] Customer (Benutzer)
+a| Ein Benutzer enthält alle Informationen eines realen, registrierten Benutzers im System.
+Es gibt zwei Typen von Benutzern:
+
 * Administratoren (admin)  - "ADMIN" +
 * Kunden / "normalen Benutzer" - "CUSTOMER"
-|
+
 
 
 | CustomManager
-| Diese Klasse enthält alle im Programm registrierten Benutzer und kann diese auflisten oder neue Benutzer hinzufügen.
-|
+a| Diese Klasse enthält alle im Programm registrierten Benutzer und kann diese auflisten oder neue Benutzer hinzufügen.
+
 
 
 | [[employee]] Employee (Personal)
-| Ein employee repräsentiert das Personal. Es gibt zwei grundlegende Personaltypen: +
-* Köche
+a| Ein employee repräsentiert das Personal. Es gibt zwei grundlegende Personaltypen:
+
+* Köche +
 * Servicepersonal
-|
+
 
 
 | EmployeeManager
-| Diese Klasse enthält alles Personal, welches momentan bei der Catering-Firma angestellt ist.
+a| Diese Klasse enthält alles Personal, welches momentan bei der Catering-Firma angestellt ist.
 Sie ermöglicht außerdem das Anstellen von neuen Mitarbeitern.
-|
+
 
 | EventcateringApp
-| Das ist die zentrale Klasse, die das Programm für die Organisation der Eventcatering-Firma enthält.
-|
+a| Das ist die zentrale Klasse, die das Programm für die Organisation der Eventcatering-Firma enthält.
+
 
 | [[inventory]] Inventory
-| Das Inventar listet, welche <<itemCategory,Ausrüstung>> in welcher Stückzahl verfügbar sind.
-|
+a| Das Inventar listet, welche <<itemCategory,Ausrüstung>> in welcher Stückzahl verfügbar sind.
+
 
 | [[item]] Item (Angebot)
-| Ein Angebot stellt eine Dienstleistung oder ein Produkt dar, welches der Benutzer kaufen bzw. mieten kann. +
+a| Ein Angebot stellt eine Dienstleistung oder ein Produkt dar, welches der Benutzer kaufen bzw. mieten kann. +
 Angebote werden unterteilt in Personal, Dekoration und Essen. +
 Dabei erfolgt zusätzlich eine <<itemCategory,Kategorisierung>>.
-|
+
 
 | [[itemType]] Typ des Items
-| Es gibt verschiedene Grundtypen von Angeboten: +
+a| Es gibt verschiedene Grundtypen von Angeboten:
+
 * Ausrüstung / Dekoration (z.B. Tischdecken) +
 * Personal +
 * Speisen (z.B. Buffet, Dinner, Käseplatten)
-|
+
 
 | [[itemCategory]] Kategorie eines Angebotes
-| Alle Angebote werden in eine Kategorie eingeteilt: +
+a| Alle Angebote werden in eine Kategorie eingeteilt:
+
 * Eventcatering +
 * Partyservice +
 * Mobile breakfast +
 * Rent a cook +
-|
+
 
 
 | Katalog
-| Der Katalog speichert alle Angebote. Er ermöglicht das Erstellen neuer Angebote und das Filtern nach <<itemCategory, Kategorien>>.
-|
+a| Der Katalog speichert alle Angebote. Er ermöglicht das Erstellen neuer Angebote und das Filtern nach <<itemCategory, Kategorien>>.
+
 
 | [[order]] Order (Bestellung)
-| Eine Bestellung repräsentiert, welche <<item, Angebote>> ein Benutzer mit welchem Datum und welcher
+a| Eine Bestellung repräsentiert, welche <<item, Angebote>> ein Benutzer mit welchem Datum und welcher
 Adresse kaufen möchte. +
 Außerdem wird bei einer Bestellung die Zahlungsmethode festgelegt.
 
 Eine Bestellung durchläuft während ihrer Bearbeitung mehrere <<order_state,Status>>.
-|
+
 
 
 | OrderLine
 | Eine OrderLine repräsentiert, welche Angebote in welcher Anzahl ein Benutzer bestellt hat.
-|
+
 
 | OrderManager
 | Der Bestellungsmanager kennt alle bisher im Programm getätigten Bestellungen.
-|
+
 
 | [[order_state]] OrderStatus (Bestellstatus)
 | Der Status repräsentiert den momentanen Bestellstatus. +
@@ -746,7 +807,7 @@ Eine Bestellung durchläuft während ihrer Bearbeitung mehrere <<order_state,Sta
 *PAID*: Die Bestellung wurde bezahlt, aber sie wurde noch nicht bearbeitet (z.B. Personal zugewiesen). +
 *COMPLETED*: Der Bestellung wurde Personal zugewiesen und sie wurde bearbeitet.
 *CANCELLED*: Die Bestellung konnte nicht abgeschlossen werden, weil z.B. kein Personal zur Verfügung stand.
-|
+
 
 |===
 
