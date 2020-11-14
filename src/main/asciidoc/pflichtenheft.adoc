@@ -85,7 +85,7 @@ Für die Wartung übernimmt das Entwicklerteam keine Verantwortung.
 Daten werden persistent in einer relationalen Datenbank gespeichert und können ohne jegliche Kenntnisse permanent vom Chef eingesehen werden.
 
 == Interessensgruppen (Stakeholders)
-Welche realen und juristischen Personen(-gruppen) haben Einfluss auf die Anforderungen im Projekt?
+Im folgenden sind alle Personen aufgelistet die einen Einfluss auf den Entwicklungsprozess haben können. Zur besseren Konflikt- und Problmbewältigung wird jeder Personengruppe eine Priorität zugeordnet um festzulegen wer im Streitfall letztendlich die Entscheidung fällt.
 
 [options="header", cols="2, ^1, 4, 4"]
 |===
