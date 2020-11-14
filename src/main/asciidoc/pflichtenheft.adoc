@@ -1,4 +1,4 @@
-= Pflichtenheft
+= Pflichtenheft {project_name}
 :project_name: Eventcatering
 == __{project_name}__
 :doctype: book
@@ -41,6 +41,9 @@ Dokumentieren Sie ihre Top-Level-Architektur mit Hilfe eines Komponentendiagramm
 
 == Anwendungsfälle
 
+Dieses Kapitel gibt einen Überblick über die typischen Anwendungsfälle.
+Dabei wird von der Sicht des Anwenders ausgehend eine Beschreibung vorgenommen.
+
 === Akteure
 
 Akteure sind die Benutzer des Software-Systems oder Nachbarsysteme, welche darauf zugreifen. Dokumentieren Sie die Akteure in einer Tabelle. Diese Tabelle gibt einen Überblick über die Akteure und beschreibt sie kurz. Die Tabelle hat also mindestens zwei Spalten (Akteur Name und Kommentar).
@@ -51,11 +54,31 @@ Weitere relevante Spalten können bei Bedarf ergänzt werden.
 [cols="1,4"]
 |===
 |Name |Beschreibung
-|...  |...
+| Benutzer / User
+| repräsentiert alle Personen, die mit dem Programm interagieren. Dabei spielt es keine Rolle, ob der Benutzer angemeldet ist oder nicht.
+
+
+| Registrierter / angemeldeter Benutzer
+| Dieser Begriff meint alle Personen, welche einen Account haben, angemeldet sind und mit dem Programm interagieren.
+
+
+| nicht angemeldeter Benutzer
+| repräsentiert aller Personen, die nicht angemeldet sind und mit dem Programm interagieren.
+Dabei steht ihnen nur eine eingeschränkte Funktionalität zur Verfügung.
+
+| Administrator
+| Dieser Begriff meint alle angemeldeten Benutzer, die die Rolle <<customer, "ADMIN">> besitzen. Diese sind verantwortlich für das Administrieren des Programms.
+
+| Kunden / Customer
+| Dieser Begriff meint alle angemeldeten Benutzer, die die Rolle <<customer, "CUSTOMER">> besitzen.
+Nur Benutzern mit dieser Rolle ist das Kaufen von Angebote aus dem Warenkorb erlaubt.
+
 |===
 
 === Überblick Anwendungsfalldiagramm
 Anwendungsfall-Diagramm, das alle Anwendungsfälle und alle Akteure darstellt
+[[useCaseDiagram]]
+image:images/UseCaseDiagram.png[use case diagram]
 
 === Anwendungsfallbeschreibungen
 Dieser Unterabschnitt beschreibt die Anwendungsfälle. In dieser Beschreibung müssen noch nicht alle Sonderfälle und Varianten berücksichtigt werden. Schwerpunkt ist es, die wichtigsten Anwendungsfälle des Systems zu finden. Wichtig sind solche Anwendungsfälle, die für den Auftraggeber, den Nutzer den größten Nutzen bringen.
@@ -377,11 +400,11 @@ Wenn der benutzer die Angebote kauft, wird eine <<order,Bestellung ( Order )>> e
 |
 
 
-| Customer (Benutzer)
+| [[customer]]Customer (Benutzer)
 | Ein Benutzer enthält alle Informationen eines realen, registrierten Benutzers im System.
 Es gibt zwei Typen von Benutzern: +
-* Administratoren (admin) +
-* Kunden / "normalen Benutzer"
+* Administratoren (admin)  - "ADMIN" +
+* Kunden / "normalen Benutzer" - "CUSTOMER"
 |
 
 
