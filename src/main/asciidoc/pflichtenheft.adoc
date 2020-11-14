@@ -735,11 +735,60 @@ Anforderungen die das Programm leisten können soll, aber für den korrekten Bet
 
 Dokumentieren Sie in einer Tabelle die Qualitätsziele, welche das System erreichen soll, sowie deren Priorität.
 
+[options="header]
+[cols="3,10,1,1,1,1,1"]
+|===
+| Qualitätsziel | Beschreibung | 1 | 2 | 3 | 4 | 5
+
+| Wartbarkeit | Das Programm muss mit geringem Aufwand von einem Administrator mit geringen IT-Kenntnissen wartbar sein.
+Kleine Anpassungen von Angeboten wie z.B. der Preis muss simpel sein.
+| | | | x |
+
+
+| Benutzbarkeit | Das Programm muss intuitiv und leicht bedienbar sein. Der Benutzer soll schnell sein angestrebtes Ziel erreichen können.
+| | | | x |
+
+| Sicherheit | Das Programm muss gegen böswillige Benutzung oder Missbrauch abgesichert sein.
+| | | x | |
+
+| Responsive Design | Das Programm muss auch auf mobilen Endgeräten gut bedienbar sein.
+| | | | | x
+
+|===
+
 === Konkrete Nicht-Funktionale Anforderungen
+:desired-uptime: 99,5%
 
-Beschreiben Sie Nicht-Funktionale Anforderungen, welche dazu dienen, die zuvor definierten Qualitätsziele zu erreichen.
-Achten Sie darauf, dass deren Erfüllung (mindestens theoretisch) messbar sein muss.
+[options="header", cols="2h, 1, 3, 12"]
+|===
+|ID
+|Version
+|Name
+|Description
 
+|[[NF0010]]<<NF0010>>
+|v0.1
+|Erreichbarkeit
+a|
+Das Programm soll mindestens **{desired-uptime}** der Zeit erreichbar sein.
+
+|[[NF0020]]<<NF0020>>
+|v0.1
+|Sicherheit - Passwort nur als Hash
+a|
+Das Passwort eines Nutzers soll nur als Hash gespeichert werden.
+
+|[[NF0030]]<<NF0030>>
+|v0.1
+|Wartbarkeit
+a| Der Administrator soll einen möglichst geringen Aufwand haben, die Angebote stets in allen Angaben aktuell zu halten.
+
+| [[NF0040]]<<NF0040>>
+| v0.1
+| leichte Aktualisierung
+| Es soll leicht möglich sein, fixe Zahlen wie z.B. die Mehrwertsteuer zu ändern.
+
+|===
 == GUI Prototyp
 
 [[home_image]]
