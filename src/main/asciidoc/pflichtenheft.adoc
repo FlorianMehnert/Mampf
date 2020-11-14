@@ -584,9 +584,48 @@ Achten Sie darauf, dass deren Erfüllung (mindestens theoretisch) messbar sein m
 
 == GUI Prototyp
 
-In diesem Kapitel soll ein Entwurf der Navigationsmöglichkeiten und Dialoge des Systems erstellt werden.
-Idealerweise entsteht auch ein grafischer Prototyp, welcher dem Kunden zeigt, wie sein System visuell umgesetzt werden soll.
-Konkrete Absprachen - beispielsweise ob der grafische Prototyp oder die Dialoglandkarte höhere Priorität hat - sind mit dem Kunden zu treffen.
+[[home_image]]
+image::./images/gui_prototyp/welcome.png[Landing page, 100%, 100%, pdfwidth=100%, title= "Startseite", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/registrieren.png[registrieren, 100%, 100%, pdfwidth=100%, title= "Registierung-seite", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/eventcatering1.png[eventcatering1, 100%, 100%, pdfwidth=100%, title= "Eventcatering-seite (oberhalb)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/eventcatering2_empty.png[eventcatering2, 100%, 100%, pdfwidth=100%, title= "Eventcatering-seite (unterhalb)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/eventcatering2_chooseDate.png[eventcatering3, 100%, 100%, pdfwidth=100%, title= "Eventcatering-seite: Auswahl eines Termines", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/eventcatering2_fill_Invalid.png[eventcatering4, 100%, 100%, pdfwidth=100%, title= "Eventcatering-seite: Invalide Eingaben (Personal nicht verfügbar)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/partyservice1.png[ps, 100%, 100%, pdfwidth=100%, title= "Partyservice-seite (oberhalb)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/partyservice2.png[ps2, 100%, 100%, pdfwidth=100%, title= "Partyservice-seite (unterhalb)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mobilebreakfast.png[mb, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mobilebreakfast_overlay_and_filled.png[mb2, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Auswahl von Terminen (beispielhaft)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/rentacook.png[rc, 100%, 100%, pdfwidth=100%, title= "Rent-a-Cook-seite", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/rentacook_overlays.png[rc2, 100%, 100%, pdfwidth=100%, title= "Rent-a-Cook-seite: Formulare zum auswählen von Personal und einem Termin: Datum/Ort/Uhrzeit (je Stundenauswahl)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/warenkorb_buy_fill.png[warenkorb, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite (gefüllt mit beispielsdaten)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/warenkorb_kauf_fill.png[warenkorb2, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite: Kaufen von Warenkorbinhalten (gefüllt mit beispielsdaten)", align=center]
+
 
 === Überblick: Dialoglandkarte
 Erstellen Sie ein Übersichtsdiagramm, das das Zusammenspiel Ihrer Masken zur Laufzeit darstellt. Also mit welchen Aktionen zwischen den Masken navigiert wird.
