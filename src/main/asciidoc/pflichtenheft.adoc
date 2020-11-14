@@ -18,18 +18,113 @@
 toc::[]
 
 == Zusammenfassung
-Eine kurze Beschreibung des Dokuments.Wenige Absätze.
+Der Inhalt dieses Dokuments befasst sich mit allen strukturellen und funktionalen Gegebenheiten der zu erstellenden Software und dient vorallem zur Validierung dementsprechender Elemente durch den Kunden und dem Entwicklungsteam. Daher wird beschrieben, welche Anforderungen die Software erfüllt und dient gleichermaßen dem Kunden zur Überprüfung über die Implementierung der von ihm gewünschten Features.
+
+Daraus folgt, dass dieses Dokument außerdem als Kontrollstruktur zur Validierung etwaiger Akzeptanzkriterien zu verstehen ist und sollte daher möglichst vollständig und konsistent sein bzw. gehalten werden. Alle Änderungen sind daher hier zu vermerken und zu validieren. Implizit ist dadurch außerdem die einfache Möglichkeit der Erweiterung dieses Dokuments. 
 
 == Aufgabenstellung und Zielsetzung
-Text aus Aufgabenstellung kopieren und ggfs. präzisieren.
-Insbesondere ergänzen, welche Ziele mit dem Abschluss des Projektes erreicht werden sollen.
+
+Aufgabenstellung: 
+
+"Cateringservice
+Essen und Trinken hält Leib und Seele zusammen“ besagt ein altes deutsches Sprichwort.
+Das dachte sich auch Hannes Wurst und baute seinen kleinen Imbissstand zu dem inzwischen
+renommierten Cateringservice Mampf mit vielen Angestellten und guter Auftragslage aus.
+Jetzt möchte er endlich auch eine Software haben, mit der er alle Abrechnungs-, Bestell- und
+Verwaltungsaufgaben einheitlich bearbeiten kann. Bisher nutze Herr Wurst dafür diverse
+Programme und ärgerte sich immer wieder über deren Inkompatibilität zueinander und den
+Mehraufwand durch getrennte Datenhaltung. Als Basis für die Softwareentwicklung gab er
+uns folgende Beschreibung seines kleinen Unternehmens:
+Mampf gliedert sich in vier Geschäftsfelder. Das Eventcatering übernimmt die Verpflegung
+bei großen Veranstaltungen, egal ob in Form eines Buffetts oder als Galadinner. Auf Wunsch
+gestaltet Mampf auch das komplette Event, d.h. neben den Speisen und Getränken wird auch
+Dekoration, Ausrüstung (also Geschirr, Tischtücher usw.) und Personal zur Verfügung
+gestellt, wobei der Kunde dann natürlich zusätzlich zum eigentlichen Preis für Lebensmittel
+und Arbeitszeit auch Leihgebühren und Personalkosten bezahlen muss. Der Partyservice
+beliefert private Feierlichkeiten mit kalten Platten – von Hochzeiten und Beerdigungen über
+Gartenfeste bis zu Omas 75sten Geburtstag. Hierbei gibt es Festpreise je nach Angebot und
+Personenanzahl (z.B. Schinkenplatte für 5 Personen zu 20,- EUR, Käseplatte für 3 Personen
+zu 12,50 EUR usw.) und Sonderaktionen (z.B. Sushi-Abend für 10 Personen). Eine
+Besonderheit von Mampf ist Mobile Breakfast – ein mobiler Frühstücksservice für kleinere
+Firmen ohne eigene Kantine. Zu festgelegten Zeiten können die Mitarbeiter sozusagen am
+Arbeitsplatz eine Auswahl an Frühstücksangeboten (belegte Brötchen, Müsli, Kaffee und Tee
+usw.) kaufen. Die Firmen buchen das Angebot monateweise. Problematisch ist allerdings die
+Planung dieses Angebotes – hier wird derzeit noch nach einer kostensparenden Lösung (z.B.
+in Form einer Vorbestellung) gesucht. Immer beliebter wird bei den Kunden auch das vierte
+Angebot von Mampf: Rent-a-Cook. Dabei wird Küchen- und Servicepersonal an
+Privathaushalte verliehen, um z.B. den Chef des Gastgebers mit kulinarischen Köstlichkeiten
+zu beeindrucken. Um die Lebensmittel müssen sich die Kunden dabei selbst kümmern.
+Hannes Wurst hat nun ganz genaue Vorstellungen von der zu entwickelnden Software: Sie
+soll die Kundenverwaltung unterstützen, die Personalverwaltung und -zuteilung übernehmen,
+die Termine planen, das Zubehör (Dekoration, Ausrüstung) verwalten, den
+Lebensmittelbedarf bestimmen (Anzahl Gerichte/Platten/belegte Brötchen, Menge an
+Getränken in Liter), die Rechnungsstellung an die Kunden vereinfachen und sämtliche
+Abrechnungen erleichtern. Die Lebensmittelbeschaffung muss nicht betrachtet werden, durch
+die langjährigen Erfahrungen bei Mampf ist der Einkaufspreis pro Gericht/Platte/Getränk
+jedoch bekannt."
+
+Diese Software soll dem Betreiber und seinen potentiellen Kunden eine einfachere und schnellere Möglichkeit der Kommunikation und Interaktion bieten. Potentielle Kunden sollen ein festes Konto besitzen, sich also registrieren können und dadurch eine schnellere Übersicht über das Gesamte Angebot bekommen und dadurch auch schneller und einfacher bestellen können. Gleichwohl soll der Inhaber eine bessere und automatisierte Übersicht über alle Bestellungen bekommen, welche dadurch auch einfacher zu administrieren sind. Außerdem hat der Inhaber durch diese Software die Möglichkeit seine Kunden schneller und kostengünstiger von neuen Angeboten und neuen Produkten zu informieren. Da es nur um einen Cateringservice geht wird auch sicherste Authentifizierungsmechanismen verzichtet und lediglich eine Emailadresse und ein Passwort benötigt.
+Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen sich auch ohne Registrierung einen Überblick über die Angebote zu machen.
+
+Die Software soll ansprechend und einladend aussehen und möglichst einfach aufgebaut sein damit sich jeder Benutzer zurecht findet, was gleichermaßen bedeutet dass sich an bestehende Designs angepasst wird.
 
 == Produktnutzung
-In welchem Kontext soll das System später genutzt werden?Welche Rahmenbedingungen gelten?
-Zusätzlich kurze Einleitung für fachfremde Personen
+Folgende Randbedingungen werden bei der Veröffentlichung der Software benötigt:
+
+Diese Software wird vom Kunden selbst auf einem Server seiner Wahl gehostet und das Entwicklerteam übernimmt keinerlei Verantwortung für das Deployment auf eben jenem. Die Software soll später rund um die Uhr im Internet zur Verfügung gestellt werden, ausschließlich als Webapp.
+
+Das System soll für die folgenden Browser zugänglich und visuell optimiert sein:
+
+Mozilla Firefox, Version 55.0.3+
+
+Google Chrome, Version 61.0.3163+
+
+Die primäre Ziegruppe ergibt sich vorallem aus Menschen jeglicher Gesellschaftsschicht, die tagtäglich im Internet surfen und somit elementare Kenntnisse der Bedienung einer Website mitbringen. Zusätzlich dazu gibt es einen Administrator (Chef) der die Inhalte pflegt und Personal verwaltet ohne über einen beruflich informationstechnischen Hintergrund zu verfügen.
+
+Für die Wartung übernimmt das Entwicklerteam keine Verantwortung.
+Daten werden persistent in einer relationalen Datenbank gespeichert und können ohne jegliche Kenntnisse permanent vom Chef eingesehen werden.
 
 == Interessensgruppen (Stakeholders)
 Welche realen und juristischen Personen(-gruppen) haben Einfluss auf die Anforderungen im Projekt?
+
+[options="header", cols="2, ^1, 4, 4"]
+|===
+|Name
+|Priorität (1..5)
+|Beschreibung
+|Ziele
+
+|Mampf
+|5
+|Kunde bzw. Tutor dieses Projektes
+a|
+- Mehr Aufträge und Kundenzuwachs
+- Automatisierung der Bestell- und Personalprozesse
+- Bessere Übersicht über Bedarf und Verbrauch aller Waren
+
+|Kunden
+|4
+|Eigentliche Kunde des Catering-Services
+a|
+- Intuitive Interaktion mit der Website
+- Einfacher Bestellvorgang
+- Bessere und einfache Übersicht über alle Produkte
+
+|Administratoren
+|2
+|Benutzer die die Software verwalten (Chef u.a.)
+a|
+- Überblicken und editieren jeglicher Daten im System
+- (Bestell-)Vorgänge und Personal verwalten
+
+|Entwickler
+|3
+|Alle Studenten die für die Entwicklung der Software zuständig sind
+a|
+- Einwandfrei funktionierende, getestete und erweiterbare Software
+- Keinen Wartungsaufwand
+
+|===
 
 == Systemgrenze und Top-Level-Architektur
 
