@@ -81,10 +81,235 @@ Anwendungsfall-Diagramm, das alle Anwendungsfälle und alle Akteure darstellt
 image:images/UseCaseDiagram.png[use case diagram]
 
 === Anwendungsfallbeschreibungen
-Dieser Unterabschnitt beschreibt die Anwendungsfälle. In dieser Beschreibung müssen noch nicht alle Sonderfälle und Varianten berücksichtigt werden. Schwerpunkt ist es, die wichtigsten Anwendungsfälle des Systems zu finden. Wichtig sind solche Anwendungsfälle, die für den Auftraggeber, den Nutzer den größten Nutzen bringen.
-Für komplexere Anwendungsfälle ein UML-Sequenzdiagramm ergänzen.
-Einfache Anwendungsfälle mit einem Absatz beschreiben.
-Die typischen Anwendungsfälle (Anlegen, Ändern, Löschen) können zu einem einzigen zusammengefasst werden.
+[cols="1h, 3"]
+[[UC0010]]
+|===
+|ID                         |**<<UC0010>>**
+|Name                       | Anmelden/Abmelden
+|Description                | Ein Benutzer kann sich anmelden, um bestimmte Aktionen mit dem Programm ausführen zu können.
+Nach Ausführung aller Aktionen soll sich ein Benutzer abmelden können.
+|Actors                     | Benutzer
+|Trigger                    |
+_Anmelden_: Der Benutzer möchte Aktionen durchführen, die eine Anmeldung voraussetzen.
+
+_Abmelden_: Der Benutzer möchte das Eventcatering-Programm nicht weiter benutzen.
+|Precondition(s)           a|
+_Anmelden_: Der Benutzer ist noch nicht angemeldet.
+
+_Abmelden_: Der Benutzer ist bereits angemeldet.
+|Essential Steps           a|
+_Anmelden_:
+
+1. Der Benutzer wählt im Menu den Button "Anmelden" aus.
+2. Der Benutzer gibt seine Anmeldedaten ein.
+3. Der Benutzer klickt auf "Anmelden".
+
+_Abmelden_:
+
+1. Der Benutzer klickt auf "Abmelden".
+2. Der Benutzer wird abgemeldet und auf den Startbildschirm umgeleitet.
+
+|Extensions                 |-
+|Functional Requirements    |<<F0010>>
+|===
+
+
+[cols="1h, 3"]
+[[UC0020]]
+|===
+|ID                         |**<<UC0020>>**
+|Name                       |Registrieren
+|Description                |Eine Person, die noch keinen Zugang zu dem Programm hat, kann für sich selbst einen neuen Account erstellen.
+|Actors                     |Unangemeldeter Benutzer
+|Trigger                    |Ein unangemeldeter Benutzer möchte durch anklicken von "Registrieren" einen Benutzerzugang für sich erstellen.
+|Precondition(s)           a|Der Benutzer ist nicht angemeldet
+|Essential Steps           a|
+1.  Nicht angemeldeter Benutzer klickt "Registrieren" an.
+2.  Er gibt seinen Benutzernamen, seine E-Mail-Adresse und sein Password ein.
+3.  Das Programm validiert die Eingaben.
+. Wenn es korrekte Eingaben waren, wird der Benutzer erstellt.
+. Ansonsten wird eine Fehlermeldung angezeigt.
+|Extensions                 |-
+|Functional Requirements    |<<F0020>>, <<F0021>>
+|===
+
+
+[[UC0100]]
+[cols="1h, 3"]
+|===
+|ID                         |**<<UC0100>>**
+|Name                       |**Katalog ansehen**
+|Description                | Jeder Benutzer kann sich den Inhalt des Katalogs ansehen. Dieser enthält alle Angebote. Die Angebote müssen nach ihrer <<itemCategory,Kategorie>> gefiltert werden.
+|Actors                     | Benutzer
+|Trigger                    | Der Benutzer klickt im Menu das Element "Katalog" an.
+|Precondition(s)           a| keine
+|Essential Steps           a|1. Der Benutzer klickt im Menu die einzelnen Kategorien an.
+2. Dem Benutzer werden alle Angebote einer Kategorie angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0100>>, <<F0110>>, <<F0111>>, <<F0112>>
+|===
+
+
+[[UC0110]]
+[cols="1h, 3"]
+|===
+|ID                         |**<<UC0110>>**
+|Name                       |Angebotsdetails ansehen
+|Description                |Ein Benutzer soll die Möglichkeit haben, alle Details eines Angebots sich anzusehen.
+|Actors                     |Benutzer
+|Trigger                    |Ein Benutzer sieht sich alle Angebote einer Kategorie an und klickt auf ein Angebot.
+|Precondition(s)           a|Ein Benutzer sieht sich den Katalog an.
+|Essential Steps           a|
+1.  Der Benutzer klickt auf ein Angebot im Katalog.
+2.  Dem Benutzer werden die Details des Angebots angezeigt.
+|Extensions                 |-
+|Functional Requirements    | <<F0120>>
+|===
+
+
+[cols="1h,3"]
+[[UC0200]]
+|===
+|ID                         |**<<UC0200>>**
+|Name                       |Angebot zum Warenkorb hinzufügen
+|Description                |Ein angemeldeter Nutzer soll in der Lage sein, ein Angebot in einer gewählten Anzahl zum Warenkorb hinzuzufügen.
+|Actors                     |Angemeldeter Benutzer
+|Trigger                    |Ein angemeldeter Benutzer sieht sich die Details eines Angebotes an und möchte Einige zu seinem Warenkorb hinzufügen.
+|Precondition(s)           a|
+- Der Benutzer ist angemeldet.
+- Der angemeldete Benutzer sieht sich die Details eines Angebotes an.
+|Essential Steps           a|
+1.  Der Benutzer gibt eine gewünschte Anzahl an Angeboten ein.
+2.  Der Benutzer klickt "Zum Warenkorb hinzufügen" an.
+3.  Das Angebot wird in der gewünschten Anzahl zu seinem Warenkorb hinzugefügt.
+|Extensions                 |-
+|Functional Requirements    | <<F0200>>, <<F0201>>
+|===
+
+
+[cols="1h,3"]
+[[UC0202]]
+|===
+|ID                         |**<<UC0202>>**
+|Name                       | Warenkorb ansehen
+|Description                | Ein angemeldeter Benutzer hat die Möglichkeit, alle Inhalte in seinem Warenkorb und den Gesamtpreis anzusehen.
+|Actors                     | Angemeldeter Benutzer
+|Trigger                    | Der angemeldete Benutzer klickt im Menü "Warenkorb" an.
+|Precondition(s)           a|
+- Der Benutzer ist angemeldet.
+|Essential Steps           a|
+1.  Der angemeldete Benutzer klickt im Menü "Warenkorb" an.
+2.  Dem Benutzer wird der Inhalt seines Warenkorbs mit dem Gesamtpreis angezeigt.
+|Extensions                 |-
+|Functional Requirements    | <<F0202>>
+|===
+
+
+[cols="1h,3"]
+[[UC0220]]
+|===
+|ID                         |**<<UC0220>>**
+|Name                       | Angebote im Warenkorb kaufen
+|Description                |Ein Kunde soll in der Lage sein, Angebote aus dem Warenkorb zu kaufen.
+|Actors                     | <<customer,Kunde>>
+|Trigger                    | Kunde klickt auf "Kaufen".
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "CUSTOMER" im Programm.
+- Der Warenkorb ist nicht leer.
+|Essential Steps           a|
+1.  Der Kunde drückt auf "Kaufen"
+2.  Der Kunde gibt einen Termin, eine Adresse und eine Zahlungsmethode an.
+3.  Der Kunde klickt auf "Bestätigen".
+4.  Das Programm prüft, ob zu dem gewünschten Zeitpunkt noch ausreichend Ressourcen vorhanden sind.
+5.  Die Bestellung wird mit der gewählten Bezahlmöglichkeit bezahlt.
+6.  Es wird hinterlegt, welche Angebote der Kunde zu welchem Zeitpunkt benötigt. Damit werden die entsprechenden Ressourcen im Programm reserviert.
+|Extensions                 | -
+|Functional Requirements    | <<F0220>>, <<F0230>>, <<F0240>>, <<F0241>>, <<F0242>>
+|===
+
+
+
+[cols="1h,3"]
+[[UC0243]]
+|===
+|ID                         |**<<UC0243>>**
+|Name                       | Bestellübersicht ansehen
+|Description                | Ein Kunde soll in der Lage sein, sich über den Status seiner Bestellung zu informieren.
+|Actors                     | <<customer,Kunde>>
+|Trigger                    | Kunde klickt im Menu auf "Meine Bestellungen"
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "CUSTOMER" im Programm.
+- Der Kunde hat bereits eine Bestellung aufgegeben.
+|Essential Steps           a|
+1.  Der Kunde klickt im Menu auf "Meine Bestellungen".
+2.  Dem Kunden werden alle von ihm getätigten Bestellungen angezeigt. +
+Dabei werden ihm die Details angezeigt:
+. Auflistung aller bestellten Angebote samt Anzahl
+. Datum für die Lieferung
+. <<order_state,Status der Bestellung>> bzw. ein erklärender Hinweis dazu
+|Extensions                 | -
+|Functional Requirements    | <<F0243>>
+|===
+
+
+[cols="1h,3"]
+[[UC0400]]
+|===
+|ID                         |**<<UC0400>>**
+|Name                       | Rechnung ansehen
+|Description                | Ein Kunde soll in der Lage sein, sich die Rechnung jeder Bestellung anzeigen zu lassen.
+|Actors                     | <<customer,Kunde>>
+|Trigger                    | Der Kunde klickt im Menu auf "Bestellungen".
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "CUSTOMER" im Programm.
+- Ein Kunde hat bereits eine Bestellung aufgegeben.
+- Der Kunde klickt in der Ansicht "Meine Bestellungen" auf eine bestimmte Bestellung.
+|Essential Steps           a|
+1.  Der Kunde klickt auf eine bestimmte Bestellung.
+2.  Dem Kunden wird die Rechnung für diese Bestellung angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0400>>
+|===
+
+
+[cols="1h,3"]
+[[UC0310]]
+|===
+|ID                         |**<<UC0310>>**
+|Name                       | Liste aller Bestellungen
+|Description                | Dem Administrator soll es möglich sein, sich alle Bestellungen detailliert anzeigen zu lassen.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Der Administrator klickt im Menu auf "Bestellungen".
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Es wurde bereits von mindestens einem Kunden eine Bestellung aufgegeben.
+|Essential Steps           a|
+1.  Der Admin klickt im Menu auf "Bestellungen".
+2.  Dem Administrator werden alle Bestellungen angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0310>>
+|===
+
+
+[cols="1h,3"]
+[[UC0300]]
+|===
+|ID                         |**<<UC0300>>**
+|Name                       | Liste aller Kunden
+|Description                | Dem Administrator soll es möglich sein, sich alle Kunden anzeigen zu lassen.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu auf "Kunden".
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Es hat sich bereits mindestens ein Kunde registriert.
+|Essential Steps           a|
+1.  Der Admin klickt im Menu auf "Kunden".
+2.  Dem Administrator werden alle Kunden angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0300>>
+|===
+
+
 
 == Funktionale Anforderungen
 
