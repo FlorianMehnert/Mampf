@@ -833,6 +833,33 @@ image::./images/gui_prototyp/warenkorb_buy_fill.png[warenkorb, 100%, 100%, pdfwi
 [[home_image]]
 image::./images/gui_prototyp/warenkorb_kauf_fill.png[warenkorb2, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite: Kaufen von Warenkorbinhalten (gefüllt mit beispielsdaten)", align=center]
 
+Admins Sicht
+[[home_image]]
+image::./images/gui_prototyp/welcome_boss.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/kunden.png[kunden, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter.png[mitarbeiter, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Mitarbeiter (Service-Personal und Köchen)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/bestand.png[bestand, 100%, 100%, pdfwidth=100%, title= "Bestand-Seite: Inventar von Dekorationen und Tischdecken", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/bestellungen.png[bestellungen, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Übersicht der Bestellungen (mit zwei Beispielen)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/bestellungen_personal_checkliste.png[bestellungen2, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Service-Personal hinzufügen' Button drückt", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/bestellungen_koche_checkliste.png[bestellungen3, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Köche hinzufügen' Button drückt", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/bestellungen_personal_checkliste_gebucht.png[bestellungen4, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Service-Personal hinzufügen' Button drückt, aber einige Personal sind schon gebucht", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/bestellungen_personal_koche.png[bestellungen5, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Service-Personal und Köche sind hinzugefügt", align=center]
 
 === Überblick: Dialoglandkarte
 Erstellen Sie ein Übersichtsdiagramm, das das Zusammenspiel Ihrer Masken zur Laufzeit darstellt. Also mit welchen Aktionen zwischen den Masken navigiert wird.
