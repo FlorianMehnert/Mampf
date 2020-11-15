@@ -1004,7 +1004,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 == Glossar
 Sämtliche Begriffe, die innerhalb des Projektes verwendet werden und deren gemeinsames Verständnis aller beteiligten Stakeholder essentiell ist, werden hier aufgeführt.
 
-:domain_ref: Siehe <<class_enumerations, Klassen und Enumerationen>>
+:domain_ref: Siehe <<102-klassen-und-enumerationen, Klassen und Enumerationen>>
 
 [options="header", cols="1h, 4"]
 [[glossar]]
