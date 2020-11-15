@@ -251,6 +251,8 @@ _Abmelden_:
 |Functional Requirements    | <<F0100>>, <<F0110>>, <<F0111>>, <<F0112>>
 |===
 
+[[view_catalog_sd]]
+image::./images/diagrams/SD_UC0100.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0202", align=center]
 
 [[UC0110]]
 [cols="1h, 3"]
