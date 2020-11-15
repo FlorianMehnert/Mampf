@@ -423,6 +423,8 @@ image::./images/diagrams/SD_UC0300.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 |Functional Requirements    | <<F0310>>
 |===
 
+image::./images/diagrams/SD_UC0310.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
+
 
 [cols="1h,3"]
 [[UC0320]]
