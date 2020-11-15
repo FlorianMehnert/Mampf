@@ -896,7 +896,7 @@ Für jeden Dialog:
 === Überblick: Klassendiagramm
 UML-Analyseklassendiagramm:
 [[home_image]]
-image::./images/diagrams/UMLAnalyse.svg[bestellungen5, 100%, 100%, pdfwidth=100%, align=center]
+image::./images/diagrams/UML-class-diagram.svg[bestellungen5, 100%, 100%, pdfwidth=100%, align=center]
 
 
 === Klassen und Enumerationen
