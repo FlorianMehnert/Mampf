@@ -403,6 +403,7 @@ image::./images/diagrams/SD_UC0243.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 |Functional Requirements    | <<F0300>>
 |===
 
+image::./images/diagrams/SD_UC0300.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
 [cols="1h,3"]
 [[UC0310]]
@@ -440,6 +441,7 @@ Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
 |Functional Requirements    | <<F0100>>, <<F0340>>
 |===
 
+image::./images/diagrams/SD_UC0320.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
 [cols="1h,3"]
 [[UC0330]]
@@ -457,6 +459,8 @@ Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
 |Extensions                 | -
 |Functional Requirements    | <<F0320>>
 |===
+
+image::./images/diagrams/SD_UC0330.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
 [cols="1h,3"]
 [[UC0331]]
@@ -476,6 +480,7 @@ Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
 |Functional Requirements    | <<F0320>>
 |===
 
+image::./images/diagrams/SD_UC0331.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
 == Funktionale Anforderungen
 
