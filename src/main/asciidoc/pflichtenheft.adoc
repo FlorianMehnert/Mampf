@@ -241,7 +241,7 @@ _Abmelden_:
 |===
 |ID                         |**<<UC0100>>**
 |Name                       |**Katalog ansehen**
-|Description                | Jeder Benutzer kann sich den Inhalt des Katalogs ansehen. Dieser enthält alle Angebote. Die Angebote müssen nach ihrer <<itemCategory,Kategorie>> gefiltert werden.
+|Description                | Jeder Benutzer kann sich den Inhalt des Katalogs ansehen. Dieser enthält alle Angebote. Die Angebote müssen nach ihrer <<offerCategory,Kategorie>> gefiltert werden.
 |Actors                     | Benutzer
 |Trigger                    | Der Benutzer klickt im Menu das Element "Katalog" an.
 |Precondition(s)           a| keine
@@ -348,7 +348,7 @@ _Abmelden_:
 Dabei werden ihm die Details angezeigt:
 . Auflistung aller bestellten Angebote samt Anzahl
 . Datum für die Lieferung
-. <<order_state,Status der Bestellung>> bzw. ein erklärender Hinweis dazu
+. <<orderState,Status der Bestellung>> bzw. ein erklärender Hinweis dazu
 |Extensions                 | -
 |Functional Requirements    | <<F0243>>
 |===
@@ -893,56 +893,53 @@ Dieser Abschnitt stellt eine Vereinigung von Glossar und der Beschreibung von Kl
 |===
 |Klasse/Enumeration |Beschreibung
 
-
-| [[cart]] Cart (Warenkorb)
+| [[cart]] *Cart* (Warenkorb)
 a| Der Warenkorb speichert temporär, welche <<item,Angebote>> ein Benutzer eventuell kaufen möchte. +
 Wenn der benutzer die Angebote kauft, wird eine <<order,Bestellung ( Order )>> erstellt.
 
-| CartItem
+| *CartItem*
 a| Ein Element im Warenkorb nennt sich CartItem und repräsentiert ein Angebot mit einer Quantität.
 
+| [[catalog]] *Catalog* (Katalog)
+a| Der Katalog speichert alle Angebote. Er ermöglicht das Erstellen neuer Angebote und das Filtern nach <<offerCategory, Kategorien>>.
 
-| [[customer]] User (Benutzer)
-a| Ein Benutzer enthält alle Informationen eines realen, registrierten Benutzers im System.
-Es gibt zwei Typen von Benutzern:
-
-* Administratoren (admin)  - "ADMIN" +
-* Kunden / "normalen Benutzer" - "CUSTOMER"
-
-| UserManager
-a| Diese Klasse enthält alle im Programm registrierten Benutzer und kann diese auflisten oder neue Benutzer hinzufügen.
-
-| [[employee]] Employee (Personal)
+| [[employee]] *Employee* (Personal)
 a| Ein employee repräsentiert das Personal. Es gibt zwei grundlegende Personaltypen:
 
 * Köche +
 * Servicepersonal
 
+|[[EmployeeType]] *EmployeeType* (Art des Angestellten)
+| Es gibt Köche (COOK) und Servicepersonal (SERVICEPERSONAL)
 
-| EmployeeManager
+| *EmployeeManager*
 a| Diese Klasse enthält alles Personal, welches momentan bei der Catering-Firma angestellt ist.
 Sie ermöglicht außerdem das Anstellen von neuen Mitarbeitern.
 
 
-| EventcateringApp
+| *EventcateringApp*
 a| Das ist die zentrale Klasse, die das Programm für die Organisation der Eventcatering-Firma enthält.
 
+| [[inventory]] *Inventory*
+a| Das Inventar listet, welche <<offerCategory,Ausrüstung>> in welcher Stückzahl verfügbar sind.
 
-| [[inventory]] Inventory
-a| Das Inventar listet, welche <<itemCategory,Ausrüstung>> in welcher Stückzahl verfügbar sind.
 
-
-| [[item]] Item (Angebot)
+| [[item]] *Item* (Angebot)
 a| Ein Angebot stellt eine Dienstleistung oder ein Produkt dar, welches der Benutzer kaufen bzw. mieten kann. +
 Angebote werden unterteilt in Personal, Dekoration und Essen. +
-Dabei erfolgt zusätzlich eine <<itemCategory,Kategorisierung>>.
+Dabei erfolgt zusätzlich eine <<offerCategory,Kategorisierung>>.
 
+| [[inventoryItem]] *InventoryItem* (Gegenstand im Inventar)
+
+| Ein Gegenstand im Inventar wird mit einer Quantität beschrieben.
+Diese kann verringert werden. Es kann weiterhin überprüft werden,
+ob es genügent von diesem Gegenstand gibt, sowie die reine Anzahl.
 
 | [[itemType]] Typ des Items:
-EquipmentItem,
-DecorationItem,
-EmployeeItem,
-FoodItem
+*EquipmentItem*
+*DecorationItem*
+*EmployeeItem*
+*FoodItem*
 
 a| Es gibt verschiedene Grundtypen von Angeboten:
 
@@ -950,9 +947,13 @@ a| Es gibt verschiedene Grundtypen von Angeboten:
 * Personal +
 * Speisen (z.B. Buffet, Dinner, Käseplatten)
 
+| [[offer]] *Offer* (Angebot)
 
-| [[itemCategory]] Kategorie eines Angebotes:
-OfferCategory
+| Die einzelnen Angebote sind einer
+Angebotskategorie zuzuordnen und können
+vom Katalog zu den Angeboten hinzugefügt werden
+
+| [[offerCategory]] *OfferCategory* (Kategorie des Angebots)
 a| Alle Angebote werden in eine Kategorie eingeteilt:
 
 * Eventcatering +
@@ -960,36 +961,35 @@ a| Alle Angebote werden in eine Kategorie eingeteilt:
 * Mobile breakfast +
 * Rent a cook +
 
-
-
-| Catalog (Katalog)
-a| Der Katalog speichert alle Angebote. Er ermöglicht das Erstellen neuer Angebote und das Filtern nach <<itemCategory, Kategorien>>.
-
-
-| [[order]] Order (Bestellung)
+| [[order]] *Order* (Bestellung)
 a| Eine Bestellung repräsentiert, welche <<item, Angebote>> ein Benutzer mit welchem Datum und welcher
 Adresse kaufen möchte. +
 Außerdem wird bei einer Bestellung die Zahlungsmethode festgelegt.
 
-Eine Bestellung durchläuft während ihrer Bearbeitung mehrere <<order_state,Status>>.
+Eine Bestellung durchläuft während ihrer Bearbeitung mehrere <<orderState,Status>>.
 
-
-
-| OrderLine
+| [[orderLine]] *OrderLine*
 | Eine OrderLine repräsentiert, welche Angebote in welcher Anzahl ein Benutzer bestellt hat.
 
-
-| OrderManager
+| [[orderManager]] *OrderManager*
 | Der Bestellungsmanager kennt alle bisher im Programm getätigten Bestellungen.
 
-
-| [[order_state]] OrderStatus (Bestellstatus)
+| [[orderState]] *OrderStatus* (Bestellstatus)
 | Der Status repräsentiert den momentanen Bestellstatus. +
 *OPEN*: Die Bestellung wurde erstellt, aber noch nicht bezahlt. +
 *PAID*: Die Bestellung wurde bezahlt, aber sie wurde noch nicht bearbeitet (z.B. Personal zugewiesen). +
 *COMPLETED*: Der Bestellung wurde Personal zugewiesen und sie wurde bearbeitet.
 *CANCELLED*: Die Bestellung konnte nicht abgeschlossen werden, weil z.B. kein Personal zur Verfügung stand.
 
+| [[customer]] *User* (Benutzer)
+a| Ein Benutzer enthält alle Informationen eines realen, registrierten Benutzers im System.
+Es gibt zwei Typen von Benutzern:
+
+* Administratoren (admin)  - "ADMIN" +
+* Kunden / "normalen Benutzer" - "CUSTOMER"
+
+| *UserManager*
+a| Diese Klasse enthält alle im Programm registrierten Benutzer und kann diese auflisten oder neue Benutzer hinzufügen.
 
 |===
 
