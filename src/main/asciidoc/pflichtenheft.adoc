@@ -292,6 +292,8 @@ image::./images/diagrams/SD_UC0110.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 |Functional Requirements    | <<F0200>>, <<F0201>>
 |===
 
+[[add_item_to_cart_sd]]
+image::./images/diagrams/SD_UC0200.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
 [cols="1h,3"]
 [[UC0202]]
@@ -360,6 +362,8 @@ Dabei werden ihm die Details angezeigt:
 |Functional Requirements    | <<F0243>>
 |===
 
+[[view_all_orders_of_user_sd]]
+image::./images/diagrams/SD_UC0243.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
 [cols="1h,3"]
 [[UC0400]]
