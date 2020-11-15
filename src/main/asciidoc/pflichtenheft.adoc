@@ -306,6 +306,8 @@ _Abmelden_:
 |Functional Requirements    | <<F0202>>
 |===
 
+[[home_image]]
+image::./images/diagrams/SD_UC0202.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0202", align=center]
 
 [cols="1h,3"]
 [[UC0220]]
@@ -329,7 +331,8 @@ _Abmelden_:
 |Functional Requirements    | <<F0220>>, <<F0230>>, <<F0240>>, <<F0241>>, <<F0242>>
 |===
 
-
+[[home_image]]
+image::./images/diagrams/SD_UC0220.svg[d13, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0220", align=center]
 
 [cols="1h,3"]
 [[UC0243]]
