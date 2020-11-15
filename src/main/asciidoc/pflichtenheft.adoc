@@ -136,7 +136,10 @@ image:images/diagrams/context_diagram.svg[context diagram]
 
 
 === Top-Level-Architektur
-Dokumentieren Sie ihre Top-Level-Architektur mit Hilfe eines Komponentendiagramm.
+Top-Level-Architektur der Sdoftware
+
+[[top_level_diagram]]
+image:images/diagrams/top_level_arch.svg[top level architexture]
 
 == Anwendungsfälle
 
