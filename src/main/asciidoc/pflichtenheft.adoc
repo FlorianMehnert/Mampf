@@ -1001,6 +1001,219 @@ a| Diese Klasse enthält alle im Programm registrierten Benutzer und kann diese 
 Mithilfe von Akzeptanztests wird geprüft, ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfüllt. Diese sollen und können aus den Anwendungsfallbeschreibungen und den UML-Sequenzdiagrammen abgeleitet werden. D.h., pro (komplexen) Anwendungsfall gibt es typischerweise mindestens ein Sequenzdiagramm (welches ein Szenarium beschreibt). Für jedes Szenarium sollte es einen Akzeptanztestfall geben. Listen Sie alle Akzeptanztestfälle in tabellarischer Form auf.
 Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumenten (z.B. im Test-Plan) referenzieren zu können.
 
+:Pre: Voraussetzung(en)
+:Event: Event
+:Result: Voraussichtliche Ergebnis
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0010>>
+|Use Case      |<<UC0010>>
+|{Pre}        a|Das System hat vorhandenen Users.
+|{Event}      a|Eine registrierte Kunde ruft die Login-Seite ab, schreibt der Name und Passwort eines vorhandenen Users (daniel.88, food) und drückt auf „Login“.
+|{Result}     a|
+- Der User ist angemeldet mit diesem Namen.
+- Der User ist umgeleitet zu der Startseite, welche ein „Willkommen“ Nachricht zeigt.
+- Der User hat jetzt Zugang zu allen Funktionalitäten, welchen zu dem User mit der Roll „Kunde“ zugänglich sind.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0011>>
+|Use Case      |<<UC0010>>
+|{Pre}        a|Ein angemeldeter User benutzt das System.
+|{Event}      a|Der angemeldete User drückt auf „Logout“ in dem Menü.
+|{Result}     a|
+- Der User ist jetzt nicht angemeldet/abgemeldet.
+-	Der User verliert Zugang zu den Funktionalitäten, welchen zu dem User mit der Roll „Kunde“ zugänglich sind.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0020>>
+|Use Case      |<<UC0020>>
+|{Pre}        a|Ein nicht angemeldeter User benutzt das System.
+|{Event}      a|Der nicht angemeldeter User drückt auf „Registrieren“ in dem Menü und schreibt ein Nutzername und Passwort. Zuletzt, der User drückt auf „Konto erstellen“, um die Information zu senden.
+|{Result}     a|
+-	Ein neuer Kunde wird erstellt mit den bereitgestellten Daten.
+-	Es ist möglich, sich mit den Anmeldeinformationen des erstellten Kunden zu authentifizieren.
+-	Wenn ein Problem gibt, der nicht angemeldeter User ist noch nicht angemeldet und wird zu der Startseite des Caterings umgeleitet.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0021>>
+|Use Case      |<<UC0020>>
+|{Pre}        a|Ein nicht angemeldeter User benutzt das System.
+|{Event}      a|Der nicht angemeldeter User drückt auf „Registrieren“ in dem Menü und schreibt ein schon vorhandener Nutzername und Passwort (daniel.88, food). Zuletzt, der User drückt auf „Konto erstellen“, um die Information zu senden.
+|{Result}     a|
+-	Ein Fehler-Nachricht wird gezeigt, um der User über das Problem zu informieren (der User existiert schon).
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0100>>
+|Use Case      |<<UC0100>>, <<UC0110>>
+|{Pre}        a|Ein User benutzt das System.
+|{Event}      a|Der User drückt auf „Eventcatering“ in dem Menü.
+|{Result}     a|
+-	Der User wird eine Übersicht von den verschiedenen Typen von Buffet (3), Dinner (3), Ausstattung (2), Termin, Personal (Köche und Service) und Zwischensumme gezeigt.
+-	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
+-	Wenn es nicht genügend Personal für den Termin gibt, muss ein Fehler-Nachricht gezeigt werden.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0101>>
+|Use Case      |<<UC0100>>, <<UC0110>>
+|{Pre}        a|Ein User benutzt das System.
+|{Event}      a|Der User drückt auf „Partyservice“ in dem Menü.
+|{Result}     a|
+-	Der User wird eine Übersicht von den verschiedenen Typen von Angeboten (2), Sonderangebote (1), Termin und Zwischensumme.
+-	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0102>>
+|Use Case      |<<UC0100>>, <<UC0110>>
+|{Pre}        a|Ein User benutzt das System.
+|{Event}      a|Der User drückt auf „Mobile Breakfast“ in dem Menü.
+|{Result}     a|
+-	Der User wird eine Übersicht von den verschiedenen Typen von täglichen Angeboten (1), Frühstückstermin und Zwischensumme.
+-	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0103>>
+|Use Case      |<<UC0100>>, <<UC0110>>
+|{Pre}        a|Ein User benutzt das System.
+|{Event}      a|Der User drückt auf „Rent-a-Cook“ in dem Menü.
+|{Result}     a|
+-	Der User wird eine Übersicht von Personal (Köche oder Service) zu buchen.
+-	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
+-	Wenn es nicht genügend Personal für den Termin gibt, muss ein Fehler-Nachricht gezeigt werden.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0200>>
+|Use Case      |<<UC0200>>
+|{Pre}        a|
+-	Der User ist ein angemeldeter User.
+-	Der User befindet sich in einer der vier Kataloge: Eventcatering ([AT0100]), Partyservice ([AT0101]), Mobile Breakfast ([AT0102]), Rent-a-Cook ([AT0103])
+|{Event}      a|Der User drückt auf “Zum Warenkorb hinzufügen”.
+|{Result}     a|
+-	Der Bestellung/Order ist gespeichert und wird in dem Warenkorb gesetzt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0202>>
+|Use Case      |<<UC0202>>
+|{Pre}        a|Der User ist ein angemeldeter User.
+|{Event}      a|Der User drückt auf “Warenkorb”.
+|{Result}     a|
+-	Es wird gezeigt was der User schon zu dem Warenkorb hinzugefügt hat (Typ von Event, Datum, Gesamtpreis und Zahlvorgang).
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0220>>
+|Use Case      |<<UC0220>>
+|{Pre}        a|
+- Der User ist ein angemeldeter User.
+- Der User hat Elemente zu dem Warenkorb hinzugefügt.
+|{Event}      a|
+- Der User entscheidet ein Zahlvorgang: Bar oder Überweisung.
+-	Wenn es eine Überweisung ist, muss der User seine Bankdaten schreiben.
+-	Der User drückt auf „Rechnung erstellen“.
+|{Result}     a|
+-	Eine Rechnung muss erstellt werden mit der Zahlvorgang.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0243>>
+|Use Case      |<<UC0243>>
+|{Pre}        a|
+- Der User ist ein angemeldeter User.
+- Der User hat eine Bestellung aufgegeben.
+|{Event}      a|Der User drückt auf „Meine Bestellungen“ in dem Menü.
+|{Result}     a|
+-	Es werden alle Bestellungen der User gezeigt (bestellte Angebote, Datum und Status der Lieferung).
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0400>>
+|Use Case      |<<UC0400>>
+|{Pre}        a|
+- Der User ist ein angemeldeter User.
+- Der User hat eine Bestellung aufgegeben.
+- Der User befindet sich in "Meine Bestellungen".
+|{Event}      a|Der User klickt auf eine bestimmte Bestellung.
+|{Result}     a|
+-	Die Rechnung für diese Bestellung wird gezeigt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0300>>
+|Use Case      |<<UC0300>>
+|{Pre}        a|Der User hat der Rolle Administrator.
+|{Event}      a|Der User drückt auf „Kunde“ in dem Menü.
+|{Result}     a|
+-	Eine Liste aller Kunde wird gezeigt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0310>>
+|Use Case      |<<UC0310>>
+|{Pre}        a|Der User hat der Rolle Administrator.
+|{Event}      a|Der User drückt auf „Bestellungen“ in dem Menü.
+|{Result}     a|
+-	Es werden alle Bestellungen gezeigt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0320>>
+|Use Case      |<<UC0320>>
+|{Pre}        a|Der User hat der Rolle Administrator.
+|{Event}      a|Der User drückt auf „Bestand“ in dem Menü.
+|{Result}     a|
+-	Es wird den Bestand/Inventar (Tischdecken und Dekoration) gezeigt.
+- Die aktuelle Anzahl und die Gesamtanzahl der Bestand wird gezeigt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0330>>
+|Use Case      |<<UC0330>>
+|{Pre}        a|Der User hat der Rolle Administrator.
+|{Event}      a|Der User drückt auf „Personal“ in dem Menü.
+|{Result}     a|
+-	Es wird den Personal (Köche und Service-Personal) gezeigt. Es zeigt auch, ob einer von den Personal gebucht ist oder nicht und zu welcher Datum.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |<<AT0331>>
+|Use Case      |<<UC0331>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Bestellungen“ Seite.
+- Es gibt Bestellungen, die ein Typ von Personal benötigen.
+|{Event}      a|Der User drückt auf „Personal/Köche“ in dem Menü.
+|{Result}     a|
+-	Es zeigt eine Tabelle mit dem Namen aller Service-Personal/Köche.
+- Der User kann eine oder mehrere von diese wählen.
+- Wenn ein Service-Personal/Koch schon gebucht ist, wird das gezeigt.
+|===
+
 == Glossar
 Sämtliche Begriffe, die innerhalb des Projektes verwendet werden und deren gemeinsames Verständnis aller beteiligten Stakeholder essentiell ist, werden hier aufgeführt.
 
