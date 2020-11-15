@@ -834,10 +834,14 @@ image::./images/gui_prototyp/rentacook.png[rc, 100%, 100%, pdfwidth=100%, title=
 image::./images/gui_prototyp/rentacook_overlays.png[rc2, 100%, 100%, pdfwidth=100%, title= "Rent-a-Cook-seite: Formulare zum auswählen von Personal und einem Termin: Datum/Ort/Uhrzeit (je Stundenauswahl)", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/warenkorb_buy_fill.png[warenkorb, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite (gefüllt mit beispielsdaten)", align=center]
+image::./images/gui_prototyp/warenkorb_fill.png[warenkorb, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite (gefüllt mit beispielsdaten)", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/warenkorb_kauf_fill.png[warenkorb2, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite: Kaufen von Warenkorbinhalten (gefüllt mit beispielsdaten)", align=center]
+image::./images/gui_prototyp/warenkorb_kauf_fill.png[warenkorb2, 100%, 100%, pdfwidth=100%, title= "Warenkorb-Kaufen-seite: Kaufen von Warenkorbinhalten (gefüllt mit beispielsdaten)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/warenkorb_rechnung_fill.png[warenkorb3, 100%, 100%, pdfwidth=100%, title= "Warenkorb-Rechnung-seite (gefüllt mit beispielsdaten)", align=center]
+
 
 Admins Sicht
 [[home_image]]
@@ -868,8 +872,8 @@ image::./images/gui_prototyp/bestellungen_personal_checkliste_gebucht.png[bestel
 image::./images/gui_prototyp/bestellungen_personal_koche.png[bestellungen5, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Service-Personal und Köche sind hinzugefügt", align=center]
 
 === Überblick: Dialoglandkarte
-Erstellen Sie ein Übersichtsdiagramm, das das Zusammenspiel Ihrer Masken zur Laufzeit darstellt. Also mit welchen Aktionen zwischen den Masken navigiert wird.
-//Die nachfolgende Abbildung zeigt eine an die Pinnwand gezeichnete Dialoglandkarte. Ihre Karte sollte zusätzlich die Buttons/Funktionen darstellen, mit deren Hilfe Sie zwischen den Masken navigieren.
+[[home_image]]
+image::./images/diagrams/gui_map.svg[guimap, 100%, 100%, pdfwidth=100%, title= "GUI Map", align=center]
 
 === Dialogbeschreibung
 Für jeden Dialog:
