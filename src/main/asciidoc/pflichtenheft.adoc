@@ -876,7 +876,8 @@ Für jeden Dialog:
 == Datenmodell
 
 === Überblick: Klassendiagramm
-UML-Analyseklassendiagramm
+UML-Analyseklassendiagramm:
+
 
 === Klassen und Enumerationen
 Dieser Abschnitt stellt eine Vereinigung von Glossar und der Beschreibung von Klassen/Enumerationen dar. Jede Klasse und Enumeration wird in Form eines Glossars textuell beschrieben. Zusätzlich werden eventuellen Konsistenz- und Formatierungsregeln aufgeführt.
@@ -896,26 +897,21 @@ Wenn der benutzer die Angebote kauft, wird eine <<order,Bestellung ( Order )>> e
 a| Ein Element im Warenkorb nennt sich CartItem und repräsentiert ein Angebot mit einer Quantität.
 
 
-| [[customer]] Customer (Benutzer)
+| [[customer]] User (Benutzer)
 a| Ein Benutzer enthält alle Informationen eines realen, registrierten Benutzers im System.
 Es gibt zwei Typen von Benutzern:
 
 * Administratoren (admin)  - "ADMIN" +
 * Kunden / "normalen Benutzer" - "CUSTOMER"
 
-
-
-| CustomManager
+| UserManager
 a| Diese Klasse enthält alle im Programm registrierten Benutzer und kann diese auflisten oder neue Benutzer hinzufügen.
-
-
 
 | [[employee]] Employee (Personal)
 a| Ein employee repräsentiert das Personal. Es gibt zwei grundlegende Personaltypen:
 
 * Köche +
 * Servicepersonal
-
 
 
 | EmployeeManager
@@ -937,7 +933,12 @@ Angebote werden unterteilt in Personal, Dekoration und Essen. +
 Dabei erfolgt zusätzlich eine <<itemCategory,Kategorisierung>>.
 
 
-| [[itemType]] Typ des Items
+| [[itemType]] Typ des Items:
+EquipmentItem,
+DecorationItem,
+EmployeeItem,
+FoodItem
+
 a| Es gibt verschiedene Grundtypen von Angeboten:
 
 * Ausrüstung / Dekoration (z.B. Tischdecken) +
@@ -945,7 +946,8 @@ a| Es gibt verschiedene Grundtypen von Angeboten:
 * Speisen (z.B. Buffet, Dinner, Käseplatten)
 
 
-| [[itemCategory]] Kategorie eines Angebotes
+| [[itemCategory]] Kategorie eines Angebotes:
+OfferCategory
 a| Alle Angebote werden in eine Kategorie eingeteilt:
 
 * Eventcatering +
@@ -955,7 +957,7 @@ a| Alle Angebote werden in eine Kategorie eingeteilt:
 
 
 
-| Katalog
+| Catalog (Katalog)
 a| Der Katalog speichert alle Angebote. Er ermöglicht das Erstellen neuer Angebote und das Filtern nach <<itemCategory, Kategorien>>.
 
 
