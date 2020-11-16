@@ -1,0 +1,31 @@
+= Protokoll Gruppe 10
+
+Treffen am 16.11.2020
+
+Ort:      Online BigBlueButton +
+Beginn:   16:40 Uhr +
+Ende:     17:30 Uhr
+
+__Schriftführer:__ Florian Hauptmann
+
+*Nächstes Treffen:* +
+23.11.2020, 16:40 Uhr, BigBlueButton
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig
+- Florian Hauptmann (Protokollant)
+- Florian Mehnert (Scrum Master)
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+- Pflichtenheft wurde ausgewertet
+- Fehlendes muss bis zum 19.11. nachgetragen werden
+- Videoshop-Erweiterungen wurden ebenfalls ausgewertet und präsentiert
+
+== Aktueller Stand
+- Pflichtenheft ist nahezu vollständig
+- Entwicklerdokumentation wird begonnen
