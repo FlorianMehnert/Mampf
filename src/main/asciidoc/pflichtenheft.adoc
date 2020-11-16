@@ -315,6 +315,26 @@ image::./images/diagrams/SD_UC0200.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 [[home_image]]
 image::./images/diagrams/SD_UC0202.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0202", align=center]
 
+
+[cols="1h,3"]
+[[UC0210]]
+|===
+|ID                         |**<<UC0210>>**
+|Name                       | Warenkorb leeren
+|Description                | Ein angemeldeter Benutzer hat die Möglichkeit, alle Inhalte aus seinem Warenkorb zu entfernen.
+|Actors                     | Angemeldeter Benutzer
+|Trigger                    | Der angemeldete Benutzer klickt im "Warenkorb" auf den Button "Leeren".
+|Precondition(s)           a|
+- Der Benutzer ist angemeldet.
+- Der angemeldete Benutzer klickt im Menü "Warenkorb" an.
+|Essential Steps           a|
+1.  Der angemeldete Benutzer klickt im "Warenkorb" auf den Button "Leeren".
+2.  Dem Benutzer wird der leere Warenkorb angezeigt.
+|Extensions                 |-
+|Functional Requirements    | <<F0210>>
+|===
+
+
 [cols="1h,3"]
 [[UC0220]]
 |===
@@ -556,7 +576,7 @@ die Anzahl von Angeboten im Inventar zu verändern.
 | [[F0110]]<<F0110>>
 | v0.1
 | Katalog
-a| Das Programm muss alle Angebote in einem Katalog unveränderlich zur Verfügung stellen.
+a| Das Programm muss alle Angebote in einem Katalog persistent zur Verfügung stellen.
 
 
 | [[F0111]]<<F0111>>
@@ -593,9 +613,7 @@ Dazu gehören:
 | v0.1
 | Warenkorb
 a| Jeder registrierte, angemeldete Benutzer muss die Möglichkeit haben,
-in einem Warenkorb temporär seine präferierten Angebote zu speichern.
-
-Der Warenkorb soll für jede Sitzung des Nutzers persistent sein.
+in einem Warenkorb temporär während einer Sitzung seine präferierten Angebote zu speichern.
 
 Er soll für jeden Nutzer eindeutig sein.
 
@@ -626,6 +644,13 @@ sich anzusehen. Dabei muss dem Benutzer folgendes angezeigt werden:
 * Gesamtpreis pro Angebot (Angebotspreis * ausgewählte Anzahl)
 
 * Gesamtpreis des Warenkorbs
+
+
+| [[F0210]]<<F0210>>
+| v0.2
+| Warenkorb leeren
+a| Das Programm muss einem angemeldeten Benutzer die Möglichkeit geben, seinen Warenkorb zu leeren.
+Dabei wird der gesamte Inhalt seiner Warenkorbs auf einmal entfernt.
 
 
 | [[F0220]]<<F0220>>
@@ -662,7 +687,7 @@ Dabei wird der Status des Bestellvorgangs mit "OPEN" initialisiert.
 | v0.1
 | Bestellungen bezahlen
 a| Das Programm muss dem Benutzer die Möglichkeit geben, eine Bestellung mit dem Status "OPEN" mit den Bezahlmöglichkeiten
-"bar", "Nachnahme/Rechnung".
+"bar", "Nachnahme/Rechnung" zu bezahlen.
 
 Danach muss das Programm den Status der Bestellung auf "PAID" setzen.
 
@@ -693,6 +718,14 @@ Dann soll der Bestellstatus auf "COMPLETED" gesetzt werden.
 a| Das Programm muss einem Administrator eine Ansicht aller registrierten Kunden zur Verfügung stellen.
 
 
+| [[F0301]]<<F0301>>
+| v0.2
+| Kunden entfernen
+a| Das Programm muss einem Administrator die Möglichkeit geben, Kunden aus dem Programm zu löschen.
+Dabei sollen alle Daten zu Bestellungen zwecks Abrechnungen erhalten bleiben. +
+Es darf dem Benutzer nur nicht mehr möglich sein, sich anzumelden.
+
+
 | [[F0310]]<<F0310>>
 | v0.1
 | Liste aller Bestellungen
@@ -714,7 +747,7 @@ Kann aufgrund fehlender Kapazitäten die Bestellung nicht angenommen werden, ist
 | v0.1
 | Personalzuteilung ansehen
 a| Das Programm muss es dem Administrator ermöglichen, sich anzusehen, welches Personal zu welcher Bestellung zugewiesen wurde.
-Dabei muss für jedes Arbeitspaket es möglich sein, das Datum mit Uhrzeit und den Ort anzuzeigen.
+Dabei muss es möglich sein, sich die notwendigen Details der Bestellung anzeigen zu lassen.
 
 | [[F0321]]<<F0321>>
 | v0.1
@@ -748,7 +781,29 @@ automatisch zur Verfügung stellen.
 |===
 
 === Kann-Kriterien
-Anforderungen die das Programm leisten können soll, aber für den korrekten Betrieb entbehrlich sind.
+Anforderungen, die das Programm leisten können soll, aber für den korrekten Betrieb entbehrlich sind.
+
+[options="header]
+[cols="1,2,3,4"]
+|===
+| ID
+| Version
+| Name
+| Beschreibung
+
+
+| [[OF0100]]<<OF0100>>
+| v0.2
+| Responsives Design
+a| Das Programm soll auch auf mobilen Endgeräten im Wesentlichen gut bedienbar sein.
+
+| [[OF0200]]<<OF0200>>
+| v0.2
+| persistenter Warenkorb
+a| Der Warenkorb für jeden Nutzer persistent über eine Sitzung hinaus die gewählten Angebote speichern.
+
+|===
+
 
 == Nicht-Funktionale Anforderungen
 
@@ -773,7 +828,7 @@ Kleine Anpassungen von Angeboten wie z.B. der Preis muss simpel sein.
 | | | x | |
 
 | Responsive Design | Das Programm muss auch auf mobilen Endgeräten gut bedienbar sein.
-| | | | | x
+| | x | | |
 
 |===
 
@@ -1265,6 +1320,3 @@ Sämtliche Begriffe, die innerhalb des Projektes verwendet werden und deren geme
 |System                 | Synonym für die Software um die es in diesem Projekt geht
 |User                   | {domain_ref}
 |===
-
-== Offene Punkte
-Offene Punkte werden entweder direkt in der Spezifikation notiert. Wenn das Pflichtenheft zum finalen Review vorgelegt wird, sollte es keine offenen Punkte mehr geben.
