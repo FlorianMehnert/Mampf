@@ -254,6 +254,26 @@ _Abmelden_:
 [[view_catalog_sd]]
 image::./images/diagrams/SD_UC0100.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
+
+
+[cols="1h,3"]
+[[UC0101]]
+|===
+|ID                         |**<<UC0101>>**
+|Name                       | Katalogeinträge erstellen / bearbeiten / löschen
+|Description                | Dem Administrator soll es möglich sein, Katalogeinträge zu verändern.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu "Katalog" auf die Details eines Angebots.
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Der Admin klickt im Menu auf "Katalog".
+|Essential Steps           a|
+1.  Der Admin klickt im Menu "Katalog" auf ein bestimmtes Angebot oder auf den Button "neues Angebot hinzufügen".
+2.  Dem Administrator erhält die Möglichkeit, das gewählte Angebot zu bearbeiten, zu löschen oder ein neues hinzuzufügen.
+|Extensions                 | -
+|Functional Requirements    | <<F0101>>
+|===
+
 [[UC0110]]
 [cols="1h, 3"]
 |===
@@ -425,6 +445,26 @@ image::./images/diagrams/SD_UC0243.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 
 image::./images/diagrams/SD_UC0300.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
+
+[cols="1h,3"]
+[[UC0301]]
+|===
+|ID                         |**<<UC0301>>**
+|Name                       | Entfernen von Kunden
+|Description                | Dem Administrator soll es möglich sein, einzelnen Kunden die Anmeldung zu verbieten.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu "Kunden" auf "Kunde löschen".
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Es hat sich bereits mindestens ein Kunde registriert.
+- Der Admin klickt im Menu auf "Kunden".
+|Essential Steps           a|
+1. In der Übersicht über alle Kunden klickt er bei einem bestimmten Kunden auf den Button "Kunde löschen".
+2. Dem Administrator wird die aktualisierte Liste aller Kunden angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0301>>
+|===
+
 [cols="1h,3"]
 [[UC0310]]
 |===
@@ -504,6 +544,79 @@ image::./images/diagrams/SD_UC0330.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 
 image::./images/diagrams/SD_UC0331.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
 
+[cols="1h,3"]
+[[UC0341]]
+|===
+|ID                         |**<<UC0341>>**
+|Name                       | Ansicht / Filtern des gesamten Personals
+|Description                | Dem Administrator soll es möglich sein, sich sein gesamtes Personal anzeigen zu lassen.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu auf den Button "Mitarbeiter".
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Der Admin klickt im Menu auf "Mitarbeiter".
+|Essential Steps           a|
+1.  Dem Admin wird sein gesamtes angestelltes Personal angezeigt. +
+Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
+|Extensions                 | -
+|Functional Requirements    | <<F0322>>
+|===
+
+[cols="1h,3"]
+[[UC0342]]
+|===
+|ID                         |**<<UC0342>>**
+|Name                       | neues Personal einstellen
+|Description                | Dem Administrator soll es möglich sein, neues Personal einzustellen.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu "Mitarbeiter" auf den Button "Koch/Personal hinzufügen"
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Der Admin klickt im Menu auf "Mitarbeiter".
+|Essential Steps           a|
+1.  Der Admin klickt im Menu "Mitarbeiter" entweder auf den Button "Köche hinzufügen" oder auf den Button "Personal hinzufügen".
+2.  Dem Administrator erhält die Möglichkeit, den Namen des neuen Personals einzugeben.
+|Extensions                 | -
+|Functional Requirements    | <<F0321>>
+|===
+
+[cols="1h,3"]
+[[UC0344]]
+|===
+|ID                         |**<<UC0344>>**
+|Name                       | Personal löschen
+|Description                | Dem Administrator soll es möglich sein, Personal zu löschen oder zu bearbeiten.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu "Mitarbeiter" für einen bestimmten Mitarbeiter auf den Button "löschen".
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Der Admin klickt im Menu auf "Mitarbeiter".
+|Essential Steps           a|
+1.  Der Admin klickt im Menu "Mitarbeiter" für einen bestimmten Mitarbeiter auf den Button "löschen" bzw "bearbeiten".
+2.  Dem Administrator wird die aktualisierte Liste seiner Mitarbeiter angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0323>>
+|===
+
+
+[cols="1h,3"]
+[[UC0420]]
+|===
+|ID                         |**<<UC0420>>**
+|Name                       | Umsatzansicht
+|Description                | Dem Administrator soll es möglich sein, sich für jeden Monat den gesamten Umsatz anzeigen zu lassen.
+|Actors                     | <<customer,Administrator>>
+|Trigger                    | Admin klickt im Menu "Umsätze" auf einen bestimmten Monat.
+|Precondition(s)           a|
+- Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+- Der Admin klickt im Menu auf "Umsätze".
+|Essential Steps           a|
+1.  Der Admin klickt im Menu "Umsätze" auf einen der angezeigten Monate.
+2.  Dem Administrator werden alle Umsätze des jeweiligen Monats angezeigt.
+|Extensions                 | -
+|Functional Requirements    | <<F0323>>
+|===
+
 == Funktionale Anforderungen
 
 === Muss-Kriterien
@@ -561,9 +674,9 @@ Angebote sind dabei z.B. verschieden Platten, Buffets, Mieten von Ausrüstung / 
 
 | [[F0101]]<<F0101>>
 | v0.1
-| Verändern von Angeboten
+| Hinzufügen, Verändern oder Löschen von Angeboten
 a| Das Programm muss einem Administrator die Möglichkeit bieten,
-neue Angebote zu erstellen oder bestehende Angebote zu entfernen.
+neue Angebote zu erstellen oder bestehende Angebote zu bearbeiten oder zu entfernen.
 
 
 | [[F0102]]<<F0102>>
@@ -758,6 +871,16 @@ Es gibt dabei:
 * Köche +
 * Servicepersonal +
 
+| [[F0322]]<<F0322>>
+| v0.2
+| Personal ansehen und filtern
+a| Das Programm muss es dem Administrator ermöglichen, sein bisher eingestelltes Personal anzusehen und nach dem Typ des Personals zu filtern.
+
+| [[F0323]]<<F0323>>
+| v0.2
+| Personal bearbeiten und entfernen
+a| Das Programm muss es dem Administrator ermöglichen, sein bisher eingestelltes Personal zu bearbeiten oder zu entfernen.
+
 
 | [[F0330]]<<F0330>>
 | v0.1
@@ -777,6 +900,11 @@ a| Das Programm gibt dem Administrator dir Möglichkeit, sich das Inventar und d
 | Rechungsstellung
 a| Das Programm soll für jede Bestellung, die den Status "COMPLETED" hat, eine Rechnung dem Kunden und Administrator
 automatisch zur Verfügung stellen.
+
+| [[F0420]]<<F0420>>
+| v0.2
+| Umsatzansicht
+a| Das Programm muss es dem Administrator ermöglichen, sich für jeden Monat die gesamten Umsätze anzeigen zu lassen.
 
 |===
 
@@ -1081,7 +1209,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0010>>
+|ID            |[[AT0010]]<<AT0010>>
 |Use Case      |<<UC0010>>
 |{Pre}        a|Das System hat vorhandenen Users.
 |{Event}      a|Eine registrierte Kunde ruft die Login-Seite ab, schreibt der Name und Passwort eines vorhandenen Users (daniel.88, food) und drückt auf „Login“.
@@ -1093,7 +1221,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0011>>
+|ID            |[[AT0011]]<<AT0011>>
 |Use Case      |<<UC0010>>
 |{Pre}        a|Ein angemeldeter User benutzt das System.
 |{Event}      a|Der angemeldete User drückt auf „Logout“ in dem Menü.
@@ -1104,7 +1232,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0020>>
+|ID            |[[AT0020]]<<AT0020>>
 |Use Case      |<<UC0020>>
 |{Pre}        a|Ein nicht angemeldeter User benutzt das System.
 |{Event}      a|Der nicht angemeldeter User drückt auf „Registrieren“ in dem Menü und schreibt ein Nutzername und Passwort. Zuletzt, der User drückt auf „Konto erstellen“, um die Information zu senden.
@@ -1116,29 +1244,29 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0021>>
+|ID            |[[AT0021]]<<AT0021>>
 |Use Case      |<<UC0020>>
 |{Pre}        a|Ein nicht angemeldeter User benutzt das System.
 |{Event}      a|Der nicht angemeldeter User drückt auf „Registrieren“ in dem Menü und schreibt ein schon vorhandener Nutzername und Passwort (daniel.88, food). Zuletzt, der User drückt auf „Konto erstellen“, um die Information zu senden.
 |{Result}     a|
--	Ein Fehler-Nachricht wird gezeigt, um der User über das Problem zu informieren (der User existiert schon).
+-	Eine Fehler-Nachricht wird gezeigt, um den User über das Problem zu informieren (der User existiert schon).
 |===
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0100>>
+|ID            |[[AT0100]]<<AT0100>>
 |Use Case      |<<UC0100>>, <<UC0110>>
 |{Pre}        a|Ein User benutzt das System.
 |{Event}      a|Der User drückt auf „Eventcatering“ in dem Menü.
 |{Result}     a|
 -	Der User wird eine Übersicht von den verschiedenen Typen von Buffet (3), Dinner (3), Ausstattung (2), Termin, Personal (Köche und Service) und Zwischensumme gezeigt.
 -	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
--	Wenn es nicht genügend Personal für den Termin gibt, muss ein Fehler-Nachricht gezeigt werden.
+-	Wenn es nicht genügend Personal für den Termin gibt, muss eine Fehler-Nachricht gezeigt werden.
 |===
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0101>>
+|ID            |[[AT0101]]<<AT0101>>
 |Use Case      |<<UC0100>>, <<UC0110>>
 |{Pre}        a|Ein User benutzt das System.
 |{Event}      a|Der User drückt auf „Partyservice“ in dem Menü.
@@ -1149,7 +1277,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0102>>
+|ID            |[[AT0102]]<<AT0102>>
 |Use Case      |<<UC0100>>, <<UC0110>>
 |{Pre}        a|Ein User benutzt das System.
 |{Event}      a|Der User drückt auf „Mobile Breakfast“ in dem Menü.
@@ -1160,19 +1288,19 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0103>>
+|ID            |[[AT0103]]<<AT0103>>
 |Use Case      |<<UC0100>>, <<UC0110>>
 |{Pre}        a|Ein User benutzt das System.
 |{Event}      a|Der User drückt auf „Rent-a-Cook“ in dem Menü.
 |{Result}     a|
 -	Der User wird eine Übersicht von Personal (Köche oder Service) zu buchen.
 -	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
--	Wenn es nicht genügend Personal für den Termin gibt, muss ein Fehler-Nachricht gezeigt werden.
+-	Wenn es nicht genügend Personal für den Termin gibt, muss eine Fehler-Nachricht gezeigt werden.
 |===
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0200>>
+|ID            |[[AT0200]]<<AT0200>>
 |Use Case      |<<UC0200>>
 |{Pre}        a|
 -	Der User ist ein angemeldeter User.
@@ -1184,17 +1312,17 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0202>>
+|ID            |[[AT0202]]<<AT0202>>
 |Use Case      |<<UC0202>>
 |{Pre}        a|Der User ist ein angemeldeter User.
 |{Event}      a|Der User drückt auf “Warenkorb”.
 |{Result}     a|
--	Es wird gezeigt was der User schon zu dem Warenkorb hinzugefügt hat (Typ von Event, Datum, Gesamtpreis und Zahlvorgang).
+-	Es wird gezeigt, was der User schon zu dem Warenkorb hinzugefügt hat (Typ von Event, Datum, Gesamtpreis und Zahlvorgang).
 |===
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0220>>
+|ID            |[[AT0220]]<<AT0220>>
 |Use Case      |<<UC0220>>
 |{Pre}        a|
 - Der User ist ein angemeldeter User.
@@ -1209,7 +1337,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0243>>
+|ID            |[[AT0243]]<<AT0243>>
 |Use Case      |<<UC0243>>
 |{Pre}        a|
 - Der User ist ein angemeldeter User.
@@ -1221,7 +1349,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0400>>
+|ID            |[[AT0400]]<<AT0400>>
 |Use Case      |<<UC0400>>
 |{Pre}        a|
 - Der User ist ein angemeldeter User.
@@ -1234,7 +1362,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0300>>
+|ID            |[[AT0300]]<<AT0300>>
 |Use Case      |<<UC0300>>
 |{Pre}        a|Der User hat der Rolle Administrator.
 |{Event}      a|Der User drückt auf „Kunde“ in dem Menü.
@@ -1244,7 +1372,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0310>>
+|ID            |[[AT0310]]<<AT0310>>
 |Use Case      |<<UC0310>>
 |{Pre}        a|Der User hat der Rolle Administrator.
 |{Event}      a|Der User drückt auf „Bestellungen“ in dem Menü.
@@ -1254,7 +1382,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0320>>
+|ID            |[[AT0320]]<<AT0320>>
 |Use Case      |<<UC0320>>
 |{Pre}        a|Der User hat der Rolle Administrator.
 |{Event}      a|Der User drückt auf „Bestand“ in dem Menü.
@@ -1265,7 +1393,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0330>>
+|ID            |[[AT0330]]<<AT0330>>
 |Use Case      |<<UC0330>>
 |{Pre}        a|Der User hat der Rolle Administrator.
 |{Event}      a|Der User drückt auf „Personal“ in dem Menü.
@@ -1275,7 +1403,7 @@ Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumen
 
 [cols="1h, 4"]
 |===
-|ID            |<<AT0331>>
+|ID            |[[AT0331]]<<AT0331>>
 |Use Case      |<<UC0331>>
 |{Pre}        a|
 - Der User hat der Rolle Administrator.
