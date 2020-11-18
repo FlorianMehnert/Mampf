@@ -292,6 +292,15 @@ image::./images/diagrams/SD_UC0100.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 |Functional Requirements    | <<F0101>>
 |===
 
+[[add_offer]]
+image::./images/diagrams/SD_UC0101_1.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
+
+[[edit_offer]]
+image::./images/diagrams/SD_UC0101_2.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
+
+[[remove_offer]]
+image::./images/diagrams/SD_UC0101_3.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
+
 [[UC0110]]
 [cols="1h, 3"]
 |===
@@ -617,7 +626,7 @@ image::./images/diagrams/SD_UC0342.svg[d12, 100%, 100%, pdfwidth=100%, title="Se
 [[UC0344]]
 |===
 |ID                         |**<<UC0344>>**
-|Name                       | Personal löschen
+|Name                       | Personal löschen, Personal bearbeiten
 |Description                | Dem Administrator soll es möglich sein, Personal zu löschen oder zu bearbeiten.
 |Actors                     | <<customer,Administrator>>
 |Trigger                    | Admin klickt im Menu "Mitarbeiter" für einen bestimmten Mitarbeiter auf den Button "löschen".
@@ -632,7 +641,10 @@ image::./images/diagrams/SD_UC0342.svg[d12, 100%, 100%, pdfwidth=100%, title="Se
 |===
 
 [[fire_employees]]
-image::./images/diagrams/SD_UC0344.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0344", align=center]
+image::./images/diagrams/SD_UC0344_1.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0344_1", align=center]
+
+[[edit_employees]]
+image::./images/diagrams/SD_UC0344_2.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0344_2", align=center]
 
 
 [cols="1h,3"]
@@ -1131,7 +1143,7 @@ Für jeden Dialog:
 === Überblick: Klassendiagramm
 UML-Analyseklassendiagramm:
 [[home_image]]
-image::./images/diagrams/UML-class-diagram.svg[bestellungen5, 100%, 100%, pdfwidth=100%, align=center]
+image::./images/diagrams/ClassDiagram.svg[bestellungen5, 100%, 100%, pdfwidth=100%, align=center]
 
 
 === Klassen und Enumerationen
