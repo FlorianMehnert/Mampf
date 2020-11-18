@@ -1112,7 +1112,7 @@ image::./images/gui_prototyp/kunden_bearbeiten.png[kunden2, 100%, 100%, pdfwidth
 image::./images/gui_prototyp/mitarbeiter_new2.png[mitarbeiter1, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Mitarbeiter (Service-Personal und Köchen)", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/mitarbeiter_bearbeiten.png[mitarbeiter6, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Wenn der Admin auf 'Köche/Personal bearbeiten' drückt, kann er die Köche/Personal verändern oder löschen", align=center]
+image::./images/gui_prototyp/mitarbeiter_bearbeiten1.png[mitarbeiter6, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Wenn der Admin auf 'Köche/Personal bearbeiten' drückt, kann er die Köche/Personal verändern, löschen oder hinzufügen", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/mitarbeiter_koche.png[mitarbeiter2, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Köche, wenn der Admin die Tabelle ausfiltert", align=center]
