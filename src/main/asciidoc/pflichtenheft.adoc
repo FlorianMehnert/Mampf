@@ -372,6 +372,9 @@ image::./images/diagrams/SD_UC0202.svg[d12, 100%, 100%, pdfwidth=100%, title="Se
 |Functional Requirements    | <<F0210>>
 |===
 
+[[empty_cart]]
+image::./images/diagrams/SD_UC0210.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0220", align=center]
+
 
 [cols="1h,3"]
 [[UC0220]]
@@ -483,6 +486,10 @@ image::./images/diagrams/SD_UC0300.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 |Functional Requirements    | <<F0301>>
 |===
 
+[[remove_user]]
+image::./images/diagrams/SD_UC0301.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0301", align=center]
+
+
 [cols="1h,3"]
 [[UC0310]]
 |===
@@ -580,6 +587,10 @@ Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
 |Functional Requirements    | <<F0322>>
 |===
 
+[[filter_employees]]
+image::./images/diagrams/SD_UC0341.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0322", align=center]
+
+
 [cols="1h,3"]
 [[UC0342]]
 |===
@@ -597,6 +608,10 @@ Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
 |Extensions                 | -
 |Functional Requirements    | <<F0321>>
 |===
+
+[[hire_employees]]
+image::./images/diagrams/SD_UC0342.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0342", align=center]
+
 
 [cols="1h,3"]
 [[UC0344]]
@@ -616,6 +631,9 @@ Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
 |Functional Requirements    | <<F0323>>
 |===
 
+[[fire_employees]]
+image::./images/diagrams/SD_UC0344.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0344", align=center]
+
 
 [cols="1h,3"]
 [[UC0420]]
@@ -634,6 +652,10 @@ Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
 |Extensions                 | -
 |Functional Requirements    | <<F0323>>
 |===
+
+[[show_revenue]]
+image::./images/diagrams/SD_UC0420.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0420", align=center]
+
 
 == Funktionale Anforderungen
 
