@@ -1,5 +1,5 @@
 = Pflichtenheft {project_name}
-:project_name: Eventcatering
+:project_name: Mampf
 == __{project_name}__
 :doctype: book
 :icons: font
@@ -194,7 +194,7 @@ Nach Ausführung aller Aktionen soll sich ein Benutzer abmelden können.
 |Trigger                    |
 _Anmelden_: Der Benutzer möchte Aktionen durchführen, die eine Anmeldung voraussetzen.
 
-_Abmelden_: Der Benutzer möchte das Eventcatering-Programm nicht weiter benutzen.
+_Abmelden_: Der Benutzer möchte das Mampf-Programm nicht weiter benutzen.
 |Precondition(s)           a|
 _Anmelden_: Der Benutzer ist noch nicht angemeldet.
 
@@ -1123,8 +1123,8 @@ a| Diese Klasse enthält alles Personal, welches momentan bei der Catering-Firma
 Sie ermöglicht außerdem das Anstellen von neuen Mitarbeitern.
 
 
-| *EventcateringApp*
-a| Das ist die zentrale Klasse, die das Programm für die Organisation der Eventcatering-Firma enthält.
+| *MampfApp*
+a| Das ist die zentrale Klasse, die das Programm für die Organisation der Mampf-Firma enthält.
 
 | [[inventory]] *Inventory*
 a| Das Inventar listet, welche <<offerCategory,Ausrüstung>> in welcher Stückzahl verfügbar sind.
