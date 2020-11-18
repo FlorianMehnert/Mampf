@@ -63,7 +63,7 @@ Abrechnungen erleichtern. Die Lebensmittelbeschaffung muss nicht betrachtet werd
 die langjährigen Erfahrungen bei Mampf ist der Einkaufspreis pro Gericht/Platte/Getränk
 jedoch bekannt."
 
-Diese Software soll dem Betreiber und seinen potentiellen Kunden eine einfachere und schnellere Möglichkeit der Kommunikation und Interaktion bieten. Potentielle Kunden sollen ein festes Konto besitzen, sich also registrieren können und dadurch eine schnellere Übersicht über das Gesamte Angebot bekommen und dadurch auch schneller und einfacher bestellen können. Gleichwohl soll der Inhaber eine bessere und automatisierte Übersicht über alle Bestellungen bekommen, welche dadurch auch einfacher zu administrieren sind. Außerdem hat der Inhaber durch diese Software die Möglichkeit seine Kunden schneller und kostengünstiger von neuen Angeboten und neuen Produkten zu informieren. Da es nur um einen Cateringservice geht wird auch sicherste Authentifizierungsmechanismen verzichtet und lediglich eine Emailadresse und ein Passwort benötigt.
+Diese Software soll dem Betreiber und seinen potentiellen Kunden eine einfachere und schnellere Möglichkeit der Kommunikation und Interaktion bieten. Potentielle Kunden sollen ein festes Konto besitzen, sich also registrieren können und dadurch eine schnellere Übersicht über das Gesamte Angebot bekommen und dadurch auch schneller und einfacher bestellen können. Gleichwohl soll der Inhaber eine bessere und automatisierte Übersicht über alle Bestellungen bekommen, welche dadurch auch einfacher zu administrieren sind. Außerdem hat der Inhaber durch diese Software die Möglichkeit seine Kunden schneller und kostengünstiger von neuen Angeboten und neuen Produkten zu informieren. Da es nur um einen Cateringservice geht wird auch sicherste Authentifizierungsmechanismen verzichtet und lediglich ein Passwort benötigt.
 Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen sich auch ohne Registrierung einen Überblick über die Angebote zu machen.
 
 Die Software soll ansprechend und einladend aussehen und möglichst einfach aufgebaut sein damit sich jeder Benutzer zurecht findet, was gleichermaßen bedeutet dass sich an bestehende Designs angepasst wird.
@@ -227,7 +227,7 @@ _Abmelden_:
 |Precondition(s)           a|Der Benutzer ist nicht angemeldet
 |Essential Steps           a|
 1.  Nicht angemeldeter Benutzer klickt "Registrieren" an.
-2.  Er gibt seinen Benutzernamen, seine E-Mail-Adresse und sein Password ein.
+2.  Er gibt seinen Benutzernamen und sein Password ein.
 3.  Das Programm validiert die Eingaben.
 . Wenn es korrekte Eingaben waren, wird der Benutzer erstellt.
 . Ansonsten wird eine Fehlermeldung angezeigt.
@@ -929,6 +929,13 @@ a| Das Programm soll auch auf mobilen Endgeräten im Wesentlichen gut bedienbar 
 | v0.2
 | persistenter Warenkorb
 a| Der Warenkorb für jeden Nutzer persistent über eine Sitzung hinaus die gewählten Angebote speichern.
+
+| [[OF0300]]<<OF0300>>
+| v0.2
+| E-Mail als Parameter
+a| E-Mail soll als weites Kundenattribut hinzugefügt werden, um dem Kunden wichtige Dokumente, aber auch Werbung
+der Webseite schicken zu können. Die E-Mail dient weiterhin der automatisierbaren Bedienung der Kunden, sodass
+Kunden sich einen Passwort zurücksetzen Link an ihr E-Mail Konto schicken lassen können.
 
 |===
 
