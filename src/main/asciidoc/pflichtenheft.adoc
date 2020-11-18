@@ -1103,10 +1103,25 @@ Admins Sicht
 image::./images/gui_prototyp/welcome_boss.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/kunden.png[kunden, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
+image::./images/gui_prototyp/kunden_new.png[kunden1, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/mitarbeiter.png[mitarbeiter, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Mitarbeiter (Service-Personal und Köchen)", align=center]
+image::./images/gui_prototyp/kunden_bearbeiten.png[kunden2, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Wenn man auf 'Kunden bearbeiten' drückt, kann der Admin Kunde löschen", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_new.png[mitarbeiter1, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Mitarbeiter (Service-Personal und Köchen)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_koche.png[mitarbeiter2, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Köche, wenn der Admin die Tabelle ausfiltert", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_personal.png[mitarbeiter3, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Service Personal, wenn der Admin die Tabelle ausfiltert", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_buchung1.png[mitarbeiter4, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Köchin-Buchung", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_buchung2.png[mitarbeiter5, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Personal-Buchung", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/bestand.png[bestand, 100%, 100%, pdfwidth=100%, title= "Bestand-Seite: Inventar von Dekorationen und Tischdecken", align=center]
@@ -1121,7 +1136,7 @@ image::./images/gui_prototyp/bestellungen_personal_checkliste.png[bestellungen2,
 image::./images/gui_prototyp/bestellungen_koche_checkliste.png[bestellungen3, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Köche hinzufügen' Button drückt", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/bestellungen_personal_checkliste_gebucht.png[bestellungen4, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Service-Personal hinzufügen' Button drückt, aber einige Personal sind schon gebucht", align=center]
+image::./images/gui_prototyp/bestellungen_personal_checkliste2.png[bestellungen4, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Service-Personal hinzufügen' Button drückt. Wenn Personal schon gebucht ist, wird sie nicht gezeigt", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/bestellungen_personal_koche.png[bestellungen5, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Service-Personal und Köche sind hinzugefügt", align=center]
