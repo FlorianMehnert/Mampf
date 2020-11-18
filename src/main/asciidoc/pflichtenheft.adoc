@@ -1150,6 +1150,12 @@ image::./images/gui_prototyp/katalog.png[katalog1, 100%, 100%, pdfwidth=100%, ti
 [[home_image]]
 image::./images/gui_prototyp/katalog_bearbeiten.png[katalog2, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Wenn der Admin auf 'Katalog bearbeiten' drückt, kann er Katalogeinträge erstellen oder Elemente auswählen und diese verändern oder löschen", align=center]
 
+[[home_image]]
+image::./images/gui_prototyp/umsatze.png[umsatze1, 100%, 100%, pdfwidth=100%, title= "Umsätze-Seite: Übersicht der Monate", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/umsatze_bsp.png[umsatze2, 100%, 100%, pdfwidth=100%, title= "Umsätze-Seite: Wenn der Admin auf einen Monat drückt, dann werden alle Umsätze des ausgewählten Monats gezeigt", align=center]
+
 === Überblick: Dialoglandkarte
 [[home_image]]
 image::./images/diagrams/gui_map.svg[guimap, 100%, 100%, pdfwidth=100%, title= "GUI Map", align=center]
