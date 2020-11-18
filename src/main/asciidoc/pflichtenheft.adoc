@@ -1144,6 +1144,12 @@ image::./images/gui_prototyp/bestellungen_personal_checkliste2.png[bestellungen4
 [[home_image]]
 image::./images/gui_prototyp/bestellungen_personal_koche.png[bestellungen5, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Service-Personal und Köche sind hinzugefügt", align=center]
 
+[[home_image]]
+image::./images/gui_prototyp/katalog.png[katalog1, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Übersicht der Katalog", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/katalog_bearbeiten.png[katalog2, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Wenn der Admin auf 'Katalog bearbeiten' drückt, kann er Katalogeinträge erstellen oder Elemente auswählen und diese verändern oder löschen", align=center]
+
 === Überblick: Dialoglandkarte
 [[home_image]]
 image::./images/diagrams/gui_map.svg[guimap, 100%, 100%, pdfwidth=100%, title= "GUI Map", align=center]
