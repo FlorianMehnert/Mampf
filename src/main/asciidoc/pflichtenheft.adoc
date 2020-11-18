@@ -18,9 +18,15 @@
 toc::[]
 
 == Zusammenfassung
-Der Inhalt dieses Dokuments befasst sich mit allen strukturellen und funktionalen Gegebenheiten der zu erstellenden Software und dient vorallem zur Validierung dementsprechender Elemente durch den Kunden und dem Entwicklungsteam. Daher wird beschrieben, welche Anforderungen die Software erfüllt und dient gleichermaßen dem Kunden zur Überprüfung über die Implementierung der von ihm gewünschten Features.
+Der Inhalt dieses Dokuments befasst sich mit allen strukturellen und funktionalen Gegebenheiten der zu erstellenden
+Software und dient vorallem zur Validierung dementsprechender Elemente durch den Kunden und dem Entwicklungsteam.
+Daher wird beschrieben, welche Anforderungen die Software erfüllt und dient gleichermaßen dem Kunden zur Überprüfung
+über die Implementierung der von ihm gewünschten Features.
 
-Daraus folgt, dass dieses Dokument außerdem als Kontrollstruktur zur Validierung etwaiger Akzeptanzkriterien zu verstehen ist und sollte daher möglichst vollständig und konsistent sein bzw. gehalten werden. Alle Änderungen sind daher hier zu vermerken und zu validieren. Implizit ist dadurch außerdem die einfache Möglichkeit der Erweiterung dieses Dokuments. 
+Daraus folgt, dass dieses Dokument außerdem als Kontrollstruktur zur Validierung etwaiger Akzeptanzkriterien zu
+verstehen ist und sollte daher möglichst vollständig und konsistent sein bzw. gehalten werden.
+Alle Änderungen sind daher hier zu vermerken und zu validieren. Implizit ist dadurch außerdem die einfache Möglichkeit
+der Erweiterung dieses Dokuments.
 
 == Aufgabenstellung und Zielsetzung
 
@@ -63,8 +69,15 @@ Abrechnungen erleichtern. Die Lebensmittelbeschaffung muss nicht betrachtet werd
 die langjährigen Erfahrungen bei Mampf ist der Einkaufspreis pro Gericht/Platte/Getränk
 jedoch bekannt."
 
-Diese Software soll dem Betreiber und seinen potentiellen Kunden eine einfachere und schnellere Möglichkeit der Kommunikation und Interaktion bieten. Potentielle Kunden sollen ein festes Konto besitzen, sich also registrieren können und dadurch eine schnellere Übersicht über das Gesamte Angebot bekommen und dadurch auch schneller und einfacher bestellen können. Gleichwohl soll der Inhaber eine bessere und automatisierte Übersicht über alle Bestellungen bekommen, welche dadurch auch einfacher zu administrieren sind. Außerdem hat der Inhaber durch diese Software die Möglichkeit seine Kunden schneller und kostengünstiger von neuen Angeboten und neuen Produkten zu informieren. Da es nur um einen Cateringservice geht wird auch sicherste Authentifizierungsmechanismen verzichtet und lediglich ein Passwort benötigt.
-Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen sich auch ohne Registrierung einen Überblick über die Angebote zu machen.
+Diese Software soll dem Betreiber und seinen potentiellen Kunden eine einfachere und schnellere Möglichkeit der
+Kommunikation und Interaktion bieten. Potentielle Kunden sollen ein festes Konto besitzen, sich also registrieren können
+und dadurch eine schnellere Übersicht über das Gesamte Angebot bekommen und dadurch auch schneller und einfacher
+bestellen können. Gleichwohl soll der Inhaber eine bessere und automatisierte Übersicht über alle Bestellungen bekommen,
+welche dadurch auch einfacher zu administrieren sind. Außerdem hat der Inhaber durch diese Software die Möglichkeit
+seine Kunden schneller und kostengünstiger von neuen Angeboten und neuen Produkten zu informieren. Da es nur um einen
+Cateringservice geht wird auch sicherste Authentifizierungsmechanismen verzichtet und lediglich ein Passwort benötigt.
+Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen sich auch ohne Registrierung einen Überblick über
+die Angebote zu machen.
 
 Die Software soll ansprechend und einladend aussehen und möglichst einfach aufgebaut sein damit sich jeder Benutzer zurecht findet, was gleichermaßen bedeutet dass sich an bestehende Designs angepasst wird.
 
@@ -79,13 +92,19 @@ Mozilla Firefox, Version 55.0.3+
 
 Google Chrome, Version 61.0.3163+
 
-Die primäre Ziegruppe ergibt sich vorallem aus Menschen jeglicher Gesellschaftsschicht, die tagtäglich im Internet surfen und somit elementare Kenntnisse der Bedienung einer Website mitbringen. Zusätzlich dazu gibt es einen Administrator (Chef) der die Inhalte pflegt und Personal verwaltet ohne über einen beruflich informationstechnischen Hintergrund zu verfügen.
+Die primäre Ziegruppe ergibt sich vorallem aus Menschen jeglicher Gesellschaftsschicht, die tagtäglich im Internet
+surfen und somit elementare Kenntnisse der Bedienung einer Website mitbringen.
+Zusätzlich dazu gibt es einen Administrator (Chef) der die Inhalte pflegt und Personal verwaltet ohne über
+einen beruflich informationstechnischen Hintergrund zu verfügen.
 
 Für die Wartung übernimmt das Entwicklerteam keine Verantwortung.
-Daten werden persistent in einer relationalen Datenbank gespeichert und können ohne jegliche Kenntnisse permanent vom Chef eingesehen werden.
+Daten werden in einer relationalen Datenbank gespeichert und können ohne jegliche Kenntnisse permanent
+vom Chef eingesehen werden.
 
 == Interessensgruppen (Stakeholders)
-Im folgenden sind alle Personen aufgelistet die einen Einfluss auf den Entwicklungsprozess haben können. Zur besseren Konflikt- und Problmbewältigung wird jeder Personengruppe eine Priorität zugeordnet um festzulegen wer im Streitfall letztendlich die Entscheidung fällt.
+Im folgenden sind alle Personen aufgelistet, die einen Einfluss auf den Entwicklungsprozess haben können.
+Zur besseren Konflikt- und Problmbewältigung wird jeder Personengruppe eine Priorität zugeordnet um festzulegen,
+wer im Streitfall letztendlich die Entscheidung fällt.
 
 [options="header", cols="2, ^1, 4, 4"]
 |===
@@ -129,7 +148,7 @@ a|
 == Systemgrenze und Top-Level-Architektur
 
 === Kontextdiagramm
-Das Kontextdiagramm zeigt das geplante Software-System in seiner Umgebung. Zur Umgebung gehören alle Nutzergruppen des Systems und Nachbarsysteme. Die Grafik kann auch informell gehalten sein. Überlegen Sie sich dann geeignete Symbole. Die Grafik kann beispielsweise mit Visio erstellt werden. Wenn nötig, erläutern Sie diese Grafik.
+Kontextdiagramm der Software
 
 [[context_diagram]]
 image:images/diagrams/context_diagram.svg[context diagram]
@@ -148,8 +167,7 @@ Dabei wird von der Sicht des Anwenders ausgehend eine Beschreibung vorgenommen.
 
 === Akteure
 
-Akteure sind die Benutzer des Software-Systems oder Nachbarsysteme, welche darauf zugreifen. Dokumentieren Sie die Akteure in einer Tabelle. Diese Tabelle gibt einen Überblick über die Akteure und beschreibt sie kurz. Die Tabelle hat also mindestens zwei Spalten (Akteur Name und Kommentar).
-Weitere relevante Spalten können bei Bedarf ergänzt werden.
+Akteure sind die Benutzer des Software-Systems oder Nachbarsysteme, welche darauf zugreifen.
 
 // See http://asciidoctor.org/docs/user-manual/#tables
 [options="header"]
@@ -944,8 +962,6 @@ Kunden sich einen Passwort zurücksetzen Link an ihr E-Mail Konto schicken lasse
 
 === Qualitätsziele
 
-Dokumentieren Sie in einer Tabelle die Qualitätsziele, welche das System erreichen soll, sowie deren Priorität.
-
 [options="header]
 [cols="3,10,1,1,1,1,1"]
 |===
@@ -1207,8 +1223,9 @@ a| Diese Klasse enthält alle im Programm registrierten Benutzer und kann diese 
 |===
 
 == Akzeptanztestfälle
-Mithilfe von Akzeptanztests wird geprüft, ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfüllt. Diese sollen und können aus den Anwendungsfallbeschreibungen und den UML-Sequenzdiagrammen abgeleitet werden. D.h., pro (komplexen) Anwendungsfall gibt es typischerweise mindestens ein Sequenzdiagramm (welches ein Szenarium beschreibt). Für jedes Szenarium sollte es einen Akzeptanztestfall geben. Listen Sie alle Akzeptanztestfälle in tabellarischer Form auf.
-Jeder Testfall soll mit einer ID versehen werde, um später zwischen den Dokumenten (z.B. im Test-Plan) referenzieren zu können.
+Mithilfe von Akzeptanztests wird geprüft,
+ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfüllt.
+
 
 :Pre: Voraussetzung(en)
 :Event: Event
