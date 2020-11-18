@@ -1364,7 +1364,7 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |{Pre}        a|Ein User benutzt das System.
 |{Event}      a|Der User drückt auf „Mobile Breakfast“ in dem Menü.
 |{Result}     a|
--	Der User wird eine Übersicht von den verschiedenen Typen von täglichen Angeboten (1), Frühstückstermin und Zwischensumme.
+-	Der User wird eine Übersicht von den verschiedenen Typen von täglichen Angeboten (2), Frühstückstermin und Zwischensumme.
 -	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
 |===
 
@@ -1382,11 +1382,67 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 
 [cols="1h, 4"]
 |===
+|ID            |[[AT0104]]<<AT0104>>
+|Use Case      |<<UC0101>>
+|{Pre}        a|
+-	Der User hat der Rolle Administrator.
+-	Der User befindet sich in Katalog.
+|{Event}      a|
+-	Der User drückt auf Katalog bearbeiten.
+-	Der User drückt auf „Katalogeinträge erstellen“.
+|{Result}     a|
+-	Der User kann neue Katalogeinträge erstellen zu einer der drei Kategorien: Eventcatering, Partyservice und Mobile-Breakfast, und ihre Subkategorien.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0105]]<<AT0105>>
+|Use Case      |<<UC0101>>
+|{Pre}        a|
+-	Der User hat der Rolle Administrator.
+-	Der User befindet sich in Katalog.
+|{Event}      a|
+-	Der User drückt auf Katalog bearbeiten.
+-	Der User wählt ein Element aus.
+- Der User drückt auf „Elemente ändern“.
+|{Result}     a|
+-	Der User kann dieses ausgewählte Element verändern.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0106]]<<AT0106>>
+|Use Case      |<<UC0101>>
+|{Pre}        a|
+-	Der User hat der Rolle Administrator.
+-	Der User befindet sich in Katalog.
+|{Event}      a|
+-	Der User drückt auf Katalog bearbeiten.
+-	Der User wählt beliebige Elemente aus.
+- Der User drückt auf „Elemente löschen“.
+|{Result}     a|
+-	Der User kann diese ausgewählten Elemente verändern.
+|===
+
+[cols="1h, 4"]
+|===
 |ID            |[[AT0200]]<<AT0200>>
 |Use Case      |<<UC0200>>
 |{Pre}        a|
 -	Der User ist ein angemeldeter User.
--	Der User befindet sich in einer der vier Kataloge: Eventcatering ([AT0100]), Partyservice ([AT0101]), Mobile Breakfast ([AT0102]), Rent-a-Cook ([AT0103])
+-	Der User befindet sich in einer der drei Kataloge: Eventcatering ([AT0100]), Partyservice ([AT0101]), Rent-a-Cook ([AT0103])
+|{Event}      a|Der User drückt auf “Zum Warenkorb hinzufügen”.
+|{Result}     a|
+-	Der Bestellung/Order ist gespeichert und wird in dem Warenkorb gesetzt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0201]]<<AT0201>>
+|Use Case      |<<UC0200>>
+|{Pre}        a|
+-	Der User ist ein angemeldeter User von einer Firma, d.h. der User hat der Rolle „Company“ oder „Employee“.
+-	Der User befindet sich in Mobile Breakfast ([AT0102]).
 |{Event}      a|Der User drückt auf “Zum Warenkorb hinzufügen”.
 |{Result}     a|
 -	Der Bestellung/Order ist gespeichert und wird in dem Warenkorb gesetzt.
@@ -1404,6 +1460,18 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 
 [cols="1h, 4"]
 |===
+|ID            |[[AT0210]]<<AT0210>>
+|Use Case      |<<UC0210>>
+|{Pre}        a|
+- Der User ist ein angemeldeter User.
+- Es gibt Elemente in den Warenkorb.
+|{Event}      a|Der User drückt auf “Warenkorb leeren”.
+|{Result}     a|
+-	Der Warenkorb hat jetzt keine Elemente.
+|===
+
+[cols="1h, 4"]
+|===
 |ID            |[[AT0220]]<<AT0220>>
 |Use Case      |<<UC0220>>
 |{Pre}        a|
@@ -1411,7 +1479,7 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 - Der User hat Elemente zu dem Warenkorb hinzugefügt.
 |{Event}      a|
 - Der User entscheidet ein Zahlvorgang: Bar oder Überweisung.
--	Wenn es eine Überweisung ist, muss der User seine Bankdaten schreiben.
+-	Wenn es eine Überweisung ist, wird der Bankkonto des Caterings gezeigt.
 -	Der User drückt auf „Rechnung erstellen“.
 |{Result}     a|
 -	Eine Rechnung muss erstellt werden mit der Zahlvorgang.
@@ -1446,6 +1514,18 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |===
 |ID            |[[AT0300]]<<AT0300>>
 |Use Case      |<<UC0300>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der Kunde-Seite.
+|{Event}      a|Der User drückt auf „Kunde bearbeiten“, wählt sich ein Kunde aus und drückt auf „Kunde löschen“.
+|{Result}     a|
+-	Der Kunde wird gelöscht.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0301]]<<AT0301>>
+|Use Case      |<<UC0301>>
 |{Pre}        a|Der User hat der Rolle Administrator.
 |{Event}      a|Der User drückt auf „Kunde“ in dem Menü.
 |{Result}     a|
@@ -1496,6 +1576,75 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 -	Es zeigt eine Tabelle mit dem Namen aller Service-Personal/Köche.
 - Der User kann eine oder mehrere von diese wählen.
 - Wenn ein Service-Personal/Koch schon gebucht ist, wird das gezeigt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0341]]<<AT0341>>
+|Use Case      |<<UC0341>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Mitarbeiter“ Seite.
+|{Event}      a|Der User drückt auf die Textfläche und dann drückt auf Köche/Personal.
+|{Result}     a|
+-	Es wird die Mitarbeiter ausgefiltert.
+- Es werden nur Köche oder nur Service Personal angezeigt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0342]]<<AT0342>>
+|Use Case      |<<UC0342>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Mitarbeiter“ Seite.
+|{Event}      a|
+- Der User drückt auf „Köche/Personal bearbeiten“.
+- Der User drückt auf „Köche/Personal hinzufügen“.
+|{Result}     a|
+-	Der User schreibt ein neuer Koch/Personal.
+- Diese wird hinzugefügt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0344]]<<AT0344>>
+|Use Case      |<<UC0344>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Mitarbeiter“ Seite.
+|{Event}      a|
+- Der User drückt auf „Köche/Personal bearbeiten“.
+- Der User drückt auf „Köche/Personal ändern“.
+|{Result}     a|
+-	Der Koch/Personal wird verändert.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0345]]<<AT0345>>
+|Use Case      |<<UC0344>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Mitarbeiter“ Seite.
+|{Event}      a|
+- Der User drückt auf „Köche/Personal bearbeiten“.
+- Der User drückt auf „Köche/Personal löschen“.
+|{Result}     a|
+-	Der Koch/Personal wird gelöscht.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0420]]<<AT0420>>
+|Use Case      |<<UC0420>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Umsätze“ Seite.
+|{Event}      a|
+- Der User drückt einen bestimmten Monat.
+|{Result}     a|
+-	Es werden alle Umsätze des jeweiligen Monats angezeigt.
 |===
 
 == Glossar
