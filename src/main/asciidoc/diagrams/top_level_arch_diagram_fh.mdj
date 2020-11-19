@@ -63,7 +63,7 @@
 											"width": 1139,
 											"height": 13,
 											"underline": true,
-											"text": "Eventcatering"
+											"text": "Mampf"
 										},
 										{
 											"_type": "LabelView",
@@ -4630,7 +4630,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Eventcatering"
+					"name": "Mampf"
 				},
 				{
 					"_type": "UMLComponentInstance",
