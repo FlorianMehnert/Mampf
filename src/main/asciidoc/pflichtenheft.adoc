@@ -19,7 +19,7 @@ toc::[]
 
 == Zusammenfassung
 Der Inhalt dieses Dokuments befasst sich mit allen strukturellen und funktionalen Gegebenheiten der zu erstellenden
-Software und dient vorallem zur Validierung dementsprechender Elemente durch den Kunden und dem Entwicklungsteam.
+Software und dient vor allem zur Validierung dementsprechender Elemente durch den Kunden und dem Entwicklungsteam.
 Daher wird beschrieben, welche Anforderungen die Software erfüllt und dient gleichermaßen dem Kunden zur Überprüfung
 der Implementierung der von ihm gewünschten Features.
 
@@ -42,7 +42,7 @@ Programme und ärgerte sich immer wieder über deren Inkompatibilität zueinande
 Mehraufwand durch getrennte Datenhaltung. Als Basis für die Softwareentwicklung gab er
 uns folgende Beschreibung seines kleinen Unternehmens:
 Mampf gliedert sich in vier Geschäftsfelder. Das Eventcatering übernimmt die Verpflegung
-bei großen Veranstaltungen, egal ob in Form eines Buffetts oder als Galadinner. Auf Wunsch
+bei großen Veranstaltungen, egal ob in Form eines Buffets oder als Galadinner. Auf Wunsch
 gestaltet Mampf auch das komplette Event, d.h. neben den Speisen und Getränken wird auch
 Dekoration, Ausrüstung (also Geschirr, Tischtücher usw.) und Personal zur Verfügung
 gestellt, wobei der Kunde dann natürlich zusätzlich zum eigentlichen Preis für Lebensmittel
@@ -79,7 +79,7 @@ Cateringservice geht wird auf sicherste Authentifizierungsmechanismen verzichtet
 Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen sich auch ohne Registrierung einen Überblick über
 die Angebote zu machen.
 
-Die Software soll ansprechend und einladend aussehen und möglichst einfach aufgebaut sein damit sich jeder Benutzer zurecht findet, was gleichermaßen bedeutet dass sich an bestehende Designs angepasst wird.
+Die Software soll ansprechend und einladend aussehen und möglichst einfach aufgebaut sein damit sich jeder Benutzer zurechtfindet, was gleichermaßen bedeutet, dass sich an bestehende Designs angepasst wird.
 
 == Produktnutzung
 Folgende Randbedingungen werden bei der Veröffentlichung der Software benötigt:
@@ -92,9 +92,9 @@ Mozilla Firefox, Version 55.0.3+
 
 Google Chrome, Version 61.0.3163+
 
-Die primäre Ziegruppe ergibt sich vorallem aus Menschen jeglicher Gesellschaftsschicht, die tagtäglich im Internet
+Die primäre Zielgruppe ergibt sich vor allem aus Menschen jeglicher Gesellschaftsschicht, die tagtäglich im Internet
 surfen und somit elementare Kenntnisse der Bedienung einer Website mitbringen.
-Zusätzlich dazu gibt es einen Administrator (Chef) der die Inhalte pflegt und Personal verwaltet ohne über
+Zusätzlich dazu gibt es einen Administrator (Chef), der die Inhalte pflegt und Personal verwaltet, ohne über
 einen beruflich informationstechnischen Hintergrund zu verfügen.
 
 Daten werden in einer relationalen Datenbank gespeichert und können ohne jegliche Kenntnisse permanent
@@ -356,7 +356,7 @@ image::./images/diagrams/SD_UC0200.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 |Functional Requirements    | <<F0202>>
 |===
 
-[[home_image]]
+[[home_image_41]]
 image::./images/diagrams/SD_UC0202.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0202", align=center]
 
 
@@ -404,7 +404,7 @@ image::./images/diagrams/SD_UC0210.svg[d12, 100%, 100%, pdfwidth=100%, title="Se
 |Functional Requirements    | <<F0220>>, <<F0230>>, <<F0240>>, <<F0241>>, <<F0242>>
 |===
 
-[[home_image]]
+[[home_image_42]]
 image::./images/diagrams/SD_UC0220.svg[d13, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0220", align=center]
 
 [cols="1h,3"]
@@ -1050,121 +1050,121 @@ a| Der Administrator soll einen möglichst geringen Aufwand haben, die Angebote 
 
 Sicht als (angemeldeter) Nutzer:
 
-[[home_image]]
+[[home_image_1]]
 image::./images/gui_prototyp/welcome_logged.png[Landing page, 100%, 100%, pdfwidth=100%, title= "Startseite, Nutzer ist angemeldet", align=center]
 
-[[home_image]]
+[[home_image_2]]
 image::./images/gui_prototyp/registrieren.png[registrieren, 100%, 100%, pdfwidth=100%, title= "Registierung-seite", align=center]
 
-[[home_image]]
+[[home_image_3]]
 image::./images/gui_prototyp/eventcatering1.png[eventcatering1, 100%, 100%, pdfwidth=100%, title= "Eventcatering-seite (oberhalb)", align=center]
 
-[[home_image]]
+[[home_image_4]]
 image::./images/gui_prototyp/eventcatering2_empty.png[eventcatering2, 100%, 100%, pdfwidth=100%, title= "Eventcatering-seite (unterhalb)", align=center]
 
-[[home_image]]
+[[home_image_5]]
 image::./images/gui_prototyp/eventcatering2_chooseDate.png[eventcatering3, 100%, 100%, pdfwidth=100%, title= "Eventcatering-seite: Auswahl eines Termines", align=center]
 
-[[home_image]]
+[[home_image_6]]
 image::./images/gui_prototyp/eventcatering2_fill_Invalid.png[eventcatering4, 100%, 100%, pdfwidth=100%, title= "Eventcatering-seite: Invalide Eingaben (Personal nicht verfügbar)", align=center]
 
-[[home_image]]
+[[home_image_7]]
 image::./images/gui_prototyp/partyservice1.png[ps, 100%, 100%, pdfwidth=100%, title= "Partyservice-seite (oberhalb)", align=center]
 
-[[home_image]]
+[[home_image_8]]
 image::./images/gui_prototyp/partyservice2.png[ps2, 100%, 100%, pdfwidth=100%, title= "Partyservice-seite (unterhalb)", align=center]
 
-[[home_image]]
+[[home_image_9]]
 image::./images/gui_prototyp/mobilebreakfast_start.png[mb, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Startseite", align=center]
 
-[[home_image]]
+[[home_image_10]]
 image::./images/gui_prototyp/mobilebreakfast_book.png[mb34, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Frühstücksbuchung als Unternehmer", align=center]
 
 
-[[home_image]]
+[[home_image_11]]
 image::./images/gui_prototyp/mobilebreakfast_book_fill.png[mb2, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Frühstücksbuchung als Unternehmer, Auswahl von Terminen", align=center]
 
-[[home_image]]
+[[home_image_12]]
 image::./images/gui_prototyp/mobilebreakfast_choose_fill.png[mb2, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Frühstücksauswahl als Mitarbeiter", align=center]
 
-[[home_image]]
+[[home_image_13]]
 image::./images/gui_prototyp/rentacook.png[rc, 100%, 100%, pdfwidth=100%, title= "Rent-a-Cook-seite: funktionsweise siehe Eventcatering", align=center]
 
-[[home_image]]
+[[home_image_14]]
 image::./images/gui_prototyp/warenkorb_fill.png[warenkorb, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite", align=center]
 
-[[home_image]]
+[[home_image_15]]
 image::./images/gui_prototyp/warenkorb_buy_fill.png[warenkorb2, 100%, 100%, pdfwidth=100%, title= "Warenkorb-Kaufen-seite: Kaufen von Warenkorbinhalten", align=center]
 
-[[home_image]]
+[[home_image_16]]
 image::./images/gui_prototyp/warenkorb_rechnung_fill.png[warenkorb3, 100%, 100%, pdfwidth=100%, title= "Warenkorb-Rechnung-seite", align=center]
 
-[[home_image]]
+[[home_image_17]]
 image::./images/gui_prototyp/rechnungen_fill.png[ry, 100%, 100%, pdfwidth=100%, title= "Rechnungen-seite: aufgelistet nach Aktualität", align=center]
 
-[[home_image]]
+[[home_image_18]]
 image::./images/gui_prototyp/rechnungen_detail_fill.png[rz, 100%, 100%, pdfwidth=100%, title= "Rechnungen-seite: Detailansicht einer Rechnung", align=center]
 
 Admins Sicht
-[[home_image]]
+[[home_image_19]]
 image::./images/gui_prototyp/welcome_boss_new.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
 
-[[home_image]]
+[[home_image_20]]
 image::./images/gui_prototyp/kunden_no_email2.png[kunden1, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
 
-[[home_image]]
+[[home_image_21]]
 image::./images/gui_prototyp/kunden_no_email.png[kunden2, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Wenn man auf 'Kunden bearbeiten' drückt, kann der Admin Kunde löschen", align=center]
 
-[[home_image]]
+[[home_image_22]]
 image::./images/gui_prototyp/mitarbeiter_new2.png[mitarbeiter1, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Mitarbeiter (Service-Personal und Köchen)", align=center]
 
-[[home_image]]
+[[home_image_23]]
 image::./images/gui_prototyp/mitarbeiter_bearbeiten2.png[mitarbeiter6, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Wenn der Admin auf 'Köche/Personal bearbeiten' drückt, kann er die Köche/Personal verändern, löschen oder hinzufügen", align=center]
 
-[[home_image]]
+[[home_image_24]]
 image::./images/gui_prototyp/mitarbeiter_koche.png[mitarbeiter2, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Köche, wenn der Admin die Tabelle ausfiltert", align=center]
 
-[[home_image]]
+[[home_image_25]]
 image::./images/gui_prototyp/mitarbeiter_personal.png[mitarbeiter3, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Service Personal, wenn der Admin die Tabelle ausfiltert", align=center]
 
-[[home_image]]
+[[home_image_26]]
 image::./images/gui_prototyp/mitarbeiter_koch_buchung.png[mitarbeiter4, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Köchin-Buchung", align=center]
 
-[[home_image]]
+[[home_image_27]]
 image::./images/gui_prototyp/mitarbeiter_personal_buchung.png[mitarbeiter5, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Personal-Buchung", align=center]
 
-[[home_image]]
+[[home_image_28]]
 image::./images/gui_prototyp/bestand.png[bestand, 100%, 100%, pdfwidth=100%, title= "Bestand-Seite: Inventar von Dekorationen und Tischdecken", align=center]
 
-[[home_image]]
+[[home_image_30]]
 image::./images/gui_prototyp/bestellungen.png[bestellungen, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Übersicht der Bestellungen (mit zwei Beispielen)", align=center]
 
-[[home_image]]
+[[home_image_31]]
 image::./images/gui_prototyp/bestellungen_personal_checkliste.png[bestellungen2, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Service-Personal hinzufügen' Button drückt", align=center]
 
-[[home_image]]
+[[home_image_32]]
 image::./images/gui_prototyp/bestellungen_koche_checkliste.png[bestellungen3, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Köche hinzufügen' Button drückt", align=center]
 
-[[home_image]]
+[[home_image_33]]
 image::./images/gui_prototyp/bestellungen_personal_checkliste2.png[bestellungen4, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Service-Personal hinzufügen' Button drückt. Wenn Personal schon gebucht ist, wird sie nicht gezeigt", align=center]
 
-[[home_image]]
+[[home_image_34]]
 image::./images/gui_prototyp/bestellungen_personal_koche.png[bestellungen5, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Service-Personal und Köche sind hinzugefügt", align=center]
 
-[[home_image]]
+[[home_image_35]]
 image::./images/gui_prototyp/katalog2.png[katalog1, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Übersicht der Katalog", align=center]
 
-[[home_image]]
+[[home_image_36]]
 image::./images/gui_prototyp/katalog_new.png[katalog2, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Wenn der Admin auf 'Katalog bearbeiten' drückt, kann er Katalogeinträge erstellen oder Elemente auswählen und diese verändern oder löschen", align=center]
 
-[[home_image]]
+[[home_image_37]]
 image::./images/gui_prototyp/umsatze.png[umsatze1, 100%, 100%, pdfwidth=100%, title= "Umsätze-Seite: Übersicht der Monate", align=center]
 
-[[home_image]]
+[[home_image_38]]
 image::./images/gui_prototyp/umsatze_bsp.png[umsatze2, 100%, 100%, pdfwidth=100%, title= "Umsätze-Seite: Wenn der Admin auf einen Monat drückt, dann werden alle Umsätze des ausgewählten Monats gezeigt", align=center]
 
 === Überblick: Dialoglandkarte
-[[home_image]]
+[[home_image_39]]
 image::./images/diagrams/gui_map.svg[guimap, 100%, 100%, pdfwidth=100%, title= "GUI Map", align=center]
 
 //=== Dialogbeschreibung
@@ -1179,7 +1179,7 @@ image::./images/diagrams/gui_map.svg[guimap, 100%, 100%, pdfwidth=100%, title= "
 
 === Überblick: Klassendiagramm
 UML-Analyseklassendiagramm:
-[[home_image]]
+[[home_image_40]]
 image::./images/diagrams/ClassDiagram.svg[bestellungen5, 100%, 100%, pdfwidth=100%, align=center]
 
 
@@ -1678,7 +1678,7 @@ Sämtliche Begriffe, die innerhalb des Projektes verwendet werden und deren geme
 |Item                   | {domain_ref}
 |Cart                   | {domain_ref}
 |CartItem               | {domain_ref}
-|Category               | Bezeichnet die Domäne in der das jeweilige Item angesiedelt ist (bspw. PartyService)
+|Category               | Bezeichnet die Domäne, in der das jeweilige Item angesiedelt ist (bspw. PartyService)
 |ChargeLine             | {domain_ref}
 |Employee               | {domain_ref}
 |EmployeeManager        | {domain_ref}
@@ -1691,7 +1691,7 @@ Sämtliche Begriffe, die innerhalb des Projektes verwendet werden und deren geme
 |OrderManager           | {domain_ref}
 |OrderStatus            | {domain_ref}
 |Item                   | {domain_ref}
-|Register/Registration  | Bezeichnet den Vorgang zum anlegen eines neuen Benutzer-Accounts
+|Register/Registration  | Bezeichnet den Vorgang zum Anlegen eines neuen Benutzer-Accounts
 |ROLE/Role              | {domain_ref}
 |System                 | Synonym für die Software um die es in diesem Projekt geht
 |User                   | {domain_ref}
