@@ -641,10 +641,10 @@ image::./images/diagrams/SD_UC0342.svg[d12, 100%, 100%, pdfwidth=100%, title="Se
 |===
 
 [[fire_employees]]
-image::./images/diagrams/SD_UC0344_1.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0344_1", align=center]
+image::./images/diagrams/SD_UC0344_1.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequencediagram for deleting Employees", align=center]
 
 [[edit_employees]]
-image::./images/diagrams/SD_UC0344_2.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0344_2", align=center]
+image::./images/diagrams/SD_UC0344_2.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequencediagram for editing Employees", align=center]
 
 
 [cols="1h,3"]
