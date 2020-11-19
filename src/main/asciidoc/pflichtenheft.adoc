@@ -21,7 +21,7 @@ toc::[]
 Der Inhalt dieses Dokuments befasst sich mit allen strukturellen und funktionalen Gegebenheiten der zu erstellenden
 Software und dient vorallem zur Validierung dementsprechender Elemente durch den Kunden und dem Entwicklungsteam.
 Daher wird beschrieben, welche Anforderungen die Software erfüllt und dient gleichermaßen dem Kunden zur Überprüfung
-über die Implementierung der von ihm gewünschten Features.
+der Implementierung der von ihm gewünschten Features.
 
 Daraus folgt, dass dieses Dokument außerdem als Kontrollstruktur zur Validierung etwaiger Akzeptanzkriterien zu
 verstehen ist und sollte daher möglichst vollständig und konsistent sein bzw. gehalten werden.
@@ -71,11 +71,11 @@ jedoch bekannt."
 
 Diese Software soll dem Betreiber und seinen potentiellen Kunden eine einfachere und schnellere Möglichkeit der
 Kommunikation und Interaktion bieten. Potentielle Kunden sollen ein festes Konto besitzen, sich also registrieren können
-und dadurch eine schnellere Übersicht über das Gesamte Angebot bekommen und dadurch auch schneller und einfacher
+und dadurch eine schnellere Übersicht über das gesamte Angebot bekommen und dadurch auch schneller und einfacher
 bestellen können. Gleichwohl soll der Inhaber eine bessere und automatisierte Übersicht über alle Bestellungen bekommen,
 welche dadurch auch einfacher zu administrieren sind. Außerdem hat der Inhaber durch diese Software die Möglichkeit
 seine Kunden schneller und kostengünstiger von neuen Angeboten und neuen Produkten zu informieren. Da es nur um einen
-Cateringservice geht wird auch sicherste Authentifizierungsmechanismen verzichtet und lediglich ein Passwort benötigt.
+Cateringservice geht wird auf sicherste Authentifizierungsmechanismen verzichtet und lediglich ein Passwort benötigt.
 Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen sich auch ohne Registrierung einen Überblick über
 die Angebote zu machen.
 
@@ -97,13 +97,12 @@ surfen und somit elementare Kenntnisse der Bedienung einer Website mitbringen.
 Zusätzlich dazu gibt es einen Administrator (Chef) der die Inhalte pflegt und Personal verwaltet ohne über
 einen beruflich informationstechnischen Hintergrund zu verfügen.
 
-Für die Wartung übernimmt das Entwicklerteam keine Verantwortung.
 Daten werden in einer relationalen Datenbank gespeichert und können ohne jegliche Kenntnisse permanent
 vom Chef eingesehen werden.
 
 == Interessensgruppen (Stakeholders)
 Im folgenden sind alle Personen aufgelistet, die einen Einfluss auf den Entwicklungsprozess haben können.
-Zur besseren Konflikt- und Problmbewältigung wird jeder Personengruppe eine Priorität zugeordnet um festzulegen,
+Zur besseren Konflikt- und Problembewältigung wird jeder Personengruppe eine Priorität zugeordnet um festzulegen,
 wer im Streitfall letztendlich die Entscheidung fällt.
 
 [options="header", cols="2, ^1, 4, 4"]
@@ -1235,12 +1234,12 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |===
 |ID            |[[AT0010]]<<AT0010>>
 |Use Case      |<<UC0010>>
-|{Pre}        a|Das System hat vorhandenen Users.
-|{Event}      a|Eine registrierte Kunde ruft die Login-Seite ab, schreibt der Name und Passwort eines vorhandenen Users (daniel.88, food) und drückt auf „Login“.
+|{Pre}        a|Das System besitzt eine Anzahl registrierter Nutzer.
+|{Event}      a|Eine registrierter Benutzer ruft die Login-Seite ab, trägt Name und Passwort eines vorhandenen Users (daniel.88, food) ein und drückt auf „Login“.
 |{Result}     a|
-- Der User ist angemeldet mit diesem Namen.
-- Der User ist umgeleitet zu der Startseite, welche ein „Willkommen“ Nachricht zeigt.
-- Der User hat jetzt Zugang zu allen Funktionalitäten, welchen zu dem User mit der Roll „Kunde“ zugänglich sind.
+- Der User "daniel.88" ist angemeldet.
+- Der User wird umgeleitet zur Startseite, welche eine „Willkommen“-Nachricht anzeigt.
+- Der User hat jetzt Zugang zu allen Funktionalitäten, welche dem User mit der Rolle „Kunde“ zugänglich sind.
 |===
 
 [cols="1h, 4"]
@@ -1248,10 +1247,10 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |ID            |[[AT0011]]<<AT0011>>
 |Use Case      |<<UC0010>>
 |{Pre}        a|Ein angemeldeter User benutzt das System.
-|{Event}      a|Der angemeldete User drückt auf „Logout“ in dem Menü.
+|{Event}      a|Der angemeldete User drückt auf „Logout“ in der Navigationsleiste.
 |{Result}     a|
-- Der User ist jetzt nicht angemeldet/abgemeldet.
--	Der User verliert Zugang zu den Funktionalitäten, welchen zu dem User mit der Roll „Kunde“ zugänglich sind.
+- Der User wird abgemeldet.
+-	Der User verliert Zugang zu Funktionalitäten, die nur User mit der Rolle „Kunde“ zugänglich sind.
 |===
 
 [cols="1h, 4"]
@@ -1259,11 +1258,13 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |ID            |[[AT0020]]<<AT0020>>
 |Use Case      |<<UC0020>>
 |{Pre}        a|Ein nicht angemeldeter User benutzt das System.
-|{Event}      a|Der nicht angemeldeter User drückt auf „Registrieren“ in dem Menü und schreibt ein Nutzername und Passwort. Zuletzt, der User drückt auf „Konto erstellen“, um die Information zu senden.
+|{Event}      a|
+Der nicht angemeldete User drückt auf „Registrieren“ in der Navigationleiste und bekommt die Möglichkeit einen Namen und Passwort zu vergeben. 
+Danach drückt er den Button "Registrieren".  
 |{Result}     a|
 -	Ein neuer Kunde wird erstellt mit den bereitgestellten Daten.
 -	Es ist möglich, sich mit den Anmeldeinformationen des erstellten Kunden zu authentifizieren.
--	Wenn ein Problem gibt, der nicht angemeldeter User ist noch nicht angemeldet und wird zu der Startseite des Caterings umgeleitet.
+-	Unregistrierte Nutzer werden zur Startseite des Caterings umgeleitet.
 |===
 
 [cols="1h, 4"]
@@ -1271,9 +1272,10 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |ID            |[[AT0021]]<<AT0021>>
 |Use Case      |<<UC0020>>
 |{Pre}        a|Ein nicht angemeldeter User benutzt das System.
-|{Event}      a|Der nicht angemeldeter User drückt auf „Registrieren“ in dem Menü und schreibt ein schon vorhandener Nutzername und Passwort (daniel.88, food). Zuletzt, der User drückt auf „Konto erstellen“, um die Information zu senden.
+|{Event}      a|Der nicht angemeldete User drückt auf „Registrieren“ in der Navigationleiste und bekommt die Möglichkeit einen Namen und Passwort zu vergeben. 
+Danach drückt er den Button "Registrieren".  
 |{Result}     a|
--	Eine Fehler-Nachricht wird gezeigt, um den User über das Problem zu informieren (der User existiert schon).
+-	Eine Fehler-Nachricht wird angezeigt, um den User über das Problem zu informieren (bspw. der User existiert schon).
 |===
 
 [cols="1h, 4"]
@@ -1281,11 +1283,11 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |ID            |[[AT0100]]<<AT0100>>
 |Use Case      |<<UC0100>>, <<UC0110>>
 |{Pre}        a|Ein User benutzt das System.
-|{Event}      a|Der User drückt auf „Eventcatering“ in dem Menü.
+|{Event}      a|Der User drückt auf „Eventcatering“ in der Navigationsleiste.
 |{Result}     a|
--	Der User wird eine Übersicht von den verschiedenen Typen von Buffet (3), Dinner (3), Ausstattung (2), Termin, Personal (Köche und Service) und Zwischensumme gezeigt.
--	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
--	Wenn es nicht genügend Personal für den Termin gibt, muss eine Fehler-Nachricht gezeigt werden.
+-	Der User bekommt eine Übersicht von den verschiedenen Typen von Buffet (3), Dinner (3), Ausstattung (2), Termin, Personal (Köche und Service) und Zwischensumme gezeigt.
+-	Wenn der User angemeldet ist, kann er eine Bestellung aufgeben (Anzahl des gewählten Typs, Termin und Adresse hinzufügen).
+-	Wenn es nicht genügend Personal für den Termin gibt, muss eine Fehler-Nachricht angezeigt werden.
 |===
 
 [cols="1h, 4"]
@@ -1293,10 +1295,10 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |ID            |[[AT0101]]<<AT0101>>
 |Use Case      |<<UC0100>>, <<UC0110>>
 |{Pre}        a|Ein User benutzt das System.
-|{Event}      a|Der User drückt auf „Partyservice“ in dem Menü.
+|{Event}      a|Der User drückt auf „Partyservice“ in der Navigationsleiste.
 |{Result}     a|
 -	Der User wird eine Übersicht von den verschiedenen Typen von Angeboten (2), Sonderangebote (1), Termin und Zwischensumme.
--	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
+-	Wenn der User angemeldet ist, kann er eine Bestellung aufgeben (Anzahl des gewählten Typs, Termin und Adresse hinzufügen).
 |===
 
 [cols="1h, 4"]
@@ -1304,10 +1306,10 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |ID            |[[AT0102]]<<AT0102>>
 |Use Case      |<<UC0100>>, <<UC0110>>
 |{Pre}        a|Ein User benutzt das System.
-|{Event}      a|Der User drückt auf „Mobile Breakfast“ in dem Menü.
+|{Event}      a|Der User drückt auf „Mobile Breakfast“ in der Navigationsleiste.
 |{Result}     a|
 -	Der User wird eine Übersicht von den verschiedenen Typen von täglichen Angeboten (1), Frühstückstermin und Zwischensumme.
--	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
+-	Wenn der User angemeldet ist, kann er eine Bestellung aufgeben (Anzahl des gewählten Typs, Termin und Adresse hinzufügen).
 |===
 
 [cols="1h, 4"]
@@ -1315,10 +1317,10 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |ID            |[[AT0103]]<<AT0103>>
 |Use Case      |<<UC0100>>, <<UC0110>>
 |{Pre}        a|Ein User benutzt das System.
-|{Event}      a|Der User drückt auf „Rent-a-Cook“ in dem Menü.
+|{Event}      a|Der User drückt auf „Rent-a-Cook“ in der Navigationsleiste.
 |{Result}     a|
 -	Der User wird eine Übersicht von Personal (Köche oder Service) zu buchen.
--	Wenn der User angemeldet ist, kann er eine Order bestellen (Anzahl der gewählte Typ, Termin und Adresse hinzufügen).
+-	Wenn der User angemeldet ist, kann er eine Bestellung aufgeben (Anzahl des gewählten Typs, Termin und Adresse hinzufügen).
 -	Wenn es nicht genügend Personal für den Termin gibt, muss eine Fehler-Nachricht gezeigt werden.
 |===
 
@@ -1331,7 +1333,7 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 -	Der User befindet sich in einer der vier Kataloge: Eventcatering ([AT0100]), Partyservice ([AT0101]), Mobile Breakfast ([AT0102]), Rent-a-Cook ([AT0103])
 |{Event}      a|Der User drückt auf “Zum Warenkorb hinzufügen”.
 |{Result}     a|
--	Der Bestellung/Order ist gespeichert und wird in dem Warenkorb gesetzt.
+-	Die Bestellung/Order ist gespeichert und wird in den Warenkorb gesetzt.
 |===
 
 [cols="1h, 4"]
@@ -1341,7 +1343,7 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |{Pre}        a|Der User ist ein angemeldeter User.
 |{Event}      a|Der User drückt auf “Warenkorb”.
 |{Result}     a|
--	Es wird gezeigt, was der User schon zu dem Warenkorb hinzugefügt hat (Typ von Event, Datum, Gesamtpreis und Zahlvorgang).
+-	Es wird gezeigt, was der User schon zum Warenkorb hinzugefügt hat (Typ von Event, Datum, Gesamtpreis und Zahlvorgang).
 |===
 
 [cols="1h, 4"]
@@ -1352,11 +1354,11 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 - Der User ist ein angemeldeter User.
 - Der User hat Elemente zu dem Warenkorb hinzugefügt.
 |{Event}      a|
-- Der User entscheidet ein Zahlvorgang: Bar oder Überweisung.
--	Wenn es eine Überweisung ist, muss der User seine Bankdaten schreiben.
+- Der User entscheidet sich für eine Zahlungsmethode: Bar oder Überweisung.
+-	Wenn es eine Überweisung ist, wird dem User eine Bankverbindung angegeben und er wird aufgefordert die Zahlung bis zu einem bestimmten Datum zu tätigen.
 -	Der User drückt auf „Rechnung erstellen“.
 |{Result}     a|
--	Eine Rechnung muss erstellt werden mit der Zahlvorgang.
+-	Eine Rechnung muss erstellt werden mit Angabe einer Bankverbindung.
 |===
 
 [cols="1h, 4"]
@@ -1366,9 +1368,9 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |{Pre}        a|
 - Der User ist ein angemeldeter User.
 - Der User hat eine Bestellung aufgegeben.
-|{Event}      a|Der User drückt auf „Meine Bestellungen“ in dem Menü.
+|{Event}      a|Der User drückt auf „Meine Bestellungen“ in der Navigationsleiste.
 |{Result}     a|
--	Es werden alle Bestellungen der User gezeigt (bestellte Angebote, Datum und Status der Lieferung).
+-	Es werden alle Bestellungen des Users gezeigt (bestellte Produkte, Datum und Status der Lieferung).
 |===
 
 [cols="1h, 4"]
@@ -1381,48 +1383,48 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 - Der User befindet sich in "Meine Bestellungen".
 |{Event}      a|Der User klickt auf eine bestimmte Bestellung.
 |{Result}     a|
--	Die Rechnung für diese Bestellung wird gezeigt.
+-	Die Rechnung für diese Bestellung wird angezeigt.
 |===
 
 [cols="1h, 4"]
 |===
 |ID            |[[AT0300]]<<AT0300>>
 |Use Case      |<<UC0300>>
-|{Pre}        a|Der User hat der Rolle Administrator.
-|{Event}      a|Der User drückt auf „Kunde“ in dem Menü.
+|{Pre}        a|Der User besitzt die Rolle Administrator.
+|{Event}      a|Der User drückt auf „Kunde“ in der Navigationsleiste.
 |{Result}     a|
--	Eine Liste aller Kunde wird gezeigt.
+-	Eine Liste aller Kunden wird angezeigt.
 |===
 
 [cols="1h, 4"]
 |===
 |ID            |[[AT0310]]<<AT0310>>
 |Use Case      |<<UC0310>>
-|{Pre}        a|Der User hat der Rolle Administrator.
-|{Event}      a|Der User drückt auf „Bestellungen“ in dem Menü.
+|{Pre}        a|Der User besitzt die Rolle Administrator.
+|{Event}      a|Der User drückt auf „Bestellungen“ in der Navigationsleiste.
 |{Result}     a|
--	Es werden alle Bestellungen gezeigt.
+-	Es werden alle Bestellungen angezeigt.
 |===
 
 [cols="1h, 4"]
 |===
 |ID            |[[AT0320]]<<AT0320>>
 |Use Case      |<<UC0320>>
-|{Pre}        a|Der User hat der Rolle Administrator.
-|{Event}      a|Der User drückt auf „Bestand“ in dem Menü.
+|{Pre}        a|Der User besitzt die Rolle Administrator.
+|{Event}      a|Der User drückt auf „Bestand“ in der Navigationsleiste.
 |{Result}     a|
--	Es wird den Bestand/Inventar (Tischdecken und Dekoration) gezeigt.
-- Die aktuelle Anzahl und die Gesamtanzahl der Bestand wird gezeigt.
+-	Es wird der Bestand/das Inventar (Tischdecken und Dekoration) angezeigt.
+- Die aktuelle Anzahl und die Gesamtanzahl des Bestands wird angezeigt.
 |===
 
 [cols="1h, 4"]
 |===
 |ID            |[[AT0330]]<<AT0330>>
 |Use Case      |<<UC0330>>
-|{Pre}        a|Der User hat der Rolle Administrator.
-|{Event}      a|Der User drückt auf „Personal“ in dem Menü.
+|{Pre}        a|Der User besitzt die Rolle Administrator.
+|{Event}      a|Der User drückt auf „Personal“ in der Navigationsleiste.
 |{Result}     a|
--	Es wird den Personal (Köche und Service-Personal) gezeigt. Es zeigt auch, ob einer von den Personal gebucht ist oder nicht und zu welcher Datum.
+-	Es wird das Personal (Köche und Service-Personal) angezeigt. Es zeigt auch, ob und welches Personal gebucht ist oder nicht und an welchem Datum.
 |===
 
 [cols="1h, 4"]
@@ -1430,14 +1432,14 @@ ob die Software die funktionalen Erwartungen und Anforderungen im Gebrauch erfü
 |ID            |[[AT0331]]<<AT0331>>
 |Use Case      |<<UC0331>>
 |{Pre}        a|
-- Der User hat der Rolle Administrator.
-- Der User befindet sich in der „Bestellungen“ Seite.
-- Es gibt Bestellungen, die ein Typ von Personal benötigen.
-|{Event}      a|Der User drückt auf „Personal/Köche“ in dem Menü.
+- Der User besitzt die Rolle Administrator.
+- Der User befindet sich auf der Seite „Bestellungen“.
+- Es gibt Bestellungen, die die Zuweisung von Personal benötigen.
+|{Event}      a|Der User drückt auf „Personal/Köche“ in der Navigationsleiste.
 |{Result}     a|
--	Es zeigt eine Tabelle mit dem Namen aller Service-Personal/Köche.
-- Der User kann eine oder mehrere von diese wählen.
-- Wenn ein Service-Personal/Koch schon gebucht ist, wird das gezeigt.
+- Es wird eine Liste offener Bestellungen angezeigt
+- Der Administrator kann durch einen klick auf Personal zuweisen, durch eine Dialogbox bestimmtes Personal der jeweiligen Bestellung hinzufügen.
+- Gebuchtes Personal steht nicht zu Auswahl.
 |===
 
 == Glossar
