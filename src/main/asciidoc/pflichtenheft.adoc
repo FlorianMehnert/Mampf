@@ -1107,19 +1107,19 @@ image::./images/gui_prototyp/rechnungen_detail_fill.png[rz, 100%, 100%, pdfwidth
 
 Admins Sicht
 [[home_image]]
-image::./images/gui_prototyp/welcome_boss.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
+image::./images/gui_prototyp/welcome_boss_new.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/kunden_new.png[kunden1, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
+image::./images/gui_prototyp/kunden_no_email2.png[kunden1, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/kunden_bearbeiten.png[kunden2, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Wenn man auf 'Kunden bearbeiten' drückt, kann der Admin Kunde löschen", align=center]
+image::./images/gui_prototyp/kunden_no_email.png[kunden2, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Wenn man auf 'Kunden bearbeiten' drückt, kann der Admin Kunde löschen", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/mitarbeiter_new2.png[mitarbeiter1, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Mitarbeiter (Service-Personal und Köchen)", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/mitarbeiter_bearbeiten1.png[mitarbeiter6, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Wenn der Admin auf 'Köche/Personal bearbeiten' drückt, kann er die Köche/Personal verändern, löschen oder hinzufügen", align=center]
+image::./images/gui_prototyp/mitarbeiter_bearbeiten2.png[mitarbeiter6, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Wenn der Admin auf 'Köche/Personal bearbeiten' drückt, kann er die Köche/Personal verändern, löschen oder hinzufügen", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/mitarbeiter_koche.png[mitarbeiter2, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Köche, wenn der Admin die Tabelle ausfiltert", align=center]
@@ -1128,10 +1128,10 @@ image::./images/gui_prototyp/mitarbeiter_koche.png[mitarbeiter2, 100%, 100%, pdf
 image::./images/gui_prototyp/mitarbeiter_personal.png[mitarbeiter3, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Service Personal, wenn der Admin die Tabelle ausfiltert", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/mitarbeiter_buchung1.png[mitarbeiter4, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Köchin-Buchung", align=center]
+image::./images/gui_prototyp/mitarbeiter_koch_buchung.png[mitarbeiter4, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Köchin-Buchung", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/mitarbeiter_buchung2.png[mitarbeiter5, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Personal-Buchung", align=center]
+image::./images/gui_prototyp/mitarbeiter_personal_buchung.png[mitarbeiter5, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Personal-Buchung", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/bestand.png[bestand, 100%, 100%, pdfwidth=100%, title= "Bestand-Seite: Inventar von Dekorationen und Tischdecken", align=center]
