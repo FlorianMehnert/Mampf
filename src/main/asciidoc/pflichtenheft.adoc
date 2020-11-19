@@ -1167,7 +1167,7 @@ image::./images/gui_prototyp/umsatze_bsp.png[umsatze2, 100%, 100%, pdfwidth=100%
 [[home_image]]
 image::./images/diagrams/gui_map.svg[guimap, 100%, 100%, pdfwidth=100%, title= "GUI Map", align=center]
 
-=== Dialogbeschreibung
+//=== Dialogbeschreibung
 //Für jeden Dialog:
 
 //1. Kurze textuelle Dialogbeschreibung eingefügt: Was soll der jeweilige Dialog? Was kann man damit tun? Überblick?
