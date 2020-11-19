@@ -19,7 +19,7 @@ toc::[]
 
 == Zusammenfassung
 Der Inhalt dieses Dokuments befasst sich mit allen strukturellen und funktionalen Gegebenheiten der zu erstellenden
-Software und dient vor allem zur Validierung dementsprechender Elemente durch den Kunden und dem Entwicklungsteam.
+Software und dient vor allem zur Validierung dementsprechender Elemente durch den Kunden und das Entwicklungsteam.
 Daher wird beschrieben, welche Anforderungen die Software erfüllt und dient gleichermaßen dem Kunden zur Überprüfung
 der Implementierung der von ihm gewünschten Features.
 
@@ -75,8 +75,8 @@ und dadurch eine schnellere Übersicht über das gesamte Angebot bekommen und da
 bestellen können. Gleichwohl soll der Inhaber eine bessere und automatisierte Übersicht über alle Bestellungen bekommen,
 welche dadurch auch einfacher zu administrieren sind. Außerdem hat der Inhaber durch diese Software die Möglichkeit
 seine Kunden schneller und kostengünstiger von neuen Angeboten und neuen Produkten zu informieren. Da es nur um einen
-Cateringservice geht wird auf sicherste Authentifizierungsmechanismen verzichtet und lediglich ein Passwort benötigt.
-Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen sich auch ohne Registrierung einen Überblick über
+Cateringservice geht, wird auf sicherste Authentifizierungsmechanismen verzichtet und lediglich ein Passwort benötigt.
+Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen, sich auch ohne Registrierung einen Überblick über
 die Angebote zu machen.
 
 Die Software soll ansprechend und einladend aussehen und möglichst einfach aufgebaut sein damit sich jeder Benutzer zurechtfindet, was gleichermaßen bedeutet, dass sich an bestehende Designs angepasst wird.
@@ -242,7 +242,7 @@ _Abmelden_:
 |Precondition(s)           a|Der Benutzer ist nicht angemeldet
 |Essential Steps           a|
 1.  Nicht angemeldeter Benutzer klickt "Registrieren" an.
-2.  Er gibt seinen Benutzernamen und sein Password ein.
+2.  Er gibt seinen Benutzernamen, seinen Namen und sein Password ein.
 3.  Das Programm validiert die Eingaben.
 . Wenn es korrekte Eingaben waren, wird der Benutzer erstellt.
 . Ansonsten wird eine Fehlermeldung angezeigt.
@@ -704,6 +704,8 @@ Dabei müssen folgende Informationen angegeben werden:
 
 * Passwort
 
+* bei Firmenkunden kann noch ein Name und eine Anschrift angegeben werden
+
 
 | [[F0021]]<<F0021>>
 | v0.1
@@ -736,7 +738,7 @@ die Anzahl von Angeboten im Inventar zu verändern.
 | [[F0110]]<<F0110>>
 | v0.1
 | Katalog
-a| Das Programm muss alle Angebote in einem Katalog zur Verfügung stellen. 
+a| Das Programm muss alle Angebote in einem Katalog persistent zur Verfügung stellen.
 Dabei muss trotzdem die Möglichkeit bestehen Angebote hinzuzufügen, zu verändern und zu löschen 
 
 
@@ -1685,7 +1687,7 @@ Sämtliche Begriffe, die innerhalb des Projektes verwendet werden und deren geme
 |GUI                    | Beschreibt das Interface mit dem der Nutzer interagiert
 |Inventory              | {domain_ref}
 |InventoryItem          | {domain_ref}
-|Login                  | Erfolgreiche Authentifizierung nach Eingabe der notwenidigen Credentials
+|Login                  | Erfolgreiche Authentifizierung nach Eingabe der notwendigen Credentials
 |Order                  | {domain_ref}
 |OrderLine              | {domain_ref}
 |OrderManager           | {domain_ref}
