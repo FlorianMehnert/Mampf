@@ -1052,8 +1052,10 @@ a| Der Administrator soll einen möglichst geringen Aufwand haben, die Angebote 
 |===
 == GUI Prototyp
 
+Sicht als (angemeldeter) Nutzer:
+
 [[home_image]]
-image::./images/gui_prototyp/welcome.png[Landing page, 100%, 100%, pdfwidth=100%, title= "Startseite", align=center]
+image::./images/gui_prototyp/welcome_logged.png[Landing page, 100%, 100%, pdfwidth=100%, title= "Startseite, Nutzer ist angemeldet", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/registrieren.png[registrieren, 100%, 100%, pdfwidth=100%, title= "Registierung-seite", align=center]
@@ -1077,26 +1079,35 @@ image::./images/gui_prototyp/partyservice1.png[ps, 100%, 100%, pdfwidth=100%, ti
 image::./images/gui_prototyp/partyservice2.png[ps2, 100%, 100%, pdfwidth=100%, title= "Partyservice-seite (unterhalb)", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/mobilebreakfast.png[mb, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite", align=center]
+image::./images/gui_prototyp/mobilebreakfast_start.png[mb, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Startseite", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/mobilebreakfast_overlay_and_filled.png[mb2, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Auswahl von Terminen (beispielhaft)", align=center]
+image::./images/gui_prototyp/mobilebreakfast_book.png[mb34, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Frühstücksbuchung als Unternehmer", align=center]
+
 
 [[home_image]]
-image::./images/gui_prototyp/rentacook.png[rc, 100%, 100%, pdfwidth=100%, title= "Rent-a-Cook-seite", align=center]
+image::./images/gui_prototyp/mobilebreakfast_book_fill.png[mb2, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Frühstücksbuchung als Unternehmer, Auswahl von Terminen", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/rentacook_overlays.png[rc2, 100%, 100%, pdfwidth=100%, title= "Rent-a-Cook-seite: Formulare zum auswählen von Personal und einem Termin: Datum/Ort/Uhrzeit (je Stundenauswahl)", align=center]
+image::./images/gui_prototyp/mobilebreakfast_choose_fill.png[mb2, 100%, 100%, pdfwidth=100%, title= "MobileBreakfast-seite: Frühstücksauswahl als Mitarbeiter", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/warenkorb_fill.png[warenkorb, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite (gefüllt mit beispielsdaten)", align=center]
+image::./images/gui_prototyp/rentacook.png[rc, 100%, 100%, pdfwidth=100%, title= "Rent-a-Cook-seite: funktionsweise siehe Eventcatering", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/warenkorb_kauf_fill.png[warenkorb2, 100%, 100%, pdfwidth=100%, title= "Warenkorb-Kaufen-seite: Kaufen von Warenkorbinhalten (gefüllt mit beispielsdaten)", align=center]
+image::./images/gui_prototyp/warenkorb_fill.png[warenkorb, 100%, 100%, pdfwidth=100%, title= "Warenkorb-seite", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/warenkorb_rechnung_fill.png[warenkorb3, 100%, 100%, pdfwidth=100%, title= "Warenkorb-Rechnung-seite (gefüllt mit beispielsdaten)", align=center]
+image::./images/gui_prototyp/warenkorb_buy_fill.png[warenkorb2, 100%, 100%, pdfwidth=100%, title= "Warenkorb-Kaufen-seite: Kaufen von Warenkorbinhalten", align=center]
 
+[[home_image]]
+image::./images/gui_prototyp/warenkorb_rechnung_fill.png[warenkorb3, 100%, 100%, pdfwidth=100%, title= "Warenkorb-Rechnung-seite", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/rechnungen_fill.png[ry, 100%, 100%, pdfwidth=100%, title= "Rechnungen-seite: aufgelistet nach Aktualität", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/rechnungen_detail_fill.png[rz, 100%, 100%, pdfwidth=100%, title= "Rechnungen-seite: Detailansicht einer Rechnung", align=center]
 
 Admins Sicht
 [[home_image]]
@@ -1131,12 +1142,12 @@ image::./images/gui_prototyp/bestellungen_personal_koche.png[bestellungen5, 100%
 image::./images/diagrams/gui_map.svg[guimap, 100%, 100%, pdfwidth=100%, title= "GUI Map", align=center]
 
 === Dialogbeschreibung
-Für jeden Dialog:
+//Für jeden Dialog:
 
-1. Kurze textuelle Dialogbeschreibung eingefügt: Was soll der jeweilige Dialog? Was kann man damit tun? Überblick?
-2. Maskenentwürfe (Screenshot, Mockup)
-3. Maskenelemente (Ein/Ausgabefelder, Aktionen wie Buttons, Listen, …)
-4. Evtl. Maskendetails, spezielle Widgets
+//1. Kurze textuelle Dialogbeschreibung eingefügt: Was soll der jeweilige Dialog? Was kann man damit tun? Überblick?
+//2. Maskenentwürfe (Screenshot, Mockup)
+//3. Maskenelemente (Ein/Ausgabefelder, Aktionen wie Buttons, Listen, …)
+//4. Evtl. Maskendetails, spezielle Widgets
 
 == Datenmodell
 
