@@ -291,6 +291,15 @@ image::./images/diagrams/SD_UC0100.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 |Functional Requirements    | <<F0101>>
 |===
 
+[[add_offer]]
+image::./images/diagrams/SD_UC0101_1.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
+
+[[edit_offer]]
+image::./images/diagrams/SD_UC0101_2.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
+
+[[remove_offer]]
+image::./images/diagrams/SD_UC0101_3.svg[d12, 100%, 100%, pdfwidth=100%, align=center]
+
 [[UC0110]]
 [cols="1h, 3"]
 |===
@@ -370,6 +379,9 @@ image::./images/diagrams/SD_UC0202.svg[d12, 100%, 100%, pdfwidth=100%, title="Se
 |Extensions                 |-
 |Functional Requirements    | <<F0210>>
 |===
+
+[[empty_cart]]
+image::./images/diagrams/SD_UC0210.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0220", align=center]
 
 
 [cols="1h,3"]
@@ -482,6 +494,10 @@ image::./images/diagrams/SD_UC0300.svg[d12, 100%, 100%, pdfwidth=100%, align=cen
 |Functional Requirements    | <<F0301>>
 |===
 
+[[remove_user]]
+image::./images/diagrams/SD_UC0301.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0301", align=center]
+
+
 [cols="1h,3"]
 [[UC0310]]
 |===
@@ -579,6 +595,10 @@ Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
 |Functional Requirements    | <<F0322>>
 |===
 
+[[filter_employees]]
+image::./images/diagrams/SD_UC0341.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0322", align=center]
+
+
 [cols="1h,3"]
 [[UC0342]]
 |===
@@ -597,11 +617,15 @@ Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
 |Functional Requirements    | <<F0321>>
 |===
 
+[[hire_employees]]
+image::./images/diagrams/SD_UC0342.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0342", align=center]
+
+
 [cols="1h,3"]
 [[UC0344]]
 |===
 |ID                         |**<<UC0344>>**
-|Name                       | Personal löschen
+|Name                       | Personal löschen, Personal bearbeiten
 |Description                | Dem Administrator soll es möglich sein, Personal zu löschen oder zu bearbeiten.
 |Actors                     | <<customer,Administrator>>
 |Trigger                    | Admin klickt im Menu "Mitarbeiter" für einen bestimmten Mitarbeiter auf den Button "löschen".
@@ -614,6 +638,12 @@ Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
 |Extensions                 | -
 |Functional Requirements    | <<F0323>>
 |===
+
+[[fire_employees]]
+image::./images/diagrams/SD_UC0344_1.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0344_1", align=center]
+
+[[edit_employees]]
+image::./images/diagrams/SD_UC0344_2.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0344_2", align=center]
 
 
 [cols="1h,3"]
@@ -633,6 +663,10 @@ Dabei kann er sich dieses nach "Koch" oder "Servicepersonal" filtern lassen.
 |Extensions                 | -
 |Functional Requirements    | <<F0323>>
 |===
+
+[[show_revenue]]
+image::./images/diagrams/SD_UC0420.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0420", align=center]
+
 
 == Funktionale Anforderungen
 
@@ -1068,10 +1102,28 @@ Admins Sicht
 image::./images/gui_prototyp/welcome_boss.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/kunden.png[kunden, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
+image::./images/gui_prototyp/kunden_new.png[kunden1, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/mitarbeiter.png[mitarbeiter, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Mitarbeiter (Service-Personal und Köchen)", align=center]
+image::./images/gui_prototyp/kunden_bearbeiten.png[kunden2, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Wenn man auf 'Kunden bearbeiten' drückt, kann der Admin Kunde löschen", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_new2.png[mitarbeiter1, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Mitarbeiter (Service-Personal und Köchen)", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_bearbeiten1.png[mitarbeiter6, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Wenn der Admin auf 'Köche/Personal bearbeiten' drückt, kann er die Köche/Personal verändern, löschen oder hinzufügen", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_koche.png[mitarbeiter2, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Köche, wenn der Admin die Tabelle ausfiltert", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_personal.png[mitarbeiter3, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Übersicht der Service Personal, wenn der Admin die Tabelle ausfiltert", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_buchung1.png[mitarbeiter4, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Köchin-Buchung", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/mitarbeiter_buchung2.png[mitarbeiter5, 100%, 100%, pdfwidth=100%, title= "Mitarbeiter-Seite: Beispiel von der Übersicht einer Personal-Buchung", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/bestand.png[bestand, 100%, 100%, pdfwidth=100%, title= "Bestand-Seite: Inventar von Dekorationen und Tischdecken", align=center]
@@ -1086,10 +1138,22 @@ image::./images/gui_prototyp/bestellungen_personal_checkliste.png[bestellungen2,
 image::./images/gui_prototyp/bestellungen_koche_checkliste.png[bestellungen3, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Köche hinzufügen' Button drückt", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/bestellungen_personal_checkliste_gebucht.png[bestellungen4, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Service-Personal hinzufügen' Button drückt, aber einige Personal sind schon gebucht", align=center]
+image::./images/gui_prototyp/bestellungen_personal_checkliste2.png[bestellungen4, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite:  Wenn man den 'Service-Personal hinzufügen' Button drückt. Wenn Personal schon gebucht ist, wird sie nicht gezeigt", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/bestellungen_personal_koche.png[bestellungen5, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Service-Personal und Köche sind hinzugefügt", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/katalog2.png[katalog1, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Übersicht der Katalog", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/katalog_new.png[katalog2, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Wenn der Admin auf 'Katalog bearbeiten' drückt, kann er Katalogeinträge erstellen oder Elemente auswählen und diese verändern oder löschen", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/umsatze.png[umsatze1, 100%, 100%, pdfwidth=100%, title= "Umsätze-Seite: Übersicht der Monate", align=center]
+
+[[home_image]]
+image::./images/gui_prototyp/umsatze_bsp.png[umsatze2, 100%, 100%, pdfwidth=100%, title= "Umsätze-Seite: Wenn der Admin auf einen Monat drückt, dann werden alle Umsätze des ausgewählten Monats gezeigt", align=center]
 
 === Überblick: Dialoglandkarte
 [[home_image]]
@@ -1108,7 +1172,7 @@ Für jeden Dialog:
 === Überblick: Klassendiagramm
 UML-Analyseklassendiagramm:
 [[home_image]]
-image::./images/diagrams/UML-class-diagram.svg[bestellungen5, 100%, 100%, pdfwidth=100%, align=center]
+image::./images/diagrams/ClassDiagram.svg[bestellungen5, 100%, 100%, pdfwidth=100%, align=center]
 
 
 === Klassen und Enumerationen
@@ -1326,11 +1390,67 @@ Danach drückt er den Button "Registrieren".
 
 [cols="1h, 4"]
 |===
+|ID            |[[AT0104]]<<AT0104>>
+|Use Case      |<<UC0101>>
+|{Pre}        a|
+-	Der User hat der Rolle Administrator.
+-	Der User befindet sich in Katalog.
+|{Event}      a|
+-	Der User drückt auf Katalog bearbeiten.
+-	Der User drückt auf „Katalogeinträge erstellen“.
+|{Result}     a|
+-	Der User kann neue Katalogeinträge erstellen zu einer der drei Kategorien: Eventcatering, Partyservice und Mobile-Breakfast, und ihre Subkategorien.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0105]]<<AT0105>>
+|Use Case      |<<UC0101>>
+|{Pre}        a|
+-	Der User hat der Rolle Administrator.
+-	Der User befindet sich in Katalog.
+|{Event}      a|
+-	Der User drückt auf Katalog bearbeiten.
+-	Der User wählt ein Element aus.
+- Der User drückt auf „Elemente ändern“.
+|{Result}     a|
+-	Der User kann dieses ausgewählte Element verändern.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0106]]<<AT0106>>
+|Use Case      |<<UC0101>>
+|{Pre}        a|
+-	Der User hat der Rolle Administrator.
+-	Der User befindet sich in Katalog.
+|{Event}      a|
+-	Der User drückt auf Katalog bearbeiten.
+-	Der User wählt beliebige Elemente aus.
+- Der User drückt auf „Elemente löschen“.
+|{Result}     a|
+-	Der User kann diese ausgewählten Elemente verändern.
+|===
+
+[cols="1h, 4"]
+|===
 |ID            |[[AT0200]]<<AT0200>>
 |Use Case      |<<UC0200>>
 |{Pre}        a|
 -	Der User ist ein angemeldeter User.
--	Der User befindet sich in einer der vier Kataloge: Eventcatering ([AT0100]), Partyservice ([AT0101]), Mobile Breakfast ([AT0102]), Rent-a-Cook ([AT0103])
+-	Der User befindet sich in einer der drei Kataloge: Eventcatering ([AT0100]), Partyservice ([AT0101]), Rent-a-Cook ([AT0103])
+|{Event}      a|Der User drückt auf “Zum Warenkorb hinzufügen”.
+|{Result}     a|
+-	Der Bestellung/Order ist gespeichert und wird in dem Warenkorb gesetzt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0201]]<<AT0201>>
+|Use Case      |<<UC0200>>
+|{Pre}        a|
+-	Der User ist ein angemeldeter User von einer Firma, d.h. der User hat der Rolle „Company“ oder „Employee“.
+-	Der User befindet sich in Mobile Breakfast ([AT0102]).
 |{Event}      a|Der User drückt auf “Zum Warenkorb hinzufügen”.
 |{Result}     a|
 -	Die Bestellung/Order ist gespeichert und wird in den Warenkorb gesetzt.
@@ -1344,6 +1464,18 @@ Danach drückt er den Button "Registrieren".
 |{Event}      a|Der User drückt auf “Warenkorb”.
 |{Result}     a|
 -	Es wird gezeigt, was der User schon zum Warenkorb hinzugefügt hat (Typ von Event, Datum, Gesamtpreis und Zahlvorgang).
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0210]]<<AT0210>>
+|Use Case      |<<UC0210>>
+|{Pre}        a|
+- Der User ist ein angemeldeter User.
+- Es gibt Elemente in den Warenkorb.
+|{Event}      a|Der User drückt auf “Warenkorb leeren”.
+|{Result}     a|
+-	Der Warenkorb hat jetzt keine Elemente.
 |===
 
 [cols="1h, 4"]
@@ -1390,8 +1522,20 @@ Danach drückt er den Button "Registrieren".
 |===
 |ID            |[[AT0300]]<<AT0300>>
 |Use Case      |<<UC0300>>
-|{Pre}        a|Der User besitzt die Rolle Administrator.
-|{Event}      a|Der User drückt auf „Kunde“ in der Navigationsleiste.
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der Kunde-Seite.
+|{Event}      a|Der User drückt auf „Kunde bearbeiten“, wählt sich ein Kunde aus und drückt auf „Kunde löschen“.
+|{Result}     a|
+-	Der Kunde wird gelöscht.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0301]]<<AT0301>>
+|Use Case      |<<UC0301>>
+|{Pre}        a|Der User hat der Rolle Administrator.
+|{Event}      a|Der User drückt auf „Kunde“ in dem Menü.
 |{Result}     a|
 -	Eine Liste aller Kunden wird angezeigt.
 |===
@@ -1440,6 +1584,75 @@ Danach drückt er den Button "Registrieren".
 - Es wird eine Liste offener Bestellungen angezeigt
 - Der Administrator kann durch einen klick auf Personal zuweisen, durch eine Dialogbox bestimmtes Personal der jeweiligen Bestellung hinzufügen.
 - Gebuchtes Personal steht nicht zu Auswahl.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0341]]<<AT0341>>
+|Use Case      |<<UC0341>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Mitarbeiter“ Seite.
+|{Event}      a|Der User drückt auf die Textfläche und dann drückt auf Köche/Personal.
+|{Result}     a|
+-	Es wird die Mitarbeiter ausgefiltert.
+- Es werden nur Köche oder nur Service Personal angezeigt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0342]]<<AT0342>>
+|Use Case      |<<UC0342>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Mitarbeiter“ Seite.
+|{Event}      a|
+- Der User drückt auf „Köche/Personal bearbeiten“.
+- Der User drückt auf „Köche/Personal hinzufügen“.
+|{Result}     a|
+-	Der User schreibt ein neuer Koch/Personal.
+- Diese wird hinzugefügt.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0344]]<<AT0344>>
+|Use Case      |<<UC0344>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Mitarbeiter“ Seite.
+|{Event}      a|
+- Der User drückt auf „Köche/Personal bearbeiten“.
+- Der User drückt auf „Köche/Personal ändern“.
+|{Result}     a|
+-	Der Koch/Personal wird verändert.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0345]]<<AT0345>>
+|Use Case      |<<UC0344>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Mitarbeiter“ Seite.
+|{Event}      a|
+- Der User drückt auf „Köche/Personal bearbeiten“.
+- Der User drückt auf „Köche/Personal löschen“.
+|{Result}     a|
+-	Der Koch/Personal wird gelöscht.
+|===
+
+[cols="1h, 4"]
+|===
+|ID            |[[AT0420]]<<AT0420>>
+|Use Case      |<<UC0420>>
+|{Pre}        a|
+- Der User hat der Rolle Administrator.
+- Der User befindet sich in der „Umsätze“ Seite.
+|{Event}      a|
+- Der User drückt einen bestimmten Monat.
+|{Result}     a|
+-	Es werden alle Umsätze des jeweiligen Monats angezeigt.
 |===
 
 == Glossar
