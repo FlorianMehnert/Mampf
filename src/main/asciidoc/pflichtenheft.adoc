@@ -166,8 +166,6 @@ Dabei wird von der Sicht des Anwenders ausgehend eine Beschreibung vorgenommen.
 
 === Akteure
 
-Akteure sind die Benutzer des Software-Systems oder Nachbarsysteme, welche darauf zugreifen.
-
 // See http://asciidoctor.org/docs/user-manual/#tables
 [options="header"]
 [cols="1,4"]
@@ -720,8 +718,6 @@ Bei einem Fehler muss der Benutzer in Kenntnis gesetzt werden.
 | Inventar von Angeboten
 a| Das Programm muss alle Informationen über die Anzahl der verfügbaren Angebote persistent speichern.
 
-Angebote sind dabei z.B. verschieden Platten, Buffets, Mieten von Ausrüstung / Dekoration und das Mieten von Personal.
-
 
 | [[F0101]]<<F0101>>
 | v0.1
@@ -740,7 +736,8 @@ die Anzahl von Angeboten im Inventar zu verändern.
 | [[F0110]]<<F0110>>
 | v0.1
 | Katalog
-a| Das Programm muss alle Angebote in einem Katalog persistent zur Verfügung stellen.
+a| Das Programm muss alle Angebote in einem Katalog zur Verfügung stellen. 
+Dabei muss trotzdem die Möglichkeit bestehen Angebote hinzuzufügen, zu verändern und zu löschen 
 
 
 | [[F0111]]<<F0111>>
@@ -1665,7 +1662,8 @@ Sämtliche Begriffe, die innerhalb des Projektes verwendet werden und deren geme
 |===
 |Begriff                |Beschreibung
 |Administrator          | Synonym für den Chef und Personal welches berechtigt ist Daten zu verwalten
-
+|Angebot                | Angebote sind z.B. verschieden Platten, Buffets, Mieten von Ausrüstung / Dekoration und das Mieten von Personal
+|Akteure                | Akteure sind die Benutzer des Software-Systems oder Nachbarsysteme, welche darauf zugreifen.
 |Item                   | {domain_ref}
 |Cart                   | {domain_ref}
 |CartItem               | {domain_ref}
