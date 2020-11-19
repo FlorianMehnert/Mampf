@@ -1099,7 +1099,7 @@ Admins Sicht
 image::./images/gui_prototyp/welcome_boss_new.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/kunden_new.png[kunden1, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
+image::./images/gui_prototyp/kunden_no_email.png[kunden1, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/kunden_bearbeiten.png[kunden2, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Wenn man auf 'Kunden bearbeiten' drückt, kann der Admin Kunde löschen", align=center]
