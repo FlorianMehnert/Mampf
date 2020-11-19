@@ -379,7 +379,7 @@ image::./images/diagrams/SD_UC0202.svg[d12, 100%, 100%, pdfwidth=100%, title="Se
 |===
 
 [[empty_cart]]
-image::./images/diagrams/SD_UC0210.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0220", align=center]
+image::./images/diagrams/SD_UC0210.svg[d12, 100%, 100%, pdfwidth=100%, title="Sequenzdiagramm UC0210", align=center]
 
 
 [cols="1h,3"]
