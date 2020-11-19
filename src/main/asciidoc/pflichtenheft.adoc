@@ -1145,10 +1145,10 @@ image::./images/gui_prototyp/bestellungen_personal_checkliste2.png[bestellungen4
 image::./images/gui_prototyp/bestellungen_personal_koche.png[bestellungen5, 100%, 100%, pdfwidth=100%, title= "Bestellungen-Seite: Service-Personal und Köche sind hinzugefügt", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/katalog_new.png[katalog1, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Übersicht der Katalog", align=center]
+image::./images/gui_prototyp/katalog2.png[katalog1, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Übersicht der Katalog", align=center]
 
 [[home_image]]
-image::./images/gui_prototyp/katalog_bearbeiten.png[katalog2, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Wenn der Admin auf 'Katalog bearbeiten' drückt, kann er Katalogeinträge erstellen oder Elemente auswählen und diese verändern oder löschen", align=center]
+image::./images/gui_prototyp/katalog_new.png[katalog2, 100%, 100%, pdfwidth=100%, title= "Katalog-Seite: Wenn der Admin auf 'Katalog bearbeiten' drückt, kann er Katalogeinträge erstellen oder Elemente auswählen und diese verändern oder löschen", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/umsatze.png[umsatze1, 100%, 100%, pdfwidth=100%, title= "Umsätze-Seite: Übersicht der Monate", align=center]
