@@ -1096,7 +1096,7 @@ image::./images/gui_prototyp/warenkorb_rechnung_fill.png[warenkorb3, 100%, 100%,
 
 Admins Sicht
 [[home_image]]
-image::./images/gui_prototyp/welcome_boss.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
+image::./images/gui_prototyp/welcome_boss_new.png[landing page, 100%, 100%, pdfwidth=100%, title= "Startseite für den Admin der Catering-Service", align=center]
 
 [[home_image]]
 image::./images/gui_prototyp/kunden_new.png[kunden1, 100%, 100%, pdfwidth=100%, title= "Kunden-Seite: Übersicht der Kundenkontos", align=center]
