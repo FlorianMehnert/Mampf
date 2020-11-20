@@ -27,29 +27,90 @@ toc::[]
 * Vorgaben zum Betrieb des Software
 
 == Kontextabgrenzung
+
+[[context_diagram]]
+image:images/diagrams/context_diagram.svg[context diagram]
+
 * Kontextdiagramm
 
 == Lösungsstrategie
 === Erfüllung der Qualitätsziele
 [options="header"]
+[cols="1,5"]
 |=== 
 |Qualitätsziel |Lösungsansatz
-|... |...
+|Bedienbarkeit
+a| * *geringe Einstiegshürde* Es muss sichergestellt werden, dass das Programm
+ohne großen Einarbeitungsaufwand sehr schnell benutzt werden kann.
+Dazu können eindeutige Beschreibung der Eingabefelder oder sogenannte Tooltips helfen.
+
+* *Fehlerbehandlung / Fehlervermeidung* Benutzer sollen vor Fehlern geschützt werden.
+Falsche Eingabe sollen abgefangen werden und keine fatalen Folgen haben.
+
+* *angenehme Bedienoberfläche* Dem Benutzer soll eine intuitive, angenehme Bedienung ermöglicht werden.
+
+* *Barrierefreiheit* Möglichst vielen unterschiedlichen Benutzern mit möglichst
+vielen unterschiedlichen Voraussetzungen soll die Benutzung des Systems ermöglicht werden.
+Dies kann z.B. durch die Benutzung von ausreichend großen Schriftgrößen, großem Farbkontrast und alternativer Beschriftung von Bilder erfolgen.
+
+| Sicherheit
+a| * *Vertraulichkeit* Bestimmte Daten können nur von Personen eingesehen werden, die dazu autorisiert sind.
+Das kann z.B. mittels _Spring Security_ und _Thymeleaf_ (`sec:authorize` - tag) umgesetzt werden.
+
+* *Integrität* Daten sollen vor unautorisierter Veränderung geschützt sein. Dies kann mittels _Spring Security_ (`@PreAuthorize`) realisiert werden.
+
+* *Nachverfolgbarkeit* Bestimmte Aktionen müssen eindeutig einem Akteuer zugeordnet werden können. Dazu gehört beispielsweise das Bestellen (`Order`) von Angeboten (`Offer`).
+
 |===
 
 === Softwarearchitektur
-* Beschreibung der Architektur anhand der Top-Level-Architektur oder eines Client-Server-Diagramms
+
+[[top_level_diagram]]
+image:images/diagrams/top_level_arch.svg[top level architexture]
 
 === Entwurfsentscheidungen
-* Verwendete Muster
-* Persistenz
-* Benutzeroberfläche
-* Verwendung externer Frameworks
+==== Verwendete Muster
+
+* Spring MVC
+
+==== Persistenz
+Das Programm benutzt _Hibernate annotation based mapping_, um Java-Klassen automatisch in einer Datenbank zu speichern. Als Datenbank wird _H2_ benutzt.
+Die persistente Speicherung kann an- und abgeschaltet werden. Das ist z.B. hilfreich, um die Datenbank mit den Standardwerten wieder herzustellen.
+In der Datei _application.properties_ müssen dazu die folgenden Zeilen auskommentiert werden:
+
+ # spring.datasource.url=jdbc:h2:./db/mampf
+ # spring.jpa.hibernate.ddl-auto=update
+
+==== Benutzeroberfläche
+
+*TODO: add diagram*
+
+==== Verwendung externer Frameworks
 
 [options="header", cols="1,2"]
 |===
 |Externes Package |Verwendet von (Klasse der eigenen Anwendung)
-|... |... 
+|salespointframework.catalog
+a| * catalog.Item
+* catalog.Catalog
+* order.OrderController
+
+| salespointframework.core
+a| * catalog.CatalogInitializer
+* user.UserInitializer
+* employee.EmployeeInitializer
+* inventory.InventoryInitializer
+
+|salespointframework.inventory
+a| * catalog.CatalogController
+* inventory.InventoryController
+* inventory.InventoryInitializer
+
+| salespointframework.order
+a| * order.OrderController
+* catalog.Item
+* employee.EmployeeManager
+
 |===
 
 == Bausteinsicht
