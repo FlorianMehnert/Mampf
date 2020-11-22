@@ -18,13 +18,114 @@
 toc::[]
 
 == Einführung und Ziele
-* Aufgabenstellung
-* Qualitätsziele
+
+=== Aufgabenstellung
+Aufgabenstellung: 
+
+"Cateringservice
+Essen und Trinken hält Leib und Seele zusammen“ besagt ein altes deutsches Sprichwort.
+Das dachte sich auch Hannes Wurst und baute seinen kleinen Imbissstand zu dem inzwischen
+renommierten Cateringservice Mampf mit vielen Angestellten und guter Auftragslage aus.
+Jetzt möchte er endlich auch eine Software haben, mit der er alle Abrechnungs-, Bestell- und
+Verwaltungsaufgaben einheitlich bearbeiten kann. Bisher nutze Herr Wurst dafür diverse
+Programme und ärgerte sich immer wieder über deren Inkompatibilität zueinander und den
+Mehraufwand durch getrennte Datenhaltung. Als Basis für die Softwareentwicklung gab er
+uns folgende Beschreibung seines kleinen Unternehmens:
+Mampf gliedert sich in vier Geschäftsfelder. Das Eventcatering übernimmt die Verpflegung
+bei großen Veranstaltungen, egal ob in Form eines Buffets oder als Galadinner. Auf Wunsch
+gestaltet Mampf auch das komplette Event, d.h. neben den Speisen und Getränken wird auch
+Dekoration, Ausrüstung (also Geschirr, Tischtücher usw.) und Personal zur Verfügung
+gestellt, wobei der Kunde dann natürlich zusätzlich zum eigentlichen Preis für Lebensmittel
+und Arbeitszeit auch Leihgebühren und Personalkosten bezahlen muss. Der Partyservice
+beliefert private Feierlichkeiten mit kalten Platten – von Hochzeiten und Beerdigungen über
+Gartenfeste bis zu Omas 75sten Geburtstag. Hierbei gibt es Festpreise je nach Angebot und
+Personenanzahl (z.B. Schinkenplatte für 5 Personen zu 20,- EUR, Käseplatte für 3 Personen
+zu 12,50 EUR usw.) und Sonderaktionen (z.B. Sushi-Abend für 10 Personen). Eine
+Besonderheit von Mampf ist Mobile Breakfast – ein mobiler Frühstücksservice für kleinere
+Firmen ohne eigene Kantine. Zu festgelegten Zeiten können die Mitarbeiter sozusagen am
+Arbeitsplatz eine Auswahl an Frühstücksangeboten (belegte Brötchen, Müsli, Kaffee und Tee
+usw.) kaufen. Die Firmen buchen das Angebot monateweise. Problematisch ist allerdings die
+Planung dieses Angebotes – hier wird derzeit noch nach einer kostensparenden Lösung (z.B.
+in Form einer Vorbestellung) gesucht. Immer beliebter wird bei den Kunden auch das vierte
+Angebot von Mampf: Rent-a-Cook. Dabei wird Küchen- und Servicepersonal an
+Privathaushalte verliehen, um z.B. den Chef des Gastgebers mit kulinarischen Köstlichkeiten
+zu beeindrucken. Um die Lebensmittel müssen sich die Kunden dabei selbst kümmern.
+Hannes Wurst hat nun ganz genaue Vorstellungen von der zu entwickelnden Software: Sie
+soll die Kundenverwaltung unterstützen, die Personalverwaltung und -zuteilung übernehmen,
+die Termine planen, das Zubehör (Dekoration, Ausrüstung) verwalten, den
+Lebensmittelbedarf bestimmen (Anzahl Gerichte/Platten/belegte Brötchen, Menge an
+Getränken in Liter), die Rechnungsstellung an die Kunden vereinfachen und sämtliche
+Abrechnungen erleichtern. Die Lebensmittelbeschaffung muss nicht betrachtet werden, durch
+die langjährigen Erfahrungen bei Mampf ist der Einkaufspreis pro Gericht/Platte/Getränk
+jedoch bekannt."
+
+Diese Software soll dem Betreiber und seinen potentiellen Kunden eine einfachere und schnellere Möglichkeit der
+Kommunikation und Interaktion bieten. Potentielle Kunden sollen ein festes Konto besitzen, sich also registrieren können
+und dadurch eine schnellere Übersicht über das gesamte Angebot bekommen und dadurch auch schneller und einfacher
+bestellen können. Gleichwohl soll der Inhaber eine bessere und automatisierte Übersicht über alle Bestellungen bekommen,
+welche dadurch auch einfacher zu administrieren sind. Außerdem hat der Inhaber durch diese Software die Möglichkeit
+seine Kunden schneller und kostengünstiger von neuen Angeboten und neuen Produkten zu informieren. Da es nur um einen
+Cateringservice geht, wird auf sicherste Authentifizierungsmechanismen verzichtet und lediglich ein Passwort benötigt.
+Zusätzlich soll jeder Besucher des Services die Möglichkeit besitzen, sich auch ohne Registrierung einen Überblick über
+die Angebote zu machen.
+
+Die Software soll ansprechend und einladend aussehen und möglichst einfach aufgebaut sein damit sich jeder Benutzer zurechtfindet, was gleichermaßen bedeutet, dass sich an bestehende Designs angepasst wird.
+
+=== Qualitätsziele
+
+Wartbarkeit::
+Dieses Merkmal stellt den Grad der Wirksamkeit und Effizienz dar, mit dem ein Produkt oder System modifiziert werden kann, um es zu verbessern, zu korrigieren oder an Veränderungen in der Umgebung und an die Anforderungen anzupassen.
+
+Benutzerfreundlichkeit::
+Bedeutet, dass bestimmte Benutzer eines Produktes oder Systems, ihre Aufgaben mit Effektivität, Effizienz und Zufriedenheit, in einem bestimmten Kontext, umsetzten können.
+
+Sicherheit::
+Stellt sicher, dass System-relevante Informationen und Daten geschützt werden und Personen und Systeme nur darauf Zugriff besitzen, welche ihren Berechtigungsstufen entsprechen.
+
+1 = Nicht wichtig ..
+5 = Sehr wichtig
+[options="header", cols="3h, ^1, ^1, ^1, ^1, ^1"]
+|===
+|Qualitätsziel            | 1 | 2 | 3 | 4 | 5
+|Wartbarkeit              |   |   |   | x |
+|Benutzerfreundlichkeit   |   |   | x |   |
+|Sicherheit               |   |   |   | x |
+|===
 
 == Randbedingungen
-* Hardware-Vorgaben
-* Software-Vorgaben
-* Vorgaben zum Betrieb des Software
+=== Hardware-Vorgaben
+Benötigte Geräte zum Anwenden und Ausführen der Software
+
+- Server
+- Computer
+- Tastatur
+- Maus
+
+=== Software-Vorgaben
+
+Folgende Java-Version muss mindestens verfügbar sein um die Software auf dem Server ausführen zu können
+
+- Java 11.x
+
+Folgende Browser und die entsprechende Version sind nötig um das Frontend der Software einwandfrei ausführen zu können
+
+- Internet Explorer / Edge 10.0
+
+- Firefox 4.0
+
+- Google Chrome 4.0
+
+- Opera 9.6
+
+=== Vorgaben zum Betrieb des Software
+
+Dieses System wird vom Kunden Hannes Wurst als WebShop selbst auf einem Server seiner Wahl betrieben und dient zur Verteilung seiner Dienstleistungen an seinen derzeitigen Kundenbestand und gleichzeitig dazu seinen Kundenkreis zu erweitern.
+Über das Internet soll die Software jederzeit für jeden zur Verfügung stehen. Hannes Wurst soll die Verwaltung seiner Dienstleistung und seiner Mitarbeiter bzw. Kunden erleichtert werden.
+
+Hauptzielgruppe dieser Software sind Privatpersonen als auch Firmen und ihre Mitarbeiter, die mit der grundlegenden Bedienung einer Website vertraut sind.
+Außerdem Administratoren, die zur Benutzung keine informationstechnischen Kenntnisse benötigen müssen.
+
+Das Wartungspotential der Software muss nahezu nicht vorhanden sein, da die Administratoren keine Kompetenz in jeglicher Fachrichtung, die zur Wartung benötigt werden würde, besitzen und auch kein Servicevertrag vereinbart wird. Außerdem müssen alle Daten persistent in einer Datenbank abgelegt werden und für die Administratoren einfach zugänglich sein.
 
 == Kontextabgrenzung
 
