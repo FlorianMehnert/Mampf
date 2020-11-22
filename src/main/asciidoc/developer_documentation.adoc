@@ -217,6 +217,19 @@ a| * order.OrderController
 == Bausteinsicht
 * Entwurfsklassendiagramme der einzelnen Packages
 
+=== Mampf
+
+[[pkg_mampf_building_block_diagram]]
+image:images/diagrams/developer_doc_5_1_Mampf.svg[pkg mampf_building block diagram]
+
+[options="header"]
+|=== 
+|Klasse/Enumeration |Description
+| Mampf | Hauptklasse zum initialisieren des Spring-Containers und starten den Anwendung
+| MampfWebConfiguration | Konfigurationsklasse zur Weiterleitung an die Route `/login` und das Template `login.html`
+| WebSecurityConfiguration | Konfigurationsklasse zum bereitstellen von grundsätzlichen Sicherheitsfunktionen, wie das ein- und ausloggen
+|===
+
 [options="header"]
 |=== 
 |Klasse/Enumeration |Description
