@@ -259,6 +259,33 @@ wird die Art der Verwendung dieser externen Klasse in der Spalte *Art der Verwen
 |...|...|...
 |===
 
+=== Inventory
+[[pkg_inventory_building_block_diagram]]
+image:images/diagrams/developer_doc_5_4_Inventory.svg[pkg inventory building block diagram]
+
+[options="header"]
+|===
+|Klasse/Enumeration |Description
+| Inventory | Eine Erweiterung des UniqueInventory, um die einzelnen Mampf-Items von `Item` zu managen.
+| Category | Enumeration, die die jeweilige Kategorie eines Produktes oder einer Dienstleistung `Item`, die in einer
+Domäne angeboten wird, beschreibt.
+| Domain | Enumeration, die die jeweilige Domäne eines (bspw. PartyService) der zu vertreibenden Produkte und
+Dienstleistungen `Item` beschreibt.
+| Item | Beschreibt alle Produkte und Dienstleistungen die Mampf vertreibt.
+| MampfCatalog | Eine Erweiterung des Salepoint Catalog, um Mampf spezifische Funktionalitäten hinzuzufügen.
+|===
+
+=== Order
+[[pkg_order_building_block_diagram]]
+image:images/diagrams/developer_doc_5_5_Orders.svg[pkg order building block diagram]
+
+[options="header"]
+|===
+|Klasse/Enumeration |Description
+| OrderManager | Eine Erweiterung des Salespoint OrderManager, um einzelne Mampf `Orders` zu verwalten.
+| Orders | Eine Erweiterung von der Salespoint `Order`, um einzelne Mampf Bestellungen zu verwalten.
+|===
+
 == Laufzeitsicht
 * Darstellung der Komponenteninteraktion anhand eines Sequenzdiagramms, welches die relevantesten Interaktionen darstellt.
 
