@@ -9707,7 +9707,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 961,
-									"top": 872,
+									"top": 875,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -9728,7 +9728,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 946,
-									"top": 872,
+									"top": 875,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -9749,7 +9749,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 991,
-									"top": 873,
+									"top": 876,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -9833,7 +9833,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 983,
-									"top": 691,
+									"top": 696,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -9853,7 +9853,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 986,
-									"top": 705,
+									"top": 710,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -9873,7 +9873,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 979,
-									"top": 664,
+									"top": 669,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 25,
@@ -9919,7 +9919,7 @@
 							"tail": {
 								"$ref": "AAAAAAF1yxIrbEpLirc="
 							},
-							"points": "838:1076;976:1076;976:683;958:683",
+							"points": "838:1076;976:1076;976:688;958:688",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAF1zasxJnzB04Y="
@@ -15042,7 +15042,8 @@
 								"$ref": "AAAAAAF1yxDfiUkR6jc="
 							},
 							"name": "booked",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						}
 					],
 					"operations": [
@@ -16120,7 +16121,8 @@
 								"$ref": "AAAAAAF1yxanKksEQkk="
 							},
 							"name": "category",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -17507,7 +17509,8 @@
 								"$ref": "AAAAAAF14MTRLANfoxc="
 							},
 							"name": "price",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -17516,7 +17519,8 @@
 								"$ref": "AAAAAAF14MTRLANfoxc="
 							},
 							"name": "decription",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						}
 					]
 				},
@@ -17656,7 +17660,8 @@
 								"$ref": "AAAAAAF14NbB/6Nfw8U="
 							},
 							"name": "name",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -17665,7 +17670,8 @@
 								"$ref": "AAAAAAF14NbB/6Nfw8U="
 							},
 							"name": "bookedBreakfast",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						}
 					],
 					"operations": [
