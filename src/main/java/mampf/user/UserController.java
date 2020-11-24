@@ -1,5 +1,6 @@
 package mampf.user;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 class UserController {
@@ -39,13 +41,13 @@ class UserController {
 		return "register";
 	}
 
-	@GetMapping("/welcome")
+	@GetMapping("/")
 	public String index(Model model) {
-		return "welcome";
+		return "index";
 	}
 
 	@GetMapping("/users")
-//	@PreAuthorize("hasRole('BOSS')")
+	@PreAuthorize("hasRole('BOSS')")
 	public String users(Model model) {
 
 		model.addAttribute("userList", userManagement.findAll());

@@ -19,22 +19,25 @@
 </head>
 <body>
 <nav th:include="navigation :: navigation"></nav>
-<div class="ui container">
+<div class="container">
     <header>
         <h1 >Kundenliste</h1>
     </header>
 
-    <table class="ui celled table">
-        <thead>
+    <table class="table table-hover">
+        <thead class="thead-light">
         <tr>
             <th>Name</th>
-            <th>Anschrift</th>
+            <th>Rolle</th>
+            <th>AccessCode</th>
         </tr>
         </thead>
         <tbody th:remove="all-but-first">
         <tr th:each=" user : ${userList}">
-            <td th:text="${user.userAccount.id}">Paul</td>
-            <td th:text="${user.userAccount.username}">Nöthnitzer Straße 46</td>
+            <td th:text="${user.userAccount.username}">Paul</td>
+            <td th:text="${user.userAccount.getRoles().toList()}">[EMPLYOEE]</td>
+            <td th:if="${user.company.isPresent()}" th:text="${user.company.get().accessCode}">aabbcc</td>
+            <td th:if="${user.company.isEmpty()}" >--</td>
         </tr>
         </tbody>
     </table>

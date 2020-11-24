@@ -57,7 +57,7 @@ public class Mampf {
 			http.csrf().disable();  // for lab purposes, that's ok!
 
 			http.authorizeRequests().antMatchers("/**").permitAll().and()
-					.formLogin().loginProcessingUrl("/login").and()
+					.formLogin().loginPage(LOGIN_ROUTE).loginProcessingUrl(LOGIN_ROUTE).and()
 					.logout().logoutUrl("/logout").logoutSuccessUrl("/");
 		}
 	}

@@ -61,10 +61,10 @@ public class UserDataInitializer implements DataInitializer {
 		var password = "123";
 
 		List.of(//
-				new RegistrationForm("hans", password, "wurst", UserRole.INDIVIDUAL.name()),
-				new RegistrationForm("dextermorgan", password, "Miami-Dade County", UserRole.COMPANY.name()),
-				new RegistrationForm("earlhickey", password, "Camden County - Motel", UserRole.EMPLOYEE.name()),
-				new RegistrationForm("mclovinfogell", password, "Los Angeles", UserRole.EMPLOYEE.name())//
+				new RegistrationForm("hans", password, "wurst", UserRole.INDIVIDUAL.name(), "", ""),
+				new RegistrationForm("dextermorgan", password, "Miami-Dade County", UserRole.COMPANY.name(), "BroCompany", ""),
+				new RegistrationForm("earlhickey", password, "Camden County - Motel", UserRole.INDIVIDUAL.name(), "", ""),
+				new RegistrationForm("mclovinfogell", password, "Los Angeles", UserRole.INDIVIDUAL.name(), "", "")//
 		).forEach(userManagement::createUser);
 	}
 }

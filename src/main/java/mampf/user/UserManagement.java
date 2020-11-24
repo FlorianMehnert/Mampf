@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.util.Iterator;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class UserManagement {
@@ -46,9 +49,18 @@ public class UserManagement {
 		Assert.isTrue(!form.getRole().equals(UserRole.BOSS.name()), "It's not allowed to set the boss here");
 
 		var password = Password.UnencryptedPassword.of(form.getPassword());
-		var userAccount = userAccounts.create(form.getName(), password, form.getName(), Role.of(form.getRole()));
+		var userAccount = userAccounts.create(form.getUsername(), password, form.getUsername(), Role.of(form.getRole()));
+		User user = new User(userAccount);
+		if(form.getRole().equals(UserRole.COMPANY.name())) {
+			Company company = new Company(form.getCompanyName());
+			user.setCompany(company);
+		}
+		if(form.getRole().equals(UserRole.EMPLOYEE.name()) && findCompany(form.getAccessCode()).isPresent()) {
+			Company company = findCompany(form.getAccessCode()).get();
+			company.addEmployee(user);
+		}
 
-		return users.save(new User(userAccount));
+		return users.save(user);
 	}
 
 	/**
@@ -58,5 +70,16 @@ public class UserManagement {
 	 */
 	public Streamable<User> findAll() {
 		return users.findAll();
+	}
+
+	public Optional<Company> findCompany(String accessCode) {
+		Iterator<User> userIterator = users.findAll().iterator();
+		while (userIterator.hasNext()) {
+			User user = userIterator.next();
+			if(user.getCompany().isPresent() && user.getCompany().get().getAccessCode().equals(accessCode)) {
+				return user.getCompany();
+			}
+		}
+		return Optional.empty();
 	}
 }
