@@ -1,28 +1,20 @@
 image:https://github.com/st-tu-dresden-praktikum/swt20w10/workflows/CI%20build/badge.svg["CI Build", link="https://github.com/st-tu-dresden-praktikum/swt20w10/actions"]
 image:https://img.shields.io/badge/SonarQube-checked-blue?logo=sonarqube["SonarQube status", link="https://st-lab-ci.inf.tu-dresden.de/sonarqube/"]
 
-// Hi there! We've already included some generally useful information in here.
-// Feel free to edit the first section to add a short description of your task and your project.
+= Mampf :fries:
 
-= Kickstart
+Mampf ist ein Eventcateringservice des Inhabers Hannes Mampf und stellt Dienste wie ein Eventcatering, Partyservice, Mobile-Breakfast und Rent-A-Cook zur Verfügung. Diese Repository hält die Verwaltungssoftware für alle diese Dienste, sowie Kunden und Mitarbeiterverwaltung.
 
-The kickstart module is a template project to bootstrap the Java project in the Software Engineering lab.
-Each group's repository is initialized with this template.
-It contains the following features:
+== :exclamation: Wichtige Dokumente dieser Repository
 
-* a skeleton Java 11 web application based on Spring Boot and Salespoint framework (see `src/main/java` and `src/test/java`)
-* Asciidoc documentation templates in `src/main/asciidoc`
-
-== Important documents in this repo
-
-* link:src/main/asciidoc/protocols[Meeting Protocols]
+* link:src/main/asciidoc/protocols[Meeting Protokolle]
 * link:src/main/asciidoc/time_recording.adoc[Time recording (Zeiterfassung)]
 * link:src/main/asciidoc/pflichtenheft.adoc[Requirements specification (Pflichtenheft)]
 * link:src/main/asciidoc/developer_documentation.adoc[Developer documentation (Entwicklerdokumentation)]
 
-== The repository layout
+== Das Repository-Layout
 
-The repository follows the standard Maven project layout. Nearly all artifacts are stored in a subdirectory of `src/`:
+Diese Repository nutzt den typischen Aufbau eines Maven-Projects. Wie üblich werden alle anwendungsrelevanten Dateien in einem `src/` Ordner zusammengefasst:
 
   src/
   ├── main/
@@ -34,11 +26,22 @@ The repository follows the standard Maven project layout. Nearly all artifacts a
 
 **Pro tip:** In GitHub, press *t* and a "fuzzy file finder" will appear, making it easy to navigate to a file.
 
-== How to run the application?
+== :rocket: Um die Anwendung zu starten
 
-* In the IDE: find `Application.java`, right-click project, select "Run As > Java Application"
-* From the command line: run `./mvnw spring-boot:run`
+* In der IDE: `Application.java` finden, Rechtsklick -> project, select "Run As > Java Application"
+* `./mvnw spring-boot:run` im Terminal ausführen
 
-== How to package the application?
+==== VSCode
 
-* Run `./mvnw clean package`. The packaged application (a JAR in `target/`) can be run with `java -jar $jarName`.
+* Kommandofenster mit `F1` öffnen
+* `Debug: Open launch.json` eingeben
+* `Java` auswählen
+* `launch.json` speichern
+* `F5` benutzen um einen der beiden Debug-Tasks auszuwählen (der Zweite startet die ganze App)
+
+== :gift: Erstellen eines Builds
+
+* `cd <Pfad zum Entwicklungsordner>`
+* `./mvnw clean package` ausführen
+* Ein Build wird im Verzeichnis `target/` erstellt 
+* Anwendung ausführen mit `java -jar $jarName`

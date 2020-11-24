@@ -212,6 +212,55 @@ a| * order.OrderController
 * catalog.Item
 * employee.EmployeeManager
 
+| salespointframework.payment
+a| * order.OrderController
+
+| salespointframework.quantity
+a| * catalog.CatalogController
+* inventory.InventoryInitializer
+* order.OrderController
+
+| salespointframework.SalespointSecurityConfiguration
+a| * mampf.WebSecurityConfiguration
+
+| salespointframework.time
+a| * catalog.CatalogController
+
+| salespointframework.useraccount
+a| * user.User
+* user.UserDataInitializer
+* user.UserManagement
+* order.OrderController
+
+| springframework.boot
+a| * mampf.Mampf
+
+| springframework.data
+a| * catalog.Catalog
+* user.UserManagement
+* user.UserRepository
+
+| springframework.security
+a| * mampf.WebSecurityConfiguration
+
+| springframework.ui
+a| * catalog.CatalogController
+* user.UserController
+* inventory.InventoryController
+* order.OrderController
+* employee.EmployeeController
+
+| springframework.util
+a| * user.UserController
+* user.UserInitializer
+* order.OrderController
+
+| springframework.validation
+a| * user.UserController
+
+| springframework.web
+a| mampf.MampfWebConfiguration
+
 |===
 
 == Bausteinsicht
@@ -234,6 +283,9 @@ image:images/diagrams/developer_doc_5_1_Mampf.svg[pkg mampf_building block diagr
 
 [[pkg_catalog_building_block_diagram]]
 image:images/diagrams/developer_doc_5_2_Catalog.svg[pkg catalog building block diagram]
+
+=== User
+
 
 [options="header"]
 |=== 
