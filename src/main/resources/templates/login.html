@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<div class="ui container">
+    <header>
+        <h1>Mampf</h1>
+    </header>
+
+    <form class="ui form" role="form" th:action="@{/login}" method="post">
+
+        <div class="field">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" autofocus="autofocus"/> <br/>
+        </div>
+
+        <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"/> <br/>
+        </div>
+
+        <button type="submit"  class="ui button">Log in</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div th:fragment="navigation">
+    <nav class="navbar navbar-light navbar-expand-sm bg-light">
+        <a class="navbar-brand" href="#">Mampf</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="register.html" th:href="@{/register}"
+                       sec:authorize="!isAuthenticated()">Registrierung</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="orders.html" th:href="@{/orders}" sec:authorize="hasRole('BOSS')">Bestellungen</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="stock.html" th:href="@{/stock}" sec:authorize="hasRole('BOSS')">Lager</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="users.html" th:href="@{/users}" sec:authorize="hasRole('BOSS')">Kundenliste</a>
+                </li>
+
+
+            </ul>
+            <ul>
+                <div class="my-2 my-lg-0">
+                    <a class="form-inline a_without_hover_decoration" sec:authorize="!isAuthenticated()" th:href="@{/login}">
+                        <button type="submit" class="btn btn-outline-success my-2">Login</button>
+                    </a>
+                    <form class="form-inline" sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-success my-2">Logout</button>
+                    </form>
+                </div>
+            </ul>
+
+        </div>
+    </nav>
+</div>
+</body>
+</html>

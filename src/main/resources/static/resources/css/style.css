@@ -17,3 +17,7 @@ h1 {
 	line-height: 3.2em;
 	text-align:center;
 }
+
+.a_without_hover_decoration:hover {
+	text-decoration: none;
+}
