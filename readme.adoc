@@ -5,7 +5,7 @@ image:https://img.shields.io/badge/SonarQube-checked-blue?logo=sonarqube["SonarQ
 
 Mampf ist ein Eventcateringservice des Inhabers Hannes Mampf und stellt Dienste wie ein Eventcatering, Partyservice, Mobile-Breakfast und Rent-A-Cook zur Verfügung. Diese Repository hält die Verwaltungssoftware für alle diese Dienste, sowie Kunden und Mitarbeiterverwaltung.
 
-== Wichtige Dokumente dieser Repository
+== :exclamation: Wichtige Dokumente dieser Repository
 
 * link:src/main/asciidoc/protocols[Meeting Protokolle]
 * link:src/main/asciidoc/time_recording.adoc[Time recording (Zeiterfassung)]
@@ -26,7 +26,7 @@ Diese Repository nutzt den typischen Aufbau eines Maven-Projects. Wie üblich we
 
 **Pro tip:** In GitHub, press *t* and a "fuzzy file finder" will appear, making it easy to navigate to a file.
 
-== Um die Anwendung zu starten
+== :rocket: Um die Anwendung zu starten
 
 * In der IDE: `Application.java` finden, Rechtsklick -> project, select "Run As > Java Application"
 * `./mvnw spring-boot:run` im Terminal ausführen
@@ -39,7 +39,7 @@ Diese Repository nutzt den typischen Aufbau eines Maven-Projects. Wie üblich we
 * `launch.json` speichern
 * `F5` benutzen um einen der beiden Debug-Tasks auszuwählen (der Zweite startet die ganze App)
 
-== Erstellen eines Builds
+== :gift: Erstellen eines Builds
 
 * `cd <Pfad zum Entwicklungsordner>`
 * `./mvnw clean package` ausführen
