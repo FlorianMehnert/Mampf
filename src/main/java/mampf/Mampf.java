@@ -13,19 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kickstart;
+package mampf;
 
 import org.salespointframework.EnableSalespoint;
 import org.salespointframework.SalespointSecurityConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableSalespoint
-public class Application {
+public class Mampf {
+
+	private static final String LOGIN_ROUTE = "/login";
+
+	@Configuration
+	static class VideoShopWebConfiguration implements WebMvcConfigurer {
+
+		/**
+		 * Anstatt einen extra Controller zu implementieren wird die Route {@code /login} direkt auf das Template {@code login} verwiesen,
+		 * was ein Spring eigenes Template plus Controller ist.
+		 * 
+		 * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#addViewControllers(org.springframework.web.servlet.config.annotation.ViewControllerRegistry)
+		 */
+		@Override
+		public void addViewControllers(ViewControllerRegistry registry) {
+			registry.addViewController(LOGIN_ROUTE).setViewName("login");
+			registry.addViewController("/").setViewName("index");
+		}
+	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(Mampf.class, args);
 	}
 
 	@Configuration
