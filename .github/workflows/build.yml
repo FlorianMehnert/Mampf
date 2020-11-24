@@ -34,11 +34,3 @@ jobs:
     - name: Run and publish SonarQube analysis
       if: github.ref == 'refs/heads/main'
       run: ./mvnw sonar:sonar -B
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: build-artifacts
-        path: |
-          target/*.jar
-          target/*.zip
