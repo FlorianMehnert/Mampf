@@ -49,8 +49,12 @@ public class UserManagement {
 		Assert.isTrue(!form.getRole().equals(UserRole.BOSS.name()), "It's not allowed to set the boss here");
 
 		var password = Password.UnencryptedPassword.of(form.getPassword());
-		var userAccount = userAccounts.create(form.getUsername(), password, form.getUsername(), Role.of(form.getRole()));
-		User user = new User(userAccount);
+		var userAccount = userAccounts.create(form.getUsername(), password, form.getEmail(), Role.of(form.getRole()));
+		userAccount.setFirstname(form.getFirstname());
+		userAccount.setLastname(form.getLastname());
+
+		User user = new User(userAccount, form.getAddress());
+
 		if(form.getRole().equals(UserRole.COMPANY.name())) {
 			Company company = new Company(form.getCompanyName());
 			user.setCompany(company);
@@ -82,4 +86,45 @@ public class UserManagement {
 		}
 		return Optional.empty();
 	}
+
+	/**
+	 * Returns a {@link User} that matches the id
+	 * @return User
+	 */
+	public Optional<User> findUserById(long userId) {
+		User user = null;
+		Iterator<User> userIterator = users.findAll().iterator();
+		do{
+			user = userIterator.next();
+			if(user.getId() == userId) {
+				return Optional.of(user);
+			}
+		}while (userIterator.hasNext());
+		return Optional.empty();
+	}
+
+	/**
+	 * Returns a {@link User} that matches the id
+	 * @return User
+	 */
+	public Optional<User> findUserByUsername(String username) {
+		User user = null;
+		Iterator<User> userIterator = users.findAll().iterator();
+		do{
+			user = userIterator.next();
+			if(user.getUserAccount().getUsername().equals(username)) {
+				return Optional.of(user);
+			}
+		}while (userIterator.hasNext());
+		return Optional.empty();
+	}
+
+	public void denyAuthenticationById(long userId) {
+		if(this.findUserById(userId).isPresent()) {
+			User user = this.findUserById(userId).get();
+			user.getUserAccount().setEnabled(false);
+			users.save(user);
+		}
+	}
+
 }

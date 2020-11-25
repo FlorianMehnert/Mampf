@@ -13,12 +13,14 @@ public class User {
 	@OneToOne
 	private UserAccount userAccount;
 
-	//
 	@OneToOne(cascade = CascadeType.ALL)
 	private Company company;
 
-	public User(UserAccount userAccount) {
+	private String address;
+
+	public User(UserAccount userAccount, String address) {
 		this.userAccount = userAccount;
+		this.address = address;
 	}
 
 	public User() {	}
@@ -45,4 +47,13 @@ public class User {
 			this.company = company;
 //		}
 	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 }

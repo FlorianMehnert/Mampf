@@ -34,14 +34,29 @@
         </div>
 
         <div class="form-group">
+            <label for="firstname">Firstname</label>
+            <input class="form-control" type="text" id="firstname" name="firstname" autofocus="autofocus"/> <br/>
+        </div>
+
+        <div class="form-group">
+            <label for="lastname">Lastname</label>
+            <input class="form-control" type="text" id="lastname" name="lastname" autofocus="autofocus"/> <br/>
+        </div>
+
+        <div class="form-group">
             <label for="password">Password</label>
             <input class="form-control" type="password" id="password" name="password"/> <br/>
         </div>
 
         <div class="form-group">
+            <label for="password">Adresse</label>
+            <input class="form-control" type="text" id="address" name="address"/> <br/>
+        </div>
+
+        <div class="form-group">
             <label for="role">Type des Benutzerzugangs</label>
             <select class="form-control" id="role" name="role">
-                <option value="INDIVIDUAL">INDIVIDUAL</option>
+                <option value="INDIVIDUAL" onselect="$('#accessCodeGroup').css('display', 'block')">INDIVIDUAL</option>
                 <option value="EMPLOYEE">EMPLOYEE</option>
                 <option value="COMPANY">COMPANY</option>
             </select>

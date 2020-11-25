@@ -34,13 +34,13 @@ public class Company {
 		employees.add(employee);
 	}
 
+	public void removeEmployee(User employee) {
+		employees.remove(employee);
+	}
+
 
 	public long getId() {
 		return id;
-	}
-
-	public void setAccessCode(String accessCode) {
-		this.accessCode = accessCode;
 	}
 
 	public String getAccessCode() {
@@ -51,4 +51,7 @@ public class Company {
 		return employees;
 	}
 
+	public String getName() {
+		return name;
+	}
 }

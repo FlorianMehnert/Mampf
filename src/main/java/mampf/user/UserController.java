@@ -1,15 +1,18 @@
 package mampf.user;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.Iterator;
 import java.util.List;
 
 @Controller
@@ -54,4 +57,37 @@ class UserController {
 
 		return "users";
 	}
+
+	@GetMapping("/userDetails/")
+	@PreAuthorize("isAuthenticated()")
+	public String userDetails(Model model, Authentication authentication)
+	{
+		if(userManagement.findUserByUsername(authentication.getName()).isPresent()) {
+			model.addAttribute("user", userManagement.findUserByUsername(authentication.getName()).get());
+			return "userDetails";
+		}
+		return "redirect:/";
+	}
+
+	@GetMapping("/userDetailsAsBoss/{userId}")
+	@PreAuthorize("hasRole('BOSS')")
+	public String userDetailsAsBoss(@PathVariable long userId, Model model)
+	{
+		if(userManagement.findUserById(userId).isEmpty()) {
+			return "users";
+		}
+		User user = userManagement.findUserById(userId).get();
+		model.addAttribute("user", user);
+		return "userDetails";
+	}
+
+	@GetMapping("/deleteUser/{userId}")
+	@PreAuthorize("hasRole('BOSS')")
+	public String denyAuthentication(@PathVariable long userId, Model model)
+	{
+		userManagement.denyAuthenticationById(userId);
+		return "redirect:/users";
+	}
+
+
 }
