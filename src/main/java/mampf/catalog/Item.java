@@ -1,4 +1,4 @@
-package catalog;
+package mampf.catalog;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
