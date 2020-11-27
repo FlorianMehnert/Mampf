@@ -29,7 +29,7 @@ public class Mampf {
 	private static final String LOGIN_ROUTE = "/login";
 
 	@Configuration
-	static class VideoShopWebConfiguration implements WebMvcConfigurer {
+	static class MampfWebConfiguration implements WebMvcConfigurer {
 
 		/**
 		 * Anstatt einen extra Controller zu implementieren wird die Route {@code /login} direkt auf das Template {@code login} verwiesen,
@@ -53,9 +53,11 @@ public class Mampf {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
+
 			http.csrf().disable();  // for lab purposes, that's ok!
+
 			http.authorizeRequests().antMatchers("/**").permitAll().and()
-					.formLogin().loginProcessingUrl("/login").and()
+					.formLogin().loginPage(LOGIN_ROUTE).loginProcessingUrl(LOGIN_ROUTE).and()
 					.logout().logoutUrl("/logout").logoutSuccessUrl("/");
 		}
 	}
