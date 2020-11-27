@@ -1205,8 +1205,8 @@ a| Ein Element im Warenkorb nennt sich CartItem und repräsentiert ein Angebot m
 | [[catalog]] *Catalog* (Katalog)
 a| Der Katalog speichert alle Angebote. Er ermöglicht das Erstellen neuer Angebote und das Filtern nach <<offerCategory, Kategorien>>.
 
-| [[employee]] *Employee* (Personal)
-a| Ein employee repräsentiert das Personal. Es gibt zwei grundlegende Personaltypen:
+| [[mampf.employee]] *Employee* (Personal)
+a| Ein mampf.employee repräsentiert das Personal. Es gibt zwei grundlegende Personaltypen:
 
 * Köche +
 * Servicepersonal
