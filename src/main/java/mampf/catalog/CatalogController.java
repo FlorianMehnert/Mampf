@@ -5,6 +5,10 @@ import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.time.BusinessTime;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import static org.salespointframework.core.Currencies.*;
 
+import java.nio.charset.StandardCharsets;
+
+import mampf.Util;
 import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
 
@@ -34,39 +41,84 @@ public class CatalogController {
 		this.businessTime = businessTime;
 	}
 
+	//? Probably not needed because user can choose domain from homepage or navigation
+	/**
+	 * Returns a site from which the user can choose one the domains, 
+	 * currently (Eventcatering, Party-Service, Mobile-Breakfast and Rent-A-Cook)
+	 * @param model
+	 * @return html-template
+	 */
 	@GetMapping("/catalog")
 	String itemsCatalog(Model model){
 		return "catalog"; 
 	}
 
-	@GetMapping("/catalog/add/random")
-	String itemsCount(Model model) {
+	// TODO: check if domain exists and return 404-Page if not eventually
+	/**
+	 * 
+	 * @param domain String which indicates which items from catalog have to be filtered
+	 * @param model for serving data to the template
+	 * @return a thymeleaf html-template
+	 */
+	@GetMapping("/catalog/{domain}")
+	String catalogDomain(@PathVariable String domain, Model model) {
+		Domain catalogDomain;
+		try {
+			catalogDomain = Util.parseDomainEnum(domain);
+		} catch (IllegalArgumentException ex) {
+			System.out.println(ex.toString());
+			model.addAttribute("error", String.format("URI is invalid.\n\"%s\" is not a valid domain.", domain));
+			return "404";
+		}
+		String domainNameLocale = Util.renderDomainName(domain);
+		model.addAttribute("domainTitle", domainNameLocale);
+		model.addAttribute("catalog", catalog.findByDomain(catalogDomain));
 
+		return "catalog";
+	}
+
+	// -----------------
+	//* Development Paths
+	// -----------------
+	
+	//! Todo: add task to delete when building
+	// Used to add random entities to the catalog with different domains
+	@GetMapping("/catalog/add/random/{amount}")
+	String itemsCount(@PathVariable int amount) {
 		if(catalog.count() == 0){
-			for(int i = 0; i < 20; i++){
+			for(int i = 0; i < amount; i++){
 				catalog.save(
 				new Item(
 					"test"+ i,
 					Money.of(i, EURO),
-					Item.Domain.EVENTCATERING,
-					Item.Category.EQUIPMENT,
+					Util.randomEnum(Item.Domain.class),
+					Util.randomEnum(Item.Category.class),
 					"Das ist nur ein Test"
 				)
 			);
 			}
 		}
-		model.addAttribute("count", catalog.count());
-
-		return "count";
+		return "redirect:/catalog/count";
 	}
 
-	@GetMapping("/catalog/{domain}")
-	String catalogDomain(@PathVariable String domain, Model model) {
+	//! Todo: add task to delete when building
+	// Used to get the current length of catalog items
+	@GetMapping("/catalog/count")
+	public ResponseEntity<String> catalogCount(){
+		var httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
+		String count = Long.toString(catalog.count());
+    return new ResponseEntity<>(count, httpHeaders, HttpStatus.OK);
+	}
 
-		Domain catalogDomain = Domain.valueOf(domain.toUpperCase());
-		model.addAttribute("catalog", catalog.findByDomain(catalogDomain));
-
-		return "catalog";
+	//! Todo: add task to delete when building
+	// Used to reset the catalog and delete all items from it
+	@GetMapping("/catalog/reset")
+	public ResponseEntity<String> reset(){
+		catalog.deleteAll();
+		var httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
+		return new ResponseEntity<>("Deleted all catalog items!", httpHeaders, HttpStatus.OK);
 	}
 	
 }
