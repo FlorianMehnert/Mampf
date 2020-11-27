@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import static org.salespointframework.core.Currencies.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import mampf.Util;
 import mampf.catalog.Item;
@@ -50,7 +54,19 @@ public class CatalogController {
 	 */
 	@GetMapping("/catalog")
 	String itemsCatalog(Model model){
-		return "catalog"; 
+
+		ArrayList<Map> domains = new ArrayList<>();
+
+		for(Domain domain : Domain.values()) {
+			Map<String, String> domainObj = new HashMap<>();
+			domainObj.put("title", Util.renderDomainName(domain.toString()));
+			domainObj.put("href", domain.toString().toLowerCase());
+			domains.add(domainObj);
+		}
+
+		model.addAttribute("domains", domains);
+
+		return "catalog_index"; 
 	}
 
 	// TODO: check if domain exists and return 404-Page if not eventually
@@ -70,9 +86,24 @@ public class CatalogController {
 			model.addAttribute("error", String.format("URI is invalid.\n\"%s\" is not a valid domain.", domain));
 			return "404";
 		}
+		Iterable<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
+		Iterator<Item> iterator = filteredCatalog.iterator();
+		Map<String, ArrayList> categorizedItems = new HashMap<>();
+		while(iterator.hasNext()){
+			Item currentItem = iterator.next();
+			String currentCategory = currentItem.getCategory().toString();
+			if(categorizedItems.containsKey(currentCategory)){
+				categorizedItems.get(currentCategory).add(currentItem);
+			}
+			else {
+				ArrayList newArrayList = new ArrayList<Item>();
+				newArrayList.add(currentItem);
+				categorizedItems.put(currentCategory, newArrayList);
+			}
+		}
 		String domainNameLocale = Util.renderDomainName(domain);
 		model.addAttribute("domainTitle", domainNameLocale);
-		model.addAttribute("catalog", catalog.findByDomain(catalogDomain));
+		model.addAttribute("catalog", categorizedItems);
 
 		return "catalog";
 	}

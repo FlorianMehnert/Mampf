@@ -20,3 +20,133 @@ h1 {
   max-width: 73rem;
   margin: auto;
 }
+
+/* catalog sytle */
+
+.mmpf-category-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding-bottom: 8rem;
+}
+
+.mmpf-c-title {
+  text-align: center;
+  font-size: 2rem;
+  background-color: #333;
+  padding: 1rem 0;
+  color: #fff;
+  border-radius: 25px;
+}
+
+.mmpf-c-card {border: 1px solid #ccc;margin: 1rem 0;border-radius: 10px;padding: 1rem;position: relative;display: flex;flex-wrap: wrap;flex-direction: column;}
+
+.mmpf-c-card-title {font-size: 1.5em;margin-bottom: 8px;order: 0;color: #111;}
+
+.mmpf-c-card-price {order: 2;color: #584df9;font-weight: 700;}
+
+.mmpf-c-card-description {
+  order: 1;
+  margin-bottom: 20px;
+  color: #888;
+}
+
+button.mmpf-c-card-add {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
+button.ui.primary.button.mmpf-c-card-add {
+  margin: 0;
+}
+
+.mmpf-clear {
+  margin: 0!important;
+  padding: 0!important;
+}
+
+/* Sidebar */
+
+.overlay {
+  top: 0;
+  z-index: 98;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.3;
+  display: none;
+}
+
+div#mmpf-sidebar {
+  z-index: 99;
+  height: 0%;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  background-color: #fff;
+}
+
+.mmpf-s-root {
+  max-width: 73rem;
+  margin: auto;
+  padding: 4rem;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.mmpf-s-title {
+  font-size: 2.5rem;
+  flex: 1 0;
+  line-height: 1;
+}
+
+.mmpf-s-price {
+  color: #584df9;
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+
+.mmpf-s-description {
+  padding-bottom: 2rem;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+.flex-break {
+  flex-basis: 100%
+}
+
+/* Catalog Index */
+
+.mmpf-tiles-wrapper a {
+  display: block;
+  width: 13rem;
+  height: 13rem;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  color: #333;
+  text-align: center;
+  margin: 0 1px;
+  padding-top: 9rem;
+  background-color: #fff;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  transition: all ease-in-out 200ms;
+}
+
+a {}
+
+.mmpf-tiles-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.mmpf-tiles-wrapper a:hover {
+  background-color: #333;
+  color: #fff;
+}

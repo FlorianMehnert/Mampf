@@ -1,4 +1,4 @@
-<!DOCTYPE html >
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -14,10 +14,35 @@
 </head>
 
 <body>
+  <div id="mmpf-sidebar">
+    <div class="mmpf-s-root">
+      <div class="mmpf-s-title">title</div>
+      <div class="mmpf-s-price" id="id_mmpf-s-price">44€</div>
+      <div class="flex-break"></div>
+      <div class="mmpf-s-form">
+        <div class="ui input">
+          <input type="text" id="mmpf-s-amount" placeholder="Anzahl">
+        </div>
+        <button type="button" class="ui primary button mampf-s-add">Zum Warenkorb hinzufügen</button>
+      </div>
+    </div>
+  </div>
+  <div class="overlay"></div>
   <div class="root">
     <h1 th:text="${domainTitle}">Domain</h1>
     <div class="content">
-      <table class="ui celled table">
+
+      <div class="mmpf-category-wrapper" th:each="category : ${catalog}">
+        <div class="mmpf-c-title" th:text="${category.key}"></div>
+        <div class="mmpf-c-card" th:each="item : ${category.value}" th:attr="data-item=${item.id}">
+          <div class="mmpf-c-card-title" th:text="${item.name}"></div>
+          <div class="mmpf-c-card-price" th:text="${item.price}"></div>
+          <div class="mmpf-c-card-description" th:text=${item.description}></div>
+          <button type="button" class="ui primary button mmpf-c-card-add"><i class="mmpf-clear plus icon"></i></button>
+        </div>
+      </div>
+
+      <!-- <table class="ui celled table">
         <thead>
           <tr>
             <th th:text="#{catalog.name}">name</th>
@@ -32,9 +57,94 @@
             <td th:text="${item.description}"></td>
           </tr>
         </tbody>
-      </table>
+      </table> -->
     </div>
   </div>
 </body>
+
+<script>
+  (function (win){
+    function Mampf(){}
+
+    Mampf.Events = {}
+
+    Mampf.Events.openSidebar = async function (event) {
+      const id = event.target.parentElement.dataset.item;
+      const itemData = await Mampf.XHR.fetchItem(id);
+      console.log(itemData);
+      Mampf.Render.renderSidebarContent(itemData);
+      Mampf.Render.SlideSidebar(true);
+    }
+
+    Mampf.Render = {};
+
+    Mampf.Render.renderSidebarContent = function (itemData) {
+      const sidebar_root = document.querySelector("#mmpf-sidebar .mmpf-s-root");
+      sidebar_root.innerHTML = "";
+      const template = `
+      <div class="mmpf-s-title">${itemData.name}</div>
+      <div class="mmpf-s-price">${itemData.price.number}€</div>
+      <div class="flex-break"></div>
+      <div class="mmpf-s-description">${itemData.description}</div>
+      <div class="flex-break"></div>
+      <div class="ui input">
+      <input type="text" id="mmpf-s-amount" placeholder="Anzahl">
+      </div>
+      <button type="button" class="ui primary button mampf-s-add">Zum Warenkorb hinzufügen</button>
+      </div>
+      `;
+      sidebar_root.innerHTML = template;
+    }
+
+    Mampf.Render.SlideSidebar = function (toggle) {
+      const sidebar = $("#mmpf-sidebar");
+      const overlay = $(".overlay");
+      if(toggle) {
+        overlay.fadeIn(200);
+        sidebar.delay(200).animate({
+          height: "40%"
+        }, 300);
+      }
+      else {
+        sidebar.animate({
+          height: "0%"
+        }, 300);
+        overlay.delay(300).fadeOut(200);
+      }
+    }
+
+    Mampf.XHR = {};
+
+    Mampf.XHR.fetchItem = async function (id) {
+      return new Promise((resolve, reject) => {
+        fetch(`${location.origin}/_api/catalog/item/${id}`)
+          .then(buffer => buffer.json())
+          .then(data => resolve(data))
+          .catch(err => {
+            console.error(err);
+            // alert("Check console, something went wrong!");
+          })
+      });
+    }
+
+    Mampf.Util = {}
+
+    Mampf.Util.AddEventListeners = function () {
+      document.querySelectorAll(".mmpf-c-card-add").forEach(e => {
+        e.addEventListener("click", Mampf.Events.openSidebar);
+      })
+
+      document.querySelector(".overlay").addEventListener("click", () => {
+        Mampf.Render.SlideSidebar(false);
+      })
+    }
+
+    Mampf.Main = function () {
+      Mampf.Util.AddEventListeners();
+    }
+
+    Mampf.Main();
+  })(window);
+</script>
 
 </html>

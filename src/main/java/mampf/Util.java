@@ -13,7 +13,7 @@ public class Util {
 		return Domain.valueOf(domain.toUpperCase().replace("-", "_"));
 	}
 	public static String renderDomainName(String domain){
-		domain = domain.replaceAll("(-|_)", " ");
+		domain = domain.toLowerCase().replaceAll("(-|_)", " ");
 		String[] domainArray = domain.split(" ");
 		return Arrays.asList(domainArray)
 		.stream()
