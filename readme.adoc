@@ -26,6 +26,10 @@ Diese Repository nutzt den typischen Aufbau eines Maven-Projects. Wie üblich we
 
 **Pro tip:** In GitHub, press *t* and a "fuzzy file finder" will appear, making it easy to navigate to a file.
 
+== :books: Dev Wiki & Nützliche Informationen
+
+* link:https://github.com/st-tu-dresden-praktikum/swt20w10/wiki[Wiki]
+
 == :rocket: Um die Anwendung zu starten
 
 * In der IDE: `Application.java` finden, Rechtsklick -> project, select "Run As > Java Application"
@@ -39,7 +43,11 @@ Diese Repository nutzt den typischen Aufbau eines Maven-Projects. Wie üblich we
 * `launch.json` speichern
 * `F5` benutzen um einen der beiden Debug-Tasks auszuwählen (der Zweite startet die ganze App)
 
-== :gift: Erstellen eines Builds
+== :heavy_check_mark: Integration Tests
+
+* `./mvnw verify -Pci -B` oder `./mvnw test` ausführen um alle Tests zu starten
+
+== :package: Erstellen eines Builds
 
 * `cd <Pfad zum Entwicklungsordner>`
 * `./mvnw clean package` ausführen
