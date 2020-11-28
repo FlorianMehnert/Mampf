@@ -36,9 +36,9 @@ public class CatalogController {
 	private final BusinessTime businessTime;
 
 	CatalogController(
-			MampfCatalog catalog,
-			UniqueInventory<UniqueInventoryItem> inventory,
-			BusinessTime businessTime
+		MampfCatalog catalog,
+		UniqueInventory<UniqueInventoryItem> inventory,
+		BusinessTime businessTime
 	) {
 		this.catalog = catalog;
 		this.inventory = inventory;
@@ -119,14 +119,14 @@ public class CatalogController {
 		if(catalog.count() == 0){
 			for(int i = 0; i < amount; i++){
 				catalog.save(
-						new Item(
-								"test"+ i,
-								Money.of(i, EURO),
-								Util.randomEnum(Item.Domain.class),
-								Util.randomEnum(Item.Category.class),
-								"Das ist nur ein Test"
-						)
-				);
+				new Item(
+					"test"+ i,
+					Money.of(i, EURO),
+					Util.randomEnum(Item.Domain.class),
+					Util.randomEnum(Item.Category.class),
+					"Das ist nur ein Test"
+				)
+			);
 			}
 		}
 		return "redirect:/catalog/count";
@@ -137,9 +137,9 @@ public class CatalogController {
 	@GetMapping("/catalog/count")
 	public ResponseEntity<String> catalogCount(){
 		var httpHeaders = new HttpHeaders();
-		httpHeaders.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
+    httpHeaders.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
 		String count = Long.toString(catalog.count());
-		return new ResponseEntity<>(count, httpHeaders, HttpStatus.OK);
+    return new ResponseEntity<>(count, httpHeaders, HttpStatus.OK);
 	}
 
 	//! Todo: add task to delete when building
@@ -148,8 +148,8 @@ public class CatalogController {
 	public ResponseEntity<String> reset(){
 		catalog.deleteAll();
 		var httpHeaders = new HttpHeaders();
-		httpHeaders.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
+    httpHeaders.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
 		return new ResponseEntity<>("Deleted all catalog items!", httpHeaders, HttpStatus.OK);
 	}
-
+	
 }

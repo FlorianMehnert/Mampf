@@ -16,9 +16,9 @@ public class Util {
 		domain = domain.toLowerCase().replaceAll("(-|_)", " ");
 		String[] domainArray = domain.split(" ");
 		return Arrays.asList(domainArray)
-				.stream()
-				.map(e -> e.substring(0, 1).toUpperCase() + e.substring(1))
-				.collect(Collectors.joining(" "));
+		.stream()
+		.map(e -> e.substring(0, 1).toUpperCase() + e.substring(1))
+		.collect(Collectors.joining(" "));
 	}
 	public static <T extends Enum<?>> T randomEnum(Class<T> _class){
 		int enumIdentifier = random.nextInt(_class.getEnumConstants().length);

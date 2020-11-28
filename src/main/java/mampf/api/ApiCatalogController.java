@@ -12,14 +12,14 @@ class ApiCatalogController {
 
 	private MampfCatalog catalog;
 
-	ApiCatalogController(MampfCatalog catalog) {
-		this.catalog = catalog;
-	}
+  ApiCatalogController(MampfCatalog catalog) {
+    this.catalog = catalog;
+  }
 
-	// Single item
+  // Single item
 
-	@GetMapping("/_api/catalog/item/{item}")
-	Item one(@PathVariable Item item) {
+  @GetMapping("/_api/catalog/item/{item}")
+  Item one(@PathVariable Item item) {
 		return item;
-	}
+  }
 }

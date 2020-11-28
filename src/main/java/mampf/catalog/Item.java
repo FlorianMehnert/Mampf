@@ -29,12 +29,12 @@ public class Item extends Product {
 	private Item(){}
 
 	public Item(
-			String name,
-			Money price,
-			Domain domain,
-			Category category,
-			String description
-	){
+		String name,
+		Money price,
+		Domain domain,
+		Category category,
+		String description
+		){
 		super (name, price);
 
 		this.domain = domain;
