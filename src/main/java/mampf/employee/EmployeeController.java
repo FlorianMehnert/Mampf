@@ -23,21 +23,26 @@ public class EmployeeController {
 		this.employeeManagement = employeeManagement;
 	}
 
-	@PostMapping("/register")
+	@GetMapping("/intern/employees/add")
+	String createEmployee(Model model) {
+		return "employee_add";
+	}
+
+	@PostMapping("/intern/employees/add")
 	String registerNew(@Valid RegistrationForm form, Errors error){
 
 		if(error.hasErrors()){
-			return "register";
+			return "redirect:/intern/employees";
 		}
 
 		employeeManagement.createEmployee(form);
 
-		return "redirect:/";
+		return "redirect:/intern/employees";
 	}
 
-	@GetMapping("/register")
-	String register(Model model, RegistrationForm form){
-		model.addAttribute("form", form);
-		return "register";
+	@GetMapping("/intern/employees")
+	String register(Model model){
+		model.addAttribute("employees", employeeManagement.findAll());
+		return "employees";
 	}
 }

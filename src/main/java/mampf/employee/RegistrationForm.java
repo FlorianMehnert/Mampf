@@ -12,8 +12,8 @@ public class RegistrationForm {
 	@NotEmpty(message = "Username should not be empty")//
 	private final String last_name;
 
-	@NotEmpty(message = "Password should not be empty")//
-	private final String password;
+	@NotEmpty(message = "Username should not be empty")//
+	private final String role;
 
 	//todo is there an email for registration?
 	//@NotEmpty(message = "Email should not be empty")
@@ -24,11 +24,11 @@ public class RegistrationForm {
 
 	//todo do i have to write the name of the company & anschrift?
 
-	public RegistrationForm(String username, String first_name, String last_name, String password){
+	public RegistrationForm(String username, String first_name, String last_name, String role){
 		this.username = username;
 		this.first_name = first_name;
 		this.last_name = last_name;
-		this.password = password;
+		this.role = role;
 
 	}
 
@@ -44,8 +44,8 @@ public class RegistrationForm {
 		return last_name;
 	}
 
-	public String getPassword(){
-		return password;
+	public String getRole(){
+		return role;
 	}
 
 	//public String getEmail(){
