@@ -20,9 +20,8 @@ public class CatalogControllerIntegrationTests {
 
 	@Test
 	public void ItemsIntegrationTest () throws Exception {
-		mvc.perform(get("/"))
-		.andExpect(status().isOk())
-		.andExpect(content().string(containsString("content")));
+		mvc.perform(get("/catalog"))
+		.andExpect(status().isOk());
 	}
 
 }
