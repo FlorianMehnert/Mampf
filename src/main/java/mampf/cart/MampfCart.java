@@ -1,20 +1,28 @@
 package mampf.cart;
 
 //intern
-//import mampf.catalog.Item;
+import mampf.catalog.Item;
 
 //me
 import mampf.cart.Date;
 //java
 import java.util.Optional;
 import java.util.TreeMap;
+
+import javax.money.Monetary;
+
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import javax.money.CurrencyUnit;
+import java.util.Locale;
 
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
+import javax.money.CurrencyUnit;
+import javax.money.MonetaryAmount;
+import javax.money.Monetary;
+import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
 //sp
 import org.salespointframework.order.Cart;
@@ -37,11 +45,6 @@ import org.salespointframework.catalog.Product;
 */
 public class MampfCart extends Cart {
 	
-	class Item extends Product{
-		//public Item() {}
-	}
-	public Item createItem() {return new Item();}
-	
 	private List<Date> dates;
 	private Map<Integer, List<CartItem>> events; 
 	
@@ -51,12 +54,18 @@ public class MampfCart extends Cart {
 		
 		//some testing data:
 		//create:
-		addItem(new Item("test1",Domain.A),Quantity.of(34), Optional.of(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"HERE")));	
-		addItem(new Item("test2",Domain.B),Quantity.of(1), null);
-		//add:
-		addItem(new Item("test2",Domain.A),Quantity.of(1), Optional.of(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"HERE")));
-		addItem(new Item("test3",Domain.B),Quantity.of(112), null);
 		
+		Item i1 = new Item("test1",Money.of(12,Monetary.getCurrency(Locale.US)),Item.Domain.EVENTCATERING,Item.Category.FOOD,"asasas");
+		Item i2 = new Item("test2",Money.of(1,Monetary.getCurrency(Locale.US)),Item.Domain.PARTYSERVICE,Item.Category.FOOD,"asasas");
+		Item i3 = new Item("test3",Money.of(112,Monetary.getCurrency(Locale.US)),Item.Domain.EVENTCATERING,Item.Category.FOOD,"asasas");
+		
+		addItem(i1,Quantity.of(34),Optional.ofNullable(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"HERE")));	
+		addItem(i2,Quantity.of(50), null);
+		//add:
+		addItem(i3,Quantity.of(1), Optional.ofNullable(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"HERE")));
+		addItem(i2,Quantity.of(112), null);
+		//excpected:
+		//E: x 2, P: x 1 (112+50) 
 	}
 	
 	
@@ -72,7 +81,7 @@ public class MampfCart extends Cart {
 		// ronny is not booked
 		// add to '<date>'
 		
-		Domain itemDomain = item.getDomain();
+		Item.Domain itemDomain = item.getDomain();
 		Date itemDate = null;
 		
 		Date eventDate = null; //running var
@@ -81,19 +90,21 @@ public class MampfCart extends Cart {
 		int eventCartProductIndex = -1; //state var
 		
 		//check for item:
-		if(date.isPresent())itemDate = date.get();
+		if(date != null && date.isPresent())itemDate = date.get();
 				
 		for(Integer index: events.keySet()) {
 			eventDate = dates.get(index.intValue());
 			
-			if(eventDate.getDomain().equals(itemDomain)){
-
+			
+			if(itemDomain.equals(eventDate.getDomain())){
 				//(s,e,D)
 				if(itemDate != null) {
+					if(itemDate.getDomain() == null)itemDate.setDomain(itemDomain); //correct date
+					
 					if(itemDate.equals(eventDate)) {
 						eventList = events.get(index);
 						for(int listIndex = 0; listIndex < eventList.size(); listIndex++) { 
-							cartProduct = eventList.get(listIndex).getProduct(); 
+							cartProduct = eventList.get(listIndex).getProduct();
 							if(item.equals(   ((Item)cartProduct ) )   )
 								{eventCartProductIndex = listIndex; break;}}}
 				}else 
@@ -115,7 +126,8 @@ public class MampfCart extends Cart {
 			
 		//add to list:
 		if(eventCartProductIndex == -1 && eventList != null)
-			{CartItem cartitem = addOrUpdateItem(item, q); eventList.add(cartitem);} //necessary??
+			{CartItem cartitem = addOrUpdateItem(item, q);
+			eventList.add(cartitem);} //necessary??
 			
 		//add new event:
 		if(eventCartProductIndex == -1 && eventList == null)

@@ -20,12 +20,13 @@
 <nav th:include="navigation :: navigation"></nav>
 
     <div th:each="event: ${events}">
-    	<div th:text="${event.key().getDomain().toString()}, ${event.key().getStartTime().toString()}"></div>
-		
-		<div th:each="item : ${event.value}" th:remove="tag">
-			<div th:text="${item.getProduct().getProductName()}">
+    	<br>
+    	<div th:text="${event.key}"> </div>
+    	
+		<div th:each="item : ${event.value}">
+			<div th:text="${item}">
 			</div>
-		</div>    
+		</div> 
     </div>
 
 </body>

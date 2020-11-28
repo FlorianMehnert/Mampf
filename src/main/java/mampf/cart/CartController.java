@@ -3,6 +3,7 @@ package mampf.cart;
 
 import mampf.catalog.Item;
 import mampf.cart.MampfCart;
+import mampf.catalog.Item;
 
 import java.util.Optional;
 
@@ -30,14 +31,14 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes("cart")
 public class CartController {
 	
-	private final OrderManager oM;
-	private final EmployeeManager eM;
+	//private final OrderManager oM;
+	//private final EmployeeManager eM;
 	
 	
-	public CartController(OrderManager oM, EmployeeManager eM) {
+	public CartController(/*OrderManager oM, EmployeeManager eM*/) {
 		//TODO: nullcheck
 		//Assert.notNull(orderManagement, "OrderManagement must not be null!");
-		this.oM = oM; this.eM = eM;
+		//this.oM = oM; this.eM = eM;
 	}
 	
 	
@@ -63,7 +64,7 @@ public class CartController {
 	//buy in generell:
 	String buy(int index, MampfCart cart, Optional<UserAccount> userAccount) {
 		//TODO: redirect if not logged in
-		
+		return "s";
 	}
 	
 	@GetMapping("/cart")
