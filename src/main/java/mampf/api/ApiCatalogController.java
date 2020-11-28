@@ -8,11 +8,11 @@ import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
 
 @RestController
-class api_CatalogController {
+class ApiCatalogController {
 
 	private MampfCatalog catalog;
 
-  api_CatalogController(MampfCatalog catalog) {
+  ApiCatalogController(MampfCatalog catalog) {
     this.catalog = catalog;
   }
 
