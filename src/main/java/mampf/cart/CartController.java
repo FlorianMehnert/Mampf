@@ -4,11 +4,18 @@ package mampf.cart;
 import mampf.catalog.Item;
 import mampf.cart.MampfCart;
 import mampf.catalog.Item;
+import mampf.order.MampfOrder;
+import mampf.order.MampfOrderProduct;
+import mampf.order.MampfOrderManager;
 
+
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.salespointframework.core.AbstractEntity;
 import org.salespointframework.order.Cart;
+import org.salespointframework.order.CartItem;
 import org.salespointframework.order.Order;
 import org.salespointframework.order.OrderManagement;
 import org.salespointframework.order.OrderStatus;
@@ -31,14 +38,14 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes("cart")
 public class CartController {
 	
-	//private final OrderManager oM;
+	private final MampfOrderManager oM;
 	//private final EmployeeManager eM;
 	
 	
-	public CartController(/*OrderManager oM, EmployeeManager eM*/) {
+	public CartController(MampfOrderManager oM/*, EmployeeManager eM*/) {
 		//TODO: nullcheck
 		//Assert.notNull(orderManagement, "OrderManagement must not be null!");
-		//this.oM = oM; this.eM = eM;
+		this.oM = oM; //this.eM = eM;
 	}
 	
 	
@@ -50,21 +57,92 @@ public class CartController {
 	//--------------
 	
 	//buy all
-	@GetMapping("/checkout")
-	String buyAll(@ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount) {
-		return buy(-1, cart, userAccount);
+	@PostMapping("/checkout")
+	String buyAll(@ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount, Model model) {
+		return buy(null, cart, userAccount, model);
 	}
 	
 	//buy spec item
 	@GetMapping("/checkout/{index}")
-	String buyIndex(@PathVariable int index, @ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount) {
-		return buy(index, cart, userAccount);
+	String buyIndex(@PathVariable Date date, @ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount, Model model) {
+		return buy(date, cart, userAccount, model);
 	}
 	
 	//buy in generell:
-	String buy(int index, MampfCart cart, Optional<UserAccount> userAccount) {
+	String buy(Date buyDate, MampfCart cart, Optional<UserAccount> userAccount, Model model) {
 		//TODO: redirect if not logged in
-		return "s";
+		//TODO: nullcheck
+		Map<Date, List<CartItem>> events = cart.getEvents();
+		boolean hasError = !userAccount.isPresent();
+		
+		//checking stuff:
+		if(buyDate == null)
+			for(Date eventDate: events.keySet()) {
+				if(!validateEvent(events.get(eventDate))) {
+					hasError = true;break;}}
+		else if(!validateEvent(events.get(buyDate)))hasError = true;
+		
+		
+		
+		//actually buying:
+		if(!hasError) {
+		
+			MampfOrder order = new MampfOrder(userAccount.get(),Cash.CASH);
+			//iterate again, but this time add that stuff:
+			
+			if(buyDate == null)
+				for(Date eventDate: events.keySet())
+					for(CartItem eventCartItem: events.get(eventDate))  
+					order = addCartItemToOrder(order, ((Item)eventCartItem.getProduct()), eventCartItem.getQuantity(),eventDate);
+					
+			else 
+				for(CartItem eventCartItem: events.get(buyDate))
+				order = addCartItemToOrder(order, ((Item)eventCartItem.getProduct()), eventCartItem.getQuantity(),buyDate);
+			
+			
+			//order progress:
+			
+			//oM.save(order);
+			
+			//TODO: complete order if done
+			
+			
+			
+			//remove cartevent/clear cart:
+			
+			
+			//view Order & buying:
+			model.addAttribute("order", order);
+			return "buy_order";
+			
+		}
+		
+		//error handling:
+		//kinda: model.addAtt("error",...)
+		return "cart"; //TODO: add some fancy errors
+		
+	}
+	
+	private boolean validateEvent(List<CartItem> items) {
+		//TODO: nullchck
+		//TODO: validating
+		//for(CartItem cartitem : items) {
+
+		//}
+		return true;
+	}
+	
+	private MampfOrder addCartItemToOrder(MampfOrder order, Item item, Quantity q, Date date) {
+		//TODO: nullcjeck
+		//TODO: reduce Stock/...
+		order.addOrderLine(new MampfOrderProduct(item, date),q);
+		return order;
+	}
+	
+	@PostMapping("/clear")
+	String clearCart(@ModelAttribute MampfCart cart){
+		cart.clearAll();
+		return "redirect:/cart";
 	}
 	
 	@GetMapping("/cart")

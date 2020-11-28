@@ -26,8 +26,16 @@
 		<div th:each="item : ${event.value}">
 			<div th:text="${item}">
 			</div>
+			
 		</div> 
     </div>
+    
+    <form method="post" th:action="@{/checkout}">
+		<button type="submit">Warenkorb kaufen</button>
+	</form>
+	<form method="post" th:action="@{/clear}">
+		<button type="submit">Warenkorb leeren</button>
+	</form>    
 
 </body>
 </html>

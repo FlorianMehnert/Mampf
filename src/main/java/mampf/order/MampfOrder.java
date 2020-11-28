@@ -8,6 +8,7 @@ import org.salespointframework.order.OrderManagement;
 import org.salespointframework.order.OrderStatus;
 import org.salespointframework.payment.Cash;
 import org.salespointframework.quantity.Quantity;
+import org.salespointframework.useraccount.UserAccount;
 
 
 public class MampfOrder extends Order{
@@ -15,4 +16,8 @@ public class MampfOrder extends Order{
 	// addEmployee
 	// findByCategory
 	
+	
+	public MampfOrder(UserAccount account, Cash cash) {
+		super(account,cash);
+	}
 }

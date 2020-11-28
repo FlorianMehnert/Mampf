@@ -58,12 +58,24 @@ public class MampfCart extends Cart {
 		Item i1 = new Item("test1",Money.of(12,Monetary.getCurrency(Locale.US)),Item.Domain.EVENTCATERING,Item.Category.FOOD,"asasas");
 		Item i2 = new Item("test2",Money.of(1,Monetary.getCurrency(Locale.US)),Item.Domain.PARTYSERVICE,Item.Category.FOOD,"asasas");
 		Item i3 = new Item("test3",Money.of(112,Monetary.getCurrency(Locale.US)),Item.Domain.EVENTCATERING,Item.Category.FOOD,"asasas");
+		Optional o1 = Optional.ofNullable(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"HERE"));
+		Optional o2 = Optional.ofNullable(new Date(LocalDateTime.of(1999, 3, 2, 5, 0),null,"HERE"));
+		Optional o3 = Optional.ofNullable(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"NOT HERE"));
 		
-		addItem(i1,Quantity.of(34),Optional.ofNullable(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"HERE")));	
+		
+		addItem(i1,Quantity.of(34),o1);	
 		addItem(i2,Quantity.of(50), null);
+		
 		//add:
-		addItem(i3,Quantity.of(1), Optional.ofNullable(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"HERE")));
+		addItem(i3,Quantity.of(1), o1);
+		addItem(i3,Quantity.of(1), o2);
 		addItem(i2,Quantity.of(112), null);
+		addItem(i3,Quantity.of(1), o3);
+		addItem(i2,Quantity.of(1), o3);
+		
+		
+		
+		//TODO:(cannot be cleared right now)
 		//excpected:
 		//E: x 2, P: x 1 (112+50) 
 	}
@@ -157,4 +169,12 @@ public class MampfCart extends Cart {
 		
 	}
 	
+	
+	public void clearAll() {
+		
+		dates.clear();
+		events.clear();
+		
+		clear();
+	}
 }
