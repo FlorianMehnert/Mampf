@@ -2,42 +2,52 @@ package mampf.catalog;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
-import org.salespointframework.catalog.ProductIdentifier;
+import javax.persistence.Entity;
 
-public class Item extends Product{
-	private Product product;
-	private String description;
+@Entity
+public class Item extends Product {
+
+	public String description;
 	private Domain domain;
 	private Category category;
 
+	public static enum Domain {
+		EVENTCATERING,
+		PARTYSERVICE,
+		MOBILE_BREAKFAST,
+		RENT_A_COOK
+	}
 
-	private Item(String name, Money price, String description, Domain domain, Category category) {
-		super(name, price);
-		this.product.setName(name);
-		this.product.setPrice(price);
-		this.description = description;
+	public static enum Category {
+		FOOD,
+		DECORATION,
+		EQUIPMENT,
+		PERSONEL
+	}
+
+	@SuppressWarnings({"unused", "deprecation"})
+	private Item(){}
+
+	public Item(
+			String name,
+			Money price,
+			Domain domain,
+			Category category,
+			String description
+	){
+		super (name, price);
+
 		this.domain = domain;
 		this.category = category;
-
-	}
-
-	public String getName(){
-		return this.product.getName();
-	}
-
-	public ProductIdentifier getId() {
-		return product.getId();
-	}
-
-	public String getDescription() {
-		return description;
+		this.description = description;
 	}
 
 	public Domain getDomain() {
-		return domain;
+		return this.domain;
 	}
 
 	public Category getCategory() {
-		return category;
+		return this.category;
 	}
+
 }
