@@ -19,6 +19,23 @@
     <header>
         <h1 th:text="#{inventory.title}">Bestand</h1>
     </header>
+    <div class="ui container">
+        <table class="ui celled table">
+            <thead>
+            <tr>
+                <th th:text="#{inventory.title}">Titel</th>
+                <th th:text="#{inventory.count}">Anzahl</th>
+            </tr>
+            </thead>
+            <tbody th:remove="all-but-first">
+            <tr th:each=" item : ${inventory}">
+                <td th:text="${item.product.name}">name</td>
+                <td th:text="${{item.quantity}}">quantity</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>
 </body>
 </html>
