@@ -55,10 +55,6 @@ class CatalogDataInitializer implements DataInitializer {
 
 		mampfCatalog.save(new Item("Müsli/Brötchen plus Kaffee/Kuchen", Money.of(4.99,"EUR"), Item.Domain.MOBILE_BREAKFAST, Item.Category.NONE,"nur vor 14 Uhr"));
 
-		mampfCatalog.save(new Item("gleiche Preise wie beim Eventcatering", Money.of(1000000,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.SPECIAL_OFFERS,"10 Personen"));
-
-
-
-
+		mampfCatalog.save(new Personal("gleiche Preise wie beim Eventcatering", Money.of(1000000,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.SPECIAL_OFFERS,"10 Personen", Personal.Type.COOK));
 	}
 }

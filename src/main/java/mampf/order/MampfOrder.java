@@ -1,53 +1,61 @@
 package mampf.order;
 
-import mampf.employee;
+import mampf.catalog.Item;
+import mampf.catalog.Item.Category;
+import mampf.employee.Employee;
+import mampf.employee.EmployeeManagement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Entity;
+
+import org.salespointframework.catalog.Product;
 import org.salespointframework.core.AbstractEntity;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.Order;
+import org.salespointframework.order.OrderLine;
 import org.salespointframework.order.OrderManagement;
 import org.salespointframework.order.OrderStatus;
 import org.salespointframework.payment.Cash;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
-
-public class MampfOrder extends Order{
-	//TODO:
+@Entity
+public class MampfOrder extends Order {
+	// TODO:
 	// addEmployee
 	// findByCategory
-	
-	private List<Employee> employees;
-	private int personalNeeded = 0, cookNeeded = 0;
-	
+
+	// private int personalNeeded = 0;
+	private boolean done;
+	private boolean needsAllocation;
+	private ArrayList<Employee> employees;
+
+	@SuppressWarnings("unused")
+	private MampfOrder(){}
 	public MampfOrder(UserAccount account, Cash cash) {
-		super(account,cash);
-		employees = new ArrayList<>();
+		super(account, cash);
 	}
-	
-	public OrderLine addOrderLine(Product p, Quantity q) {
-		
-		if(p instanceof EmployeeItem) {
-			EmployeeType type = p.getType();
-			if(type.equals(EmployeeType.COOK)) cookNeeded+=q.getAmount().intValue();
-			if(type.equals(EmployeeType.SERVICEPERSONAL)) personalNeeded+=q.getAmount().intValue();			
+
+	public OrderLine addOrderLine(Item product, Quantity quantity) {
+
+		if (product.getCategory().equals(Item.Category.PERSONEL) && needsAllocation == false) {
+			needsAllocation = true;
 		}
-		
-		return super.addOrderLine(p,q);
+		return super.addOrderLine(product, quantity);
 	}
-		
-	
-	public addEmployee(Employee employee) {
-	//TODO: nullcheck
-	//wird vom ordermanager aufgerufen
-		EmployeeType type = employee.getType();
-		if(type.equals(EmployeeType.COOK)) if(cookNeeded >0)cookNeeded--;else return; 
-		if(type.equals(EmployeeType.SERVICEPERSONAL)) if(personalNeeded >0) personalNeeded--;else return;			
-		
-		employees.add(employee);		
+
+	// public addEmployee(Employee employee) {
+
+	// }
+
+	// public boolean getPersonalNeeded() {
+	// 	return personalNeeded;
+	// }
+
+	public boolean isDone() {
+		if(done) return true;
+		else return false;
 	}
-	
-	public int getPersonalNeeded() {return personalNeeded;}
-	public int getCookNeeded() {return cookNeeded;}
-	public boolean isDone() {return (personalNeeded == 0 && cookNeeded == 0);}
 }

@@ -30,7 +30,7 @@ public class Item extends Product {
 	}
 
 	@SuppressWarnings({"unused", "deprecation"})
-	private Item(){}
+	public Item(){}
 
 	public Item(
 		String name,
