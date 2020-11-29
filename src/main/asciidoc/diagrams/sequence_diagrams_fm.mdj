@@ -2681,7 +2681,7 @@
 												"$ref": "AAAAAAF13AlslqAIoU8="
 											},
 											"edgePosition": 1,
-											"text": "2 : employee"
+											"text": "2 : mampf.employee"
 										},
 										{
 											"_type": "EdgeLabelView",
@@ -2787,7 +2787,7 @@
 							"_parent": {
 								"$ref": "AAAAAAF13Adtp5+dMOA="
 							},
-							"name": "employee",
+							"name": "mampf.employee",
 							"source": {
 								"$ref": "AAAAAAF13AfhiZ/NUg8="
 							},

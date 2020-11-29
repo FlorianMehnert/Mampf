@@ -205,7 +205,7 @@ a| * catalog.Item
 | salespointframework.core
 a| * catalog.CatalogInitializer
 * user.UserInitializer
-* employee.EmployeeInitializer
+* mampf.employee.EmployeeInitializer
 * inventory.InventoryInitializer
 
 |salespointframework.inventory
@@ -216,7 +216,7 @@ a| * catalog.CatalogController
 | salespointframework.order
 a| * order.OrderController
 * catalog.Item
-* employee.EmployeeManager
+* mampf.employee.EmployeeManager
 
 | salespointframework.payment
 a| * order.OrderController
@@ -254,7 +254,7 @@ a| * catalog.CatalogController
 * user.UserController
 * inventory.InventoryController
 * order.OrderController
-* employee.EmployeeController
+* mampf.employee.EmployeeController
 
 | springframework.util
 a| * user.UserController
