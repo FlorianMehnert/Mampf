@@ -22,7 +22,11 @@ public class Item extends Product {
 		FOOD,
 		DECORATION,
 		EQUIPMENT,
-		PERSONEL
+		PERSONEL,
+		BUFFET,
+		DINNER_EVENT,
+		NONE,
+		SPECIAL_OFFERS
 	}
 
 	@SuppressWarnings({"unused", "deprecation"})

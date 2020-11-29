@@ -1,12 +1,15 @@
 package mampf.inventory;
 
+import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
+import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.Test;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static mampf.catalog.Item.Domain.EVENTCATERING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,9 +31,9 @@ public class InventoryTest {
 		assertThat(inventory).isNotNull();
 	}
 
+	@Test
 	public void correctInitialization() throws Exception{
-		System.out.println(inventory.listItems());
+		inventory.listItems();
 		assertTrue(true);
 	}
-
 }

@@ -43,10 +43,11 @@ public class InventoryController {
 
 	public List<Product> listItems(){
 		List<Product> list = new ArrayList<>();
-		for(Product product: listItems()){
-			list.add(product);
+		for(UniqueInventoryItem item: inventory.findAll()){
+			list.add(item.getProduct());
+			System.out.println(item.getProduct().getName() + " " + item.getProduct().getPrice());
 		}
-		return null;
+		return list;
 	}
 
 	@PostMapping("/inventory/add")
@@ -62,7 +63,6 @@ public class InventoryController {
 	@GetMapping("/inventory")
 	// TODO only BOSS
 	public String inventory(Model model) {
-
 		model.addAttribute("inventory", inventory.findAll());
 
 		return "inventory";
