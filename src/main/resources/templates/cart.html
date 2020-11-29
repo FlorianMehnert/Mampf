@@ -23,14 +23,16 @@
     	<br>
     	
     	<div th:text="${event.key}"> </div>
-    	
+    	<div th:with="date=${event.key}">
+    	<a th:href="@{/change/{date}(date=${date.id})}">ändern</a>
     	
 		<div th:each="item : ${event.value}">
 			<div th:text="${item}">
 			</div>
 			
 		</div> 
-		<div th:with="date=${event.key}">
+		
+		
 		<form method="post" th:action="@{/checkout}">
     		<input type="hidden" name="dateid" value="0" th:value="${date.id}"/>
 			<button type="submit">Event kaufen</button>

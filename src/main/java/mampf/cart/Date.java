@@ -5,12 +5,18 @@ import mampf.catalog.Item;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.salespointframework.catalog.Product;
+
 import java.lang.Comparable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
+@Table(name = "DATES")
 public class Date implements Comparable<Date>{
-
+	
 	private @Id @GeneratedValue long id;
 	
 	private LocalDateTime startTime=null,endTime=null;
@@ -34,10 +40,11 @@ public class Date implements Comparable<Date>{
 	public Item.Domain getDomain() {return domain;}
 	public String getAddress() {return address;}
 	
-	public void setDate(LocalDateTime startTime, LocalDateTime endTime, String address) {/*TODO nullcheck*/this.startTime = startTime; this.endTime = endTime; this.address = address; }
+	public void setDate(/*TODO: nullcheck*/ LocalDateTime startTime, LocalDateTime endTime, String address) {/*TODO nullcheck*/this.startTime = startTime; this.endTime = endTime; this.address = address; }
 	public void setDomain(Item.Domain domain) {/*TODO: nullcheck*/this.domain=domain;}
 	
-	public boolean hasDate() {return (startTime != null && endTime != null && address != null);}
+	public boolean hasNoDate() {
+		return (startTime == null && endTime == null && address == null);}
 	
 	public boolean equals(Date d) {
 		//TODO nullchecking
@@ -69,8 +76,12 @@ public class Date implements Comparable<Date>{
 		int c1 = -1;
 		if(domain != null && d.getDomain() != null)
 			c1 = domain.compareTo(d.getDomain()); 
-		if(c1 == 0 && d.getStartTime() != null && startTime != null)  
+		if(c1 == 0) {  
+			if(d.getStartTime() != null && startTime != null)
 			return startTime.compareTo(d.getStartTime());
+			else if(d.getStartTime() == null && startTime != null)return -1;
+			else if(d.getStartTime() != null && startTime == null)return 1;
+		}
 		return c1; 
 	}
 	
@@ -79,6 +90,18 @@ public class Date implements Comparable<Date>{
 		if(startTime != null) res+= startTime.toString();
 		return res;
 	}
+
+	/*@Override
+    public int hashCode() {
+		String s1 = "null";
+		if(startTime != null)s1 = startTime.toString();
+		String s2 = "null";
+		if(endTime != null)s1 = endTime.toString();
+		String s3 = "null";
+		if(address != null)s3 = address;
+		
+        return Objects.hash(s1, s2, s3, domain);
+    } */
 	
 	public long getId() {
 		return id;

@@ -57,11 +57,11 @@ public class CartController {
 	//--------------
 	
 	//buy all
-	/*
+	
 	@PostMapping("/checkout")
-	String buyAll(@RequestParam(value="dateid", required=false) Date buyDate,@ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount, Model model) {
+	String buyAll(@RequestParam("dateid") Date buyDate,@ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount, Model model) {
 		return buy(buyDate, cart, userAccount, model);
-	}*/
+	}
 	@PostMapping("/checkoutAll")
 	String buyAll(@ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount, Model model) {
 		return buy(null, cart, userAccount, model);
@@ -148,7 +148,10 @@ public class CartController {
 	}
 
 	
-	
+	@GetMapping("/change/{date}")
+	String viewSetDate(@PathVariable Date date, Model model) {
+		return "cart";
+	}
 	
 	@PostMapping("/clear")
 	String clearCart(@ModelAttribute MampfCart cart){

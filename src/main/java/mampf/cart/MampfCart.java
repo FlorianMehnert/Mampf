@@ -30,27 +30,16 @@ import org.salespointframework.order.CartItem;
 import org.salespointframework.quantity.Metric;
 import org.salespointframework.quantity.Quantity;
 
-//test:
-/*
-import org.salespointframework.catalog.Product;
-//testing purpose:
-	//----------------
-	
-	class Item extends Product{
-		//public Item() {}
-	}
-	public Item createItem() {return new Item();}
-	
-	//----------------
-*/
+
 public class MampfCart extends Cart {
 	
-	private List<Date> dates;
-	private Map<Integer, List<CartItem>> events; 
+	private List<MampfCartObject> objects;
+	//private Map<Integer, List<CartItem>> events; 
 	
 	public MampfCart(){
-		dates = new ArrayList<>();
-		events = new HashMap<>();
+		objects = new ArrayList<>();
+		//events = new HashMap<>();
+		
 		
 		//some testing data:
 		//create:
@@ -63,21 +52,34 @@ public class MampfCart extends Cart {
 		Optional o3 = Optional.ofNullable(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"NOT HERE"));
 		
 		
-		addItem(i1,Quantity.of(12, Metric.UNIT),o1);	
-		addItem(i2,Quantity.of(50, Metric.UNIT), null);
 		
-		//add:
-		addItem(i3,Quantity.of(1), o1);
-		addItem(i3,Quantity.of(1), o2);
-		addItem(i2,Quantity.of(112), null);
-		addItem(i3,Quantity.of(1), o3);
-		addItem(i2,Quantity.of(1), o3);
+		addItem(i1,Quantity.of(12, Metric.UNIT),o1);	
+		addItem(i1,Quantity.of(12, Metric.UNIT),o1);	
+		
+		addItem(i2,Quantity.of(12, Metric.UNIT),null);	
+		
+		//removeItem(i1,new Date(i1.getDomain()));
+		//removeItem(i2,new Date(i2.getDomain()));
+		
+		
+		//addItem(i2,Quantity.of(12, Metric.UNIT),o1);	
+		
+		//addItem(i1,Quantity.of(12, Metric.UNIT), null);
+		//addItem(i2,Quantity.of(500, Metric.UNIT), null);
+		
+		//addItem(i3,Quantity.of(500, Metric.UNIT), o2);
+		//addItem(i2,Quantity.of(500, Metric.UNIT), o2);
+		
+		//addItem(i3,Quantity.of(1), o1);
+		//addItem(i3,Quantity.of(1), o2);
+		//addItem(i2,Quantity.of(112), null);
+		//addItem(i3,Quantity.of(1), o3);
+		//addItem(i2,Quantity.of(1), o3);
 		
 		
 		
 		//TODO:(cannot be cleared right now)
-		//excpected:
-		//E: x 2, P: x 1 (112+50) 
+		
 	}
 	
 	
@@ -95,86 +97,99 @@ public class MampfCart extends Cart {
 		
 		Item.Domain itemDomain = item.getDomain();
 		Date itemDate = null;
+		if(date != null && date.isPresent()) itemDate = date.get();
 		
-		Date eventDate = null; //running var
-		Product cartProduct = null;
-		List<CartItem> eventList = null; //state var
-		int eventCartProductIndex = -1; //state var
+		if(itemDate != null) itemDate.setDomain(itemDomain);
 		
-		//check for item:
-		if(date != null && date.isPresent())itemDate = date.get();
+		
+		for(MampfCartObject object: objects) {
+			Item objectItem = object.getItem();
+			Date objectDate = object.getDate();
+			
+			
+			//compare Item
+			if(objectItem.equals(item)) {
 				
-		for(Integer index: events.keySet()) {
-			eventDate = dates.get(index.intValue());
-			
-			
-			if(itemDomain.equals(eventDate.getDomain())){
-				//(s,e,D)
-				if(itemDate != null) {
-					if(itemDate.getDomain() == null)itemDate.setDomain(itemDomain); //correct date
-					
-					if(itemDate.equals(eventDate)) {
-						eventList = events.get(index);
-						for(int listIndex = 0; listIndex < eventList.size(); listIndex++) { 
-							cartProduct = eventList.get(listIndex).getProduct();
-							if(item.equals(   ((Item)cartProduct ) )   )
-								{eventCartProductIndex = listIndex; break;}}}
-				}else 
-				//(-,-,D)
-					if(!eventDate.hasDate())
-						eventList = events.get(eventDate);
-					
-				//skip if clear:
-				if(eventCartProductIndex > -1)break;
+				//compare Date:
+				if(itemDate == null) {
+					if(itemDomain.equals(objectDate.getDomain()) && objectDate.hasNoDate()) { 
+						clear(); //TODO: find better solution
+						addOrUpdateItem(objectItem, object.getQuantity());
+						object.update(addOrUpdateItem(item,q));
+						return true;
+					}
+				}else { if(itemDate.equals(objectDate)) {
+						clear();
+						addOrUpdateItem(objectItem, object.getQuantity());
+						object.update(addOrUpdateItem(item,q));
+						return true;}
+				}
 			}
+
 		}
 		
-		//just add to cart
-		//TODO check stock/personal first
+		//no matches found:
+		clear(); //TODO: find better solution
+		CartItem newCartItem = addOrUpdateItem(((Product)item),q);
+		if(itemDate == null) {
+			objects.add(new MampfCartObject(newCartItem, new Date(itemDomain)));
+		}else {
+			objects.add(new MampfCartObject(newCartItem, itemDate));
+		}
 		
-		//quantity only:
-		if(eventCartProductIndex > -1 && eventList != null)
-			{Product eventCartProduct = eventList.get(eventCartProductIndex).getProduct(); CartItem cartitem = addOrUpdateItem(eventCartProduct, q); eventList.set(eventCartProductIndex,cartitem);} //necessary??
-			
-		//add to list:
-		if(eventCartProductIndex == -1 && eventList != null)
-			{CartItem cartitem = addOrUpdateItem(item, q);
-			eventList.add(cartitem);} //necessary??
-			
-		//add new event:
-		if(eventCartProductIndex == -1 && eventList == null)
-			{CartItem cartitem = addOrUpdateItem(item, q); 
-			
-			if(itemDate == null) dates.add(new Date(itemDomain));
-			else{itemDate.setDomain(itemDomain); dates.add(itemDate);}
-			
-			List<CartItem> newList = new ArrayList<>();newList.add(cartitem);
-			events.put(Integer.valueOf(dates.size()-1),newList);
-			}
 		//everything can be added:
 		return true;
 		
 	}
-	public void removeItem(Item item, Quantity q, Date date) {
-		//TODO
+	public void removeItem(Item item, Date date) {
+		//TODO: nullcheck
+		MampfCartObject toDelete = null;
+		Item objectItem;
+		Date objectDate;
+		
+		for(MampfCartObject object : objects) {
+			objectItem = object.getItem();
+			objectDate = object.getDate();
+			
+			if(item.equals(objectItem) && date.equals(objectDate)) {
+				toDelete = object;break;}
+		}
+		if(toDelete != null) {
+			objects.remove(toDelete);
+		}
 	}
+	
 	
 	public Map<Date,List<CartItem>> getEvents(){
 		//grouping cartitems to events
+		//TODO
 		Map<Date,List<CartItem>> res = new TreeMap<>();
-		for(Integer event: events.keySet()) {
-			res.put(dates.get(event.intValue()),events.get(event));
+		List<CartItem> list;
+		Date key = null;
+		for(MampfCartObject object: objects) {
+			Item objectItem = object.getItem();
+			Date objectDate = object.getDate();
+			
+			if(res.containsKey(objectDate)) { 
+				list = res.get(objectDate);
+			}else {
+				list = new ArrayList<>();
+			}
+			list.add(object.getCartItem());
+			res.put(objectDate, list);
 		}
+		
 		return res;
+		
 		
 	}
 	
 	
 	public void clearAll() {
 		
-		dates.clear();
-		events.clear();
-		
+		//dates.clear();
+		//events.clear();
+		objects.clear();
 		clear();
 	}
 }
