@@ -9,6 +9,8 @@
             src="http://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
     <link rel="stylesheet"
           href="http://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css" type="text/css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link th:href="@{/resources/css/style.css}" rel="stylesheet"
           href="../static/resources/css/style.css" type="text/css"/>
 
@@ -20,22 +22,32 @@
         <h1 th:text="#{inventory.title}">Bestand</h1>
     </header>
     <div class="ui container">
-        <table class="ui celled table">
+        <table id="sortableTable" table class="ui celled table">
             <thead>
             <tr>
-                <th th:text="#{inventory.title}">Titel</th>
-                <th th:text="#{inventory.count}">Anzahl</th>
+                <th th:text="#{inventory.title}" class="col-6">Bestand</th>
+                <th th:text="#{inventory.count.now}" class="col-6">aktueller Stand</th>
+                <th th:text="#{inventory.add}" class="text-right col-6">Aktionen</th>
             </tr>
             </thead>
             <tbody th:remove="all-but-first">
             <tr th:each=" item : ${inventory}">
                 <td th:text="${item.product.name}">name</td>
                 <td th:text="${{item.quantity}}">quantity</td>
+                <td>
+                    <form class="ui form reorder" method="post" th:action="@{/inventory/add}">
+                        <input type="hidden" name="pid" value="0" th:value="${item.product.id}" />
+                        <div class="field">
+                            <label for="number">Anzahl</label>
+                            <input id="number" type="number" name="number" min="1" max="10" value="1" /><br />
+                        </div>
+                        <button type="submit"  class="btn btn-outline-primary float-right" th:method="delete" text="#{inventory.add}">Mehr hinzufügen</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
     </div>
-
 </div>
 </body>
 </html>
