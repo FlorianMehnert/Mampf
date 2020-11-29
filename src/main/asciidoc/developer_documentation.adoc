@@ -167,7 +167,11 @@ Das kann z.B. mittels _Spring Security_ und _Thymeleaf_ (`sec:authorize` - tag) 
 === Softwarearchitektur
 
 [[top_level_diagram]]
-image:images/diagrams/top_level_arch.svg[top level architexture]
+image:images/diagrams/top_level_arch.svg[top level architecture]
+
+
+[[client_server_diagram]]
+image:images/diagrams/Client-Server-Application.png[Client Server application]
 
 === Entwurfsentscheidungen
 ==== Verwendete Muster
@@ -184,6 +188,8 @@ In der Datei _application.properties_ müssen dazu die folgenden Zeilen auskomme
 
 ==== Benutzeroberfläche
 
+[[ui_diagram]]
+image:images/diagrams/ui-diagram.png[ui diagram]
 *TODO: add diagram*
 
 ==== Verwendung externer Frameworks
@@ -199,7 +205,7 @@ a| * catalog.Item
 | salespointframework.core
 a| * catalog.CatalogInitializer
 * user.UserInitializer
-* employee.EmployeeInitializer
+* mampf.employee.EmployeeInitializer
 * inventory.InventoryInitializer
 
 |salespointframework.inventory
@@ -210,7 +216,7 @@ a| * catalog.CatalogController
 | salespointframework.order
 a| * order.OrderController
 * catalog.Item
-* employee.EmployeeManager
+* mampf.employee.EmployeeManager
 
 | salespointframework.payment
 a| * order.OrderController
@@ -248,7 +254,7 @@ a| * catalog.CatalogController
 * user.UserController
 * inventory.InventoryController
 * order.OrderController
-* employee.EmployeeController
+* mampf.employee.EmployeeController
 
 | springframework.util
 a| * user.UserController
@@ -259,7 +265,7 @@ a| * user.UserController
 a| * user.UserController
 
 | springframework.web
-a| mampf.MampfWebConfiguration
+a| * mampf.MampfWebConfiguration
 
 |===
 
@@ -284,31 +290,30 @@ image:images/diagrams/developer_doc_5_1_Mampf.svg[pkg mampf_building block diagr
 [[pkg_catalog_building_block_diagram]]
 image:images/diagrams/developer_doc_5_2_Catalog.svg[pkg catalog building block diagram]
 
-=== User
-
-
 [options="header"]
 |=== 
 |Klasse/Enumeration |Description
-| CatalogController | Ein Spring MVC Controller und eine bestimmte Anzahl an i `Item` anzuzeigen abhängig von der jeweiligen Domäne
+| CatalogController | Ein Spring MVC Controller und eine bestimmte Anzahl an `Item` anzuzeigen abhängig von der jeweiligen Domäne
 | Category | Enumeration, die die jeweilige Kategorie eines Produktes oder einer Dienstleistung `Item` die in einer Domäne angeboten wird, beschreibt
 | Domain | Enumeration, die die jeweilige Domäne eines (bspw. PartyService) der zu vertreibenden Produkte und Dienstleistungen `Item` beschreibt
 | Item | Beschreibt alle Produkte und Dienstleistungen die Mampf vertreibt
 | MampfCatalog | Eine Erweiterung des Salepoint Catalog, um Mampf spezifische Funktionalitäten hinzuzufügen 
 |===
 
-=== Rückverfolgbarkeit zwischen Analyse- und Entwurfsmodell
-_Die folgende Tabelle zeigt die Rückverfolgbarkeit zwischen Entwurfs- und Analysemodell. Falls eine Klasse aus einem externen Framework im Entwurfsmodell eine Klasse des Analysemodells ersetzt,
-wird die Art der Verwendung dieser externen Klasse in der Spalte *Art der Verwendung* mithilfe der folgenden Begriffe definiert:_
-
-* Inheritance/Interface-Implementation
-* Class Attribute
-* Method Parameter
-
+=== User
+[[pkg_user_building_block_diagram]]
+image:images/diagrams/developer_doc_5_3_users.svg[pkg user building block diagram]
 [options="header"]
 |===
-|Klasse/Enumeration (Analysemodell) |Klasse/Enumeration (Entwurfsmodell) |Art der Verwendung
-|...|...|...
+|Klasse/Enumeration |Description
+| User | Diese Klasse wird benötigt, um den Salespoint-UserAccount um eine Verknüpfung zu Company zu erstellen.
+| UserController | Diese Klasse ist ein Spring-Controller, der alle Requests zum Registrieren und zum Anzeigen, bearbeiten, löschen von Users behandelt
+| UserDataInitializer | Eine Implementierung der Initialisierung, um erste Test-Daten beim Start der Anwendung zu generieren.
+| UserManagement | Eine Service-Klasse, die das Verwalten der Nutzer vereinfacht
+| UserRepository | Ein Repository-Interface, um alle Instanzen der User-Klasse zu verwalten.
+| Registration-Form | Ein Interface, um die Nutzereingaben bei der Registrierung zu validieren.
+| UserRole | Eine Enumeration aller verwendeten Benutzer-Rollen.
+
 |===
 
 === Inventory
@@ -369,6 +374,21 @@ image:images/diagrams/employee_package.svg[pkg employee diagram]
 | RegistrationForm | Eine Klasse zur Validierung der Benutzereingabe (in diesem Fall von dem Boss) des Registrierungsformular, um Mitarbeiter/Employees hinzufügen.
 | Role | Die Rolle, die ein Mitarbeiter/Employee haben kann: Koch (Cook) oder Service-Personal (Service).
 |===
+
+=== Rückverfolgbarkeit zwischen Analyse- und Entwurfsmodell
+_Die folgende Tabelle zeigt die Rückverfolgbarkeit zwischen Entwurfs- und Analysemodell. Falls eine Klasse aus einem externen Framework im Entwurfsmodell eine Klasse des Analysemodells ersetzt,
+wird die Art der Verwendung dieser externen Klasse in der Spalte *Art der Verwendung* mithilfe der folgenden Begriffe definiert:_
+
+* Inheritance/Interface-Implementation
+* Class Attribute
+* Method Parameter
+
+[options="header"]
+|===
+|Klasse/Enumeration (Analysemodell) |Klasse/Enumeration (Entwurfsmodell) |Art der Verwendung
+|...|...|...
+|===
+
 
 == Laufzeitsicht
 * Darstellung der Komponenteninteraktion anhand eines Sequenzdiagramms, welches die relevantesten Interaktionen darstellt.

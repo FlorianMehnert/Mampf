@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div th:fragment="navigation">
+    <nav class="navbar navbar-light navbar-expand-sm bg-light mb-5">
+        <a class="navbar-brand" href="#">Mampf</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="register.html" th:href="@{/register}"
+                       sec:authorize="!isAuthenticated()">Registrierung</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="catalog.html" th:href="@{/catalog}">Catalog</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="orders.html" th:href="@{/orders}" sec:authorize="hasRole('BOSS')">Bestellungen</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="stock.html" th:href="@{/stock}" sec:authorize="hasRole('BOSS')">Lager</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="users.html" th:href="@{/users}" sec:authorize="hasRole('BOSS')">Kundenliste</a>
+                </li>
+
+
+            </ul>
+            <ul class="navbar-nav">
+                <div class="my-2 my-lg-0">
+                    <a class="nav-link form-inline" th:href="@{/userDetails/}" >
+                        <button type="submit" class="btn btn-link">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                            </svg>
+                            Profil
+                        </button>
+                    </a>
+                </div>
+                <div class="my-2 my-lg-0">
+                    <a class="form-inline a_without_hover_decoration" sec:authorize="!isAuthenticated()" th:href="@{/login}">
+                        <button type="submit" class="btn btn-outline-success my-2">Login</button>
+                    </a>
+                    <form class="form-inline" sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-success my-2">Logout</button>
+                    </form>
+                </div>
+            </ul>
+
+        </div>
+    </nav>
+</div>
+</body>
+</html>

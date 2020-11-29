@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script
+            src="http://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
+    <link rel="stylesheet"
+          href="http://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css" type="text/css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link th:href="@{/resources/css/style.css}" rel="stylesheet"
+          href="../static/resources/css/style.css" type="text/css"/>
+
+    <title>Bestellungen</title>
+</head>
+<body>
+<div class="ui container">
+    <header>
+        <h1>Bestellungen</h1>
+    </header>
+    <div class="ui container">
+        <table id="sortableTable" table class="ui table">
+            <thead>
+            <tr>
+                <th>Bestellung</th>
+                <th>View</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each=" order : ${orders}">
+                <td th:text="${order.id}">name</td>
+                <td><a th:href="'/orders/detail?order='+${order.id}">view</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

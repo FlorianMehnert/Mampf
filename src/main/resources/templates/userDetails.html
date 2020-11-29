@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Mampf</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}" />
+
+    <!-- Bootstrap -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <!-- Bootstrap -->
+    <!-- jQuery and JS bundle w/ Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+</head>
+<body>
+<nav th:include="navigation :: navigation"></nav>
+<div class="container">
+    <h1>Details der Nutzerkonten</h1>
+    <table class="table table-hover">
+        <tr>
+            <td>Nutzername</td>
+            <td th:text="${user.userAccount.username}">user</td>
+        </tr>
+        <tr>
+            <td>E-Mail</td>
+            <td th:text="${user.userAccount.email}">user</td>
+        </tr>
+        <tr>
+            <td>Vorname</td>
+            <td th:text="${user.userAccount.firstname}">user</td>
+        </tr>
+        <tr>
+            <td>Nachname</td>
+            <td th:text="${user.userAccount.lastname}">user</td>
+        </tr>
+        <tr>
+            <td>Adresse</td>
+            <td th:text="${user.address}">user</td>
+        </tr>
+        <tr>
+            <td>gelöschter Nutzer</td>
+            <td>
+                <span th:text="!${user.userAccount.isEnabled()}"></span>
+                <a class="page-link" th:href="@{/deleteUser/{id}(id=${user.id})}" th:if="${user.userAccount.isEnabled()}" sec:authorize="hasRole('BOSS')">Löschen</a>
+            </td>
+        </tr>
+        <tr>
+            <td>Rolle</td>
+            <td th:text="${user.userAccount.roles.toList().get(0)}">user</td>
+        </tr>
+        <tr th:if="${user.userAccount.hasRole('COMPANY')}">
+            <td>Firmenname</td>
+            <td th:text="${user.company.get().getName()}">user</td>
+        </tr>
+        <tr th:if="${user.userAccount.hasRole('COMPANY')}">
+            <td>AccessCode</td>
+            <td th:text="${user.company.get().accessCode}">user</td>
+        </tr>
+        <tr th:if="${user.userAccount.hasRole('COMPANY')}">
+            <td>Mitarbeiter</td>
+            <td>
+                <div th:each="employee : ${user.getCompany().get().getEmployees()}">
+                    <span th:text="${employee.userAccount.username}"></span>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
