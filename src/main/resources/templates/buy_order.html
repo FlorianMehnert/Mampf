@@ -19,34 +19,21 @@
 <body>
 <nav th:include="navigation :: navigation"></nav>
 
-    <div th:each="event: ${events}">
-    	<br>
-    	
-    	<div th:text="${event.key}"> </div>
-    	
-    	
-		<div th:each="item : ${event.value}">
-			<div th:text="${item}">
-			</div>
-			
-		</div> 
-		<div th:with="date=${event.key}">
-		<form method="post" th:action="@{/checkout}">
-    		<input type="hidden" name="dateid" value="0" th:value="${date.id}"/>
-			<button type="submit">Event kaufen</button>
-		</form>
-		<!-- <a th:href="@{/checkout/{dateid}(dateid=${event.key.id})}"> Event kaufen </a>
-		-->
-		</div>
+    <div th:each="orderitem: ${order}">
+    	<div th:text="${orderitem}"> </div>
     </div>
     
-    <form method="post" th:action="@{/checkoutAll}">
-    	<!-- <input type="hidden" name="dateid" value="0" th:value="null"/>
-		--><button type="submit">Warenkorb kaufen</button>
+    
+    <form method="post" th:action="@{/pay}">
+    	<fieldset>
+		    <input type="radio" id="mc" name="payment" value="0">
+		    <label for="mc"> Überweisung</label> 
+		    <input type="radio" id="vi" name="payment" value="1">
+		    <label for="vi"> Bar</label>
+		</fieldset>
+    	<input type="hidden" name="oid" value="0" th:value="${order.id}"/>
+		<button type="submit">Bestellung kaufen</button>
 	</form>
-	<form method="post" th:action="@{/clear}">
-		<button type="submit">Warenkorb leeren</button>
-	</form>    
 
 </body>
 </html>

@@ -3,13 +3,15 @@ package mampf.cart;
 import mampf.catalog.Item;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.lang.Comparable;
 import java.time.LocalDateTime;
 
-//@Entity
+@Entity
 public class Date implements Comparable<Date>{
 
+	private @Id @GeneratedValue long id;
 	
 	private LocalDateTime startTime=null,endTime=null;
 	private String address=null;
@@ -76,5 +78,9 @@ public class Date implements Comparable<Date>{
 		String res = domain.name();
 		if(startTime != null) res+= startTime.toString();
 		return res;
+	}
+	
+	public long getId() {
+		return id;
 	}
 }

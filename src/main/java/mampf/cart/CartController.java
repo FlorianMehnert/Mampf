@@ -57,21 +57,30 @@ public class CartController {
 	//--------------
 	
 	//buy all
+	/*
 	@PostMapping("/checkout")
+	String buyAll(@RequestParam(value="dateid", required=false) Date buyDate,@ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount, Model model) {
+		return buy(buyDate, cart, userAccount, model);
+	}*/
+	@PostMapping("/checkoutAll")
 	String buyAll(@ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount, Model model) {
 		return buy(null, cart, userAccount, model);
 	}
 	
+	/*
 	//buy spec item
-	@GetMapping("/checkout/{index}")
+	@GetMapping("/checkout/{date}")
 	String buyIndex(@PathVariable Date date, @ModelAttribute MampfCart cart, @LoggedIn Optional<UserAccount> userAccount, Model model) {
 		return buy(date, cart, userAccount, model);
-	}
+	}*/
 	
 	//buy in generell:
 	String buy(Date buyDate, MampfCart cart, Optional<UserAccount> userAccount, Model model) {
 		//TODO: redirect if not logged in
 		//TODO: nullcheck
+		//model.addAttribute("order", attributeValue)
+		
+		
 		Map<Date, List<CartItem>> events = cart.getEvents();
 		boolean hasError = !userAccount.isPresent();
 		
@@ -102,7 +111,7 @@ public class CartController {
 			
 			//order progress:
 			
-			//oM.save(order);
+			oM.save(order);
 			
 			//TODO: complete order if done
 			
@@ -118,8 +127,7 @@ public class CartController {
 		}
 		
 		//error handling:
-		//kinda: model.addAtt("error",...)
-		return "cart"; //TODO: add some fancy errors
+		return "redirect:/cart"; //TODO: add some fancy errors
 		
 	}
 	
@@ -138,6 +146,9 @@ public class CartController {
 		order.addOrderLine(new MampfOrderProduct(item, date),q);
 		return order;
 	}
+
+	
+	
 	
 	@PostMapping("/clear")
 	String clearCart(@ModelAttribute MampfCart cart){

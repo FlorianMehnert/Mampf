@@ -27,7 +27,7 @@ import org.salespointframework.catalog.Product;
 //sp
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-
+import org.salespointframework.quantity.Metric;
 import org.salespointframework.quantity.Quantity;
 
 //test:
@@ -63,8 +63,8 @@ public class MampfCart extends Cart {
 		Optional o3 = Optional.ofNullable(new Date(LocalDateTime.of(1999, 2, 2, 5, 0),null,"NOT HERE"));
 		
 		
-		addItem(i1,Quantity.of(34),o1);	
-		addItem(i2,Quantity.of(50), null);
+		addItem(i1,Quantity.of(12, Metric.UNIT),o1);	
+		addItem(i2,Quantity.of(50, Metric.UNIT), null);
 		
 		//add:
 		addItem(i3,Quantity.of(1), o1);
