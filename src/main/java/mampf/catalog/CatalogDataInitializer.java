@@ -2,8 +2,8 @@ package mampf.catalog;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.core.DataInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -14,7 +14,8 @@ import static mampf.catalog.Item.Domain.EVENTCATERING;
 @Order(20)
 class CatalogDataInitializer implements DataInitializer {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CatalogDataInitializer.class);
+	//! Logger is not used so should be used or deleted
+	// private static final Logger LOG = LoggerFactory.getLogger(CatalogDataInitializer.class);
 
 	private final MampfCatalog mampfCatalog;
 

@@ -1,10 +1,7 @@
 package mampf.catalog;
 
 import org.javamoney.moneta.Money;
-import org.salespointframework.inventory.UniqueInventory;
-import org.salespointframework.inventory.UniqueInventoryItem;
-import org.salespointframework.quantity.Quantity;
-import org.salespointframework.time.BusinessTime;
+// import org.salespointframework.quantity.Quantity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,26 +20,24 @@ import java.util.Iterator;
 import java.util.Map;
 
 import mampf.Util;
-import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
+import mampf.inventory.Inventory;
 
 @Controller
 public class CatalogController {
 
-	private static final Quantity NONE = Quantity.of(0);
+	//! Quantity is not used so should be or deleted
+	// private static final Quantity NONE = Quantity.of(0);
 
 	private final MampfCatalog catalog;
-	private final UniqueInventory<UniqueInventoryItem> inventory;
-	private final BusinessTime businessTime;
+	private final Inventory inventory;
 
 	CatalogController(
 		MampfCatalog catalog,
-		UniqueInventory<UniqueInventoryItem> inventory,
-		BusinessTime businessTime
+		Inventory inventory
 	) {
 		this.catalog = catalog;
 		this.inventory = inventory;
-		this.businessTime = businessTime;
 	}
 
 	//? Probably not needed because user can choose domain from homepage or navigation
@@ -55,7 +50,7 @@ public class CatalogController {
 	@GetMapping("/catalog")
 	String itemsCatalog(Model model){
 
-		ArrayList<Map> domains = new ArrayList<>();
+		ArrayList<Map<String, String>> domains = new ArrayList<>();
 
 		for(Domain domain : Domain.values()) {
 			Map<String, String> domainObj = new HashMap<>();
@@ -69,7 +64,6 @@ public class CatalogController {
 		return "catalog_index";
 	}
 
-	// TODO: check if domain exists and return 404-Page if not eventually
 	/**
 	 *
 	 * @param domain String which indicates which items from catalog have to be filtered
@@ -79,24 +73,33 @@ public class CatalogController {
 	@GetMapping("/catalog/{domain}")
 	String catalogDomain(@PathVariable String domain, Model model) {
 		Domain catalogDomain;
+		// As domain is given as string we try to parse its enum from Item.Domain
 		try {
 			catalogDomain = Util.parseDomainEnum(domain);
 		} catch (IllegalArgumentException ex) {
+			// If the given domain does not exist in the enumeration we let the user know by redirecting to an error page
 			System.out.println(ex.toString());
 			model.addAttribute("error", String.format("URI is invalid.\n\"%s\" is not a valid domain.", domain));
 			return "404";
 		}
+
+		// reorganizing the items of the chosen domain to show them each under its category
 		Iterable<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
 		Iterator<Item> iterator = filteredCatalog.iterator();
-		Map<String, ArrayList> categorizedItems = new HashMap<>();
+		Map<String, ArrayList<Item>> categorizedItems = new HashMap<>();
 		while(iterator.hasNext()){
 			Item currentItem = iterator.next();
+
+			// checking if the item is available for purchase in other words if is in stock
+			if(!inventory.findByProduct(currentItem).isPresent()) continue;
+
+			// TODO: Add internationalization for the category in  the Util class
 			String currentCategory = currentItem.getCategory().toString();
 			if(categorizedItems.containsKey(currentCategory)){
 				categorizedItems.get(currentCategory).add(currentItem);
 			}
 			else {
-				ArrayList newArrayList = new ArrayList<Item>();
+				ArrayList<Item> newArrayList = new ArrayList<>();
 				newArrayList.add(currentItem);
 				categorizedItems.put(currentCategory, newArrayList);
 			}

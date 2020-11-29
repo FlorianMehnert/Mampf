@@ -1,6 +1,5 @@
 package mampf.inventory;
 
-import mampf.Mampf;
 import mampf.catalog.MampfCatalog;
 import org.salespointframework.core.DataInitializer;
 import org.salespointframework.inventory.UniqueInventory;

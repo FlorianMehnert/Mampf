@@ -69,7 +69,7 @@
     Mampf.Events = {}
 
     Mampf.Events.openSidebar = async function (event) {
-      const id = event.target.parentElement.dataset.item;
+      const id = event.target.closest('.mmpf-c-card').dataset.item;
       const itemData = await Mampf.XHR.fetchItem(id);
       console.log(itemData);
       Mampf.Render.renderSidebarContent(itemData);
@@ -116,6 +116,7 @@
     Mampf.XHR = {};
 
     Mampf.XHR.fetchItem = async function (id) {
+      console.log(id);
       return new Promise((resolve, reject) => {
         fetch(`${location.origin}/_api/catalog/item/${id}`)
           .then(buffer => buffer.json())
