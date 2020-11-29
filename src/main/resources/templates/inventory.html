@@ -26,13 +26,16 @@
             <thead>
             <tr>
                 <th th:text="#{inventory.title}" class="col-6">Bestand</th>
+                <th th:text="#{inventory.category}" class="col-6">Category</th>
                 <th th:text="#{inventory.count.now}" class="col-6">aktueller Stand</th>
                 <th th:text="#{inventory.add}" class="text-right col-6">Aktionen</th>
+
             </tr>
             </thead>
             <tbody th:remove="all-but-first">
             <tr th:each=" item : ${inventory}">
                 <td th:text="${item.product.name}">name</td>
+                <td th:text="${item.getProduct().getCategory()}">name</td>
                 <td th:text="${{item.quantity}}">quantity</td>
                 <td>
                     <form class="ui form reorder" method="post" th:action="@{/inventory/add}">

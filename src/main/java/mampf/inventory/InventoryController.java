@@ -32,7 +32,6 @@ public class InventoryController {
 	// TODO only BOSS
 	public String inventory(Model model) {
 		model.addAttribute("inventory", inventory.findAllAndSort());
-
 		return "inventory";
 	}
 
