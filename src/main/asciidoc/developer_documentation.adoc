@@ -404,7 +404,12 @@ image:images/diagrams/developer_doc_6_1_Catalog.svg[sd_catalog_diagram]
 image:images/diagrams/developer_doc_6_4_Orders.svg[sd_order_diagram]
 
 === Employee
+[[sd_employee_diagram]]
 image:images/diagrams/employee_sequenzdiagramm.svg[sequence diagram - employee]
+
+=== Inventory
+[[sd_inventory_diagram]]
+image:images/diagrams/developer_doc_6_5_Inventory.svg[sequence diagram - inventory]
 
 
 == Technische Schulden
