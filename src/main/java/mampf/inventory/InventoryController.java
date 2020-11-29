@@ -18,36 +18,10 @@ import java.util.Optional;
 @Controller
 public class InventoryController {
 
-	private final UniqueInventory<UniqueInventoryItem> inventory;
+	private final Inventory inventory;
 
-	InventoryController(UniqueInventory<UniqueInventoryItem> inventory){
+	InventoryController(Inventory inventory){
 		this.inventory = inventory;
-	}
-
-	public Product findItem(String name){
-		for(Product product : listItems()){
-			if(product.getName().equals(name)){
-				return product;
-			}
-		}
-		return null;
-	}
-
-	public void reduceAmount(Product product, Quantity amount){
-		assert product.getId() != null;
-		Optional<UniqueInventoryItem> theItem = this.inventory.findByProduct(product);
-
-		//TODO: what if theItem is not available
-		theItem.ifPresent(uniqueInventoryItem -> uniqueInventoryItem.decreaseQuantity(amount));
-	}
-
-	public List<Product> listItems(){
-		List<Product> list = new ArrayList<>();
-		for(UniqueInventoryItem item: inventory.findAll()){
-			list.add(item.getProduct());
-			System.out.println(item.getProduct().getName() + " " + item.getProduct().getPrice());
-		}
-		return list;
 	}
 
 	@PostMapping("/inventory/add")
@@ -63,7 +37,7 @@ public class InventoryController {
 	@GetMapping("/inventory")
 	// TODO only BOSS
 	public String inventory(Model model) {
-		model.addAttribute("inventory", inventory.findAll());
+		model.addAttribute("inventory", inventory.findAllAndSort());
 
 		return "inventory";
 	}
