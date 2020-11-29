@@ -188,6 +188,8 @@ In der Datei _application.properties_ müssen dazu die folgenden Zeilen auskomme
 
 ==== Benutzeroberfläche
 
+[[ui_diagram]]
+image:images/diagrams/ui-diagram.png[ui diagram]
 *TODO: add diagram*
 
 ==== Verwendung externer Frameworks
