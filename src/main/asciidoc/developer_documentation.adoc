@@ -354,6 +354,22 @@ image:images/diagrams/developer_doc_5_5_Orders_cart.svg[pkg cart building block 
 | PaymentForm | Spring Komponente, Formular für PaymentMethod.
 |===
 
+=== Employee
+[[pkg_employee_diagram]]
+image:images/diagrams/employee_package.svg[pkg employee diagram]
+
+[options="header"]
+|===
+|Klasse/Enumeration |Description
+| Employee | Eine benutzerdefinierte Klasse, die ein Mitarbeiter/Employee spezifiziert.
+| EmployeeController | Eine Spring MVC Controller, um Mitarbeiter/Employees anzuzeigen oder hinzufügen.
+| EmployeeDataInitializer | Eine Implementierung des DataInitializers zum Erstellen von Mitarbeiter/Employees beim Starten der Anwendung.
+| EmployeeManagement | Serviceklasse zur Verwaltung von Mitarbeiter/Employees.
+| EmployeeRepository | Ein Repository Interface zur Verwaltung von Mitarbeiter/Employees-Instanzen.
+| RegistrationForm | Eine Klasse zur Validierung der Benutzereingabe (in diesem Fall von dem Boss) des Registrierungsformular, um Mitarbeiter/Employees hinzufügen.
+| Role | Die Rolle, die ein Mitarbeiter/Employee haben kann: Koch (Cook) oder Service-Personal (Service).
+|===
+
 == Laufzeitsicht
 * Darstellung der Komponenteninteraktion anhand eines Sequenzdiagramms, welches die relevantesten Interaktionen darstellt.
 
@@ -366,6 +382,9 @@ image:images/diagrams/developer_doc_6_1_Catalog.svg[sd_catalog_diagram]
 
 [[sd_catalog_diagram]]
 image:images/diagrams/developer_doc_6_4_Orders.svg[sd_order_diagram]
+
+=== Employee
+image:images/diagrams/employee_sequenzdiagramm.svg[sequence diagram - employee]
 
 
 == Technische Schulden
