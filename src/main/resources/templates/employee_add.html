@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Add Employee</title>
+  <link th:href="@{/resources/css/style.css}" rel="stylesheet" href="../static/resources/css/style.css"
+    type="text/css" />
+</head>
+
+<body>
+  <header>
+    <h2>Mitarbeiter hinzufügen</h2>
+  </header>
+  <form th:action="@{/intern/employees/add}" method="post">
+    <div>
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
+      </div>
+      <div class="field">
+        <label for="first_name">Vorname</label>
+        <input type="text" id="first_name" name="first_name" autofocus="autofocus" /> <br />
+      </div>
+      <div class="field">
+        <label for="last_name">Nachname</label>
+        <input type="text" id="last_name" name="last_name" autofocus="autofocus" /> <br />
+      </div>
+      <div class="field">
+        <label for="role">Role</label>
+        <input type="text" id="role" name="role" autofocus="autofocus" /> <br />
+      </div>
+      <button type="submit"> Mitarbeiter hinzufügen</button>
+    </div>
+  </form>
+</body>
+
+</html>

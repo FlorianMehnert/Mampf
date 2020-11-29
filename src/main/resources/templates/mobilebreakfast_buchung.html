@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}" />
+        <title>Mobile Breakfast</title>
+    </head>
+
+    <header>
+        <h2>Cateringservice</h2>
+        <h1 style="text-align: center">MAMPF</h1>
+    </header>
+
+    <body>
+        <br>
+        <span>Frühstück wählen: </span>
+        <br> <br>
+        <div style="border-style: solid">
+            <span><b>Basic</b></span>
+            <span style="float: right">pro Person: 4.99€</span>
+            <div>
+                <input type="radio" id="kaffee" name="drink" value="kaffee"> Kaffee
+                <input type="radio" id="tee" name="drink" value="tee"> Tee
+            </div>
+            <div>
+                <input type="radio" id="musli" name="food" value="musli"> Müsli
+                <input type="radio" id="brotchen" name="food" value="brotchen"> Brötchen
+            </div>
+            <br>
+        </div>
+        <br>
+        <button type="submit" value="Warenkorb">zum Warenkorb hinzufügen</button>
+    </body>
+</html>
