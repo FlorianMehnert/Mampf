@@ -1,15 +1,15 @@
 /* CSS RESET */
 
 * {
-	margin: 0;
-	padding: 0;
+	margin: 10px;
+	padding: 10px;
 }
 
 body {
-	margin: 0 auto;
-	width: 940px;
+	margin: 10px;
+	width: 1270px;
 	font: 13px/22px Helvetica, Arial, sans-serif;
-	background: #f0f0f0;
+	background: white;
 }
 
 h1 {
@@ -17,5 +17,29 @@ h1 {
 	line-height: 3.2em;
 	text-align:center;
 }
+
+table{
+	border-spacing: 5px;
+	border: 2px solid black;
+	border-collapse: collapse;
+	width: 60%;
+}
+th{
+	border: 2px solid black;
+	border-collapse: collapse;
+}
+td{
+	border-left: 2px solid black;
+	border-collapse: collapse;
+}
+.koch{
+	border-bottom: 2px solid white;
+	width: 20%;
+}
+
+.add{
+	float: right;
+}
+
 
 

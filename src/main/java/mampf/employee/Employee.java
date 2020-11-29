@@ -9,7 +9,6 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.OneToOne;
 
 @Entity
 public class Employee {
@@ -25,9 +24,9 @@ public class Employee {
 	private @Id @GeneratedValue long id;
 
 	public Employee(String name, Role role){
-    this.name = name;
-    this.role = role;
-    this.booked = new ArrayList<Date>();
+    	this.name = name;
+    	this.role = role;
+    	this.booked = new ArrayList<Date>();
 	}
 
 	public long getId(){

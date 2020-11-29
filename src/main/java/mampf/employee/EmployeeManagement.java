@@ -1,11 +1,9 @@
 package mampf.employee;
 
-import org.salespointframework.useraccount.Password.UnencryptedPassword;
 
 import java.util.Date;
 
 import org.salespointframework.useraccount.Role;
-import org.salespointframework.useraccount.UserAccountManagement;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

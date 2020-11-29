@@ -6,23 +6,15 @@ public class RegistrationForm {
 	@NotEmpty(message = "Username should not be empty")//
 	private final String username;
 
-	@NotEmpty(message = "Username should not be empty")//
+	@NotEmpty(message = "First name should not be empty")//
 	private final String first_name;
 
-	@NotEmpty(message = "Username should not be empty")//
+	@NotEmpty(message = "Last name should not be empty")//
 	private final String last_name;
 
-	@NotEmpty(message = "Username should not be empty")//
+	@NotEmpty(message = "Role should not be empty")//
 	private final String role;
 
-	//todo is there an email for registration?
-	//@NotEmpty(message = "Email should not be empty")
-	//private final String email;
-
-	//todo should the code be in the registration form or in mobile breakfast page?
-	//private final String accessCode;
-
-	//todo do i have to write the name of the company & anschrift?
 
 	public RegistrationForm(String username, String first_name, String last_name, String role){
 		this.username = username;
@@ -48,7 +40,4 @@ public class RegistrationForm {
 		return role;
 	}
 
-	//public String getEmail(){
-	//	return email;
-	//}
 }
