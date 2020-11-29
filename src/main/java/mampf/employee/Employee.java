@@ -23,6 +23,8 @@ public class Employee {
 
 	private @Id @GeneratedValue long id;
 
+	@SuppressWarnings("unused")
+	private Employee(){};
 	public Employee(String name, Role role){
     	this.name = name;
     	this.role = role;

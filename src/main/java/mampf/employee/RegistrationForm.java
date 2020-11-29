@@ -37,7 +37,7 @@ public class RegistrationForm {
 	}
 
 	public String getRole(){
-		return role;
+		return role.toUpperCase();
 	}
 
 }

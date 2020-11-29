@@ -6,10 +6,13 @@
 }
 
 body {
-	margin: 10px;
-	width: 1270px;
+	margin: auto;
 	font: 13px/22px Helvetica, Arial, sans-serif;
 	background: white;
+}
+
+header {
+  text-align: center;
 }
 
 h1 {
@@ -18,7 +21,7 @@ h1 {
 	text-align:center;
 }
 
-table{
+/* table{
 	border-spacing: 5px;
 	border: 2px solid black;
 	border-collapse: collapse;
@@ -39,7 +42,7 @@ td{
 
 .add{
 	float: right;
-}
+} */
 
 
 
