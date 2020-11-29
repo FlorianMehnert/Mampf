@@ -4,7 +4,6 @@ import org.salespointframework.catalog.Product;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
-import org.springframework.data.util.Streamable;
 
 import java.util.ArrayList;
 import java.util.Collections;
