@@ -1,0 +1,35 @@
+= Protokoll Gruppe 10
+
+Treffen am 23.11.2020
+
+Ort:      Online BigBlueButton +
+Beginn:   16:40 Uhr +
+Ende:     17:30 Uhr
+
+__Schriftführer:__ Florian Hauptmann
+
+*Nächstes Treffen:* +
+23.11.2020, 16:40 Uhr, BigBlueButton
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig
+- Florian Hauptmann (Protokollant)
+- Florian Mehnert (Scrum Master)
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+- Zwischenpräsentation wurde angekündigt
+- Verteilung der Packages
+** Florian Mehnert :Inventory
+** Florian Hauptmann :Catalog
+** Yannik Weber: User 
+** Patricia Crespo: Employee
+** Konstantin Holzweißig: Order
+
+== Aktueller Stand
+- Packages wurden verteilt
+- Prototyp wird begonnen
