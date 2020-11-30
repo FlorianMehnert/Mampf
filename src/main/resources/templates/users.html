@@ -44,7 +44,7 @@
                     </button>
                 </a>
             </td>
-            <td th:text="${user.userAccount.getRoles().toList().get(0)}">[EMPLYOEE]</td>
+            <td th:text="${user.userAccount.getRoles().toList().get(0)}">[EMPLOYEE]</td>
             <td th:if="${user.company.isPresent()}" th:text="${user.company.get().accessCode}">aabbcc</td>
             <td th:if="${user.company.isEmpty()}" >--</td>
         </tr>
