@@ -14,12 +14,12 @@ public class InventoryController {
 
 	private final Inventory inventory;
 
-	InventoryController(Inventory inventory){
+	InventoryController(Inventory inventory) {
 		this.inventory = inventory;
 	}
 
 	@PostMapping("/inventory/add")
-	String add(@RequestParam("pid") Item item, @RequestParam("number") int number){
+	String add(@RequestParam("pid") Item item, @RequestParam("number") int number) {
 
 		UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
 		inventory.delete(currentItem);

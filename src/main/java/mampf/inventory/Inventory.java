@@ -36,9 +36,10 @@ public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 		sortableList.sort(new SortByName());
 		return sortableList;
 	}
+
 	public class SortByName implements Comparator<UniqueInventoryItem> {
 		@Override
-		public int compare(UniqueInventoryItem a, UniqueInventoryItem b){
+		public int compare(UniqueInventoryItem a, UniqueInventoryItem b) {
 			return a.getProduct().getName().compareTo(b.getProduct().getName());
 		}
 	}
