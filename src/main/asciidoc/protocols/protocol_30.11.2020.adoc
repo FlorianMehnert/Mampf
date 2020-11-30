@@ -1,0 +1,34 @@
+= Protokoll Gruppe 10
+
+Treffen am 30.11.2020
+
+Ort:      Online BigBlueButton +
+Beginn:   16:40 Uhr +
+Ende:     17:30 Uhr
+
+__Schriftführer:__ Florian Hauptmann
+
+*Nächstes Treffen:* +
+7.12.2020, 16:40 Uhr, BigBlueButton
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig
+- Florian Hauptmann (Protokollant)
+- Florian Mehnert (Scrum Master)
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+- Prototyp wurde vorgestellt
+- *Testplan fehlt* -> Abgabe bis 04.12.20
+- Es wurde nochmals über die Zwischenpräsentation am 04.12. informiert
+- Es wird ein Dokument von Leonard Herbst zur Verfügung gestellt in dem Akzeptanzkriterien für den vorzustellenden Prototypen formuliert werden
+
+== Aktueller Stand
+- Entwicklerdokumentation muss noch bearbeitet werden und nicht vorhandene Elemente bspw. in den UML-Diagrammen gelöscht werden
+- Pflichtenheft muss noch aktualisiert werden
+- Testplan fehlt und muss nachgeholt werden
+- PowerPoint für Zwischenpräsentation muss erstellt werden
