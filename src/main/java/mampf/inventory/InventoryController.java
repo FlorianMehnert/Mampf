@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class InventoryController {
@@ -41,7 +39,10 @@ public class InventoryController {
 		ArrayList<Pair<UniqueInventoryItem, String>> names = new ArrayList<>();
 		ArrayList<String> ames = new ArrayList<>();
 		for(UniqueInventoryItem item:inventory.findAllAndSort()){
-			String name = Util.renderDomainName(((Item) item.getProduct()).getCategory().toString());
+			String name = "";
+			if(((Item) item.getProduct()).getCategory() != null){
+				name = Util.renderDomainName(((Item) item.getProduct()).getCategory().toString());
+			}
 			Pair<UniqueInventoryItem, String> map = new Pair<>(item, name);
 			names.add(map);
 		}
