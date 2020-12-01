@@ -8,7 +8,9 @@ import mampf.employee.EmployeeManagement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 import org.salespointframework.catalog.Product;
 import org.salespointframework.core.AbstractEntity;
@@ -24,27 +26,33 @@ import org.salespointframework.useraccount.UserAccount;
 @Entity
 public class MampfOrder extends Order {
 	// TODO:
-	// addEmployee
-	// findByCategory
+	//addEmployee
+	//findByCategory
 
-	// private int personalNeeded = 0;
-	private boolean done;
-	private boolean needsAllocation;
-	private ArrayList<Employee> employees;
+	//private int personalNeeded = 0;
+	
+	//private boolean needsAllocation;
+	//private ArrayList<Employee> employees;
+	//@OneToOne
 
+	@OneToOne(cascade = CascadeType.ALL)
+	private MampfDate date;
+	
 	@SuppressWarnings("unused")
 	private MampfOrder(){}
-	public MampfOrder(UserAccount account, Cash cash) {
+	public MampfOrder(UserAccount account, Cash cash, MampfDate date) {
 		super(account, cash);
+		this.date = date;
 	}
 
-	public OrderLine addOrderLine(Item product, Quantity quantity) {
+	//public OrderLine addOrderLine(Item product, Quantity quantity) {
 
-		if (product.getCategory().equals(Item.Category.PERSONEL) && needsAllocation == false) {
-			needsAllocation = true;
-		}
-		return super.addOrderLine(product, quantity);
-	}
+		
+		//if (product.getCategory().equals(Item.Category.PERSONEL)) {
+		//	needsAllocation = true;
+		//}
+	//	return super.addOrderLine(product, quantity);
+	//}
 
 	// public addEmployee(Employee employee) {
 
@@ -53,9 +61,9 @@ public class MampfOrder extends Order {
 	// public boolean getPersonalNeeded() {
 	// 	return personalNeeded;
 	// }
-
-	public boolean isDone() {
-		if(done) return true;
-		else return false;
-	}
+	public MampfDate getDate() {return date;}
+	//public boolean isDone() {
+	//	if(done) return true;
+	//	else return false;
+	//}
 }

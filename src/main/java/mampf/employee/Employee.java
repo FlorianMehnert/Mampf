@@ -5,7 +5,7 @@ import org.salespointframework.useraccount.UserAccount;
 import javax.persistence.Id;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ public class Employee {
 		SERVICE
   }
   private String name;
-  private ArrayList<Date> booked;
+  private ArrayList<LocalDateTime> booked;
   private Role role;
 
 	private @Id @GeneratedValue long id;
@@ -28,7 +28,7 @@ public class Employee {
 	public Employee(String name, Role role){
     	this.name = name;
     	this.role = role;
-    	this.booked = new ArrayList<Date>();
+    	this.booked = new ArrayList<LocalDateTime>();
 	}
 
 	public long getId(){
@@ -43,11 +43,11 @@ public class Employee {
     return this.role;
   }
 
-  public ArrayList<Date> getBooked() {
+  public ArrayList<LocalDateTime> getBooked() {
     return this.booked;
   }
 
-  public boolean setBooked(Date date) {
+  public boolean setBooked(LocalDateTime date) {
     try {
       this.booked.add(date);
     } catch (Exception ex) {

@@ -62,8 +62,13 @@
                     </div>
                 </div>
                 <div class="column">
-                    <form sec:authorize="hasRole('INDIVIDUAL')" class="ui form" method="post" th:action="@{/checkout}">
-                        <button type="submit" class="ui button" th:text="#{cart.buy}">Kaufen</button>
+                    <form sec:authorize="hasRole('INDIVIDUAL')" method="post" role="form" class="ui form" id="form" th:action="@{/checkout}" th:object="${form}">
+		                        
+				        <label for="start">Start: </label><input id="start" name="start" type="datetime-local" th:field="*{startDate}" th:errorclass="fieldError" required="required"/>
+				        <label for="end">End: </label><input id="end" name="end" type="datetime-local" th:field="*{endDate}" th:errorclass="fieldError" required="required"/>
+				        <label for="address">Address: </label><input id="address" name="address" type="text" th:field="*{address}" th:errorclass="fieldError" required="required"/>
+				        
+				        <button type="submit" class="ui button" th:text="#{cart.buy}">Kaufen</button>
                     </form>
                 </div>
             </div>

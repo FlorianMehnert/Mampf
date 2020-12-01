@@ -1,7 +1,7 @@
 package mampf.employee;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.salespointframework.useraccount.Role;
 import org.springframework.data.util.Streamable;
@@ -39,7 +39,7 @@ public class EmployeeManagement {
 		return true;
 	}
 
-	public boolean setEmployeeBooked(long id, Date date){
+	public boolean setEmployeeBooked(long id, LocalDateTime date){
 		Employee employee = employees.findById(id).get();
 		if(employee == null) return false;
 		employee.setBooked(date);
