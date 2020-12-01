@@ -3,6 +3,7 @@ package mampf.user;
 import com.mysema.commons.lang.Pair;
 import mampf.Util;
 import mampf.catalog.Item;
+import mampf.employee.Employee;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.useraccount.Role;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -34,7 +36,25 @@ class UserController {
 	}
 
 	@PostMapping("/register")
-	String registerNew(@Valid @ModelAttribute("form") RegistrationForm form, Errors result){
+	String registerNew(@Valid @ModelAttribute("form") RegistrationForm form, Errors result, RedirectAttributes redirAttrs) {
+		boolean err = false;
+		for (User user : userManagement.findAll()) {
+			if ((form.getUsername().equals(user.getUserAccount().getUsername()))) {
+				redirAttrs.addFlashAttribute("userAlreadyExists", "This Username is already taken!");
+				err = true;
+			}
+			if((form.getEmail().equals(user.getUserAccount().getEmail()))){
+				redirAttrs.addFlashAttribute("EMailAlreadyExists", "This E-Mail does exists already!");
+				err = true;
+			}
+		}
+		if (form.getRole().equals("INDIVIDUAL") && (form.getCompanyName() != null || form.getAccessCode() != null)) {
+			redirAttrs.addFlashAttribute("wrongInput", "Bad inputs were used!");
+			err = true;
+		}
+		if(err){
+			return "redirect:/register";
+		}
 		if (result.hasErrors()) {
 			return "register";
 		}
@@ -61,9 +81,9 @@ class UserController {
 
 		model.addAttribute("userList", userManagement.findAll());
 		ArrayList<Pair<User, String>> list = new ArrayList<>();
-		for(User user:userManagement.findAll()){
+		for (User user : userManagement.findAll()) {
 			String role = Util.renderDomainName(user.getUserAccount().getRoles().toList().get(0).toString());
-			Pair<User, String> map =  new Pair<>(user, role);
+			Pair<User, String> map = new Pair<>(user, role);
 			list.add(map);
 		}
 		System.out.println(list);
@@ -73,9 +93,8 @@ class UserController {
 
 	@GetMapping("/userDetails/")
 	@PreAuthorize("isAuthenticated()")
-	public String userDetails(Model model, Authentication authentication)
-	{
-		if(userManagement.findUserByUsername(authentication.getName()).isPresent()) {
+	public String userDetails(Model model, Authentication authentication) {
+		if (userManagement.findUserByUsername(authentication.getName()).isPresent()) {
 			model.addAttribute("user", userManagement.findUserByUsername(authentication.getName()).get());
 			return "userDetails";
 		}
@@ -84,9 +103,8 @@ class UserController {
 
 	@GetMapping("/userDetailsAsBoss/{userId}")
 	@PreAuthorize("hasRole('BOSS')")
-	public String userDetailsAsBoss(@PathVariable long userId, Model model)
-	{
-		if(userManagement.findUserById(userId).isEmpty()) {
+	public String userDetailsAsBoss(@PathVariable long userId, Model model) {
+		if (userManagement.findUserById(userId).isEmpty()) {
 			return "users";
 		}
 		User user = userManagement.findUserById(userId).get();
@@ -96,8 +114,7 @@ class UserController {
 
 	@GetMapping("/deleteUser/{userId}")
 	@PreAuthorize("hasRole('BOSS')")
-	public String denyAuthentication(@PathVariable long userId, Model model)
-	{
+	public String denyAuthentication(@PathVariable long userId, Model model) {
 		userManagement.denyAuthenticationById(userId);
 		return "redirect:/users";
 	}
