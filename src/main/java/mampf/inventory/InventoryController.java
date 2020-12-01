@@ -3,6 +3,7 @@ package mampf.inventory;
 import mampf.catalog.Item;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,7 @@ public class InventoryController {
 	}
 
 	@GetMapping("/inventory")
-	// TODO only BOSS
+	@PreAuthorize("hasRole('BOSS')")
 	public String inventory(Model model) {
 		model.addAttribute("inventory", inventory.findAllAndSort());
 		return "inventory";
