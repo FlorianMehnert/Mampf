@@ -151,3 +151,12 @@ div#mmpf-sidebar {
   color: #fff;
 }
 
+.mmpf-up40{
+  position: relative;
+  top: 40px;
+}
+
+.mmpf-up55{
+  position: relative;
+  top: 55px;
+}
