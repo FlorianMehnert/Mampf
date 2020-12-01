@@ -4,7 +4,7 @@
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-
+  <link rel="icon" type="image/vnd.microsoft.icon" th:href="@{/resources/img/World_sm_or.ico}">
   <script th:src="@{/webjars/jquery/jquery.min.js}" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script th:src="@{/webjars/Semantic-UI/semantic.min.js}"
     src="http://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
@@ -26,8 +26,8 @@
 
 <body>
   <nav th:include="navigation :: navigation"></nav>
-  <div class="ui container">
-    <header>
+  <header>
+    <div class="ui container">
       <h1 th:text="#{home.title}">Mampf</h1>
       <h2 th:text="#{home.welcome}">Willkommen zum fettigsten Catering der Welt.</h2>
   </div>
