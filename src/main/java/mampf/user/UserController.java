@@ -1,5 +1,10 @@
 package mampf.user;
 
+import com.mysema.commons.lang.Pair;
+import mampf.Util;
+import mampf.catalog.Item;
+import org.salespointframework.inventory.UniqueInventoryItem;
+import org.salespointframework.useraccount.Role;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -54,7 +60,14 @@ class UserController {
 	public String users(Model model) {
 
 		model.addAttribute("userList", userManagement.findAll());
-
+		ArrayList<Pair<User, String>> list = new ArrayList<>();
+		for(User user:userManagement.findAll()){
+			String role = Util.renderDomainName(user.getUserAccount().getRoles().toList().get(0).toString());
+			Pair<User, String> map =  new Pair<>(user, role);
+			list.add(map);
+		}
+		System.out.println(list);
+		model.addAttribute("pairs", list);
 		return "users";
 	}
 
