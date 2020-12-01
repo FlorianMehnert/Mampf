@@ -8,11 +8,13 @@ import mampf.catalog.Item.Domain;
 
 public class Util {
 	private static final SecureRandom random = new SecureRandom();
-
 	public static Domain parseDomainEnum(String domain){
 		return Domain.valueOf(domain.toUpperCase().replace("-", "_"));
 	}
 	public static String renderDomainName(String domain){
+		if(domain == null || domain.length() == 0){
+			return "";
+		}
 		domain = domain.toLowerCase().replaceAll("(-|_)", " ");
 		String[] domainArray = domain.split(" ");
 		return Arrays.asList(domainArray)
