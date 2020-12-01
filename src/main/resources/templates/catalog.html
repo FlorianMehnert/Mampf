@@ -38,31 +38,19 @@
           <div class="mmpf-c-card-title" th:text="${item.name}"></div>
           <div class="mmpf-c-card-price" th:text="${item.price}"></div>
           <div class="mmpf-c-card-description" th:text=${item.description}></div>
-          <button type="button" class="ui primary button mmpf-c-card-add"><i class="mmpf-clear plus icon"></i></button>
+          <form th:action="'/catalog/item/detail/' + ${item.id}" method="get">
+            <button type="submit" class="ui primary button mmpf-c-card-add"><i class="mmpf-clear plus icon"></i></button>
+          </form>
+
+          <!-- only with javascript support | thanks people of sti -->
+          <!-- <button type="button" class="ui primary button mmpf-c-card-add"><i class="mmpf-clear plus icon"></i></button> -->
         </div>
       </div>
-
-      <!-- <table class="ui celled table">
-        <thead>
-          <tr>
-            <th th:text="#{catalog.name}">name</th>
-            <th th:text="#{catalog.price}">price</th>
-            <th th:text="#{catalog.description}">description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="item : ${catalog}">
-            <td th:text="${item.name}"></td>
-            <td th:text="${item.price}"></td>
-            <td th:text="${item.description}"></td>
-          </tr>
-        </tbody>
-      </table> -->
     </div>
   </div>
 </body>
 
-<script>
+<!-- <script>
   (function (win){
     function Mampf(){}
 
@@ -150,6 +138,6 @@
 
     Mampf.Main();
   })(window);
-</script>
+</script> -->
 
 </html>

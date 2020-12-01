@@ -111,6 +111,14 @@ public class CatalogController {
 		return "catalog";
 	}
 
+	@GetMapping("/catalog/item/detail/{item}")
+	public String detail(Model model, @PathVariable Item item){
+		assert item != null;
+		model.addAttribute("title", item.getName());
+		model.addAttribute("item", item);
+		return "detail.html";
+	}
+
 	// -----------------
 	//* Development Paths
 	// -----------------

@@ -51,7 +51,7 @@ public class OrderController {
 
 		cart.addOrUpdateItem(item, Quantity.of(amount));
 
-		return "redirect:/cart";
+		return "redirect:/catalog/" + item.getDomain();
 	}
 
 	@GetMapping("/cart")
