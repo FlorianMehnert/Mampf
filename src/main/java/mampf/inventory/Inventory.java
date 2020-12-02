@@ -15,8 +15,9 @@ public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 	default Optional<UniqueInventoryItem> findByName(String name) {
 		assert name != null;
 		for (UniqueInventoryItem item : this.findAll()) {
-			if (item.getProduct().getName().equals(name))
+			if (item.getProduct().getName().equals(name)) {
 				return Optional.of(item);
+			}
 		}
 		return Optional.empty();
 	}
