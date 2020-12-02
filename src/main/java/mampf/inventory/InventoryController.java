@@ -24,7 +24,7 @@ public class InventoryController {
 	}
 
 	@PostMapping("/inventory/add")
-	String add(@RequestParam("pid") Item item, @RequestParam("number") int number) {
+	String add(@RequestParam("item") Item item, @RequestParam("number") int number) {
 		if(inventory.findByProduct(item).isPresent()){
 			UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
 			if(currentItem.getQuantity().equals(Quantity.of(-1))){
