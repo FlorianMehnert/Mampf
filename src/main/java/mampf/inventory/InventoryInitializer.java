@@ -1,5 +1,6 @@
 package mampf.inventory;
 
+import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
 import org.salespointframework.core.DataInitializer;
 import org.salespointframework.inventory.UniqueInventory;
@@ -35,7 +36,9 @@ class InventoryInitializer implements DataInitializer {
 					inventory.save(new UniqueInventoryItem(item, Quantity.of(20)));
 				} else if (item.getName().equals("Tischdecke")) {
 					inventory.save(new UniqueInventoryItem(item, Quantity.of(25)));
-				} else {
+				} else if(item.getCategory() == Item.Category.FOOD){
+					inventory.save(new UniqueInventoryItem(item, Quantity.of(-1)));
+				}else{
 					inventory.save(new UniqueInventoryItem(item, Quantity.of(10)));
 				}
 			}

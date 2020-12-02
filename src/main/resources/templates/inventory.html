@@ -32,10 +32,11 @@
         </tr>
         </thead>
         <tbody th:remove="all-but-first">
-        <tr th:each=" pair : ${names}">
+        <tr th:each="pair : ${names}">
             <td th:text="${pair.getFirst().getProduct().getName()}">name</td>
             <td th:text="${pair.getSecond()}">category</td>
-            <td th:text="${{pair.getFirst().quantity}}">quantity</td>
+            <td th:text="#{inventory.infinity}" th:if="${pair.getFirst().quantity == -1}">quantity</td>
+            <td th:text="${{pair.getFirst().quantity}}" th:if="!${pair.getFirst().quantity == -1}">quantity</td>
             <td>
                 <form class="ui form reorder" method="post" th:action="@{/inventory/add}">
                     <input type="hidden" name="pid" value="0" th:value="${pair.getFirst().getProduct().getId()}" />

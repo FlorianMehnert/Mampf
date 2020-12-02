@@ -25,26 +25,34 @@ public class InventoryController {
 
 	@PostMapping("/inventory/add")
 	String add(@RequestParam("pid") Item item, @RequestParam("number") int number) {
+		if(inventory.findByProduct(item).isPresent()){
+			UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
+			if(currentItem.getQuantity().equals(Quantity.of(-1))){
+				return "redirect:/inventory";
+			}else{
+				inventory.delete(currentItem);
+				currentItem.increaseQuantity(Quantity.of(number));
+				inventory.save(currentItem);
+				return "redirect:/inventory";
+			}
+		}else{
+			//TODO bessere weiterleitung ausdenken
+			return "404";
+		}
 
-		UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
-		inventory.delete(currentItem);
-		currentItem.increaseQuantity(Quantity.of(number));
-		inventory.save(currentItem);
-		return "redirect:/inventory";
 	}
 
 	@GetMapping("/inventory")
 	@PreAuthorize("hasRole('BOSS')")
 	public String inventory(Model model) {
 		ArrayList<Pair<UniqueInventoryItem, String>> names = new ArrayList<>();
-		ArrayList<String> ames = new ArrayList<>();
 		for(UniqueInventoryItem item:inventory.findAllAndSort()){
 			String name = "";
 			if(((Item) item.getProduct()).getCategory() != null){
 				name = Util.renderDomainName(((Item) item.getProduct()).getCategory().toString());
 			}
-			Pair<UniqueInventoryItem, String> map = new Pair<>(item, name);
-			names.add(map);
+			Pair<UniqueInventoryItem, String> pair = new Pair<>(item, name);
+			names.add(pair);
 		}
 		model.addAttribute("names", names);
 		return "inventory";
