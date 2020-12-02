@@ -123,6 +123,18 @@ public class OrderController {
 		return "redirect:/cart";
 		
 	}
+
+	@PostMapping("/checkout/mobile-breakfast")
+	String orderMobileBreakfast(@ModelAttribute Cart cart, @LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form){
+
+		if(userAccount.isEmpty()) {
+			return "redirect:/login";
+		}
+
+		// TODO: Order-handling einbauen
+
+		return "redirect:/";
+	}
 	
 /* ORDERS */
 	
