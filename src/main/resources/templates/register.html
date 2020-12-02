@@ -23,25 +23,29 @@
 <nav th:include="navigation :: navigation"></nav>
 <div class="container pb-5">
     <form class="form" role="form" th:action="@{/register}" method="post" th:object="${form}">
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" th:text="#{register.err.grey}" th:if="${wrongInput}">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${wrongInput}">
+            <span th:text="#{register.err.grey}"></span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" th:text="#{register.err.email}"
+        <div class="alert alert-danger alert-dismissible fade show" role="alert"
              th:if="${EMailAlreadyExists}">
+            <span th:text="#{register.err.email}"></span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" th:text="#{register.err.username}"
+        <div class="alert alert-danger alert-dismissible fade show" role="alert"
              th:if="${userAlreadyExists}">
+            <span th:text="#{register.err.username}"></span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="alert alert-warning alert-dismissible fade show" role="alert" th:text="#{register.err.any}"
+        <div class="alert alert-warning alert-dismissible fade show" role="alert"
              th:if="${#fields.hasAnyErrors()}">
+            <span th:text="#{register.err.any}"></span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -74,8 +78,8 @@
 
         <div class="form-group">
             <label for="role">Typ des Benutzerzugangs</label>
-            <select class="form-control" id="role" name="role" onchange="greyUnavailable()">
-                <option value="INDIVIDUAL" th:text="#{register.individuell}" onselect="$('#accessCodeGroup').css('display', 'block')">INDIVIDUAL</option>
+            <select class="form-control" id="role" name="role">
+                <option value="INDIVIDUAL" th:text="#{register.individuell}">INDIVIDUAL</option>
                 <option value="EMPLOYEE" th:text="#{register.employee}">EMPLOYEE</option>
                 <option value="COMPANY" th:text="#{register.company}">COMPANY</option>
             </select>
@@ -97,27 +101,30 @@
             <br/>
         </div>
 
-        <button type="submit" class="btn btn-outline-primary">Log in</button>
+        <button type="submit" class="btn btn-outline-primary float-right">Konto erstellen</button>
     </form>
 </div>
-<script>
-    function greyUnavailable() {
-        var role = document.getElementById("role").value;
-        if (role === "EMPLOYEE") {
-            document.getElementById("companyName").disabled = true;
-            document.getElementById("accessCode").disabled = false;
-
-        } else if (role === "COMPANY") {
-            document.getElementById("accessCode").disabled = true;
-            document.getElementById("companyName").disabled = false;
-
-        } else {
-            document.getElementById("accessCode").disabled = true;
-            document.getElementById("companyName").disabled = true;
+<script type="application/javascript">
+$(function() {
+    $('#role').change(function () {
+        switch ($('#role').val()) {
+            case "EMPLOYEE":
+                $('#companyNameGroup').css('display', 'none');
+                $('#accessCodeGroup').css('display', 'block');
+                break;
+            case "COMPANY":
+                $('#companyNameGroup').css('display', 'block');
+                $('#accessCodeGroup').css('display', 'none');
+                break;
+            default:
+                $('#companyNameGroup').css('display', 'none');
+                $('#accessCodeGroup').css('display', 'none');
         }
-    }
+    });
+    $('#companyNameGroup').css('display', 'none');
+    $('#accessCodeGroup').css('display', 'none');
 
-    greyUnavailable()
+})
 </script>
 
 </body>

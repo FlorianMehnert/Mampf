@@ -45,7 +45,7 @@ class UserController {
 				err = true;
 			}
 		}
-		if (form.getRole().equals("INDIVIDUAL") && (form.getCompanyName() != null || form.getAccessCode() != null)) {
+		if (form.getRole().equals("INDIVIDUAL") && (form.getCompanyName().length() > 0 || form.getAccessCode().length() > 0)) {
 			redirAttrs.addFlashAttribute("wrongInput", "Bad inputs were used!");
 			err = true;
 		}
