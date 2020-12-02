@@ -1,5 +1,6 @@
 package mampf.order;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,18 +78,24 @@ public class OrderController {
 		cart.clear();
 		return "redirect:/cart";
 	}
-	
-	//handles adding and removing the amount of a cartitem
-	@PostMapping("cart/add")
-	String addCartItem(@RequestParam String cartitemId, @RequestParam int amount, @RequestParam boolean add, @ModelAttribute Cart cart) {
+
+	/**
+	 * 	handles adding and removing the amount of a cartitem
+	 */
+	@PostMapping("cart/setNewAmount")
+	String addCartItem(@RequestParam String cartitemId, @RequestParam int newAmount, @ModelAttribute Cart cart) {
 		Optional<CartItem> cartitem = cart.getItem(cartitemId);
 		
-		if(!cartitem.isPresent()) return "redirect:/cart";
-			
-		if(!add)amount = -amount;
-		if(cartitem.get().getQuantity().getAmount().intValue()+amount < 1)return "redirect:/cart";
-		
-		cart.addOrUpdateItem(cartitem.get().getProduct(), Quantity.of(amount, Metric.UNIT));
+		if(cartitem.isEmpty()) {
+			return "redirect:/cart";
+		}
+		if(newAmount < 1) {
+			cart.removeItem(cartitemId);
+			return "redirect:/cart";
+		}
+		int diffAmount = newAmount - cartitem.get().getQuantity().getAmount().intValue();
+
+		cart.addOrUpdateItem(cartitem.get().getProduct(), Quantity.of(diffAmount, Metric.UNIT));
 		return "redirect:/cart";
 	}
 
@@ -103,16 +110,7 @@ public class OrderController {
 
 		return "redirect:/";
 	}
-	
-	//TODO: find better solution:
-	@PostMapping("cart/remove")
-	String removeCartItem(@RequestParam String cartitemId, @ModelAttribute Cart cart) {
-		
-		if(!cart.getItem(cartitemId).isPresent()) return "redirect:/cart";
-		cart.removeItem(cartitemId);
-		return "redirect:/cart";
-	}
-	
+
 	@PostMapping("/checkout")
 	String buy(@ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
 		

@@ -23,9 +23,12 @@
 <div>
     <br>
 
+    <div th:if="${cart.empty}">
+
+    </div>
 
     <div th:unless="${cart.empty}">
-        <table class="ui celled table">
+        <table class="table">
             <thead>
             <tr>
                 <th>Titel</th>
@@ -38,44 +41,41 @@
 
             <tr th:each="item : ${cart} ">
                 <td th:text="${item.productName}">Last Action Hero</td>
-                <td > <table><tr>
-                	<td><div th:text="${item.quantity}">10</div></td>
-                  <td><form method="post" action="/cart/add">
-			      
-			      <input type="hidden" name="cartitemId" th:value="${item.id}"/>
-			      <!-- Falls benötigt: 
-			      <input type="number" name="amount" value="1" placeholder="Anzahl">
-			      -->
-			        
-			      <input type="hidden" name="amount" value="1" placeholder="Anzahl">
-			      
-			      <button type="submit" name="add" value="true">+</button> <!--  TODO: find better solution (negativ amount) -->
-			      <button type="submit" name="add" value="false">-</button>
-			        
-			      </form></td><!--  <form method="post" th:action="@{/cart}">
+                <td>
+                    <form class="form-inline" method="post" th:action="@{/cart/setNewAmount}">
+
+                        <div class="input-group mb-3">
+                            <input type="hidden" name="cartitemId" th:value="${item.id}"/>
+                            <input class="form-control" type="number" name="newAmount" th:value="${item.quantity.getAmount()}">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                                        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </td><!--  <form method="post" th:action="@{/cart}">
                 <input type="hidden" name="cartitemId" value="0" th:value="${item.id}"/>
                  <button type="submit">+</button>
-                 </form>--></tr></table> </td>
-                <td th:text="${{item.price}}">10 Euro</td><td>
-                <form method="post" th:action="@{/cart/remove}">
-                <input type="hidden" name="cartitemId" th:value="${item.id}"/>
-			    <button type="submit">entfernen</button>
-			    </form>  </td>
-            </tr>
-            <tr>
-                <td>Last Action Hero</td>
-                <td>10</td>
-                <td>10 Euro</td>
-            </tr>
-            <tr>
-                <td>Last Action Hero</td>
-                <td>10</td>
-                <td>10 Euro</td>
-            </tr>
-            <tr>
-                <td>Last Action Hero</td>
-                <td>10</td>
-                <td>10 Euro</td>
+                 </form>-->
+                <td th:text="${{item.price}}">10 Euro</td>
+                <td>
+                    <form class="form-inline" method="post" th:action="@{/cart/setNewAmount}">
+
+                        <div class="input-group mb-3">
+                            <input type="hidden" name="cartitemId" th:value="${item.id}"/>
+                            <input class="form-control" type="hidden" name="newAmount" value="0">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit">Entfernen</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -108,6 +108,9 @@
             </div>
         </div>
     </div>
+</div>
+</div>
+
 <!-- 
 
     <table class="table table-hover">
