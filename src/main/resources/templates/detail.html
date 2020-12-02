@@ -26,8 +26,14 @@
 
 <body>
   <div class="container">
-    <h1 th:text="${title}">Item</h1>
-    <div class="content">
+    <div class="content-flex">
+      <div class="mmpf-image-placeholder"></div>
+      <div class="mmpf-info-box">
+        <div class="mmpf-i-b-description">
+          <div th:text="${title}" class="mmpf-desc-title">Test</div>
+          <div th:text="${item.description}" class="mmpf-desc-desc">das ist nur ein Test</div>
+          <div class="mmpf-desc-amount">Vorrat: 10</div>
+      </div>
       <form method="post" class="form-inline" th:action="@{/cart}">
         <div>
           <input type="hidden" name="pid" th:value="${item.id}" />

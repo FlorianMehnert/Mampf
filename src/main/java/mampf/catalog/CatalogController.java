@@ -94,7 +94,7 @@ public class CatalogController {
 			if(!inventory.findByProduct(currentItem).isPresent()) continue;
 
 			// TODO: Add internationalization for the category in  the Util class
-			String currentCategory = currentItem.getCategory().toString();
+			String currentCategory = Util.renderDomainName(currentItem.getCategory().toString());
 			if(categorizedItems.containsKey(currentCategory)){
 				categorizedItems.get(currentCategory).add(currentItem);
 			}

@@ -57,7 +57,9 @@ button.mmpf-c-card-add {
   position: absolute;
   right: 0;
   top: 0;
-  border-radius: 10px;
+  border-radius: 0px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 button.ui.primary.button.mmpf-c-card-add {
@@ -159,4 +161,41 @@ div#mmpf-sidebar {
 .mmpf-up55{
   position: relative;
   top: 55px;
+}
+
+/* Detail View */
+
+.mmpf-image-placeholder {
+  width: 500px;
+  height: 400px;
+  background-color: #ccc;
+  margin-right: 20px;
+}
+
+.content-flex {
+  display: flex;
+  padding: .8rem;
+  border: 1px solid #aaa;
+  border-radius: 12px;
+}
+
+.mmpf-i-b-description{
+  flex-basis: 100%;
+}
+
+.mmpf-info-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.mmpf-desc-title {
+  font-size: 2em;
+}
+
+.mmpf-desc-desc {
+  font-size: 1.2em;
+  color: #aaa;
+}
+#mmpf-s-amount{
+  margin-right: 10px;
 }

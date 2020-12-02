@@ -40,7 +40,7 @@ public class MampfOrder extends Order {
 
 	public OrderLine addOrderLine(Item product, Quantity quantity) {
 
-		if (product.getCategory().equals(Item.Category.PERSONEL) && needsAllocation == false) {
+		if (product.getCategory().equals(Item.Category.STAFF) && needsAllocation == false) {
 			needsAllocation = true;
 		}
 		return super.addOrderLine(product, quantity);

@@ -22,7 +22,7 @@ public class Item extends Product {
 		FOOD,
 		DECORATION,
 		EQUIPMENT,
-		PERSONEL,
+		STAFF,
 		BUFFET,
 		DINNER_EVENT,
 		NONE,
