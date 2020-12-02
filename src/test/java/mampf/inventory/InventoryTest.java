@@ -12,7 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -38,8 +40,19 @@ public class InventoryTest {
 	}
 
 	@Test
-	public void ItemsIntegrationTest () throws Exception {
+	public void itemsIntegrationTest () throws Exception {
 		mvc.perform(get("/inventory"))
 				.andExpect(status().is3xxRedirection());
+	}
+
+	@Test
+	public void addFoodItem() throws Exception {
+		Item item = new Item();
+		int posAmount = 1;
+		int negAmount = -1;
+		this.mvc.perform(post("/inventory/add")
+				.param("number", String.valueOf(posAmount))
+				.param("pid", String.valueOf(item)))
+				.andExpect(status().isOk());
 	}
 }
