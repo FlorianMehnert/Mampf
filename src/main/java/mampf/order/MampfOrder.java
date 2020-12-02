@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.salespointframework.catalog.Product;
@@ -20,6 +22,7 @@ import org.salespointframework.order.OrderLine;
 import org.salespointframework.order.OrderManagement;
 import org.salespointframework.order.OrderStatus;
 import org.salespointframework.payment.Cash;
+import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
@@ -32,17 +35,19 @@ public class MampfOrder extends Order {
 	//private int personalNeeded = 0;
 	
 	//private boolean needsAllocation;
-	//private ArrayList<Employee> employees;
-	//@OneToOne
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private MampfDate date;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<Employee> employees;
 	
 	@SuppressWarnings("unused")
 	private MampfOrder(){}
 	public MampfOrder(UserAccount account, Cash cash, MampfDate date) {
 		super(account, cash);
 		this.date = date;
+		employees = new ArrayList<>();
 	}
 
 	//public OrderLine addOrderLine(Item product, Quantity quantity) {
@@ -54,14 +59,27 @@ public class MampfOrder extends Order {
 	//	return super.addOrderLine(product, quantity);
 	//}
 
-	// public addEmployee(Employee employee) {
-
-	// }
+	public void addEmployee(Employee employee) {
+		//TODO: nullcheck
+		employees.add(employee);
+	}
 
 	// public boolean getPersonalNeeded() {
 	// 	return personalNeeded;
 	// }
 	public MampfDate getDate() {return date;}
+	public List<Employee> getEmployees(){return employees;}
+	
+	//visuell:
+
+	public String toString() {
+		return "Order: "+this.getDate().toString();
+	}
+	
+	public String getPayMethod(){
+		PaymentMethod paymentMethod = super.getPaymentMethod();
+		return paymentMethod.toString();
+	}
 	//public boolean isDone() {
 	//	if(done) return true;
 	//	else return false;

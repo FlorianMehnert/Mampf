@@ -11,6 +11,7 @@ import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 import org.salespointframework.order.Order;
 import org.salespointframework.payment.Cash;
+import org.salespointframework.quantity.Metric;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
@@ -46,6 +49,8 @@ public class OrderController {
 		this.orderManager = orderManager;/* this.inventory = inventory; this.employeeManagement = employeeManagement;*/
 	}
 
+/* CART */
+	
 	@ModelAttribute("cart")
 	Cart initializeCart() {
 		return new Cart();
@@ -66,37 +71,61 @@ public class OrderController {
 		model.addAttribute("form", form);
 		return "cart";
 	}
-
+	
+	@PostMapping("cart/clear")
+	String clearCart(@ModelAttribute Cart cart) {
+		cart.clear();
+		return "redirect:/cart";
+	}
+	
+	//handles adding and removing the amount of a cartitem
+	@PostMapping("cart/add")
+	String addCartItem(@RequestParam String cartitemId, @RequestParam int amount, @RequestParam boolean add, @ModelAttribute Cart cart) {
+		Optional<CartItem> cartitem = cart.getItem(cartitemId);
+		
+		if(!cartitem.isPresent()) return "redirect:/cart";
+			
+		if(!add)amount = -amount;
+		if(cartitem.get().getQuantity().getAmount().intValue()+amount < 1)return "redirect:/cart";
+		
+		cart.addOrUpdateItem(cartitem.get().getProduct(), Quantity.of(amount, Metric.UNIT));
+		return "redirect:/cart";
+	}
+	
+	//TODO: find better solution:
+	@PostMapping("cart/remove")
+	String removeCartItem(@RequestParam String cartitemId, @ModelAttribute Cart cart) {
+		
+		if(!cart.getItem(cartitemId).isPresent()) return "redirect:/cart";
+		cart.removeItem(cartitemId);
+		return "redirect:/cart";
+	}
+	
 	@PostMapping("/checkout")
-	String buy(@ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount) {
+	String buy(@ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
 		
 		if(userAccount.isEmpty()) {
 			return "redirect:/register";
 		}
-		if (result.hasErrors()) {
+		//formular fehler
+		if (result.hasErrors() || form.invalid()) {
+			//TODO
 			return "redirect:/cart";
 		}
-		//TODO: starttime > endtime
 		
-		
-		//if(userAccount.isEmpty() || !orderManager.validateCart(cart,form)) {
-		//	return "redirect:/catalog";
-		//}
-		//form.getStartDate()
-		
-		//MampfDate orderDate = new MampfDate(form.getStartDate(), form.getEndDate(), form.getAddress()); 
-		//return userAccount.map(account -> {	
-		//MampfOrder order = new MampfOrder(userAccount.get(), Cash.CASH,orderDate);
-		//cart.addItemsTo(order);
-		//orderManager.payOrder(order);
-		//cart.clear();
 		MampfOrder order = orderManager.createOrder(cart, form, userAccount.get());
-		
-		if(order != null)return "redirect:/";
+		if(order != null) {
+			redirectAttributes.addAttribute("id", order.getId().getIdentifier());
+			return "redirect:/orders/detail/{id}";
+		}
+		//order fehler:
+		//TODO
 		return "redirect:/cart";
-		//}).orElse("redirect:/cart");
+		
 	}
-
+	
+/* ORDERS */
+	
 	@GetMapping("/orders")
 	@PreAuthorize("hasRole('BOSS')")
 	String orders(Model model) {
@@ -106,11 +135,15 @@ public class OrderController {
 		return "orders";
 	}
 
-	@GetMapping("/orders/detail")
-	@PreAuthorize("hasRole('BOSS')")
-	String editOrder(Model model, @RequestParam MampfOrder order) {
-
+	@GetMapping("/orders/detail/{order}")
+	//@PreAuthorize("hasRole('BOSS')")
+	String editOrder(@PathVariable MampfOrder order, Model model) {
+		
+		
 		model.addAttribute("order", order);
+		model.addAttribute("orderLines", order.getOrderLines());
+		model.addAttribute("employees", order.getEmployees());
+		
 		return "orders_detail";
 	}
 	

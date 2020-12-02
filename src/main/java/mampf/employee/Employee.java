@@ -1,10 +1,14 @@
 package mampf.employee;
 
+import mampf.order.MampfOrder;
 import org.salespointframework.useraccount.UserAccount;
 
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -18,7 +22,9 @@ public class Employee {
 		SERVICE
   }
   private String name;
-  private ArrayList<LocalDateTime> booked;
+  
+  @ManyToMany()
+  private List<MampfOrder> booked;
   private Role role;
 
 	private @Id @GeneratedValue long id;
@@ -28,7 +34,7 @@ public class Employee {
 	public Employee(String name, Role role){
     	this.name = name;
     	this.role = role;
-    	this.booked = new ArrayList<LocalDateTime>();
+    	this.booked = new ArrayList<MampfOrder>();
 	}
 
 	public long getId(){
@@ -43,13 +49,13 @@ public class Employee {
     return this.role;
   }
 
-  public ArrayList<LocalDateTime> getBooked() {
+  public List<MampfOrder> getBooked() {
     return this.booked;
   }
 
-  public boolean setBooked(LocalDateTime date) {
+  public boolean setBooked(MampfOrder order) {
     try {
-      this.booked.add(date);
+      this.booked.add(order);
     } catch (Exception ex) {
       ex.printStackTrace();
       return false;

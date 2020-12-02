@@ -30,9 +30,12 @@ public class DateFormular {
 	public LocalDateTime getEndDate() {return endDate;}
 	public String getAddress() {return address;}
 	
-	
+	public boolean invalid() {
+		return endDate.isBefore(startDate);
+	}
+	/*
 	public void setStartDate(LocalDateTime startDate) {this.startDate = startDate;}
 	public void setEndDate(LocalDateTime endDate) {this.endDate = endDate;}
 	public void setAddress(String address) {this.address = address;}
-	
+	*/
 }

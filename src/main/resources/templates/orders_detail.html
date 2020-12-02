@@ -14,24 +14,51 @@
 </head>
 
 <body>
-  <div class="root">
-    <h1 th:text="${order.id}">Id</h1>
-    <div class="content">
 
+Das ist n:<h1 th:text="${n}">Id</h1>_
+
+  <div class="root">
+    <h1 th:text="${order}">Id</h1>
+    <div class="content">
+      
+      <div th:text="${order.payMethod}"></div>
+      <table class="ui table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="employee : ${employees}">
+            <td th:text="${employee.name}"></td>
+            <td th:text="${employee.role}"></td>
+          </tr>
+        </tbody>
+      </table>
+      
       <table class="ui table">
         <thead>
           <tr>
             <th>ProduktName</th>
             <th>Anzahl</th>
+            <th>Preis</th>
           </tr>
         </thead>
         <tbody>
-          <tr th:each="orderLine : ${order.orderLines}">
+          <tr th:each="orderLine : ${orderLines}">
             <td th:text="${orderLine.productName}"></td>
             <td th:text="${orderLine.quantity}"></td>
+          	<td></td>
+          </tr>
+          <tr>
+          	<td ></td>
+          	<td></td>
+          	<td th:text="${order.total}"></td>
           </tr>
         </tbody>
       </table>
+      erstellt am <div th:text="${order.DateCreated}"> </div>
     </div>
   </div>
 </body>

@@ -49,10 +49,19 @@ public class MampfDate implements Comparable<MampfDate>{
 	
 	//public boolean hasNoDate() {return (startTime == null && endTime == null && address == null);}
 	
+	public void setOrder(MampfOrder order) {this.order = order;}
 	public boolean equals(MampfDate d) {
 		//TODO nullchecking
 		return startTime.equals(d.getStartTime()) && endTime.equals(d.getEndTime()) && address.equals(d.getAddress());
 
+	}
+	public boolean hasTimeOverlap(LocalDateTime fromDate,LocalDateTime toDate) {
+		//returns true if time overlapping
+		//TODO: nullcheck
+		//time between events??
+		
+		
+		return toDate.isAfter(startTime) && endTime.isAfter(fromDate);
 	}
 	public int compareTo(MampfDate d) {
 		

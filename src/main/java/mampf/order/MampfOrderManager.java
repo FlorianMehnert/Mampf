@@ -14,12 +14,8 @@ import org.salespointframework.payment.Cash;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
-import java.util.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -69,33 +65,26 @@ public class MampfOrderManager {
 	// save free employees
 		
 		//init
-		//LocalDate startDate = form.getStartDate().toLocalDate();
-		//LocalDate endDate = form.getEndDate().toLocalDate();
+		LocalDateTime startDate = form.getStartDate(),endDate = form.getEndDate();
 				
 		//get free employees by date:
-		/*LocalDate bookedLocalDate;
+		//MampfOrder bookedOrder;
 		boolean isFree = true;
 		List<Employee> freeCooks = new ArrayList<>(), freeServicePersonal = new ArrayList<>();
 		//TODO: employeeManagement method?
 		for(Employee employee: employeeManagement.findAll()) {
 			isFree = true;
-			for(Date bookedDate : employee.getBooked()){
-				//TODO: correct date conversion 
-				//TODO: change from util to time
-				//TODO: compare hours instead of year and day
-				
-				bookedLocalDate = bookedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();//stackoverflow
-				if(startDate.equals(bookedLocalDate) ||
-					endDate.equals(bookedLocalDate))
+			for(MampfOrder bookedOrder : employee.getBooked())
+				if(bookedOrder.getDate().hasTimeOverlap(startDate,endDate))
 					{isFree = false; break;}
-			}
+			
 			if(isFree) {
 				Employee.Role employeeRole = employee.getRole();
 				if(employeeRole.equals(Employee.Role.COOK)) freeCooks.add(employee);
 				if(employeeRole.equals(Employee.Role.SERVICE)) freeServicePersonal.add(employee);
 			}
 		}
-		*/
+		
 		//check if valid cart:
 		// - check stock (sufficient amount)
 		// - check personal (needed amount)
@@ -105,6 +94,8 @@ public class MampfOrderManager {
 		Item item;
 		Item.Category itemCategory;
 		Quantity itemQuantity;
+		//TODO: replace with foreach Type of Personal - list:
+		int personalserviceNeeded = 0,cookNeeded = 0;
 		
 		for(CartItem cartItem: cart) {
 			item = ((Item)cartItem.getProduct());
@@ -112,73 +103,80 @@ public class MampfOrderManager {
 			itemCategory = item.getCategory();
 			
 			switch(itemCategory) {
-			/*case PERSONEL:
+			case PERSONEL:
 				//TODO: check if a item of its type IS a Personal - item
 				Personal.Type personalType = ((Personal)item).getType();
+				
 				if(personalType.equals(Personal.Type.COOK))
-					if(freeCooks.size() < itemQuantity)return null;
+					cookNeeded+= itemQuantity.getAmount().intValue();
 				if(personalType.equals(Personal.Type.SERVICE))
-					if(freeServicePersonal.size() < itemQuantity)return null;
-				break;*/
+					personalserviceNeeded+= itemQuantity.getAmount().intValue();
+				break;
 			case DECORATION:case EQUIPMENT:
+				//TODO: situation wie personal möglich
 				Optional<UniqueInventoryItem> optionalItem = inventory.findByProduct(item);
 				if(optionalItem.isPresent()) 
 					if(!optionalItem.get().hasSufficientQuantity(cartItem.getQuantity())) return null;
 				break;
 			}
 		}
+		//validate personal:
+		if(freeCooks.size() < cookNeeded ||
+				freeServicePersonal.size() < personalserviceNeeded) return null;
+		
 		
 	//CREATE:
 		
-		//TODO: set employee as booked
+		//valid stock and personal,
+		MampfDate orderDate = new MampfDate(form.getStartDate(), form.getEndDate(), form.getAddress()); 
+		MampfOrder order = new MampfOrder(userAccount, Cash.CASH, orderDate);
+		orderDate.setOrder(order);
+		cart.addItemsTo(order);
+		
+		orderManagement.save(order);
+		if(!orderManagement.payOrder(order))return null; 
+		
 		//TODO: catch errors
 		
-		//reduce amount/ set booked:
+		//reduce amount/ set (concrete) booked:
 		for(CartItem cartItem: cart) {
 			item = ((Item)cartItem.getProduct());
 			itemQuantity = cartItem.getQuantity();
-			itemCategory = item.getCategory();
 			
 			switch (item.getCategory()) {
-			/*case PERSONEL:
+			case PERSONEL:
 				//TODO: check if really is personal
-				Personal personalItem = ((Personal)optionalItem.get());
+				Personal personalItem = ((Personal)item);
 				Personal.Type personalItemType = personalItem.getType();
+				
+				//TODO: find better solution:
+				int personalAmount = itemQuantity.getAmount().intValue();
 				if(personalItemType.equals(Personal.Type.COOK))
-					//TODO: change Date!
-					{employeeManagement.setEmployeeBooked(freeCooks.pop(), );
-					//TODO: booked per hour or day?? 
-					if(startDate.getDayOfYear() != endDate.getDayOfYear())
-						 employeeManagement.setEmployeeBooked(freeCooks.pop(), );
-					}
-				break;*/
+					//while(personalAmount < 0){
+					for(int i = 0; i < personalAmount; i++) {
+					Employee dat = freeCooks.remove(0); dat.setBooked(order); order.addEmployee(dat);/*personalAmount--;*/}
+				if(personalItemType.equals(Personal.Type.SERVICE))
+					//while(personalAmount < 0){
+					for(int i = 0; i < personalAmount; i++) {	
+					Employee dat = freeServicePersonal.remove(0); dat.setBooked(order); order.addEmployee(dat);/*personalAmount--;*/}
+				
+				break;
 
 			case EQUIPMENT: case DECORATION:
+				//TODO: find better solution:
 				inventory.reduceAmount((item), itemQuantity);
 				break;
 			}
 			
 		}
 		
-		//actually create the order:
-		//TODO: order should be created earlier to add employees
-		MampfDate orderDate = new MampfDate(form.getStartDate(), form.getEndDate(), form.getAddress()); 
-		//return userAccount.map(account -> {	
-		
-		MampfOrder order = new MampfOrder(userAccount, Cash.CASH, orderDate);
-		cart.addItemsTo(order);
-		//orderManagement.payOrder(order);
-		
-		
-		if(!orderManagement.payOrder(order))return null; 
-		cart.clear();
-		
-		//TODO: complete if possible
+	
 	//EVERYTHING WORKED FINE:
-
+		orderManagement.save(order);
+		cart.clear();
+		//orderManagement.completeOrder(order);
+		
 		return order;
-		
-		
 		
 	}
 	
