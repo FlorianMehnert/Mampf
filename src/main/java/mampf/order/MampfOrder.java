@@ -51,14 +51,6 @@ public class MampfOrder extends Order {
 		employees = new ArrayList<>();
 	}
 
-	//public OrderLine addOrderLine(Item product, Quantity quantity) {
-
-		
-		//if (product.getCategory().equals(Item.Category.PERSONEL)) {
-		//	needsAllocation = true;
-		//}
-	//	return super.addOrderLine(product, quantity);
-	//}
 
 	public void addEmployee(Employee employee) {
 		//TODO: nullcheck

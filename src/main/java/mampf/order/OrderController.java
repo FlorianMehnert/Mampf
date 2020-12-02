@@ -63,7 +63,7 @@ public class OrderController {
 
 		cart.addOrUpdateItem(item, Quantity.of(number));
 
-		return "redirect:/cart";
+		return "redirect:/catalog/" + item.getDomain();
 	}
 
 	@GetMapping("/cart")

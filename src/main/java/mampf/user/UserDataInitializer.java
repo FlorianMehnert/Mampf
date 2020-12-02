@@ -29,6 +29,7 @@ public class UserDataInitializer implements DataInitializer {
 
 	private final UserAccountManagement userAccountManagement;
 	private final UserManagement userManagement;
+	private final UserRepository userRepository;
 
 	/**
 	 * Creates a new {@link UserDataInitializer} with the given {@link UserAccountManagement} and
@@ -37,13 +38,14 @@ public class UserDataInitializer implements DataInitializer {
 	 * @param userAccountManagement must not be {@literal null}.
 	 * @param userManagement must not be {@literal null}.
 	 */
-	UserDataInitializer(UserAccountManagement userAccountManagement, UserManagement userManagement) {
+	UserDataInitializer(UserAccountManagement userAccountManagement, UserManagement userManagement, UserRepository userRepository) {
 
 		Assert.notNull(userAccountManagement, "UserAccountManagement must not be null!");
 		Assert.notNull(userManagement, "CustomerRepository must not be null!");
 
 		this.userAccountManagement = userAccountManagement;
 		this.userManagement = userManagement;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -56,7 +58,10 @@ public class UserDataInitializer implements DataInitializer {
 
 		LOG.info("Creating default users and customers.");
 
-		userAccountManagement.create("hansWurst", Password.UnencryptedPassword.of("123"), Role.of(UserRole.BOSS.name()));
+		User admin = new User(userAccountManagement.create("hansWurst", Password.UnencryptedPassword.of("123"), "mampf@mampf.de",Role.of(UserRole.BOSS.name())), "Mampf - Firmenzentrale");
+		admin.getUserAccount().setFirstname("Hanst");
+		admin.getUserAccount().setLastname("Wurst");
+		userRepository.save(admin);
 
 		var password = "123";
 

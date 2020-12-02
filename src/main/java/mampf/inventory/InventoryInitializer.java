@@ -31,11 +31,11 @@ class InventoryInitializer implements DataInitializer {
 		catalog.findAll().forEach(item -> {
 
 			if (inventory.findByProduct(item).isEmpty()) {
-				if(item.getName().equals("Dekoration")){
+				if (item.getName().equals("Dekoration")) {
 					inventory.save(new UniqueInventoryItem(item, Quantity.of(20)));
-				}else if(item.getName().equals("Tischdecke")){
+				} else if (item.getName().equals("Tischdecke")) {
 					inventory.save(new UniqueInventoryItem(item, Quantity.of(25)));
-				}else {
+				} else {
 					inventory.save(new UniqueInventoryItem(item, Quantity.of(10)));
 				}
 			}

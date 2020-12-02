@@ -3,36 +3,69 @@
 Dieser Testplan stellt eine vereinfachte Version der IEEE 829-1998 Vorlage dar.
 
 == Einführung
-Wozu dient das Dokument? Zielgruppe?
+Dieses Dokument soll einen Überblick über den Testablauf für das Softwaretechnologie Praktikum
+bereitstellen. Zur Zielgruppe gehören Entwickler und Benutzer des Systems.
 
 == Aufbau der Testbezeichner
-Nach welchem Schema sind die Tests benannt?
-
-*Bsp.*
-
-*U - Unit Test, I - Integrationstest*
-
-*U-1, U-2, I-1*
+Die Tests wurden analog zu den zugehörigen Use Cases von UC0010 bis UC0420 benannt.
 
 == Test Gegenstände
+=== Controller
+- ApiCatalogController
+- CatalogController
+- EmployeeController
+- InventoryController
+- OrderController
+- UserController
+
+=== Entitäten
+- Company
+- Employee
+- Inventory
+- Item
+- Personal
+- User
+
+=== Sonstige
+- MampfCatalog
+- RegistrationForm
+- MampfOrder
+- UserManagement
 
 == Zu testende Funktionalitäten
+- Inventar betrachten
+- Catalog betrachten
+-
 
 == Nicht zu testende Funktionalitäten
-z.B. Bibliotheken von Drittanbietern (eigene Tests beschränken sich auf Schnittstelle, bzw. Zusammenspiel).
+- Spring Boot
+- Spring MVC
+- Thymleaf
+- Salespoint Framework
+- H2 Database
 
 == Herangehensweise
-*Bsp.:*
-
-*Klassen werden mit JUnit getestet.*
-
-*Integrationstest nach Bottom-Up Prinzip*
+1. Die Getter und Setter-Methoden der Klassen werden getestet.
+2. Überprüfung von Grundfunktionen bei Controllern
+3. Integrationstest nach Bottom-Up Prinzip
 
 == Umgebungsvoraussetzungen
-* Wird spezielle Hardware benötigt?
-* Welche Daten müssen bereitgestellt werden? Wie werden die Daten bereitgestellt?
-* Wird zusätzliche Software für das Testen benötigt?
-* Wie kommuniziert die Software während des Testens? Internet? Netzwerk?
+Die Umgebungsvorraussetzungen lassen sich in folgende Kategorien aufteilen.
+
+=== Benötigte Hardware:
+- Maus
+- Tastatur
+- Computer
+- Monitor
+- Netzwerkgeräte
+
+=== Software für Tests und Codeanalyse:
+- JUnit
+- Jenkins
+- SonarCube
+
+=== Kommunikation während des Testens:
+- lokal mit dem Dev-Server auf localhost:8080 über HTTP
 
 == Testfälle und Verantwortlichkeit
 Jede testbezogene Aufgabe muss einem Ansprechpartner zugeordnet werden.
@@ -41,5 +74,82 @@ Jede testbezogene Aufgabe muss einem Ansprechpartner zugeordnet werden.
 [options="headers"]
 |===
 |ID |Anwendungsfall |Vorbedingungen |Eingabe |Ausgabe
-|…  |…              |…              |…       |…
+[[TC0010]]
+|**<<TC0010>>**  |**<<UC0010>>** |Benutzer ist nicht angemeldet|Anmeldedaten (Nutzername, Passwort)
+|Startseite (Erfolg) / Login Seite (falsches Passwort/Benutzername)
+[[TC0020]]
+|**<<TC0020>>**|**<<UC0020>>**|Benutzer ist nicht angemeldet|Daten für ein neues Benutzerkonto: Benutzername, Vor- und Nachname, Passwort,
+Adresse, Typ des Benutzerzugangs, E-Mail, Firmenname (nur bei Company), AccessCode (nur bei Employee)|
+Startseite (Erfolg) / Registrierungsseite mit Fehlermeldung (ein Konto mit diesem Benutzernamen existiert bereits)
+[[TC0100]]
+|**<<TC0100>>**|**<<UC0100>>**|keine|Der Benutzer klickt im Menu auf das Element "Katalog"|Katalogseite
+[[TC0101]]
+|**<<TC0101>>**|**<<UC0101>>**|Benutzer ist angemeldet, hat die Rolle "BOSS", klickt im Menu auf "Katalog"|
+Benutzer klickt auf "hinzufügen".|Katalogseite mit neuem Katalogeintrag
+[[TC0102]]
+|**<<TC0102>>**|**<<UC0102>>**|Benutzer ist angemeldet, hat die Rolle "BOSS", klickt im Menu auf "Katalog"|
+Benutzer klickt auf "bearbeiten"|Katalogseite mit bearbeitetem Katalogeintrag
+[[TC0103]]
+|**<<TC0103>>**|**<<UC0103>>**|Benutzer ist angemeldet, hat die Rolle "BOSS", klickt im Menu auf "Katalog"|
+Benutzer klickt auf "entfernen"|Katalogseite ohne dem entsprechenden Katalogeintrag
+[[TC0110]]
+|**<<TC0110>>**|**<<UC0110>>**|Benutzer klickt im Menu auf "Katalog"|Benutzer klickt beim entsprechenden Produkt auf mehr anzeigen|
+Es erscheint mehr Text beim angeklickten Katalogeintrag
+[[TC0200]]
+|**<<TC0200>>**|**<<UC0200>>**|Benutzer ist angemeldet|klick auf das blaue Plus rechts neben dem entsprechenden Katalogeintrag,
+Zum Warenkorb hinzufügen| Warenkorbseite
+[[TC0202]]
+|**<<TC0202>>**|**<<UC0202>>**|Benutzer ist angemeldet|Benutzer klickt im Menu auf "Warenkorb"|Warenkorbseite
+[[TC0210]]
+|**<<TC0210>>**|**<<UC0210>>**|Benutzer ist angemeldet und befindet sich im Warenkorb|Benutzer klickt im "Warenkorb" auf "Leeren"|
+Warenkorbseite ohne Artikel
+[[TC0220]]
+|**<<TC0220>>**|**<<UC0220>>**|Der angemeldete Benutzer hat die Rolle "CUSTOMER" im Programm. Der Warenkorb ist nicht leer.|
+Kunde klickt auf "Kaufen".| Warenkorbseite
+[[TC0243]]
+|**<<TC0243>>**|**<<UC0243>>**|Der angemeldete Benutzer hat die Rolle "CUSTOMER" im Programm.
+Der Kunde hat bereits eine Bestellung aufgegeben.|Kunde klickt im Menu auf "meine Bestellungen"|Bestellübersicht
+[[TC0400]]
+|**<<TC0400>>**|**<<UC0400>>**|Der angemeldete Benutzer hat die Rolle "CUSTOMER" im Programm.
+Ein Kunde hat bereits eine Bestellung aufgegeben.
+Der Kunde klickt in der Ansicht "meine Bestellungen" auf eine bestimmte Bestellung.|
+Der Kunde klickt im Menu auf "Bestellungen".|Rechnung
+[[TC0300]]
+|**<<TC0300>>**|**<<UC0300>>**| Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+Es hat sich bereits mindestens ein Kunde registriert.|Admin klickt im Menu auf "Kunden".|
+Dem Administrator werden alle Kunden angezeigt.
+[[TC0301]]
+|**<<TC0301>>**|**<<UC0301>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+Es hat sich bereits mindestens ein Kunde registriert.Der Admin klickt im Menu auf "Kunden".|
+Admin klickt im Menu "Kunden" auf "Kunde löschen".| aktualisierte Liste aller Kunden
+[[TC0310]]
+|**<<TC0310>>**|**<<UC0310>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+Es wurde bereits von mindestens einem Kunden eine Bestellung aufgegeben.|Der Admin klickt im Menu auf "Bestellungen".|
+Dem Administrator werden alle Bestellungen angezeigt.
+[[TC0320]]
+|**<<TC0320>>**|**<<UC0320>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.|
+Der Admin klickt im Menu auf "Inventar".|Dem Administrator wird das Inventar mit allen verfügbaren Ressourcen angezeigt.
+[[TC0330]]
+|**<<TC0330>>**|**<<UC0330>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.|Der Admin klickt im Menu auf "Personal".|
+Dem Administrator wird die Zuteilung des Personals zu allen Bestellungen angezeigt.
+[[TC0331]]
+|**<<TC0331>>**|**<<UC0331>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+Der Admin klickt im Menu auf "Bestellungen".|Der Admin klickt im Menu "Bestellungen" auf eine bestimmte Bestellung.|
+Dem Administrator erhält die Möglichkeit, sein Personal dieser Bestellung zuzuteilen.
+[[TC0341]]
+|**<<TC0341>>**|**<<UC0341>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.
+|Der Admin klickt im Menu auf "Mitarbeiter".Dort kann er nach Personal filtern.|
+Dem Admin wird sein gesamtes angestelltes Personal angezeigt .
+[[TC0342]]
+|**<<TC0342>>**|**<<UC0342>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.|
+Der Admin klickt im Menu auf "Mitarbeiter". Dort klickt er auf "neues Personal einstellen".|
+Dem Administrator erhält die Möglichkeit, den Namen des neuen Personals einzugeben
+[[TC0344]]
+|**<<TC0344>>**|**<<UC0344>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.Der Admin klickt im Menu auf "Mitarbeiter".
+|Der Admin klickt im Menu "Mitarbeiter" für einen bestimmten Mitarbeiter auf den Button "löschen" bzw "bearbeiten".
+|Dem Administrator wird die aktualisierte Liste seiner Mitarbeiter angezeigt.
+[[TC0420]]
+|**<<TC0420>>**|**<<UC0420>>**|Der angemeldete Benutzer hat die Rolle "ADMIN" im Programm.Der Admin klickt im Menu auf "Umsätze".|
+Der Admin klickt im Menu "Umsätze" auf einen der angezeigten Monate.|
+Dem Administrator werden alle Umsätze des jeweiligen Monats angezeigt.
 |===

@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import org.javamoney.moneta.Money;
 
 @Entity
-public class Personal extends Item {
+public class StaffItem extends Item {
 	public static enum Type {
 		COOK, SERVICE
 	}
@@ -13,9 +13,17 @@ public class Personal extends Item {
 	private Type type;
 
 	@SuppressWarnings("unused")
-	private Personal(){}
+	private StaffItem() {
+	}
 
-	public Personal(String name, Money price, Domain domain, Category category, String description, Type type) {
+	public StaffItem(
+		String name, 
+		Money price, 
+		Domain domain, 
+		Category category, 
+		String description, 
+		Type type
+		) {
 		super(name, price, domain, category, description);
 
 		this.type = type;

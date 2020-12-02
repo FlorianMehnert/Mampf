@@ -1,8 +1,10 @@
 package mampf.order;
 
 import mampf.catalog.Item;
+import mampf.catalog.StaffItem;
 import mampf.catalog.MampfCatalog;
-import mampf.catalog.Personal;
+
+
 import mampf.employee.Employee;
 import mampf.employee.EmployeeManagement;
 import mampf.inventory.Inventory;
@@ -106,13 +108,13 @@ public class MampfOrderManager {
 			itemCategory = item.getCategory();
 			
 			switch(itemCategory) {
-			case PERSONEL:
+			case STAFF:
 				//TODO: check if a item of its type IS a Personal - item
-				Personal.Type personalType = ((Personal)item).getType();
+				StaffItem.Type personalType = ((StaffItem)item).getType();
 				
-				if(personalType.equals(Personal.Type.COOK))
+				if(personalType.equals(StaffItem.Type.COOK))
 					cookNeeded+= itemQuantity.getAmount().intValue();
-				if(personalType.equals(Personal.Type.SERVICE))
+				if(personalType.equals(StaffItem.Type.SERVICE))
 					personalserviceNeeded+= itemQuantity.getAmount().intValue();
 				break;
 			case DECORATION:case EQUIPMENT:
@@ -155,18 +157,18 @@ public class MampfOrderManager {
 			itemQuantity = cartItem.getQuantity();
 			
 			switch (item.getCategory()) {
-			case PERSONEL:
+			case STAFF:
 				//TODO: check if really is personal
-				Personal personalItem = ((Personal)item);
-				Personal.Type personalItemType = personalItem.getType();
+				StaffItem personalItem = ((StaffItem)item);
+				StaffItem.Type personalItemType = personalItem.getType();
 				
 				//TODO: find better solution:
 				int personalAmount = itemQuantity.getAmount().intValue();
-				if(personalItemType.equals(Personal.Type.COOK))
+				if(personalItemType.equals(StaffItem.Type.COOK))
 					//while(personalAmount < 0){
 					for(int i = 0; i < personalAmount; i++) {
 					Employee dat = freeCooks.remove(0); dat.setBooked(order); order.addEmployee(dat);/*personalAmount--;*/}
-				if(personalItemType.equals(Personal.Type.SERVICE))
+				if(personalItemType.equals(StaffItem.Type.SERVICE))
 					//while(personalAmount < 0){
 					for(int i = 0; i < personalAmount; i++) {	
 					Employee dat = freeServicePersonal.remove(0); dat.setBooked(order); order.addEmployee(dat);/*personalAmount--;*/}

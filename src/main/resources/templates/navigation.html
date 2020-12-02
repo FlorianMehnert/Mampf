@@ -19,11 +19,14 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link" href="catalog.html" th:href="@{/cart}" sec:authorize="!hasRole('BOSS')">Warenkorb</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="orders.html" th:href="@{/orders}" sec:authorize="hasRole('BOSS')">Bestellungen</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="stock.html" th:href="@{/stock}" sec:authorize="hasRole('BOSS')">Lager</a>
+                    <a class="nav-link" href="inventory.html" th:href="@{/inventory}" sec:authorize="hasRole('BOSS')">Lager</a>
                 </li>
 
                 <li class="nav-item">

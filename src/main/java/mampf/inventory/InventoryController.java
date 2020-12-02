@@ -1,25 +1,30 @@
 package mampf.inventory;
 
+import com.mysema.commons.lang.Pair;
+import mampf.Util;
 import mampf.catalog.Item;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+
 @Controller
 public class InventoryController {
 
 	private final Inventory inventory;
 
-	InventoryController(Inventory inventory){
+	InventoryController(Inventory inventory) {
 		this.inventory = inventory;
 	}
 
 	@PostMapping("/inventory/add")
-	String add(@RequestParam("pid") Item item, @RequestParam("number") int number){
+	String add(@RequestParam("pid") Item item, @RequestParam("number") int number) {
 
 		UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
 		inventory.delete(currentItem);
@@ -29,11 +34,19 @@ public class InventoryController {
 	}
 
 	@GetMapping("/inventory")
-	// TODO only BOSS
+	@PreAuthorize("hasRole('BOSS')")
 	public String inventory(Model model) {
-		model.addAttribute("inventory", inventory.findAllAndSort());
+		ArrayList<Pair<UniqueInventoryItem, String>> names = new ArrayList<>();
+		ArrayList<String> ames = new ArrayList<>();
+		for(UniqueInventoryItem item:inventory.findAllAndSort()){
+			String name = "";
+			if(((Item) item.getProduct()).getCategory() != null){
+				name = Util.renderDomainName(((Item) item.getProduct()).getCategory().toString());
+			}
+			Pair<UniqueInventoryItem, String> map = new Pair<>(item, name);
+			names.add(map);
+		}
+		model.addAttribute("names", names);
 		return "inventory";
 	}
-
-
 }

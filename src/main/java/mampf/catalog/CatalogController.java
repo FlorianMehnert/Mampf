@@ -94,7 +94,7 @@ public class CatalogController {
 			if(!inventory.findByProduct(currentItem).isPresent()) continue;
 
 			// TODO: Add internationalization for the category in  the Util class
-			String currentCategory = currentItem.getCategory().toString();
+			String currentCategory = Util.renderDomainName(currentItem.getCategory().toString());
 			if(categorizedItems.containsKey(currentCategory)){
 				categorizedItems.get(currentCategory).add(currentItem);
 			}
@@ -109,6 +109,15 @@ public class CatalogController {
 		model.addAttribute("catalog", categorizedItems);
 
 		return "catalog";
+	}
+
+	@GetMapping("/catalog/item/detail/{item}")
+	public String detail(Model model, @PathVariable Item item){
+		assert item != null;
+		model.addAttribute("title", item.getName());
+		model.addAttribute("item", item);
+		model.addAttribute("quantity", this.inventory.findByProduct(item).get().getQuantity());
+		return "detail.html";
 	}
 
 	// -----------------

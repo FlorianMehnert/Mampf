@@ -3,31 +3,26 @@
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-
-  <script th:src="@{/webjars/jquery/jquery.min.js}" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script th:src="@{/webjars/Semantic-UI/semantic.min.js}"
-    src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-  <link th:href="@{/webjars/Semantic-UI/semantic.min.css}" rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" />
+  <link rel="icon" type="image/vnd.microsoft.icon" th:href="@{/resources/img/World_sm_or.ico}">
   <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+
+  <!-- Bootstrap -->
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+  <!-- Bootstrap -->
+  <!-- jQuery and JS bundle w/ Popper.js -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
   <title th:text="'MAMPF: ' + ${domainTitle}">Catalog</title>
 </head>
 
-<body>
-  <div id="mmpf-sidebar">
-    <div class="mmpf-s-root">
-      <div class="mmpf-s-title">title</div>
-      <div class="mmpf-s-price" id="id_mmpf-s-price">44€</div>
-      <div class="flex-break"></div>
-      <div class="mmpf-s-form">
-        <div class="ui input">
-          <input type="text" id="mmpf-s-amount" placeholder="Anzahl">
-        </div>
-        <button type="button" class="ui primary button mampf-s-add">Zum Warenkorb hinzufügen</button>
-      </div>
-    </div>
-  </div>
-  <div class="overlay"></div>
+<body></body>
+  <nav th:include="navigation :: navigation"></nav>
   <div class="root">
     <h1 th:text="${domainTitle}">Domain</h1>
     <div class="content">
@@ -38,31 +33,35 @@
           <div class="mmpf-c-card-title" th:text="${item.name}"></div>
           <div class="mmpf-c-card-price" th:text="${item.price}"></div>
           <div class="mmpf-c-card-description" th:text=${item.description}></div>
-          <button type="button" class="ui primary button mmpf-c-card-add"><i class="mmpf-clear plus icon"></i></button>
+          <form th:action="'/catalog/item/detail/' + ${item.id}" method="get">
+            <button type="submit" class="btn btn-primary button mmpf-c-card-add">
+              <i class="fas fa-plus"></i>
+            </button>
+          </form>
+
+          <!-- only with javascript support | thanks people of sti -->
+          <!-- <button type="button" class="ui primary button mmpf-c-card-add"><i class="mmpf-clear plus icon"></i></button> -->
         </div>
       </div>
-
-      <!-- <table class="ui celled table">
-        <thead>
-          <tr>
-            <th th:text="#{catalog.name}">name</th>
-            <th th:text="#{catalog.price}">price</th>
-            <th th:text="#{catalog.description}">description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="item : ${catalog}">
-            <td th:text="${item.name}"></td>
-            <td th:text="${item.price}"></td>
-            <td th:text="${item.description}"></td>
-          </tr>
-        </tbody>
-      </table> -->
     </div>
   </div>
+  <div id="mmpf-sidebar">
+    <div class="mmpf-s-root">
+      <div class="mmpf-s-title">title</div>
+      <div class="mmpf-s-price" id="id_mmpf-s-price">44€</div>
+      <div class="flex-break"></div>
+      <div class="mmpf-s-form">
+        <div class="ui input">
+          <input type="text" id="mmpf-s-amount" placeholder="Anzahl">
+        </div>
+        <button type="button" class="btn btn-primary button mampf-s-add">Zum Warenkorb hinzufügen</button>
+      </div>
+    </div>
+  </div>
+  <div class="overlay"></div>
 </body>
 
-<script>
+<!-- <script>
   (function (win){
     function Mampf(){}
 
@@ -150,6 +149,6 @@
 
     Mampf.Main();
   })(window);
-</script>
+</script> -->
 
 </html>

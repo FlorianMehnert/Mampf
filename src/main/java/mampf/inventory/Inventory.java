@@ -5,10 +5,8 @@ import org.salespointframework.catalog.Product;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
-import org.springframework.data.util.Streamable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -36,9 +34,10 @@ public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 		sortableList.sort(new SortByName());
 		return sortableList;
 	}
+
 	public class SortByName implements Comparator<UniqueInventoryItem> {
 		@Override
-		public int compare(UniqueInventoryItem a, UniqueInventoryItem b){
+		public int compare(UniqueInventoryItem a, UniqueInventoryItem b) {
 			return a.getProduct().getName().compareTo(b.getProduct().getName());
 		}
 	}
