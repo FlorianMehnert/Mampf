@@ -116,6 +116,7 @@ public class CatalogController {
 		assert item != null;
 		model.addAttribute("title", item.getName());
 		model.addAttribute("item", item);
+		model.addAttribute("quantity", this.inventory.findByProduct(item).get().getQuantity());
 		return "detail.html";
 	}
 

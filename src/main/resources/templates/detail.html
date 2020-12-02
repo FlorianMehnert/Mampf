@@ -32,7 +32,7 @@
         <div class="mmpf-i-b-description">
           <div th:text="${title}" class="mmpf-desc-title">Test</div>
           <div th:text="${item.description}" class="mmpf-desc-desc">das ist nur ein Test</div>
-          <div class="mmpf-desc-amount">Vorrat: 10</div>
+          <div th:text="'Vorrat: ' + ${quantity}" class="mmpf-desc-amount">Vorrat: 10</div>
       </div>
       <form method="post" class="form-inline" th:action="@{/cart}">
         <div>
