@@ -142,6 +142,7 @@ public class MampfOrderManager {
 				userAccount.getId().getIdentifier(),"checknummer 1",
 				userAccount.getFirstname(),LocalDateTime.now(),"a bank","a banks address","a banks data");
 		// TODO: correct checknummer, accountnumber, set creation time from orders creation time
+		
 		MampfOrder order = new MampfOrder(userAccount,method , orderDate);
 		orderDate.setOrder(order);
 		cart.addItemsTo(order);

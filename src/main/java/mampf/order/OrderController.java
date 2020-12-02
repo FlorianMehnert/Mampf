@@ -1,7 +1,9 @@
 package mampf.order;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -67,8 +69,22 @@ public class OrderController {
 	}
 
 	@GetMapping("/cart")
-	String basket(Model model, DateFormular form) {
-		model.addAttribute("form", form);
+	String basket(Model model/*, DateFormular form*/,@ModelAttribute Cart cart) {
+		//model.addAttribute("form", form);
+		//map domain to category:
+		Map<Item.Domain,List<CartItem>> events = new HashMap<>();
+		
+		for(CartItem cartitem: cart) {
+			Item item = (Item)cartitem.getProduct();
+			Item.Domain itemDomain = item.getDomain();
+			if(events.containsKey(itemDomain))
+			//add to list
+				{events.get(itemDomain).add(cartitem);}
+			else
+			//just create new list
+				{List<CartItem> event=new ArrayList<>();event.add(cartitem);events.put(itemDomain, event);}
+		}
+		model.addAttribute("domains", events);
 		return "cart";
 	}
 	
