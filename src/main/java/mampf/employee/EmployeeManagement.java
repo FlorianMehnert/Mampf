@@ -25,7 +25,7 @@ public class EmployeeManagement {
 
 	public boolean createEmployee(RegistrationForm form){
 		Assert.notNull(form, "Registration form should not be null");
-		String name = form.getFirst_name() + form.getLast_name();
+		String name = form.getFirst_name() + " " + form.getLast_name();
 		if(employees.findByName(name) != null){
 			return false;
 		}
