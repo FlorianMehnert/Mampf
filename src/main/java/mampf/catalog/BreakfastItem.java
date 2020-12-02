@@ -7,7 +7,7 @@ import org.javamoney.moneta.Money;
 @Entity
 public class BreakfastItem extends Item {
 	public static enum Type {
-		DISH, BERVERAGE
+		DISH, BEVERAGE
 	}
 
 	public static final Money BREAKFAST_PRICE = Money.of(4.99, "EUR");

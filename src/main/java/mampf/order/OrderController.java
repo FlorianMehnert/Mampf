@@ -91,6 +91,18 @@ public class OrderController {
 		cart.addOrUpdateItem(cartitem.get().getProduct(), Quantity.of(amount, Metric.UNIT));
 		return "redirect:/cart";
 	}
+
+	@PostMapping("/cart/add/mobile-breakfast")
+	String orderMobileBreakfast(@ModelAttribute Cart cart, @LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form){
+
+		if(userAccount.isEmpty()) {
+			return "redirect:/login";
+		}
+
+		// TODO: Order-handling einbauen
+
+		return "redirect:/";
+	}
 	
 	//TODO: find better solution:
 	@PostMapping("cart/remove")
@@ -122,18 +134,6 @@ public class OrderController {
 		//TODO
 		return "redirect:/cart";
 		
-	}
-
-	@PostMapping("/checkout/mobile-breakfast")
-	String orderMobileBreakfast(@ModelAttribute Cart cart, @LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form){
-
-		if(userAccount.isEmpty()) {
-			return "redirect:/login";
-		}
-
-		// TODO: Order-handling einbauen
-
-		return "redirect:/";
 	}
 	
 /* ORDERS */

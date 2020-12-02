@@ -5,58 +5,70 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotEmpty;
 
 public class MobileBreakfastForm {
-	@NotEmpty(message = "id should not be empty") //
-	private final String id;
-
 	@NotEmpty(message = "beverage should not be empty") //
 	private final String beverage;
 
-	@NotEmpty(message = "food should not be empty") //
-	private final String food;
+	@NotEmpty(message = "dish should not be empty") //
+	private final String dish;
 
+	@Nullable
 	private final boolean monday;
+	@Nullable
 	private final boolean tuesday;
+	@Nullable
 	private final boolean wednesday;
+	@Nullable
 	private final boolean thursday;
+	@Nullable
 	private final boolean friday;
 
 	private final String time;
 
 	public MobileBreakfastForm(
-		String id, 
 		String beverage, 
-		String food, 
-		boolean monday, 
-		boolean tuesday, 
-		boolean wednesday,
-		boolean thursday, 
-		boolean friday,
+		String dish,
+		String monday, 
+		String tuesday, 
+		String wednesday,
+		String thursday, 
+		String friday,
 		String time
 		) {
-		this.id = id;
 		this.beverage = beverage;
-		this.food = food;
-		this.monday = monday;
-		this.tuesday = tuesday;
-		this.wednesday = wednesday;
-		this.thursday = thursday;
-		this.friday = friday;
+		this.dish = dish;
+		if(monday != null)
+			this.monday = true;
+		else
+			this.monday = false;
+		if(tuesday != null)
+			this.tuesday = true;
+		else
+			this.tuesday = false;
+		if(wednesday != null)
+			this.wednesday = true;
+		else
+			this.wednesday = false;
+		if(thursday != null)
+			this.thursday = true;
+		else
+			this.thursday = false;
+		if(friday != null)
+			this.friday = true;
+		else
+			this.friday = false;
 
 		// hh:mm
 		this.time = time;
 	}
-
-	public String getId(){
-		return id;
-	}
 	public String getBeverage(){
 		return beverage;
 	}
-	public String getFood(){
-		return food;
+	public String getDish(){
+		return dish;
 	}
 	public Map<String, Boolean> getDays(){
 		Map<String, Boolean> days = new HashMap<>();

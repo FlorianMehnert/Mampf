@@ -31,7 +31,7 @@
   <div class="root">
     <h1 th:text="${domainTitle}">Domain</h1>
     <div class="content">
-      <form action="/cart" method="post">
+      <form th:action="@{/cart/add/mobile-breakfast}" method="post">
         <div class="mmpf-chooseables">
           <div class="mmpf-choosables-category" th:each="category : ${categories}">
             <div class="mmpf-choosables-title" th:text="${category.key}"></div>
@@ -39,7 +39,7 @@
               <fieldset>
                 <!-- mmpf-choosable -->
                 <div class="" th:each="item : ${category.value}">
-                  <input class="mmpf-choosable-input" type="radio" th:name="${category.key}" th:id="${item.name}"
+                  <input class="mmpf-choosable-input" type="radio" th:name="${category.key.toLowerCase()}" th:id="${item.name}"
                     th:value="${item.id}">
                   <label class="mmpf-choosable" th:for="${item.name}" th:text="${item.name}">
                   </label>
