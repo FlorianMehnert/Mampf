@@ -42,15 +42,20 @@ public class InventoryController {
 
 	}
 
+	private String nullCategory(UniqueInventoryItem item){
+		String name = "";
+		if(((Item) item.getProduct()).getCategory() != null){
+			name = Util.renderDomainName(((Item) item.getProduct()).getCategory().toString());
+		}
+		return name;
+	}
+
 	@GetMapping("/inventory")
 	@PreAuthorize("hasRole('BOSS')")
 	public String inventory(Model model) {
 		ArrayList<Pair<UniqueInventoryItem, String>> names = new ArrayList<>();
 		for(UniqueInventoryItem item:inventory.findAllAndSort()){
-			String name = "";
-			if(((Item) item.getProduct()).getCategory() != null){
-				name = Util.renderDomainName(((Item) item.getProduct()).getCategory().toString());
-			}
+			String name = nullCategory(item);
 			Pair<UniqueInventoryItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}

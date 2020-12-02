@@ -83,7 +83,10 @@ public class InventoryTest {
 	}
 
 	@Test
-	public void getInventory() throws Exception{
+	@WithMockUser(username = "hansWurst", roles = "BOSS", password = "123")
+	void stockWithNullCategory() throws Exception {
 
+		mvc.perform(get("/inventory"))
+				.andExpect(status().isOk());
 	}
 }
