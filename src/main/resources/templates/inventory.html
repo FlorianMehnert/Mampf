@@ -40,10 +40,10 @@
             <td>
                 <form class="ui form reorder" method="post" th:action="@{/inventory/add}">
                     <input type="hidden" name="pid" value="0" th:value="${pair.getFirst().getProduct().getId()}" />
-                    <button type="submit" class="btn btn-outline-primary float-right cont" th:method="delete" th:text="#{inventory.add}">Mehr hinzufügen</button>
+                    <button type="submit" class="btn btn-outline-primary float-right cont" th:method="delete" th:if="!${pair.getFirst().quantity.getAmount() == -1}" th:text="#{inventory.add}">Mehr hinzufügen</button>
                     <div class="field">
                         <label for="number"></label>
-                        <input style="position:relative; left: -5px;" class="form-control w-25 float-right " id="number" type="number" name="number" min="1" max="100000" value="1" /><br />
+                        <input style="position:relative; left: -5px;" class="form-control w-25 float-right " th:if="!${pair.getFirst().quantity.getAmount() == -1}" id="number" type="number" name="number" min="1" max="100000" value="1" /><br />
                     </div>
                 </form>
             </td>
