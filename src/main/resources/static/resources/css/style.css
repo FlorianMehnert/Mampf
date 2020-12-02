@@ -199,3 +199,89 @@ div#mmpf-sidebar {
 #mmpf-s-amount{
   margin-right: 10px;
 }
+
+/* Mobile-Breakfast*/
+
+.mmpf-chooseables {
+  display: flex;
+  justify-content: center;
+}
+
+.mmpf-choosables-category {
+  padding: 2rem 0;
+}
+
+.mmpf-choosables-wrapper{
+  display: flex;
+  justify-content: center;
+}
+
+.mmpf-choosables-title {
+  font-size: 2rem;
+  padding: 1.2rem 0;
+  text-align: center;
+  flex-basis: 100%;
+}
+
+.mmpf-choosable {
+  border: 3px solid #ccc;
+  padding: 2rem 0;
+  margin: 10px;
+  min-width: 12rem;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all ease-in-out 100ms;
+}
+
+label.mmpf-choosable:hover {
+  background-color: #888;
+  border: 3px solid #eee;
+  color: #fff;
+}
+
+.mmpf-choosable-input:checked + label.mmpf-choosable {
+  border: 3px solid #007bff;
+  color: #fff;
+  background-color: #007bff;
+}
+
+.mmpf-choosable-input {
+  position: absolute; 
+  opacity: 0; 
+  cursor: pointer;
+  height: 0; 
+  width: 0; 
+}
+
+.mmpf-choosable-title {
+  margin-left: 20px;
+  font-size: 1.3rem;
+}
+
+.mmpf-btn-center {
+  display: flex;
+  justify-content: center;
+}
+
+.mmpf-btn-center button{
+  width: 25rem;
+}
+
+.line{
+  border: 1px solid #888;
+  margin-bottom: 2rem;
+}
+
+.mmpf-mb-timetable {
+  margin-bottom: 2rem;
+}
+
+.mmpf-mb-time {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  margin-bottom: 15rem;
+}

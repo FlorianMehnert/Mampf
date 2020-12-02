@@ -83,6 +83,8 @@ public class CatalogController {
 			return "404";
 		}
 
+		if(catalogDomain.equals(Item.Domain.MOBILE_BREAKFAST)) return "redirect:/mobile-breakfast";
+
 		// reorganizing the items of the chosen domain to show them each under its category
 		Iterable<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
 		Iterator<Item> iterator = filteredCatalog.iterator();
@@ -111,6 +113,27 @@ public class CatalogController {
 		return "catalog";
 	}
 
+	@GetMapping("/mobile-breakfast")
+	String mobileBreakfast(Model model){
+		Map<String, ArrayList<Item>> reorganizedItems = new HashMap<>();
+		Iterator<Item> breakFastItems = this.catalog.findByDomain(Item.Domain.MOBILE_BREAKFAST).iterator();
+		while(breakFastItems.hasNext()){
+			BreakfastItem currentItem = (BreakfastItem)breakFastItems.next();
+			String category = Util.renderDomainName(currentItem.getType().toString());
+			if(reorganizedItems.containsKey(category)){
+				reorganizedItems.get(category).add(currentItem);
+			}
+			else{
+				ArrayList<Item> itemList = new ArrayList<>();
+				itemList.add(currentItem);
+				reorganizedItems.put(category, itemList);
+			}
+		}
+		model.addAttribute("categories", reorganizedItems);
+		model.addAttribute("domainTitle", "Mobile Breakfast");
+		return "mobile-breakfast.html";
+	}
+
 	@GetMapping("/catalog/item/detail/{item}")
 	public String detail(Model model, @PathVariable Item item){
 		assert item != null;
@@ -118,50 +141,6 @@ public class CatalogController {
 		model.addAttribute("item", item);
 		model.addAttribute("quantity", this.inventory.findByProduct(item).get().getQuantity());
 		return "detail.html";
-	}
-
-	// -----------------
-	//* Development Paths
-	// -----------------
-
-	//! Todo: add task to delete when building
-	// Used to add random entities to the catalog with different domains
-	@GetMapping("/catalog/add/random/{amount}")
-	String itemsCount(@PathVariable int amount) {
-		if(catalog.count() == 0){
-			for(int i = 0; i < amount; i++){
-				catalog.save(
-				new Item(
-					"test"+ i,
-					Money.of(i, EURO),
-					Util.randomEnum(Item.Domain.class),
-					Util.randomEnum(Item.Category.class),
-					"Das ist nur ein Test"
-				)
-			);
-			}
-		}
-		return "redirect:/catalog/count";
-	}
-
-	//! Todo: add task to delete when building
-	// Used to get the current length of catalog items
-	@GetMapping("/catalog/count")
-	public ResponseEntity<String> catalogCount(){
-		var httpHeaders = new HttpHeaders();
-    httpHeaders.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
-		String count = Long.toString(catalog.count());
-    return new ResponseEntity<>(count, httpHeaders, HttpStatus.OK);
-	}
-
-	//! Todo: add task to delete when building
-	// Used to reset the catalog and delete all items from it
-	@GetMapping("/catalog/reset")
-	public ResponseEntity<String> reset(){
-		catalog.deleteAll();
-		var httpHeaders = new HttpHeaders();
-    httpHeaders.setContentType(new MediaType("text", "plain", StandardCharsets.UTF_8));
-		return new ResponseEntity<>("Deleted all catalog items!", httpHeaders, HttpStatus.OK);
 	}
 	
 }

@@ -59,7 +59,11 @@ class CatalogDataInitializer implements DataInitializer {
 		mampfCatalog.save(new Item("Tappasabend", Money.of(70,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.SPECIAL_OFFERS,"10 Personen"));
 		mampfCatalog.save(new Item("Taccoabend", Money.of(50,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.SPECIAL_OFFERS,"10 Personen"));
 
-		mampfCatalog.save(new Item("Müsli/Brötchen plus Kaffee/Kuchen", Money.of(4.99,"EUR"), Item.Domain.MOBILE_BREAKFAST, Item.Category.FOOD,"nur vor 14 Uhr"));
+		mampfCatalog.save(new BreakfastItem("Müsli", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.DISH));
+		mampfCatalog.save(new BreakfastItem("Brötchen", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.DISH));
+		mampfCatalog.save(new BreakfastItem("Kuchen", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.DISH));
+		mampfCatalog.save(new BreakfastItem("Kaffee", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.BERVERAGE));
+		mampfCatalog.save(new BreakfastItem("Tee", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.BERVERAGE));
 
 		mampfCatalog.save(new StaffItem("Koch/-öchin pro 10 Personen", Money.of(11.88,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,"pro Person", Type.COOK));
 		mampfCatalog.save(new StaffItem("Service-Personal", Money.of(13.56,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,"pro 5 Personen", Type.SERVICE));
