@@ -105,7 +105,7 @@ public class OrderController {
 	String buy(@ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
 		
 		if(userAccount.isEmpty()) {
-			return "redirect:/register";
+			return "redirect:/login";
 		}
 		//formular fehler
 		if (result.hasErrors() || form.invalid()) {

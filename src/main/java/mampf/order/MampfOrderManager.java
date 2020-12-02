@@ -11,6 +11,8 @@ import mampf.user.User;
 import org.salespointframework.order.OrderManagement;
 import org.salespointframework.order.OrderStatus;
 import org.salespointframework.payment.Cash;
+import org.salespointframework.payment.Cheque;
+import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
@@ -22,6 +24,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.salespointframework.accountancy.ProductPaymentEntry;
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.inventory.InventoryItem;
 import org.salespointframework.inventory.UniqueInventoryItem;
@@ -129,7 +132,15 @@ public class MampfOrderManager {
 		
 		//valid stock and personal,
 		MampfDate orderDate = new MampfDate(form.getStartDate(), form.getEndDate(), form.getAddress()); 
-		MampfOrder order = new MampfOrder(userAccount, Cash.CASH, orderDate);
+		//paymentmethod:
+		String payMethod = form.getPayMethod();
+		PaymentMethod method = Cash.CASH; //bydefault
+		if(payMethod.equals("Cash")) method = Cash.CASH; 
+		if(payMethod.equals("Check")) method = new Cheque(userAccount.getUsername(),
+				userAccount.getId().getIdentifier(),"checknummer 1",
+				userAccount.getFirstname(),LocalDateTime.now(),"a bank","a banks address","a banks data");
+		// TODO: correct checknummer, accountnumber, set creation time from orders creation time
+		MampfOrder order = new MampfOrder(userAccount,method , orderDate);
 		orderDate.setOrder(order);
 		cart.addItemsTo(order);
 		
@@ -169,7 +180,6 @@ public class MampfOrderManager {
 			}
 			
 		}
-		
 	
 	//EVERYTHING WORKED FINE:
 		orderManagement.save(order);

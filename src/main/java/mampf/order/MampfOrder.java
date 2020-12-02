@@ -22,6 +22,7 @@ import org.salespointframework.order.OrderLine;
 import org.salespointframework.order.OrderManagement;
 import org.salespointframework.order.OrderStatus;
 import org.salespointframework.payment.Cash;
+import org.salespointframework.payment.Cheque;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
@@ -44,8 +45,8 @@ public class MampfOrder extends Order {
 	
 	@SuppressWarnings("unused")
 	private MampfOrder(){}
-	public MampfOrder(UserAccount account, Cash cash, MampfDate date) {
-		super(account, cash);
+	public MampfOrder(UserAccount account, PaymentMethod paymentMethod, MampfDate date) {
+		super(account, paymentMethod);
 		this.date = date;
 		employees = new ArrayList<>();
 	}
@@ -77,8 +78,14 @@ public class MampfOrder extends Order {
 	}
 	
 	public String getPayMethod(){
-		PaymentMethod paymentMethod = super.getPaymentMethod();
-		return paymentMethod.toString();
+		PaymentMethod paymentMethod = super.getPaymentMethod(); 
+		String res = "no payment";
+		if(paymentMethod instanceof Cheque) { 
+			Cheque cheque = ((Cheque)paymentMethod);
+			res="CHECK:"+cheque.getBankName()+","+cheque.getAccountName()+","+cheque.getAccountNumber()+","+cheque.getBankAddress()+","+cheque.getBankIdentificationNumber();}
+		if(paymentMethod instanceof Cash) res = "CASH:";
+
+		return res;
 	}
 	//public boolean isDone() {
 	//	if(done) return true;
