@@ -16,6 +16,8 @@ import org.springframework.util.LinkedMultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.endsWith;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -32,7 +34,10 @@ public class InventoryTest {
 	private UniqueInventory<UniqueInventoryItem> uniqueInventory;
 
 	@Autowired
-	private InventoryController inventory;
+	private InventoryController inventoryController;
+
+	@Autowired
+	private Inventory inventory;
 
 	@Autowired
 	MockMvc mvc;
@@ -41,7 +46,9 @@ public class InventoryTest {
 	public void load() {
 		assertThat(mampfCatalog).isNotNull();
 		assertThat(uniqueInventory).isNotNull();
+		assertThat(inventoryController).isNotNull();
 		assertThat(inventory).isNotNull();
+
 	}
 
 	@Test
@@ -89,4 +96,10 @@ public class InventoryTest {
 		mvc.perform(get("/inventory"))
 				.andExpect(status().isOk());
 	}
+
+	@Test
+	void InventoryExtendsUniqueInventory(){
+		assertTrue("d", inventory != null);
+	}
+
 }
