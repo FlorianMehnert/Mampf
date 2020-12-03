@@ -13,13 +13,17 @@ import java.util.Optional;
 
 public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 	default Optional<UniqueInventoryItem> findByName(String name) {
-		assert name != null;
-		for (UniqueInventoryItem item : this.findAll()) {
-			if (item.getProduct().getName().equals(name)) {
-				return Optional.of(item);
+		if(name != null){
+			for (UniqueInventoryItem item : this.findAll()) {
+				if (item.getProduct().getName().equals(name)) {
+					return Optional.of(item);
+				}
 			}
+			return Optional.empty();
+		}else{
+			return Optional.empty();
 		}
-		return Optional.empty();
+
 	}
 
 	default Optional<UniqueInventoryItem> reduceAmount(Product product, Quantity amount) {

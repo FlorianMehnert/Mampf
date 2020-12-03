@@ -3,6 +3,7 @@ package mampf.inventory;
 import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
 import org.assertj.core.api.Assert;
+import org.assertj.core.internal.bytebuddy.implementation.bind.annotation.Super;
 import org.junit.jupiter.api.Test;
 import org.salespointframework.catalog.Product;
 import org.salespointframework.catalog.ProductIdentifier;
@@ -19,6 +20,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 
+import javax.validation.constraints.AssertTrue;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -108,17 +110,23 @@ public class InventoryTest {
 
 	@Test
 	void InventoryExtendsUniqueInventory(){
-		assertTrue("d", inventory != null);
+		assertTrue("Inventory does not extend UniqueInventory",
+				UniqueInventory.class.isAssignableFrom(Inventory.class));
 	}
 
 	@Test
 	void reduceAmountTest(){
 		UniqueInventoryItem uniqueInventoryItem = inventory.findAll().toList().get(0);
 		Item item = (Item) uniqueInventoryItem.getProduct();
-		assertNotNull(item.getId());
 		Quantity quantity = uniqueInventoryItem.getQuantity();
+		assertNotNull(item.getId());
 		Quantity quantity1 = inventory.reduceAmount(item, Quantity.of(1)).get().getQuantity();
 		assertTrue("Die Quantity von dem item wird nicht reduziert", (quantity.isGreaterThan(quantity1)));
+	}
+
+	void findByNameTest(){
+		boolean isEmpty = inventory.findByName(null).equals(Optional.empty());
+		assertTrue("findByName does not return Optional.empty when called with null", isEmpty);
 	}
 
 }
