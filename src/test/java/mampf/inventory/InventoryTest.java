@@ -3,8 +3,10 @@ package mampf.inventory;
 import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
 import org.junit.jupiter.api.Test;
+import org.salespointframework.catalog.Product;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
+import org.salespointframework.quantity.Quantity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +15,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
+
+import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.endsWith;
@@ -100,6 +105,16 @@ public class InventoryTest {
 	@Test
 	void InventoryExtendsUniqueInventory(){
 		assertTrue("d", inventory != null);
+	}
+
+	@Test
+	void reduceAmountTest(){
+		Product product = inventory.findAll().toList().get(0).getProduct();
+		String name = product.getName();
+		Quantity quantity = Quantity.of(1);
+		Optional<UniqueInventoryItem> theItem = inventory.findByProduct(product);
+		theItem.ifPresent(uniqueInventoryItem -> uniqueInventoryItem.decreaseQuantity(quantity));
+		assertTrue("Die Quantity von dem item wird nicht reduziert", inventory.findByName(name).get().getQuantity().isGreaterThan(Quantity.of(0)));
 	}
 
 }
