@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.endsWith;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -114,6 +115,7 @@ public class InventoryTest {
 	void reduceAmountTest(){
 		UniqueInventoryItem uniqueInventoryItem = inventory.findAll().toList().get(0);
 		Item item = (Item) uniqueInventoryItem.getProduct();
+		assertNotNull(item.getId());
 		Quantity quantity = uniqueInventoryItem.getQuantity();
 		Quantity quantity1 = inventory.reduceAmount(item, Quantity.of(1)).get().getQuantity();
 		assertTrue("Die Quantity von dem item wird nicht reduziert", (quantity.isGreaterThan(quantity1)));
