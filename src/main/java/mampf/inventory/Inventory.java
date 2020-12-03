@@ -1,7 +1,7 @@
 package mampf.inventory;
 
-import mampf.catalog.Item;
 import org.salespointframework.catalog.Product;
+import org.salespointframework.inventory.InventoryItemIdentifier;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
@@ -22,11 +22,11 @@ public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 		return Optional.empty();
 	}
 
-	default void reduceAmount(Product product, Quantity amount) {
+	default Optional<UniqueInventoryItem> reduceAmount(Product product, Quantity amount) {
 		assert product.getId() != null;
 		Optional<UniqueInventoryItem> theItem = this.findByProduct(product);
-		//TODO: what if theItem is not available
 		theItem.ifPresent(uniqueInventoryItem -> uniqueInventoryItem.decreaseQuantity(amount));
+		return theItem;
 	}
 
 	default List<UniqueInventoryItem> findAllAndSort() {

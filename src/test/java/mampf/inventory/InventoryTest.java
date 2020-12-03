@@ -2,8 +2,11 @@ package mampf.inventory;
 
 import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
+import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Test;
 import org.salespointframework.catalog.Product;
+import org.salespointframework.catalog.ProductIdentifier;
+import org.salespointframework.inventory.InventoryItemIdentifier;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
@@ -109,12 +112,11 @@ public class InventoryTest {
 
 	@Test
 	void reduceAmountTest(){
-		Product product = inventory.findAll().toList().get(0).getProduct();
-		String name = product.getName();
-		Quantity quantity = Quantity.of(1);
-		Optional<UniqueInventoryItem> theItem = inventory.findByProduct(product);
-		theItem.ifPresent(uniqueInventoryItem -> uniqueInventoryItem.decreaseQuantity(quantity));
-		assertTrue("Die Quantity von dem item wird nicht reduziert", inventory.findByName(name).get().getQuantity().isGreaterThan(Quantity.of(0)));
+		UniqueInventoryItem uniqueInventoryItem = inventory.findAll().toList().get(0);
+		Item item = (Item) uniqueInventoryItem.getProduct();
+		Quantity quantity = uniqueInventoryItem.getQuantity();
+		Quantity quantity1 = inventory.reduceAmount(item, Quantity.of(1)).get().getQuantity();
+		assertTrue("Die Quantity von dem item wird nicht reduziert", (quantity.isGreaterThan(quantity1)));
 	}
 
 }
