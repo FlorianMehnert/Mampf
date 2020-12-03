@@ -43,6 +43,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @SessionAttributes("cart")
 public class OrderController {
 	
+	//TODO: find better solution for saving dates:
+	private Map<Item.Domain, MampfDate> dates;
+	
 	private final MampfOrderManager orderManager;
 	//private final Inventory inventory;
 	//private final EmployeeManagement employeeManagement;
@@ -55,6 +58,7 @@ public class OrderController {
 	
 	@ModelAttribute("cart")
 	Cart initializeCart() {
+		dates = new HashMap<>();
 		return new Cart();
 	}
 
@@ -71,20 +75,7 @@ public class OrderController {
 	@GetMapping("/cart")
 	String basket(Model model/*, DateFormular form*/,@ModelAttribute Cart cart) {
 		//model.addAttribute("form", form);
-		//map domain to category:
-		Map<Item.Domain,List<CartItem>> events = new HashMap<>();
-		
-		for(CartItem cartitem: cart) {
-			Item item = (Item)cartitem.getProduct();
-			Item.Domain itemDomain = item.getDomain();
-			if(events.containsKey(itemDomain))
-			//add to list
-				{events.get(itemDomain).add(cartitem);}
-			else
-			//just create new list
-				{List<CartItem> event=new ArrayList<>();event.add(cartitem);events.put(itemDomain, event);}
-		}
-		model.addAttribute("domains", events);
+		model.addAttribute("domains", getDomainItems(cart,null));
 		return "cart";
 	}
 	
@@ -114,13 +105,13 @@ public class OrderController {
 		if(userAccount.isEmpty()) {
 			return "redirect:/login";
 		}
-
-		// TODO: Order-handling einbauen
+		//TODO
+		
 
 		return "redirect:/";
 	}
 	
-	//TODO: find better solution:
+	
 	@PostMapping("cart/remove")
 	String removeCartItem(@RequestParam String cartitemId, @ModelAttribute Cart cart) {
 		
@@ -129,6 +120,43 @@ public class OrderController {
 		return "redirect:/cart";
 	}
 	
+	//choose to buy:
+	@PostMapping("/pay")
+	String chooseToBuy(Model model,@ModelAttribute Cart cart, @RequestParam String domain, DateFormular form) {
+		
+		String domain_ = null;
+		if(!domain.equals("none")) domain_ = domain;
+		model.addAttribute("events", getDomainItems(cart,domain_));
+		Map<Item.Domain,List<CartItem>> asb = getDomainItems(cart,domain_);
+		model.addAttribute("domainChoosen", domain);
+		model.addAttribute("form", form);
+		return "buy_cart";
+	}	
+	
+	//TODO: replace domain with optionals
+	Map<Item.Domain,List<CartItem>> getDomainItems(Cart cart,String domain){
+		Map<Item.Domain,List<CartItem>> events = new HashMap<>();
+		boolean checkForDomain = (domain != null); 
+		for(CartItem cartitem: cart) {
+			Item item = (Item)cartitem.getProduct();
+			Item.Domain itemDomain = item.getDomain();
+			
+			//skip item if not of requested domain
+			if(checkForDomain)
+				if(!itemDomain.equals(Item.Domain.valueOf(domain)))continue;
+			
+			if(events.containsKey(itemDomain))
+			//add to list
+				{events.get(itemDomain).add(cartitem);}
+			else
+			//just create new list
+				{List<CartItem> event=new ArrayList<>();event.add(cartitem);events.put(itemDomain, event);}
+		}
+		return events;
+	}
+	
+	
+	/*
 	@PostMapping("/checkout")
 	String buy(@ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
 		
@@ -150,7 +178,7 @@ public class OrderController {
 		//TODO
 		return "redirect:/cart";
 		
-	}
+	}*/
 	
 /* ORDERS */
 	

@@ -47,6 +47,7 @@ public class MampfOrderManager {
 	private final MampfCatalog catalog;
 	private final EmployeeManagement employeeManagement;
 	
+	
 	public MampfOrderManager(OrderManagement<MampfOrder> orderManagement, Inventory inventory, EmployeeManagement employeeManagement, MampfCatalog catalog) {
 		this.orderManagement = orderManagement;  this.inventory = inventory; this.employeeManagement = employeeManagement; this.catalog = catalog;
 	}
@@ -70,7 +71,7 @@ public class MampfOrderManager {
 	// save free employees
 		
 		//init
-		LocalDateTime startDate = form.getStartDate(),endDate = form.getEndDate();
+		//LocalDateTime startDate = form.getStartDate(),endDate = form.getEndDate();
 				
 		//get free employees by date:
 		//MampfOrder bookedOrder;
@@ -80,8 +81,8 @@ public class MampfOrderManager {
 		for(Employee employee: employeeManagement.findAll()) {
 			isFree = true;
 			for(MampfOrder bookedOrder : employee.getBooked())
-				if(bookedOrder.getDate().hasTimeOverlap(startDate,endDate))
-					{isFree = false; break;}
+		//		if(bookedOrder.getDate().hasTimeOverlap(startDate,endDate))
+		//			{isFree = false; break;}
 			
 			if(isFree) {
 				Employee.Role employeeRole = employee.getRole();
@@ -133,7 +134,7 @@ public class MampfOrderManager {
 	//CREATE:
 		
 		//valid stock and personal,
-		MampfDate orderDate = new MampfDate(form.getStartDate(), form.getEndDate(), form.getAddress()); 
+		/*MampfDate orderDate = new MampfDate(form.getStartDate(), form.getEndDate(), form.getAddress()); 
 		//paymentmethod:
 		String payMethod = form.getPayMethod();
 		PaymentMethod method = Cash.CASH; //bydefault
@@ -168,11 +169,11 @@ public class MampfOrderManager {
 				if(personalItemType.equals(StaffItem.Type.COOK))
 					//while(personalAmount < 0){
 					for(int i = 0; i < personalAmount; i++) {
-					Employee dat = freeCooks.remove(0); dat.setBooked(order); order.addEmployee(dat);/*personalAmount--;*/}
+					Employee dat = freeCooks.remove(0); dat.setBooked(order); order.addEmployee(dat);}
 				if(personalItemType.equals(StaffItem.Type.SERVICE))
 					//while(personalAmount < 0){
 					for(int i = 0; i < personalAmount; i++) {	
-					Employee dat = freeServicePersonal.remove(0); dat.setBooked(order); order.addEmployee(dat);/*personalAmount--;*/}
+					Employee dat = freeServicePersonal.remove(0); dat.setBooked(order); order.addEmployee(dat);}
 				
 				break;
 
@@ -188,9 +189,10 @@ public class MampfOrderManager {
 		orderManagement.save(order);
 		cart.clear();
 		//orderManagement.completeOrder(order);
-		
-		return order;
-		
+		*/
+		//return order;
+		return null;
+		//return new MampfOrder()
 	}
 	
 	
