@@ -57,6 +57,7 @@ public class MampfOrderManager {
 	}
 
 	public MampfOrder createOrder(Cart cart, DateFormular form, UserAccount userAccount) {
+		//TODO: Dateformular optional 
 		//validates Cart, 
 		// creates Date
 		// creates Order
@@ -66,13 +67,18 @@ public class MampfOrderManager {
 		
 	//PREVALIDATE:
 		if(cart == null || userAccount == null || cart == null)return null;
-		
+	
+	//get domain:
+		//TODO: find better solution
+		Item.Domain orderDomain = ((Item)cart.iterator().next().getProduct()).getDomain();
+	
 	//VALIDATE:
 	// save free employees
 		
 		//init
-		//LocalDateTime startDate = form.getStartDate(),endDate = form.getEndDate();
-				
+		LocalDateTime startDate = form.getStartDate();
+		
+		//TODO: check if this step is necessary:
 		//get free employees by date:
 		//MampfOrder bookedOrder;
 		boolean isFree = true;
@@ -81,8 +87,8 @@ public class MampfOrderManager {
 		for(Employee employee: employeeManagement.findAll()) {
 			isFree = true;
 			for(MampfOrder bookedOrder : employee.getBooked())
-		//		if(bookedOrder.getDate().hasTimeOverlap(startDate,endDate))
-		//			{isFree = false; break;}
+				if(bookedOrder.getDate().hasTimeOverlap(startDate))
+					{isFree = false; break;}
 			
 			if(isFree) {
 				Employee.Role employeeRole = employee.getRole();
@@ -92,7 +98,7 @@ public class MampfOrderManager {
 		}
 		
 		//check if valid cart:
-		// - check stock (sufficient amount)
+		// - check stock (sufficient amount) (no longer)
 		// - check personal (needed amount)
 		// fallthrough if valid
 		
@@ -134,7 +140,7 @@ public class MampfOrderManager {
 	//CREATE:
 		
 		//valid stock and personal,
-		/*MampfDate orderDate = new MampfDate(form.getStartDate(), form.getEndDate(), form.getAddress()); 
+		MampfDate orderDate = new MampfDate(form.getStartDate(), form.getAddress()); 
 		//paymentmethod:
 		String payMethod = form.getPayMethod();
 		PaymentMethod method = Cash.CASH; //bydefault
@@ -143,8 +149,8 @@ public class MampfOrderManager {
 				userAccount.getId().getIdentifier(),"checknummer 1",
 				userAccount.getFirstname(),LocalDateTime.now(),"a bank","a banks address","a banks data");
 		// TODO: correct checknummer, accountnumber, set creation time from orders creation time
-		
-		MampfOrder order = new MampfOrder(userAccount,method , orderDate);
+		//TODO: replace with creditcart
+		MampfOrder order = new MampfOrder(userAccount,method, orderDate);
 		orderDate.setOrder(order);
 		cart.addItemsTo(order);
 		
@@ -189,9 +195,9 @@ public class MampfOrderManager {
 		orderManagement.save(order);
 		cart.clear();
 		//orderManagement.completeOrder(order);
-		*/
+		
 		//return order;
-		return null;
+		return order;
 		//return new MampfOrder()
 	}
 	

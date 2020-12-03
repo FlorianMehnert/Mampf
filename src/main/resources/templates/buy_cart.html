@@ -49,7 +49,7 @@
          <form method="post" th:action="@{/cart/clear}"><button type="submit">Warenkorb leeren</button></form>
             <!-- sec:authorize="hasRole('INDIVIDUAL')" -->
 		<form method="post" role="form" class="ui form" id="form" th:action="@{/checkout}" th:object="${form}"> 
-		<input type="hidden" name="domain" th:value="${domainChoosen}"/> <!-- save between or "none"-->
+		<input type="hidden" name="domainChoosen" th:value="${domainChoosen}"/> <!-- save between or "none"-->
 		<label><input type="radio" name="payMethod" value="Bar" checked="checked"/>Bar</label><label><input  type="radio" name="payMethod"  value="Check"/>Überweisung</label>
 		<label for="start">Start: </label><input id="start" name="start" type="datetime-local" th:field="*{startDate}" th:errorclass="fieldError" required="required"/>
 		<label for="address">Address: </label><input id="address" name="address" type="text" th:field="*{address}" th:errorclass="fieldError" required="required"/>

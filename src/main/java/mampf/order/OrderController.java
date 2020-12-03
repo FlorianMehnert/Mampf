@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap.KeySetView;
 
 import javax.validation.Valid;
 
@@ -75,7 +76,7 @@ public class OrderController {
 	@GetMapping("/cart")
 	String basket(Model model/*, DateFormular form*/,@ModelAttribute Cart cart) {
 		//model.addAttribute("form", form);
-		model.addAttribute("domains", getDomainItems(cart,null));
+		model.addAttribute("domains", getDomainItems(cart,"none"));
 		return "cart";
 	}
 	
@@ -124,10 +125,8 @@ public class OrderController {
 	@PostMapping("/pay")
 	String chooseToBuy(Model model,@ModelAttribute Cart cart, @RequestParam String domain, DateFormular form) {
 		
-		String domain_ = null;
-		if(!domain.equals("none")) domain_ = domain;
-		model.addAttribute("events", getDomainItems(cart,domain_));
-		Map<Item.Domain,List<CartItem>> asb = getDomainItems(cart,domain_);
+		
+		model.addAttribute("events", getDomainItems(cart,domain));
 		model.addAttribute("domainChoosen", domain);
 		model.addAttribute("form", form);
 		return "buy_cart";
@@ -136,7 +135,7 @@ public class OrderController {
 	//TODO: replace domain with optionals
 	Map<Item.Domain,List<CartItem>> getDomainItems(Cart cart,String domain){
 		Map<Item.Domain,List<CartItem>> events = new HashMap<>();
-		boolean checkForDomain = (domain != null); 
+		boolean checkForDomain = (!domain.equals("none")); 
 		for(CartItem cartitem: cart) {
 			Item item = (Item)cartitem.getProduct();
 			Item.Domain itemDomain = item.getDomain();
@@ -156,29 +155,46 @@ public class OrderController {
 	}
 	
 	
-	/*
+	
 	@PostMapping("/checkout")
-	String buy(@ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
+	String buy(@RequestParam String domainChoosen, @ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
 		
 		if(userAccount.isEmpty()) {
 			return "redirect:/login";
 		}
 		//formular fehler
-		if (result.hasErrors() || form.invalid()) {
+		if (result.hasErrors() /*|| form.invalid()*/) {
 			//TODO
 			return "redirect:/cart";
 		}
+		Map<Item.Domain, List<CartItem>> orders = getDomainItems(cart, domainChoosen);
+		//List<MampfOrder> createdOrders = new ArrayList<>();
+		for(Item.Domain domain : orders.keySet()) 
+		{
+			Cart orderCart = new Cart();
+			for(CartItem cartitem: orders.get(domain)) 
+			{orderCart.addOrUpdateItem(cartitem.getProduct(), cartitem.getQuantity());}
+			
+			MampfOrder order = orderManager.createOrder(orderCart, form, userAccount.get());
+			
+			//remove cartitem and save the created orders:
+			if(order != null)
+				{for(CartItem cartitem: orderCart) 
+					{cart.removeItem(cartitem.getProduct().getId().getIdentifier());} 
+				/*createdOrders.add(order);*/}	
+		}
 		
-		MampfOrder order = orderManager.createOrder(cart, form, userAccount.get());
-		if(order != null) {
+		//TODO: mark new created order in, falls überhaupt erstellet wurde:
+		return "redirect:/userOrders";
+		/*if(order != null) {
 			redirectAttributes.addAttribute("id", order.getId().getIdentifier());
 			return "redirect:/orders/detail/{id}";
 		}
 		//order fehler:
 		//TODO
-		return "redirect:/cart";
+		return "redirect:/cart";*/
 		
-	}*/
+	}
 	
 /* ORDERS */
 	

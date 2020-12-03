@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 //import org.salespointframework.catalog.Product;
 
 import java.lang.Comparable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 //import java.util.Objects;
 
@@ -20,17 +21,19 @@ public class MampfDate implements Comparable<MampfDate>{
 	
 	private @Id @GeneratedValue long id;
 	
+	public static final Duration EVENTDURATION = Duration.ofHours(2);
+	
 	@OneToOne
 	private MampfOrder order;
-	private LocalDateTime startTime=null,endTime=null;
+	private LocalDateTime startTime=null;//,endTime=null;
 	private String address=null;
 	
 
 	@SuppressWarnings("unused")
 	private MampfDate(){}
-	public MampfDate(LocalDateTime startTime, LocalDateTime endTime, String address){
+	public MampfDate(LocalDateTime startTime,/*, LocalDateTime endTime,*/ String address){
 		//TODO: add assertcheck
-		this.startTime = startTime; this.endTime = endTime; this.address = address; 
+		this.startTime = startTime; /*this.endTime = endTime; */this.address = address; 
 	}
 	
 	//cart use:
@@ -40,7 +43,7 @@ public class MampfDate implements Comparable<MampfDate>{
 	//}
 	
 	public LocalDateTime getStartTime() {return startTime;}
-	public LocalDateTime getEndTime() {return endTime;}
+	//public LocalDateTime getEndTime() {return endTime;}
 	//public Item.Domain getDomain() {return domain;}
 	public String getAddress() {return address;}
 	
@@ -52,16 +55,15 @@ public class MampfDate implements Comparable<MampfDate>{
 	public void setOrder(MampfOrder order) {this.order = order;}
 	public boolean equals(MampfDate d) {
 		//TODO nullchecking
-		return startTime.equals(d.getStartTime()) && endTime.equals(d.getEndTime()) && address.equals(d.getAddress());
+		return startTime.equals(d.getStartTime())/* && endTime.equals(d.getEndTime())*/ && address.equals(d.getAddress());
 
 	}
-	public boolean hasTimeOverlap(LocalDateTime fromDate,LocalDateTime toDate) {
-		//returns true if time overlapping
+	public boolean hasTimeOverlap(LocalDateTime otherDate) {
+		//checks with constant
 		//TODO: nullcheck
 		//time between events??
-		
-		
-		return toDate.isAfter(startTime) && endTime.isAfter(fromDate);
+		//localdatetime should be immutable...
+		return (otherDate.plusHours(MampfDate.EVENTDURATION.toHours())).isAfter(startTime) && (startTime.plusHours(MampfDate.EVENTDURATION.toHours())).isAfter(otherDate);
 	}
 	public int compareTo(MampfDate d) {
 		
@@ -69,7 +71,7 @@ public class MampfDate implements Comparable<MampfDate>{
 	}
 	
 	public String toString() {
-		return "start: "+startTime.toString()+", end: "+endTime.toString()+", address: "+address;
+		return "start: "+startTime.toString()/*+", end: "+endTime.toString()*/+", address: "+address;
 	}
 	
 	public long getId() {
