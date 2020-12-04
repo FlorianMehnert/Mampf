@@ -1,19 +1,13 @@
 package mampf.order;
 
 
-//import mampf.catalog.Item;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-//import javax.persistence.Table;
 import javax.persistence.OneToOne;
 
-//import org.salespointframework.catalog.Product;
-
-import java.lang.Comparable;
 import java.time.LocalDateTime;
-//import java.util.Objects;
 
 @Entity
 public class MampfDate implements Comparable<MampfDate>{
@@ -30,7 +24,9 @@ public class MampfDate implements Comparable<MampfDate>{
 	private MampfDate(){}
 	public MampfDate(LocalDateTime startTime, LocalDateTime endTime, String address){
 		//TODO: add assertcheck
-		this.startTime = startTime; this.endTime = endTime; this.address = address; 
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.address = address;
 	}
 	
 	//cart use:
@@ -44,7 +40,8 @@ public class MampfDate implements Comparable<MampfDate>{
 	//public Item.Domain getDomain() {return domain;}
 	public String getAddress() {return address;}
 	
-	//public void setDate(/*TODO: nullcheck*/ LocalDateTime startTime, LocalDateTime endTime, String address) {/*TODO nullcheck*/this.startTime = startTime; this.endTime = endTime; this.address = address; }
+	//public void setDate(/*TODO: nullcheck*/ LocalDateTime startTime, LocalDateTime endTime, String address)
+	// {/*TODO nullcheck*/this.startTime = startTime; this.endTime = endTime; this.address = address; }
 	//public void setDomain(Item.Domain domain) {/*TODO: nullcheck*/this.domain=domain;}
 	
 	//public boolean hasNoDate() {return (startTime == null && endTime == null && address == null);}

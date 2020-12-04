@@ -1,9 +1,6 @@
 package mampf.order;
 
-import mampf.catalog.Item;
-import mampf.catalog.Item.Category;
 import mampf.employee.Employee;
-import mampf.employee.EmployeeManagement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,27 +8,17 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import org.salespointframework.catalog.Product;
-import org.salespointframework.core.AbstractEntity;
-import org.salespointframework.order.Cart;
 import org.salespointframework.order.Order;
-import org.salespointframework.order.OrderLine;
-import org.salespointframework.order.OrderManagement;
-import org.salespointframework.order.OrderStatus;
 import org.salespointframework.payment.Cash;
 import org.salespointframework.payment.Cheque;
 import org.salespointframework.payment.PaymentMethod;
-import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
 @Entity
 public class MampfOrder extends Order {
-	// TODO:
-	//addEmployee
-	//findByCategory
+	// TODO: addEmployee, findByCategory
 
 	//private int personalNeeded = 0;
 	
@@ -74,9 +61,11 @@ public class MampfOrder extends Order {
 		String res = "no payment";
 		if(paymentMethod instanceof Cheque) { 
 			Cheque cheque = ((Cheque)paymentMethod);
-			res="CHECK:"+cheque.getBankName()+","+cheque.getAccountName()+","+cheque.getAccountNumber()+","+cheque.getBankAddress()+","+cheque.getBankIdentificationNumber();}
-		if(paymentMethod instanceof Cash) res = "CASH:";
-
+			res="CHECK:"+cheque.getBankName()+","+cheque.getAccountName()+","+cheque.getAccountNumber()+","
+					+cheque.getBankAddress()+","+cheque.getBankIdentificationNumber();}
+		if(paymentMethod instanceof Cash) {
+			res = "CASH:";
+		}
 		return res;
 	}
 	//public boolean isDone() {
