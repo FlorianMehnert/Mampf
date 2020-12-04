@@ -27,7 +27,6 @@ public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 	}
 
 	default Optional<UniqueInventoryItem> reduceAmount(Product product, Quantity amount) {
-		assert product.getId() != null;
 		Optional<UniqueInventoryItem> theItem = this.findByProduct(product);
 		theItem.ifPresent(uniqueInventoryItem -> uniqueInventoryItem.decreaseQuantity(amount));
 		return theItem;

@@ -116,6 +116,7 @@ public class InventoryTest {
 
 	@Test
 	void reduceAmountTest(){
+		//init some valid item from inventory
 		UniqueInventoryItem uniqueInventoryItem = inventory.findAll().toList().get(0);
 		Item item = (Item) uniqueInventoryItem.getProduct();
 		Quantity quantity = uniqueInventoryItem.getQuantity();
@@ -129,11 +130,19 @@ public class InventoryTest {
 	@Test
 	void findByNameTest(){
 		boolean isEmpty = inventory.findByName(null).equals(Optional.empty());
+		//findByName using null
 		assertTrue("findByName does not return Optional.empty when called with null", isEmpty);
+
 		String someName = inventory.findAll().toList().get(0).getProduct().getName();
 		Optional<UniqueInventoryItem> item = inventory.findByName(someName);
 		boolean notEmpty =  !item.equals(Optional.empty());
+		//findByName using valid inputs
 		assertTrue("findByName returns an empty Optional",notEmpty);
+
+		item = inventory.findByName("this Item does not exist");
+		isEmpty =  item.equals(Optional.empty());
+		//findByName using wrong inputs
+		assertTrue("findByName does not return Optional.empty using some not included", isEmpty);
 	}
 
 }
