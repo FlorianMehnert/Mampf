@@ -2,6 +2,9 @@ package mampf.catalog;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
+import org.salespointframework.catalog.ProductIdentifier;
+import org.salespointframework.inventory.InventoryItemIdentifier;
+
 import javax.persistence.Entity;
 
 @Entity
@@ -11,21 +14,20 @@ public class Item extends Product {
 	private Domain domain;
 	private Category category;
 
-	public static enum Domain {
+	public enum Domain {
 		EVENTCATERING,
 		PARTYSERVICE,
 		MOBILE_BREAKFAST,
 		RENT_A_COOK
 	}
 
-	public static enum Category {
+	public enum Category {
 		FOOD,
 		DECORATION,
 		EQUIPMENT,
 		STAFF,
 		BUFFET,
 		DINNER_EVENT,
-		NONE,
 		SPECIAL_OFFERS
 	}
 
@@ -44,6 +46,12 @@ public class Item extends Product {
 		this.domain = domain;
 		this.category = category;
 		this.description = description;
+	}
+
+	@Override
+	public String toString() {
+		return "name: " + getName() + " price: " + getPrice() + " domain: " + getDomain() + " category: "
+				+ getCategory();
 	}
 
 	public Domain getDomain() {
