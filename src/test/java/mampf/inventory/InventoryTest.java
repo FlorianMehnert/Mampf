@@ -3,7 +3,6 @@ package mampf.inventory;
 import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
 import org.junit.jupiter.api.Test;
-import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.inventory.InventoryItemIdentifier;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
@@ -16,7 +15,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,13 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-
 class InventoryTest {
 	@Autowired
 	private MampfCatalog mampfCatalog;
@@ -49,20 +45,23 @@ class InventoryTest {
 	MockMvc mvc;
 
 	@Test
-	 void load() {
+	void load() {
 		assertThat(mampfCatalog).isNotNull();
 		assertThat(uniqueInventory).isNotNull();
 		assertThat(inventoryController).isNotNull();
 		assertThat(inventory).isNotNull();
 
+
 	}
 
 	@Test
-	 void itemsIntegrationTest() throws Exception {
+	void itemsIntegrationTest() throws Exception {
 		mvc.perform(get("/inventory"))
 				.andExpect(status().is3xxRedirection());
 	}
 
+
+	// InventoryController
 
 	public LinkedMultiValueMap<String, String> getParams(Item item, int amount) {
 		LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
@@ -72,7 +71,7 @@ class InventoryTest {
 	}
 
 	@Test
-	 void addFoodItem() throws Exception {
+	void addFoodItem() throws Exception {
 		UniqueInventoryItem someItem = inventory.findAll().toList().get(0);
 		Quantity amountBefore = someItem.getQuantity();
 		InventoryItemIdentifier id = someItem.getId();
@@ -109,6 +108,7 @@ class InventoryTest {
 				.andExpect(status().isOk());
 	}
 
+	//Inventory
 	@Test
 	void InventoryExtendsUniqueInventory() {
 		assertTrue("Inventory does not extend UniqueInventory",

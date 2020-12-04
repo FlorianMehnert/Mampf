@@ -25,25 +25,14 @@ public class InventoryController {
 	}
 
 	@PostMapping("/inventory/add")
-	String add(@RequestParam("item") Item item, @RequestParam("number") int number, RedirectAttributes redirAttributes){
-		if(item == null){
-			throw new NullPointerException();
-		}
-		if(inventory.findByProduct(item).isPresent()){
+	public String add(@RequestParam("item") Item item, @RequestParam("number") int number, RedirectAttributes redirAttributes){
 			UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
-			if(currentItem.getQuantity().equals(Quantity.of(-1))){
-				return "redirect:/inventory";
-			}else{
+			if (!currentItem.getQuantity().equals(Quantity.of(-1))) {
 				inventory.delete(currentItem);
 				currentItem.increaseQuantity(Quantity.of(number));
 				inventory.save(currentItem);
-				return "redirect:/inventory";
 			}
-		}else{
-			redirAttributes.addFlashAttribute("itemIsNull",
-					"You tried to add null!");
-			return "inventory";
-		}
+			return "redirect:/inventory";
 	}
 
 	private String nullCategory(UniqueInventoryItem item){

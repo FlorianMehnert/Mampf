@@ -28,20 +28,19 @@ class InventoryInitializer implements DataInitializer {
 
 	@Override
 	public void initialize() {
-
 		catalog.findAll().forEach(item -> {
 
-			if (inventory.findByProduct(item).isEmpty()) {
-				if (item.getName().equals("Dekoration")) {
-					inventory.save(new UniqueInventoryItem(item, Quantity.of(20)));
-				} else if (item.getName().equals("Tischdecke")) {
-					inventory.save(new UniqueInventoryItem(item, Quantity.of(25)));
-				} else if(item.getCategory() == Item.Category.FOOD){
-					inventory.save(new UniqueInventoryItem(item, Quantity.of(-1)));
-				}else{
-					inventory.save(new UniqueInventoryItem(item, Quantity.of(10)));
+					if (item.getName().equals("Dekoration")) {
+						inventory.save(new UniqueInventoryItem(item, Quantity.of(20)));
+					} else if (item.getName().equals("Tischdecke")) {
+						inventory.save(new UniqueInventoryItem(item, Quantity.of(25)));
+					} else if (item.getCategory() == Item.Category.FOOD) {
+						inventory.save(new UniqueInventoryItem(item, Quantity.of(-1)));
+					} else {
+						inventory.save(new UniqueInventoryItem(item, Quantity.of(10)));
+					}
+
 				}
-			}
-		});
+		);
 	}
 }
