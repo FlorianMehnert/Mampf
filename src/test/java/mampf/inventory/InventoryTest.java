@@ -120,10 +120,13 @@ public class InventoryTest {
 		Item item = (Item) uniqueInventoryItem.getProduct();
 		Quantity quantity = uniqueInventoryItem.getQuantity();
 		assertNotNull(item.getId());
+		assertTrue("this item does not exist in inventory",
+				inventory.reduceAmount(item, Quantity.of(1)).isPresent());
 		Quantity quantity1 = inventory.reduceAmount(item, Quantity.of(1)).get().getQuantity();
 		assertTrue("Die Quantity von dem item wird nicht reduziert", (quantity.isGreaterThan(quantity1)));
 	}
 
+	@Test
 	void findByNameTest(){
 		boolean isEmpty = inventory.findByName(null).equals(Optional.empty());
 		assertTrue("findByName does not return Optional.empty when called with null", isEmpty);
