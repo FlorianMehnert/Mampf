@@ -2,8 +2,6 @@ package mampf.catalog;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.core.DataInitializer;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -13,9 +11,6 @@ import mampf.catalog.StaffItem.Type;
 @Component
 @Order(20)
 class CatalogDataInitializer implements DataInitializer {
-
-	//! Logger is not used so should be used or deleted
-	// private static final Logger LOG = LoggerFactory.getLogger(CatalogDataInitializer.class);
 
 	private final MampfCatalog mampfCatalog;
 
@@ -30,42 +25,71 @@ class CatalogDataInitializer implements DataInitializer {
 	public void initialize() {
 
 		/*Änderungen: 
-		 * falls das Angebot eine Anzahl an Personal (Cook/Service) anfordert ist das Item eine Personalinstanz und von der Kategorie PERSONEL
+		 * falls das Angebot eine Anzahl an Personal (Cook/Service) anfordert ist das Item eine Personalinstanz und von
+		 * der Kategorie PERSONEN
 		 * falls das Angebot eine Anzahl im Inventar betrifft ist das Item von der Kategorie EQUIPMENT 
 		 * (für reduzierbare gegenstände wie personal eine extra klasse?)*/
 		if (mampfCatalog.findAll().iterator().hasNext()) {
 			return;
 		}
-		mampfCatalog.save(new Item("Basic", Money.of(5,"EUR"), Item.Domain.EVENTCATERING, Item.Category.BUFFET,"pro Person"));
-		mampfCatalog.save(new Item("Premium", Money.of(7,"EUR"), Item.Domain.EVENTCATERING, Item.Category.BUFFET,"pro Person"));
-		mampfCatalog.save(new Item("Luxus", Money.of(8,"EUR"), Item.Domain.EVENTCATERING, Item.Category.BUFFET,"pro Person"));
+		String perPerson = "pro Person";
+		String perFive = "pro 5 Personen";
+		String ten = "10 Personen";
+		String time = "nur vor 14 Uhr";
+		mampfCatalog.save(new Item("Basic", Money.of(5,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.BUFFET,perPerson));
+		mampfCatalog.save(new Item("Premium", Money.of(7,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.BUFFET,perPerson));
+		mampfCatalog.save(new Item("Luxus", Money.of(8,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.BUFFET,perPerson));
 
-		mampfCatalog.save(new Item("Basic", Money.of(12,"EUR"), Item.Domain.EVENTCATERING, Item.Category.DINNER_EVENT,"pro Person"));
-		mampfCatalog.save(new Item("Premium", Money.of(16,"EUR"), Item.Domain.EVENTCATERING, Item.Category.DINNER_EVENT,"pro Person"));
-		mampfCatalog.save(new Item("Luxus", Money.of(20,"EUR"), Item.Domain.EVENTCATERING, Item.Category.DINNER_EVENT,"pro Person"));
+		mampfCatalog.save(new Item("Basic", Money.of(12,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.DINNER_EVENT,perPerson));
+		mampfCatalog.save(new Item("Premium", Money.of(16,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.DINNER_EVENT,perPerson));
+		mampfCatalog.save(new Item("Luxus", Money.of(20,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.DINNER_EVENT,perPerson));
 
-		mampfCatalog.save(new Item("Dekoration", Money.of(10,"EUR"), Item.Domain.EVENTCATERING, Item.Category.EQUIPMENT,"pro 4 Personen, 10€ Ausleihgebühr und Reinigung"));
-		mampfCatalog.save(new Item("Tischdecke", Money.of(5,"EUR"), Item.Domain.EVENTCATERING, Item.Category.EQUIPMENT,"pro 4 Personen, 5€ Ausleihgebür"));
+		mampfCatalog.save(new Item("Dekoration", Money.of(10,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.EQUIPMENT,"pro 4 Personen, 10€ Ausleihgebühr und Reinigung"));
+		mampfCatalog.save(new Item("Tischdecke", Money.of(5,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.EQUIPMENT,"pro 4 Personen, 5€ Ausleihgebühr"));
 
-		mampfCatalog.save(new StaffItem("Koch/-öchin pro 10 Personen", Money.of(11.88,"EUR"), Item.Domain.EVENTCATERING, Item.Category.STAFF,"pro Person", Type.COOK));
-		mampfCatalog.save(new StaffItem("Service-Personal", Money.of(13.56,"EUR"), Item.Domain.EVENTCATERING, Item.Category.STAFF,"pro 5 Personen", Type.SERVICE));
+		mampfCatalog.save(new StaffItem("Koch/Köchin pro 10 Personen", Money.of(11.88,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.STAFF,perPerson, Type.COOK));
+		mampfCatalog.save(new StaffItem("Service-Personal", Money.of(13.56,"EUR"),
+				Item.Domain.EVENTCATERING, Item.Category.STAFF,perFive, Type.SERVICE));
 
-		mampfCatalog.save(new Item("Schinkenplatte", Money.of(20,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.FOOD,"pro 5 Personen"));
-		mampfCatalog.save(new Item("Käseplatte", Money.of(12.50,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.FOOD,"für 3 Personen"));
-		mampfCatalog.save(new Item("Vegetarische Platte", Money.of(12,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.FOOD,"5 Personen"));
-		mampfCatalog.save(new Item("Vegane Platte", Money.of(10,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.FOOD,"10 Personen"));
+		mampfCatalog.save(new Item("Schinkenplatte", Money.of(20,"EUR"),
+				Item.Domain.PARTYSERVICE, Item.Category.FOOD,perFive));
+		mampfCatalog.save(new Item("Käseplatte", Money.of(12.50,"EUR"),
+				Item.Domain.PARTYSERVICE, Item.Category.FOOD,"für 3 Personen"));
+		mampfCatalog.save(new Item("Vegetarische Platte", Money.of(12,"EUR"),
+				Item.Domain.PARTYSERVICE, Item.Category.FOOD,"5 Personen"));
+		mampfCatalog.save(new Item("Vegane Platte", Money.of(10,"EUR"),
+				Item.Domain.PARTYSERVICE, Item.Category.FOOD,ten));
 
-		mampfCatalog.save(new Item("Sushiabend", Money.of(90,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.SPECIAL_OFFERS,"10 Personen"));
-		mampfCatalog.save(new Item("Tappasabend", Money.of(70,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.SPECIAL_OFFERS,"10 Personen"));
-		mampfCatalog.save(new Item("Taccoabend", Money.of(50,"EUR"), Item.Domain.PARTYSERVICE, Item.Category.SPECIAL_OFFERS,"10 Personen"));
+		mampfCatalog.save(new Item("Sushi Abend", Money.of(90,"EUR"),
+				Item.Domain.PARTYSERVICE, Item.Category.SPECIAL_OFFERS,ten));
+		mampfCatalog.save(new Item("Tapas Abend", Money.of(70,"EUR"),
+				Item.Domain.PARTYSERVICE, Item.Category.SPECIAL_OFFERS,ten));
+		mampfCatalog.save(new Item("Taco Abend", Money.of(50,"EUR"),
+				Item.Domain.PARTYSERVICE, Item.Category.SPECIAL_OFFERS,ten));
 
-		mampfCatalog.save(new BreakfastItem("Müsli", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.DISH));
-		mampfCatalog.save(new BreakfastItem("Brötchen", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.DISH));
-		mampfCatalog.save(new BreakfastItem("Kuchen", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.DISH));
-		mampfCatalog.save(new BreakfastItem("Kaffee", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.BEVERAGE));
-		mampfCatalog.save(new BreakfastItem("Tee", "nur vor 14 Uhr", Money.of(0, "EUR"), BreakfastItem.Type.BEVERAGE));
+		mampfCatalog.save(new BreakfastItem("Müsli", time,
+				Money.of(0, "EUR"), BreakfastItem.Type.DISH));
+		mampfCatalog.save(new BreakfastItem("Brötchen", time,
+				Money.of(0, "EUR"), BreakfastItem.Type.DISH));
+		mampfCatalog.save(new BreakfastItem("Kuchen", time,
+				Money.of(0, "EUR"), BreakfastItem.Type.DISH));
+		mampfCatalog.save(new BreakfastItem("Kaffee", time,
+				Money.of(0, "EUR"), BreakfastItem.Type.BEVERAGE));
+		mampfCatalog.save(new BreakfastItem("Tee", time,
+				Money.of(0, "EUR"), BreakfastItem.Type.BEVERAGE));
 
-		mampfCatalog.save(new StaffItem("Koch/-öchin pro 10 Personen", Money.of(11.88,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,"pro Person", Type.COOK));
-		mampfCatalog.save(new StaffItem("Service-Personal", Money.of(13.56,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,"pro 5 Personen", Type.SERVICE));
+		mampfCatalog.save(new StaffItem("Koch/Köchin pro 10 Personen",
+				Money.of(11.88,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,perPerson, Type.COOK));
+		mampfCatalog.save(new StaffItem("Service-Personal",
+				Money.of(13.56,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,perFive, Type.SERVICE));
 	}
 }
