@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 
@@ -24,12 +25,10 @@ public class InventoryController {
 	}
 
 	@PostMapping("/inventory/add")
-	String add(@RequestParam("item") Item item, @RequestParam("number") int number){
+	String add(@RequestParam("item") Item item, @RequestParam("number") int number, RedirectAttributes redirAttributes){
 		if(item == null){
-			System.out.println("item: " + item + "\nnumber: " + number);
 			throw new NullPointerException();
 		}
-		System.out.println(item.toString() + "\nshould be descreased by " + number);
 		if(inventory.findByProduct(item).isPresent()){
 			UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
 			if(currentItem.getQuantity().equals(Quantity.of(-1))){
@@ -41,10 +40,10 @@ public class InventoryController {
 				return "redirect:/inventory";
 			}
 		}else{
-			//TODO bessere weiterleitung ausdenken
-			return "404";
+			redirAttributes.addFlashAttribute("itemIsNull",
+					"You tried to add null!");
+			return "inventory";
 		}
-
 	}
 
 	private String nullCategory(UniqueInventoryItem item){

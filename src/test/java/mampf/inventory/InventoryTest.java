@@ -16,6 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +66,7 @@ class InventoryTest {
 
 	public LinkedMultiValueMap<String, String> getParams(Item item, int amount) {
 		LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-		requestParams.add("item", String.valueOf(item));
+		requestParams.add("item", String.valueOf(item.getId()));
 		requestParams.add("number", String.valueOf(amount));
 		return requestParams;
 	}
@@ -75,12 +76,12 @@ class InventoryTest {
 		UniqueInventoryItem someItem = inventory.findAll().toList().get(0);
 		Quantity amountBefore = someItem.getQuantity();
 		InventoryItemIdentifier id = someItem.getId();
-		System.out.println(someItem.getProduct());
+		LinkedMultiValueMap<String, String> parameters = getParams((Item) someItem.getProduct(), 1);
 		this.mvc.perform(post("/inventory/add")
-				.params(getParams((Item) someItem.getProduct(), 1)));
+				.params(parameters));
 		Optional<UniqueInventoryItem> inventoryItemOptional = inventory.findById(id);
 		Quantity amountAfter = inventoryItemOptional.get().getQuantity();
-		boolean decrease = amountBefore.isGreaterThan(amountAfter);
+		boolean decrease = amountAfter.isGreaterThan(amountBefore);
 		assertTrue("the amount of the item added did not get reduced", decrease);
 	}
 
