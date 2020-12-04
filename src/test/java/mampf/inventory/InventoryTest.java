@@ -130,6 +130,10 @@ public class InventoryTest {
 	void findByNameTest(){
 		boolean isEmpty = inventory.findByName(null).equals(Optional.empty());
 		assertTrue("findByName does not return Optional.empty when called with null", isEmpty);
+		String someName = inventory.findAll().toList().get(0).getProduct().getName();
+		Optional<UniqueInventoryItem> item = inventory.findByName(someName);
+		boolean notEmpty =  !item.equals(Optional.empty());
+		assertTrue("findByName returns an empty Optional",notEmpty);
 	}
 
 }
