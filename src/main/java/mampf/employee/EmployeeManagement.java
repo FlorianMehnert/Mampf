@@ -40,7 +40,8 @@ public class EmployeeManagement {
 	public boolean setEmployeeBooked(long id, MampfOrder order){
 		Employee employee = employees.findById(id).get();
 		if(employee == null){
-			return false;}
+			return false;
+		}
 		employee.setBooked(order);
 		return true;
 	}
