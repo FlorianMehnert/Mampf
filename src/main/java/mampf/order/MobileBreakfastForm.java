@@ -7,13 +7,18 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import mampf.catalog.BreakfastItem;
 
 public class MobileBreakfastForm {
-	@NotEmpty(message = "beverage should not be empty") //
-	private final String beverage;
+	//@NotEmpty(message = "beverage should not be empty") //
+	@NotNull(message = "beverage should be set")
+	private final BreakfastItem beverage;
 
-	@NotEmpty(message = "dish should not be empty") //
-	private final String dish;
+	//@NotEmpty(message = "dish should not be empty") //
+	@NotNull(message = "dish should be set")
+	private final BreakfastItem dish;
 
 	@Nullable
 	private final boolean monday;
@@ -29,8 +34,8 @@ public class MobileBreakfastForm {
 	private final String time;
 
 	public MobileBreakfastForm(
-		String beverage, 
-		String dish,
+		BreakfastItem beverage, 
+		BreakfastItem dish,
 		String monday, 
 		String tuesday, 
 		String wednesday,
@@ -64,10 +69,10 @@ public class MobileBreakfastForm {
 		// hh:mm
 		this.time = time;
 	}
-	public String getBeverage(){
+	public BreakfastItem getBeverage(){
 		return beverage;
 	}
-	public String getDish(){
+	public BreakfastItem getDish(){
 		return dish;
 	}
 	public Map<String, Boolean> getDays(){

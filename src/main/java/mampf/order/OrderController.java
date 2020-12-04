@@ -1,14 +1,20 @@
 package mampf.order;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap.KeySetView;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.javamoney.moneta.Money;
+import org.salespointframework.Salespoint;
+import org.salespointframework.catalog.Product;
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
@@ -18,6 +24,7 @@ import org.salespointframework.quantity.Metric;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
+import org.springframework.data.annotation.Transient;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +36,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
 import mampf.employee.Employee;
@@ -45,21 +53,37 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class OrderController {
 	
 	//TODO: find better solution for saving dates:
-	private Map<Item.Domain, MampfDate> dates;
+	//private MobileBreakfastForm mobileBreakfastForm = null;
+	//needed when FOOD is a reducable item:
+	public class BreakfastMappedItems extends Item
+		{
+		//@Transient
+		private MobileBreakfastForm form;
+		public BreakfastMappedItems(String name,
+										  Money price,
+										  String description,
+										  MobileBreakfastForm form) 
+			{super(name, price, 
+				   Item.Domain.MOBILE_BREAKFAST,
+				   Item.Category.NONE,
+				   description);this.form=form;}
+		public MobileBreakfastForm getForm() {return form;}
+		}
 	
 	private final MampfOrderManager orderManager;
+	private final MampfCatalog catalog;
 	//private final Inventory inventory;
 	//private final EmployeeManagement employeeManagement;
 	
-	public OrderController(MampfOrderManager orderManager/*, Inventory inventory, EmployeeManagement employeeManagement*/) {
-		this.orderManager = orderManager;/* this.inventory = inventory; this.employeeManagement = employeeManagement;*/
+	public OrderController(MampfOrderManager orderManager/*, Inventory inventory, EmployeeManagement employeeManagement*/,MampfCatalog catalog) {
+		this.orderManager = orderManager;this.catalog=catalog;/* this.inventory = inventory; this.employeeManagement = employeeManagement;*/
 	}
 
 /* CART */
 	
 	@ModelAttribute("cart")
 	Cart initializeCart() {
-		dates = new HashMap<>();
+		//mobileBreakfastForm = null;
 		return new Cart();
 	}
 
@@ -67,7 +91,7 @@ public class OrderController {
 	String addItem(@RequestParam("pid") Item item, @RequestParam("number") int number, @ModelAttribute Cart cart) {
 
 		//int amount = number <= 0 || number > 5 ? 1 : number;
-
+		//TODO: negativ amount, xyz...
 		cart.addOrUpdateItem(item, Quantity.of(number));
 
 		return "redirect:/catalog/" + item.getDomain();
@@ -103,13 +127,24 @@ public class OrderController {
 	@PostMapping("/cart/add/mobile-breakfast")
 	String orderMobileBreakfast(@ModelAttribute Cart cart, @LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form){
 
-		if(userAccount.isEmpty()) {
-			return "redirect:/login";
-		}
-		//TODO
+		if(userAccount.isEmpty()) 
+			{return "redirect:/login";}
 		
-
-		return "redirect:/";
+		/*BreakfastItem b = null, d = null;
+		for(Item item: catalog.findByDomain(Item.Domain.MOBILE_BREAKFAST)) 
+			{if(item.getName().equals(form.getBeverage()))b=((BreakfastItem)item);
+			if(item.getName().equals(form.getDish()))d=((BreakfastItem)item);}
+		if(b != null && d != null)*/
+		//TODO check for valid form
+		cart.addOrUpdateItem(new 
+				BreakfastMappedItems(
+						"Mobile Breakfast Choice: "+form.getBeverage().getName()+", "+form.getDish().getName(),
+						BreakfastItem.BREAKFAST_PRICE,
+						"Employee Choice of beverage and dish",
+						form),
+				Quantity.of(1));
+		
+		return "redirect:/cart";
 	}
 	
 	
@@ -159,30 +194,35 @@ public class OrderController {
 	@PostMapping("/checkout")
 	String buy(@RequestParam String domainChoosen, @ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
 		
-		if(userAccount.isEmpty()) {
-			return "redirect:/login";
-		}
+		if(userAccount.isEmpty()) 
+			{return "redirect:/login";}
+		
 		//formular fehler
-		if (result.hasErrors() /*|| form.invalid()*/) {
-			//TODO
-			return "redirect:/cart";
-		}
+		if (result.hasErrors() /*|| form.invalid()*/)
+			{/*TODO*/return "redirect:/cart";}
+		
 		Map<Item.Domain, List<CartItem>> orders = getDomainItems(cart, domainChoosen);
+		//MobileBreakfastForm mbForm;
 		//List<MampfOrder> createdOrders = new ArrayList<>();
 		for(Item.Domain domain : orders.keySet()) 
-		{
-			Cart orderCart = new Cart();
-			for(CartItem cartitem: orders.get(domain)) 
-			{orderCart.addOrUpdateItem(cartitem.getProduct(), cartitem.getQuantity());}
 			
-			MampfOrder order = orderManager.createOrder(orderCart, form, userAccount.get());
+			//create new cart:
+			{Cart orderCart = new Cart();
+			for(CartItem cartitem: orders.get(domain)) 
+				{orderCart.addOrUpdateItem(cartitem.getProduct(), cartitem.getQuantity());}
+			
+			//create order:
+			MampfOrder order = orderManager.createOrder(orderCart,
+														form, 
+														userAccount.get());
 			
 			//remove cartitem and save the created orders:
 			if(order != null)
+				//remove items from main cart:
 				{for(CartItem cartitem: orderCart) 
 					{cart.removeItem(cartitem.getProduct().getId().getIdentifier());} 
-				/*createdOrders.add(order);*/}	
-		}
+				}	
+			}
 		
 		//TODO: mark new created order in, falls überhaupt erstellet wurde:
 		return "redirect:/userOrders";

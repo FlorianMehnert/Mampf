@@ -8,10 +8,8 @@ import mampf.catalog.MampfCatalog;
 import mampf.employee.Employee;
 import mampf.employee.EmployeeManagement;
 import mampf.inventory.Inventory;
-import mampf.user.User;
 
 import org.salespointframework.order.OrderManagement;
-import org.salespointframework.order.OrderStatus;
 import org.salespointframework.payment.Cash;
 import org.salespointframework.payment.Cheque;
 import org.salespointframework.payment.PaymentMethod;
@@ -21,22 +19,14 @@ import org.salespointframework.useraccount.UserAccount;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.salespointframework.accountancy.ProductPaymentEntry;
-import org.salespointframework.catalog.ProductIdentifier;
-import org.salespointframework.inventory.InventoryItem;
-import org.salespointframework.inventory.UniqueInventoryItem;
+
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 import org.salespointframework.order.Order;
-import org.salespointframework.order.OrderIdentifier;
-import org.salespointframework.order.OrderLine;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -55,34 +45,24 @@ public class MampfOrderManager {
 	public Order save(MampfOrder order) {
 		return orderManagement.save(order);
 	}
-
-	public MampfOrder createOrder(Cart cart, DateFormular form, UserAccount userAccount) {
-		//TODO: Dateformular optional 
-		//validates Cart, 
-		// creates Date
-		// creates Order
-		// pays Order (order should be added)
-		// (if possible) completes order
-		//reduces high amount of iteration-steps
-		
-	//PREVALIDATE:
-		if(cart == null || userAccount == null || cart == null)return null;
 	
-	//get domain:
-		//TODO: find better solution
-		Item.Domain orderDomain = ((Item)cart.iterator().next().getProduct()).getDomain();
+	private PaymentMethod createPayMethod(String payMethod,UserAccount userAccount) {
+		PaymentMethod method = Cash.CASH; //bydefault
+		//if(payMethod.equals("Cash")) method = Cash.CASH; 
+		if(payMethod.equals("Check")) 
+			{method = new Cheque(userAccount.getUsername(),
+								 userAccount.getId().getIdentifier(),
+								 "checknummer 1",
+								 userAccount.getFirstname(),
+								 LocalDateTime.now(),
+								 "a bank","a banks address","a banks data");}
+		return method;
+	}
 	
-	//VALIDATE:
-	// save free employees
-		
+	private List<Employee> getfreeEmployee(LocalDateTime startDate, Employee.Role role) {
 		//init
-		LocalDateTime startDate = form.getStartDate();
-		
-		//TODO: check if this step is necessary:
-		//get free employees by date:
-		//MampfOrder bookedOrder;
 		boolean isFree = true;
-		List<Employee> freeCooks = new ArrayList<>(), freeServicePersonal = new ArrayList<>();
+		List<Employee> freeEmployee = new ArrayList<>();
 		//TODO: employeeManagement method?
 		for(Employee employee: employeeManagement.findAll()) {
 			isFree = true;
@@ -90,31 +70,31 @@ public class MampfOrderManager {
 				if(bookedOrder.getDate().hasTimeOverlap(startDate))
 					{isFree = false; break;}
 			
-			if(isFree) {
-				Employee.Role employeeRole = employee.getRole();
-				if(employeeRole.equals(Employee.Role.COOK)) freeCooks.add(employee);
-				if(employeeRole.equals(Employee.Role.SERVICE)) freeServicePersonal.add(employee);
-			}
+			if(isFree) 
+				if(employee.getRole().equals(role)) freeEmployee.add(employee);
+			
 		}
+		return freeEmployee;
+	}
+	
+	private int getEmployeeAmount(Cart cart, /*Employee.Role*/ StaffItem.Type type) {
 		
-		//check if valid cart:
-		// - check stock (sufficient amount) (no longer)
-		// - check personal (needed amount)
-		// fallthrough if valid
+		int employeeAmount = 0;
 		
-		//init
 		Item item;
-		Item.Category itemCategory;
-		Quantity itemQuantity;
-		//TODO: replace with foreach Type of Personal - list:
-		int personalserviceNeeded = 0,cookNeeded = 0;
 		
 		for(CartItem cartItem: cart) {
 			item = ((Item)cartItem.getProduct());
-			itemQuantity = cartItem.getQuantity();
-			itemCategory = item.getCategory();
 			
-			switch(itemCategory) {
+			//handle item amount: check after complete order
+			//handle personal: 
+			if(item.getCategory().equals(Item.Category.STAFF)) 
+				{StaffItem staffItem = (StaffItem)item;
+				if(staffItem.getType().equals(type))
+					employeeAmount+= cartItem.getQuantity().getAmount().intValue();}
+			
+
+			/*switch(itemCategory) {
 			case STAFF:
 				//TODO: check if a item of its type IS a Personal - item
 				StaffItem.Type personalType = ((StaffItem)item).getType();
@@ -130,41 +110,38 @@ public class MampfOrderManager {
 				if(optionalItem.isPresent()) 
 					if(!optionalItem.get().hasSufficientQuantity(cartItem.getQuantity())) return null;
 				break;
-			}
+			}*/
 		}
-		//validate personal:
-		if(freeCooks.size() < cookNeeded ||
-				freeServicePersonal.size() < personalserviceNeeded) return null;
+		return employeeAmount;
+		//TODO
+
+	}
+	
+	private void setEmloyees(Cart cart, MampfOrder order, List<Employee> freeCooks, List<Employee> freeServicePersonal) {
+
+		Item item;
+		Quantity itemQuantity;
 		
-		
-	//CREATE:
-		
-		//valid stock and personal,
-		MampfDate orderDate = new MampfDate(form.getStartDate(), form.getAddress()); 
-		//paymentmethod:
-		String payMethod = form.getPayMethod();
-		PaymentMethod method = Cash.CASH; //bydefault
-		if(payMethod.equals("Cash")) method = Cash.CASH; 
-		if(payMethod.equals("Check")) method = new Cheque(userAccount.getUsername(),
-				userAccount.getId().getIdentifier(),"checknummer 1",
-				userAccount.getFirstname(),LocalDateTime.now(),"a bank","a banks address","a banks data");
-		// TODO: correct checknummer, accountnumber, set creation time from orders creation time
-		//TODO: replace with creditcart
-		MampfOrder order = new MampfOrder(userAccount,method, orderDate);
-		orderDate.setOrder(order);
-		cart.addItemsTo(order);
-		
-		orderManagement.save(order);
-		if(!orderManagement.payOrder(order))return null; 
-		
-		//TODO: catch errors
-		
-		//reduce amount/ set (concrete) booked:
 		for(CartItem cartItem: cart) {
 			item = ((Item)cartItem.getProduct());
 			itemQuantity = cartItem.getQuantity();
 			
-			switch (item.getCategory()) {
+			if(item.getCategory().equals(Item.Category.STAFF))
+				{StaffItem personalItem = ((StaffItem)item);
+				StaffItem.Type personalItemType = personalItem.getType();
+				
+				//TODO: find better solution:
+				int personalAmount = itemQuantity.getAmount().intValue();
+				Employee employee;
+				for(int i = 0; i < personalAmount; i++) 
+					{employee = null;
+					if(personalItemType.equals(StaffItem.Type.COOK))employee = freeCooks.remove(0);
+					if(personalItemType.equals(StaffItem.Type.SERVICE))employee = freeServicePersonal.remove(0);
+					if(employee != null)
+						{employee.setBooked(order);order.addEmployee(employee);}}
+				}
+			
+			/*switch (item.getCategory()) {
 			case STAFF:
 				//TODO: check if really is personal
 				StaffItem personalItem = ((StaffItem)item);
@@ -187,18 +164,115 @@ public class MampfOrderManager {
 				//TODO: find better solution:
 				inventory.reduceAmount((item), itemQuantity);
 				break;
-			}
+			}*/
 			
 		}
+	}
 	
-	//EVERYTHING WORKED FINE:
-		orderManagement.save(order);
-		cart.clear();
-		//orderManagement.completeOrder(order);
+	private MampfOrder createOrderMB(Cart cart,
+									 DateFormular form, 
+									 UserAccount account) {
+		//creates special order for mobile breakfast
 		
-		//return order;
+		//get mapper-item:
+		CartItem cartitem = cart.get().findFirst().get();
+		OrderController.BreakfastMappedItems item = 
+				((OrderController.BreakfastMappedItems)cartitem.getProduct());
+		//add choice:
+		//TODO: cannot be removed from inventory
+		cart.addOrUpdateItem(item.getForm().getBeverage(),Quantity.of(1));
+		cart.addOrUpdateItem(item.getForm().getDish(),Quantity.of(0));
+		
+		
+		//create special date:
+		// days and time
+		MampfDate orderDate = 
+				new MampfDate(item.getForm().getDays().
+							  keySet().stream().filter(weekday -> 
+							  		item.getForm().getDays().get(weekday).booleanValue()).toArray(String[]::new),
+							  item.getForm().getTime()); 
+		
+		MampfOrder order = new MampfOrder(account,
+										  createPayMethod(form.getPayMethod(),
+												  account),
+										  Item.Domain.MOBILE_BREAKFAST,
+										  orderDate);
+		orderDate.setOrder(order);
+		//add prize as chargeline
+		order.addChargeLine(item.getPrice(), "static prize for a breakfast");
+		//remove mapper-item:
+		cart.removeItem(cartitem.getId());
+		
+		cart.addItemsTo(order);
+		
 		return order;
-		//return new MampfOrder()
+		
+	}
+
+	public MampfOrder createOrder(Cart cart, 
+								  DateFormular form, 
+								  UserAccount userAccount) {
+		//TODO: Forms optional 
+		//validates Cart, 
+		// creates Date
+		// creates Order
+		// pays Order (order should be added)
+		// (if possible) completes order
+		//reduces high amount of iteration-steps
+		
+	
+		if(cart == null || userAccount == null)return null;
+	
+		
+		Item.Domain orderDomain = ((Item)cart.iterator().next().getProduct()).getDomain();
+		
+		MampfOrder order;
+		List<Employee> freeCooks = null, freeServicePersonal = null;
+		
+		if(orderDomain.equals(Item.Domain.MOBILE_BREAKFAST)) {
+			order = createOrderMB(cart, form, userAccount);
+			if(order == null)return null;
+			
+		}else {
+			//create usual order:
+			// create date with date and address:
+			MampfDate orderDate = new MampfDate(form.getStartDate(), form.getAddress()); 
+			order = new MampfOrder(userAccount,
+								   createPayMethod(form.getPayMethod(),userAccount), 
+								   orderDomain,
+								   orderDate);
+			orderDate.setOrder(order);
+			cart.addItemsTo(order);
+			
+			
+			LocalDateTime startDate = form.getStartDate();
+			freeCooks = getfreeEmployee(startDate, Employee.Role.COOK); 
+			freeServicePersonal = getfreeEmployee(startDate, Employee.Role.SERVICE);
+			
+			//TODO: check if order is really not existing when returning 
+			if(freeCooks.size() < getEmployeeAmount(cart, StaffItem.Type.COOK) ||
+					freeServicePersonal.size() < getEmployeeAmount(cart, StaffItem.Type.SERVICE)) return null;
+		}
+		
+	
+		if(!orderManagement.payOrder(order))return order; 
+		
+
+		//will (indirectly) reduce item amount if possible
+		if(!orderDomain.equals(Item.Domain.MOBILE_BREAKFAST))orderManagement.completeOrder(order);
+		
+		
+		orderManagement.save(order);
+		if(!order.isCompleted())return null;
+		
+	//ADD VALIDATED PERSONAL:
+	// there should never be a error
+		
+		if(!orderDomain.equals(Item.Domain.MOBILE_BREAKFAST)) {
+			setEmloyees(cart, order, freeCooks, freeServicePersonal);
+		}
+		return order;
+		
 	}
 	
 	
@@ -206,22 +280,6 @@ public class MampfOrderManager {
 		
 	//}
 
-	public void completeOrder(MampfOrder order) {
-		orderManagement.completeOrder(order);
-	}
-
-
-	//public boolean validateCart(Cart cart, DateFormular form) {
-		
-		
-	//}
-	
-	// public void addEmployee(MampfOrder order, Employee employee) {
-	// 	order.addEmployee(employee);
-	// 	// if (order.isDone())
-	// 	// 	orderManagement.completeOrder(order);
-
-	// }
 
 	public MampfOrder findOrderById(UserAccount user){
 		return this.orderManagement.findBy(user).get().collect(Collectors.toList()).get(0);

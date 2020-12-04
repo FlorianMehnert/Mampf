@@ -26,6 +26,7 @@ import org.salespointframework.payment.Cheque;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
+import org.springframework.data.annotation.Transient;
 
 @Entity
 public class MampfOrder extends Order {
@@ -36,7 +37,12 @@ public class MampfOrder extends Order {
 	//private int personalNeeded = 0;
 	
 	//private boolean needsAllocation;
-
+	
+	private Item.Domain domain;
+	
+	//@Transient
+	//private MobileBreakfastForm mobileBreakfastForm;
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	private MampfDate date;
 	
@@ -45,10 +51,18 @@ public class MampfOrder extends Order {
 	
 	@SuppressWarnings("unused")
 	private MampfOrder(){}
-	public MampfOrder(UserAccount account, PaymentMethod paymentMethod, MampfDate date) {
+	public MampfOrder(UserAccount account, 
+					  PaymentMethod paymentMethod,
+					  Item.Domain domain,
+					  MampfDate date ) 
+	{
+		//TODO: create with nullable date or mbform
 		super(account, paymentMethod);
 		this.date = date;
 		employees = new ArrayList<>();
+		//TODO: make sure: every mb-domain has a non null form
+		this.domain = domain;
+		/*this.mobileBreakfastForm = mobileBreakfastForm;*/
 	}
 
 
@@ -56,17 +70,20 @@ public class MampfOrder extends Order {
 		//TODO: nullcheck
 		employees.add(employee);
 	}
-
+	
 	// public boolean getPersonalNeeded() {
 	// 	return personalNeeded;
 	// }
+	public Item.Domain getDomain(){return domain;}
 	public MampfDate getDate() {return date;}
 	public List<Employee> getEmployees(){return employees;}
+	//@Transient
+	//public MobileBreakfastForm getMobileBreakfastForm() {return mobileBreakfastForm;}
 	
 	//visuell:
 
 	public String toString() {
-		return "Order: "+this.getDate().toString();
+		return "Order: "+this.getDomain().toString();
 	}
 	
 	public String getPayMethod(){
@@ -74,9 +91,13 @@ public class MampfOrder extends Order {
 		String res = "no payment";
 		if(paymentMethod instanceof Cheque) { 
 			Cheque cheque = ((Cheque)paymentMethod);
-			res="CHECK:"+cheque.getBankName()+","+cheque.getAccountName()+","+cheque.getAccountNumber()+","+cheque.getBankAddress()+","+cheque.getBankIdentificationNumber();}
-		if(paymentMethod instanceof Cash) res = "CASH:";
-
+			res="CHECK: Nutzer:"+cheque.getAccountName()+
+					", Überweisung an: "+cheque.getBankName()+
+					","+cheque.getBankAddress()+
+					","+cheque.getBankIdentificationNumber();}
+		
+		if(paymentMethod instanceof Cash) res = "BAR";
+		
 		return res;
 	}
 	//public boolean isDone() {

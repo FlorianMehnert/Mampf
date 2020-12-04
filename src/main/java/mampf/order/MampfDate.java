@@ -8,12 +8,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 //import javax.persistence.Table;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 //import org.salespointframework.catalog.Product;
 
 import java.lang.Comparable;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 //import java.util.Objects;
 
 @Entity
@@ -25,38 +30,38 @@ public class MampfDate implements Comparable<MampfDate>{
 	
 	@OneToOne
 	private MampfOrder order;
-	private LocalDateTime startTime=null;//,endTime=null;
+	private LocalDateTime startTime=null;
 	private String address=null;
 	
+	private String [] days=null;
+	private LocalTime time = null;
 
 	@SuppressWarnings("unused")
 	private MampfDate(){}
-	public MampfDate(LocalDateTime startTime,/*, LocalDateTime endTime,*/ String address){
+	
+	//use as EVENT
+	public MampfDate(LocalDateTime startTime, String address){
 		//TODO: add assertcheck
-		this.startTime = startTime; /*this.endTime = endTime; */this.address = address; 
+		this.startTime = startTime;this.address = address; 
+	}
+	//use as MB
+	public MampfDate(String[] days,  LocalTime time){
+		//TODO: add assertcheck
+		this.days = days; this.time = time; 
 	}
 	
-	//cart use:
-	//public Date(Item.Domain domain) {
-	//	//TODO: null check
-	//	this.domain = domain;
-	//}
 	
 	public LocalDateTime getStartTime() {return startTime;}
-	//public LocalDateTime getEndTime() {return endTime;}
-	//public Item.Domain getDomain() {return domain;}
 	public String getAddress() {return address;}
-	
-	//public void setDate(/*TODO: nullcheck*/ LocalDateTime startTime, LocalDateTime endTime, String address) {/*TODO nullcheck*/this.startTime = startTime; this.endTime = endTime; this.address = address; }
-	//public void setDomain(Item.Domain domain) {/*TODO: nullcheck*/this.domain=domain;}
-	
-	//public boolean hasNoDate() {return (startTime == null && endTime == null && address == null);}
+	public String[] getDays(){return days;}
+	public LocalTime getTime(){return time;}
+	public long getId() {return id;}
 	
 	public void setOrder(MampfOrder order) {this.order = order;}
 	public boolean equals(MampfDate d) {
 		//TODO nullchecking
-		return startTime.equals(d.getStartTime())/* && endTime.equals(d.getEndTime())*/ && address.equals(d.getAddress());
-
+		return startTime.equals(d.getStartTime())
+				&& address.equals(d.getAddress());
 	}
 	public boolean hasTimeOverlap(LocalDateTime otherDate) {
 		//checks with constant
@@ -65,16 +70,21 @@ public class MampfDate implements Comparable<MampfDate>{
 		//localdatetime should be immutable...
 		return (otherDate.plusHours(MampfDate.EVENTDURATION.toHours())).isAfter(startTime) && (startTime.plusHours(MampfDate.EVENTDURATION.toHours())).isAfter(otherDate);
 	}
-	public int compareTo(MampfDate d) {
-		
-		return startTime.compareTo(d.getStartTime());	
-	}
+	public int compareTo(MampfDate d) {return startTime.compareTo(d.getStartTime());}
 	
 	public String toString() {
-		return "start: "+startTime.toString()/*+", end: "+endTime.toString()*/+", address: "+address;
+		String res = "";
+		if(startTime != null)res+="EventStart: "+startTime.toString();
+		if(days != null) {
+			res+="Wochentage: ";
+			for(String day: days) {res+=day+" ";}
+		}
+		
+		if(time != null)res+="Zeit: "+time.toString();
+		if(address != null)res+="Anschrift: "+address.toString();
+		
+		return res;
+	
 	}
 	
-	public long getId() {
-		return id;
-	}
 }
