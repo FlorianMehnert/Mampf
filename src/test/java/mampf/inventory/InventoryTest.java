@@ -2,6 +2,7 @@ package mampf.inventory;
 
 import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
+import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.Test;
 import org.salespointframework.inventory.InventoryItemIdentifier;
 import org.salespointframework.inventory.UniqueInventory;
@@ -15,6 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,7 +73,7 @@ class InventoryTest {
 	}
 
 	@Test
-	void addFoodItem() throws Exception {
+	void addItem() throws Exception {
 		UniqueInventoryItem someItem = inventory.findAll().toList().get(0);
 		Quantity amountBefore = someItem.getQuantity();
 		InventoryItemIdentifier id = someItem.getId();
@@ -82,6 +84,24 @@ class InventoryTest {
 		Quantity amountAfter = inventoryItemOptional.get().getQuantity();
 		boolean decrease = amountAfter.isGreaterThan(amountBefore);
 		assertTrue("the amount of the item added did not get reduced", decrease);
+	}
+
+	@Test
+	void addFoodItem() throws Exception {
+		List<UniqueInventoryItem> list = inventory.findAll().toList();
+		for(UniqueInventoryItem item : list){
+			if(item.getQuantity().equals(Quantity.of(-1))){
+				this.mvc.perform(post("/inventory/add")
+						.param("item", String.valueOf(item.getProduct().getId()))
+						.param("number", "13")).andExpect(status().is3xxRedirection());
+
+				Money money = Money.of(5, "EUR");
+				Item item1 = new Item("NullItem", money,null, null,"");
+				System.out.println(inventoryController.nullCategory(new UniqueInventoryItem(item1, Quantity.of(1))));
+				assertTrue("nullCategory does not return \"\" for a Quantity of -1",
+						inventoryController.nullCategory(new UniqueInventoryItem(item1, Quantity.of(1))).equals(""));
+			}
+		}
 	}
 
 	@Test
@@ -103,7 +123,6 @@ class InventoryTest {
 	@Test
 	@WithMockUser(username = "hansWurst", roles = "BOSS", password = "123")
 	void stockWithNullCategory() throws Exception {
-
 		mvc.perform(get("/inventory"))
 				.andExpect(status().isOk());
 	}

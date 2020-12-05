@@ -25,8 +25,9 @@ public class InventoryController {
 	}
 
 	@PostMapping("/inventory/add")
-	public String add(@RequestParam("item") Item item, @RequestParam("number") int number, RedirectAttributes redirAttributes){
-			UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
+	public String add(@RequestParam("item") Item item,
+					  @RequestParam("number") int number, RedirectAttributes redirAttributes){
+		UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
 			if (!currentItem.getQuantity().equals(Quantity.of(-1))) {
 				inventory.delete(currentItem);
 				currentItem.increaseQuantity(Quantity.of(number));
@@ -35,7 +36,7 @@ public class InventoryController {
 			return "redirect:/inventory";
 	}
 
-	private String nullCategory(UniqueInventoryItem item){
+	public String nullCategory(UniqueInventoryItem item){
 		String name = "";
 		if(((Item) item.getProduct()).getCategory() != null){
 			name = Util.renderDomainName(((Item) item.getProduct()).getCategory().toString());
