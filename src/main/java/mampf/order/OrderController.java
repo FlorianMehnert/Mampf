@@ -224,7 +224,7 @@ public class OrderController {
 				}	
 			}
 		
-		//TODO: mark new created order in, falls überhaupt erstellet wurde:
+		//TODO: mark new created order
 		return "redirect:/userOrders";
 		/*if(order != null) {
 			redirectAttributes.addAttribute("id", order.getId().getIdentifier());
