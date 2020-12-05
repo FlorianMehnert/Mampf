@@ -1,5 +1,6 @@
 package mampf.order;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Currency;
@@ -65,7 +66,7 @@ public class OrderController {
 										  MobileBreakfastForm form) 
 			{super(name, price, 
 				   Item.Domain.MOBILE_BREAKFAST,
-				   Item.Category.NONE,
+				   Item.Category.FOOD,
 				   description);this.form=form;}
 		public MobileBreakfastForm getForm() {return form;}
 		}
@@ -109,18 +110,24 @@ public class OrderController {
 		cart.clear();
 		return "redirect:/cart";
 	}
-	
-	//handles adding and removing the amount of a cartitem
-	@PostMapping("cart/add")
-	String addCartItem(@RequestParam String cartitemId, @RequestParam int amount, @RequestParam boolean add, @ModelAttribute Cart cart) {
+
+	/**
+	 * 	handles adding and removing the amount of a cartitem
+	 */
+	@PostMapping("cart/setNewAmount")
+	String addCartItem(@RequestParam String cartitemId, @RequestParam int newAmount, @ModelAttribute Cart cart) {
 		Optional<CartItem> cartitem = cart.getItem(cartitemId);
 		
-		if(!cartitem.isPresent()) return "redirect:/cart";
-			
-		if(!add)amount = -amount;
-		if(cartitem.get().getQuantity().getAmount().intValue()+amount < 1)return "redirect:/cart";
-		
-		cart.addOrUpdateItem(cartitem.get().getProduct(), Quantity.of(amount, Metric.UNIT));
+		if(cartitem.isEmpty()) {
+			return "redirect:/cart";
+		}
+		if(newAmount < 1) {
+			cart.removeItem(cartitemId);
+			return "redirect:/cart";
+		}
+		int diffAmount = newAmount - cartitem.get().getQuantity().getAmount().intValue();
+
+		cart.addOrUpdateItem(cartitem.get().getProduct(), Quantity.of(diffAmount, Metric.UNIT));
 		return "redirect:/cart";
 	}
 
@@ -146,6 +153,7 @@ public class OrderController {
 		
 		return "redirect:/cart";
 	}
+
 	
 	
 	@PostMapping("cart/remove")
@@ -159,7 +167,7 @@ public class OrderController {
 	//choose to buy:
 	@PostMapping("/pay")
 	String chooseToBuy(Model model,@ModelAttribute Cart cart, @RequestParam String domain, DateFormular form) {
-		
+
 		
 		model.addAttribute("events", getDomainItems(cart,domain));
 		model.addAttribute("domainChoosen", domain);

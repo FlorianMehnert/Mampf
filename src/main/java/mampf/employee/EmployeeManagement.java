@@ -2,13 +2,11 @@ package mampf.employee;
 
 
 
-import org.salespointframework.useraccount.Role;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import mampf.employee.Employee;
 import mampf.order.MampfOrder;
 
 @Service
@@ -41,7 +39,9 @@ public class EmployeeManagement {
 
 	public boolean setEmployeeBooked(long id, MampfOrder order){
 		Employee employee = employees.findById(id).get();
-		if(employee == null) return false;
+		if(employee == null){
+			return false;
+		}
 		employee.setBooked(order);
 		return true;
 	}

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="UTF-8">
   <title>Add Employee</title>
@@ -22,22 +21,26 @@
     </header>
     <form class="ui form" th:action="@{/intern/employees/add}" method="post">
       <div>
-        <div class="field">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
+        <div class="form-group">
+          <label for="username" th:text="#{employee.username}">Username</label>
+          <input class="form-control" type="text" id="username" name="username" autofocus="autofocus"/> <br/>
         </div>
-        <div class="field">
-          <label for="first_name">Vorname</label>
-          <input type="text" id="first_name" name="first_name" autofocus="autofocus" /> <br />
+        <br>
+        <div class="form-group">
+          <label for="first_name" th:text="#{employee.first_name}">Vorname</label>
+          <input class="form-control" type="text" id="first_name" name="first_name" autofocus="autofocus"/> <br/>
         </div>
-        <div class="field">
-          <label for="last_name">Nachname</label>
-          <input type="text" id="last_name" name="last_name" autofocus="autofocus" /> <br />
+        <br>
+        <div class="form-group">
+          <label for="last_name" th:text="#{employee.last_name}">Nachname</label>
+          <input class="form-control" type="text" id="last_name" name="last_name" autofocus="autofocus"/> <br/>
         </div>
-        <div class="field">
-          <label for="role">Role</label>
-          <input type="text" id="role" name="role" autofocus="autofocus" /> <br />
+        <br>
+        <div class="form-group">
+          <label for="role" th:text="#{employee.role}">Role</label>
+          <input class="form-control" type="text" id="role" name="role" autofocus="autofocus"/> <br/>
         </div>
+        <br>
         <button class="ui primary button" type="submit"> Mitarbeiter hinzufügen</button>
       </div>
     </form>

@@ -33,14 +33,15 @@ class UserController {
 	}
 
 	@PostMapping("/register")
-	String registerNew(@Valid @ModelAttribute("form") RegistrationForm form, Errors result, RedirectAttributes redirAttrs) {
+	String registerNew(@Valid @ModelAttribute("form")
+							   RegistrationForm form, Errors result, RedirectAttributes redirAttrs) {
 		boolean err = false;
 		for (User user : userManagement.findAll()) {
 			if ((form.getUsername().equals(user.getUserAccount().getUsername()))) {
 				redirAttrs.addFlashAttribute("userAlreadyExists", "This Username is already taken!");
 				err = true;
 			}
-			if((form.getEmail().equals(user.getUserAccount().getEmail()))){
+			if ((form.getEmail().equals(user.getUserAccount().getEmail()))) {
 				redirAttrs.addFlashAttribute("EMailAlreadyExists", "This E-Mail does exists already!");
 				err = true;
 			}
@@ -49,7 +50,7 @@ class UserController {
 			redirAttrs.addFlashAttribute("wrongInput", "Bad inputs were used!");
 			err = true;
 		}
-		if(err){
+		if (err) {
 			return "redirect:/register";
 		}
 		if (result.hasErrors()) {

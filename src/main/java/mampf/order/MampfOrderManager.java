@@ -19,9 +19,17 @@ import org.salespointframework.useraccount.UserAccount;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
+
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.salespointframework.inventory.UniqueInventoryItem;
 
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
@@ -36,15 +44,20 @@ public class MampfOrderManager {
 	private final Inventory inventory;
 	private final MampfCatalog catalog;
 	private final EmployeeManagement employeeManagement;
-	
-	
-	public MampfOrderManager(OrderManagement<MampfOrder> orderManagement, Inventory inventory, EmployeeManagement employeeManagement, MampfCatalog catalog) {
-		this.orderManagement = orderManagement;  this.inventory = inventory; this.employeeManagement = employeeManagement; this.catalog = catalog;
+
+	public MampfOrderManager(OrderManagement<MampfOrder> orderManagement, Inventory inventory,
+							 EmployeeManagement employeeManagement, MampfCatalog catalog) {
+		this.orderManagement = orderManagement;
+		this.inventory = inventory;
+		this.employeeManagement = employeeManagement;
+		this.catalog = catalog;
+
 	}
 
 	public Order save(MampfOrder order) {
 		return orderManagement.save(order);
 	}
+
 	
 	private PaymentMethod createPayMethod(String payMethod,UserAccount userAccount) {
 		PaymentMethod method = Cash.CASH; //bydefault
@@ -60,7 +73,9 @@ public class MampfOrderManager {
 	}
 	
 	private List<Employee> getfreeEmployee(LocalDateTime startDate, Employee.Role role) {
-		//init
+	
+		//get free employees by date:
+		//MampfOrder bookedOrder;
 		boolean isFree = true;
 		List<Employee> freeEmployee = new ArrayList<>();
 		//TODO: employeeManagement method?
@@ -92,26 +107,8 @@ public class MampfOrderManager {
 				{StaffItem staffItem = (StaffItem)item;
 				if(staffItem.getType().equals(type))
 					employeeAmount+= cartItem.getQuantity().getAmount().intValue();}
-			
-
-			/*switch(itemCategory) {
-			case STAFF:
-				//TODO: check if a item of its type IS a Personal - item
-				StaffItem.Type personalType = ((StaffItem)item).getType();
-				
-				if(personalType.equals(StaffItem.Type.COOK))
-					cookNeeded+= itemQuantity.getAmount().intValue();
-				if(personalType.equals(StaffItem.Type.SERVICE))
-					personalserviceNeeded+= itemQuantity.getAmount().intValue();
-				break;
-			case DECORATION:case EQUIPMENT:
-				//TODO: situation wie personal möglich
-				Optional<UniqueInventoryItem> optionalItem = inventory.findByProduct(item);
-				if(optionalItem.isPresent()) 
-					if(!optionalItem.get().hasSufficientQuantity(cartItem.getQuantity())) return null;
-				break;
-			}*/
 		}
+
 		return employeeAmount;
 		//TODO
 
@@ -140,32 +137,6 @@ public class MampfOrderManager {
 					if(employee != null)
 						{employee.setBooked(order);order.addEmployee(employee);}}
 				}
-			
-			/*switch (item.getCategory()) {
-			case STAFF:
-				//TODO: check if really is personal
-				StaffItem personalItem = ((StaffItem)item);
-				StaffItem.Type personalItemType = personalItem.getType();
-				
-				//TODO: find better solution:
-				int personalAmount = itemQuantity.getAmount().intValue();
-				if(personalItemType.equals(StaffItem.Type.COOK))
-					//while(personalAmount < 0){
-					for(int i = 0; i < personalAmount; i++) {
-					Employee dat = freeCooks.remove(0); dat.setBooked(order); order.addEmployee(dat);}
-				if(personalItemType.equals(StaffItem.Type.SERVICE))
-					//while(personalAmount < 0){
-					for(int i = 0; i < personalAmount; i++) {	
-					Employee dat = freeServicePersonal.remove(0); dat.setBooked(order); order.addEmployee(dat);}
-				
-				break;
-
-			case EQUIPMENT: case DECORATION:
-				//TODO: find better solution:
-				inventory.reduceAmount((item), itemQuantity);
-				break;
-			}*/
-			
 		}
 	}
 	
@@ -206,8 +177,9 @@ public class MampfOrderManager {
 		cart.addItemsTo(order);
 		
 		return order;
-		
+
 	}
+
 
 	public MampfOrder createOrder(Cart cart, 
 								  DateFormular form, 
@@ -281,6 +253,25 @@ public class MampfOrderManager {
 	//}
 
 
+	//public boolean payOrder(MampfOrder order) {
+	//}
+
+	public void completeOrder(MampfOrder order) {
+		orderManagement.completeOrder(order);
+	}
+
+
+	/*public boolean validateCart(Cart cart, DateFormular form) {
+	}*/
+
+	 /*public void addEmployee(MampfOrder order, Employee employee) {
+	 	order.addEmployee(employee);
+	 	if (order.isDone()){
+	 		orderManagement.completeOrder(order);
+	 	}
+	 }*/
+
+
 	public MampfOrder findOrderById(UserAccount user){
 		return this.orderManagement.findBy(user).get().collect(Collectors.toList()).get(0);
 	}
@@ -295,14 +286,14 @@ public class MampfOrderManager {
 		return new ArrayList<MampfOrder>(list);
 	}
 
-		// // new
-	// public List<MampfOrder> findNewest(UserAccount account) {
-	// 	List<MampfOrder> res = new ArrayList<>();
-	// 	for (MampfOrder order : orderManagement.findBy(account))
-	// 		if (order.isOpen())
-	// 			res.add(order);
-	// 	return res;
-	// }
+
+	/* public List<MampfOrder> findNewest(UserAccount account) {
+	 	List<MampfOrder> res = new ArrayList<>();
+	 	for (MampfOrder order : orderManagement.findBy(account))
+	 		if (order.isOpen())
+	 			res.add(order);
+	 	return res;
+	 }*/
 
 	public List<MampfOrder> findByUserAcc(UserAccount account) {
 		List<MampfOrder> res = new ArrayList<>();
@@ -311,11 +302,11 @@ public class MampfOrderManager {
 		return res;
 	}
 
-	// public List<MampfOrder> findByEmployee(Employee employee) {
-	// 	List<MampfOrder> res = new ArrayList<>();
-	// 	for (MampfOrder order : orderManagement.findBy(OrderStatus.PAID))
-	// 		if (!order.isDone())
-	// 			res.add(order);
-	// 	return res;
-	// }
+	 /*public List<MampfOrder> findByEmployee(Employee employee) {
+	 	List<MampfOrder> res = new ArrayList<>();
+	 	for (MampfOrder order : orderManagement.findBy(OrderStatus.PAID))
+	 		if (!order.isDone())
+	 			res.add(order);
+	 	return res;
+	 }*/
 }

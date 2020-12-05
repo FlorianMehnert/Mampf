@@ -68,7 +68,10 @@
 
         <div class="form-group">
             <label for="password" th:text="#{register.password}">Password</label>
-            <input class="form-control" type="password" id="password" name="password"/> <br/>
+            <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelpBlock"/> <br/>
+            <small id="passwordHelpBlock" class="form-text text-muted">
+                Your password must be 5-20 characters long.
+            </small>
         </div>
 
         <div class="form-group">

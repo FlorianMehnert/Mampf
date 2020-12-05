@@ -1,14 +1,13 @@
 package mampf.order;
 
 
-//import mampf.catalog.Item;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-//import javax.persistence.Table;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+
 
 //import org.salespointframework.catalog.Product;
 
@@ -20,6 +19,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 //import java.util.Objects;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class MampfDate implements Comparable<MampfDate>{
@@ -53,9 +54,11 @@ public class MampfDate implements Comparable<MampfDate>{
 	
 	public LocalDateTime getStartTime() {return startTime;}
 	public String getAddress() {return address;}
+
 	public String[] getDays(){return days;}
 	public LocalTime getTime(){return time;}
 	public long getId() {return id;}
+
 	
 	public void setOrder(MampfOrder order) {this.order = order;}
 	public boolean equals(MampfDate d) {

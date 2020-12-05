@@ -1,6 +1,5 @@
 package mampf.inventory;
 
-import mampf.catalog.Item;
 import org.salespointframework.catalog.Product;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.inventory.UniqueInventoryItem;
@@ -13,19 +12,22 @@ import java.util.Optional;
 
 public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 	default Optional<UniqueInventoryItem> findByName(String name) {
-		assert name != null;
-		for (UniqueInventoryItem item : this.findAll()) {
-			if (item.getProduct().getName().equals(name))
-				return Optional.of(item);
+		if(name != null){
+			for (UniqueInventoryItem item : this.findAll()) {
+				if (item.getProduct().getName().equals(name)) {
+					return Optional.of(item);
+				}
+			}
+			return Optional.empty();
+		}else{
+			return Optional.empty();
 		}
-		return Optional.empty();
-	}
 
-	default void reduceAmount(Product product, Quantity amount) {
-		assert product.getId() != null;
+	}
+	default Optional<UniqueInventoryItem> reduceAmount(Product product, Quantity amount) {
 		Optional<UniqueInventoryItem> theItem = this.findByProduct(product);
-		//TODO: what if theItem is not available
 		theItem.ifPresent(uniqueInventoryItem -> uniqueInventoryItem.decreaseQuantity(amount));
+		return theItem;
 	}
 
 	default List<UniqueInventoryItem> findAllAndSort() {

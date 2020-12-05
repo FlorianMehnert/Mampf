@@ -23,6 +23,7 @@ public class EmployeeController {
 		this.employeeManagement = employeeManagement;
 	}
 
+	@PreAuthorize("hasRole('BOSS')")
 	@GetMapping("/intern/employees/add")
 	String createEmployee(Model model) {
 		return "employee_add";
@@ -40,6 +41,7 @@ public class EmployeeController {
 		return "redirect:/intern/employees";
 	}
 
+	@PreAuthorize("hasRole('BOSS')")
 	@GetMapping("/intern/employees")
 	String register(Model model){
 		model.addAttribute("employees", employeeManagement.findAll());

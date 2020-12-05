@@ -1,33 +1,24 @@
 package mampf.catalog;
 
-import org.javamoney.moneta.Money;
-// import org.salespointframework.quantity.Quantity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import mampf.Util;
+import mampf.catalog.Item.Domain;
+import mampf.inventory.Inventory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import static org.salespointframework.core.Currencies.*;
-
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import mampf.Util;
-import mampf.catalog.Item.Domain;
-import mampf.inventory.Inventory;
+// import org.salespointframework.quantity.Quantity;
 
 @Controller
 public class CatalogController {
 
 	//! Quantity is not used so should be or deleted
-	// private static final Quantity NONE = Quantity.of(0);
 
 	private final MampfCatalog catalog;
 	private final Inventory inventory;
@@ -48,7 +39,7 @@ public class CatalogController {
 	 * @return html-template
 	 */
 	@GetMapping("/catalog")
-	String itemsCatalog(Model model){
+	public String itemsCatalog(Model model){
 
 		ArrayList<Map<String, String>> domains = new ArrayList<>();
 
@@ -60,6 +51,7 @@ public class CatalogController {
 		}
 
 		model.addAttribute("domains", domains);
+		model.addAttribute("headline", "Mampf - Catalog");
 
 		return "catalog_index";
 	}
@@ -71,19 +63,22 @@ public class CatalogController {
 	 * @return a thymeleaf html-template
 	 */
 	@GetMapping("/catalog/{domain}")
-	String catalogDomain(@PathVariable String domain, Model model) {
+	public String catalogDomain(@PathVariable String domain, Model model) {
 		Domain catalogDomain;
 		// As domain is given as string we try to parse its enum from Item.Domain
 		try {
 			catalogDomain = Util.parseDomainEnum(domain);
 		} catch (IllegalArgumentException ex) {
-			// If the given domain does not exist in the enumeration we let the user know by redirecting to an error page
+			// If the given domain does not exist in the enumeration
+			// we let the user know by redirecting to an error page
 			System.out.println(ex.toString());
-			model.addAttribute("error", String.format("URI is invalid.\n\"%s\" is not a valid domain.", domain));
+			model.addAttribute("error", String.format("URI is invalid.%n\"%s\" is not a valid domain.", domain));
 			return "404";
 		}
 
-		if(catalogDomain.equals(Item.Domain.MOBILE_BREAKFAST)) return "redirect:/mobile-breakfast";
+		if(catalogDomain.equals(Item.Domain.MOBILE_BREAKFAST)) {
+			return "redirect:/mobile-breakfast";
+		}
 
 		// reorganizing the items of the chosen domain to show them each under its category
 		Iterable<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
@@ -93,14 +88,15 @@ public class CatalogController {
 			Item currentItem = iterator.next();
 
 			// checking if the item is available for purchase in other words if is in stock
-			if(!inventory.findByProduct(currentItem).isPresent()) continue;
+			if(inventory.findByProduct(currentItem).isEmpty()){
+				continue;
+			}
 
 			// TODO: Add internationalization for the category in  the Util class
 			String currentCategory = Util.renderDomainName(currentItem.getCategory().toString());
 			if(categorizedItems.containsKey(currentCategory)){
 				categorizedItems.get(currentCategory).add(currentItem);
-			}
-			else {
+			}else{
 				ArrayList<Item> newArrayList = new ArrayList<>();
 				newArrayList.add(currentItem);
 				categorizedItems.put(currentCategory, newArrayList);
@@ -122,8 +118,7 @@ public class CatalogController {
 			String category = Util.renderDomainName(currentItem.getType().toString());
 			if(reorganizedItems.containsKey(category)){
 				reorganizedItems.get(category).add(currentItem);
-			}
-			else{
+			}else{
 				ArrayList<Item> itemList = new ArrayList<>();
 				itemList.add(currentItem);
 				reorganizedItems.put(category, itemList);

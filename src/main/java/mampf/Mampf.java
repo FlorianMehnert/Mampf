@@ -17,10 +17,13 @@ public class Mampf {
 	static class MampfWebConfiguration implements WebMvcConfigurer {
 
 		/**
-		 * Anstatt einen extra Controller zu implementieren wird die Route {@code /login} direkt auf das Template {@code login} verwiesen,
+		 * Anstatt einen extra Controller zu implementieren wird die Route {@code /login}
+		 * direkt auf das Template {@code login} verwiesen,
 		 * was ein Spring eigenes Template plus Controller ist.
 		 * 
-		 * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#addViewControllers(org.springframework.web.servlet.config.annotation.ViewControllerRegistry)
+		 * @see org.springframework.web.servlet.config.annotation
+		 * .WebMvcConfigurerAdapter#addViewControllers(org.springframework
+		 * .web.servlet.config.annotation.ViewControllerRegistry)
 		 */
 		@Override
 		public void addViewControllers(ViewControllerRegistry registry) {

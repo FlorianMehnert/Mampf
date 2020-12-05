@@ -2,6 +2,7 @@ package mampf;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import mampf.catalog.Item.Domain;
@@ -25,5 +26,13 @@ public class Util {
 	public static <T extends Enum<?>> T randomEnum(Class<T> _class){
 		int enumIdentifier = random.nextInt(_class.getEnumConstants().length);
 		return _class.getEnumConstants()[enumIdentifier];
+	}
+
+	public static <T> String listToString(List<T> list){
+		StringBuilder output = new StringBuilder();
+		for(T item : list){
+			output.append("\n").append(item.toString());
+		}
+		return output.toString();
 	}
 }

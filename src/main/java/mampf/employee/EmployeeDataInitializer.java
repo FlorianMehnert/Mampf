@@ -6,7 +6,6 @@ import org.salespointframework.core.DataInitializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -30,19 +29,21 @@ public class EmployeeDataInitializer implements DataInitializer {
 
 		LOG.info("Creating default employee users");
 
-
-		List.of(new RegistrationForm("anna89", "Anna", "Lopez", "SERVICE"),
-				new RegistrationForm("marivi38", "Maria", "Leon", "SERVICE"),
-				new RegistrationForm("x", "Maria1", "Leon1", "SERVICE"),
-				new RegistrationForm("y", "Maria2", "Leon2", "SERVICE"),
-				new RegistrationForm("z", "Maria3", "Leon3", "SERVICE"),
-				new RegistrationForm("123", "Maria4", "Leon4", "SERVICE"),
-				new RegistrationForm("elisas", "Elisa1", "Schloss1", "COOK"),
-				new RegistrationForm("a", "Elisa2", "Schloss2", "COOK"),
-				new RegistrationForm("b", "Elisa3", "Schloss3", "COOK"),
-				new RegistrationForm("c", "Elisa4", "Schloss5", "COOK"),
-				new RegistrationForm("d", "Elisa6", "Schloss6", "COOK"),
-				new RegistrationForm("heinz55", "Heinz", "Solo", "COOK")).forEach(employeeManagement::createEmployee);
+		String serviceRole = "SERVICE";
+		String cookRole = "COOK";
+		List.of(new RegistrationForm("anna89", "Anna", "Lopez", serviceRole),
+				new RegistrationForm("marivi38", "Maria", "Leon", serviceRole),
+				new RegistrationForm("x", "Maria1", "Leon1", serviceRole),
+				new RegistrationForm("y", "Maria2", "Leon2", serviceRole),
+				new RegistrationForm("z", "Maria3", "Leon3", serviceRole),
+				new RegistrationForm("123", "Maria4", "Leon4", serviceRole),
+				new RegistrationForm("elisas", "Elisa1", "Schloss1", cookRole),
+				new RegistrationForm("a", "Elisa2", "Schloss2", cookRole),
+				new RegistrationForm("b", "Elisa3", "Schloss3", cookRole),
+				new RegistrationForm("c", "Elisa4", "Schloss5", cookRole),
+				new RegistrationForm("d", "Elisa6", "Schloss6", cookRole),
+				new RegistrationForm("heinz55", "Heinz", "Solo", cookRole))
+				.forEach(employeeManagement::createEmployee);
 
 	}
 }
