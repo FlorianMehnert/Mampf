@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @SessionAttributes("cart")
 public class OrderController {
 	
+	private MampfCart cart = new MampfCart();
 	public class BreakfastMappedItems extends Item{
 		private MobileBreakfastForm form;
 		public BreakfastMappedItems(String name,
@@ -64,28 +65,28 @@ public class OrderController {
 
 /* CART */
 	
-	@ModelAttribute("cart")
-	TreeMap<Item.Domain, Cart> initializeCart() {
+	/*@ModelAttribute("cart")
+	MampfCart initializeCart() {
 		//mobileBreakfastForm = null;
-		TreeMap<Item.Domain, Cart> cart = new TreeMap<Item.Domain, Cart>();
+		MampfCart cart = new MampfCart(1);
 		
 		Item i1 = new Item("test1",Money.of(2,"EUR"),Item.Domain.EVENTCATERING,Item.Category.FOOD,"d");
 		Item i2 = new Item("test2",Money.of(2,"EUR"),Item.Domain.PARTYSERVICE,Item.Category.FOOD,"d");
 		Item i3 = new Item("test3",Money.of(2,"EUR"),Item.Domain.PARTYSERVICE,Item.Category.FOOD,"d");
 		Item i4 = new Item("test3",Money.of(2,"EUR"),Item.Domain.MOBILE_BREAKFAST,Item.Category.FOOD,"d");
 		
-		CartItem c1 = addToCart(cart, i1, Quantity.of(10));
-		CartItem c2 = addToCart(cart, i2, Quantity.of(10));
-		CartItem c3 = addToCart(cart, i3, Quantity.of(1));
-		CartItem c4 = addToCart(cart, i4, Quantity.of(1));
-		addToCart(cart, i1, Quantity.of(10));
+		CartItem c1 = cart.addToCart(i1, Quantity.of(10));
+		CartItem c2 = cart.addToCart(i2, Quantity.of(10));
+		CartItem c3 = cart.addToCart(i3, Quantity.of(1));
+		CartItem c4 = cart.addToCart(i4, Quantity.of(1));
+		cart.addToCart(i1, Quantity.of(10));
 		
 		
-		updateCart(cart, c1, -2);
-		updateCart(cart, c2, -10);
-		updateCart(cart, c3, -10);
-		//updateCart(cart, c4, -10);
-		updateCart(cart, c4, 10); //should not work
+		cart.updateCart(c1, -2);
+		cart.updateCart(c2, -10);
+		cart.updateCart(c3, -10);
+		//cart.updateCart(c4, -10);
+		cart.updateCart(c4, 10); //should not work
 		
 		//removeFromCart(cart, c4); //should not be able
 		//removeFromCart(cart, c1); 
@@ -93,29 +94,27 @@ public class OrderController {
 		return cart;
 		
 		//return new TreeMap<Item.Domain, Cart>();
-	}
+		return new MampfCart();
+	}*/
 
 	@PostMapping("/cart")
 	String addItem(@RequestParam("pid") Item item,
-				   @RequestParam("number") int number,
-				   @ModelAttribute TreeMap<Item.Domain, Cart> cart) {
-		addToCart(cart, item, Quantity.of(number));
+				   @RequestParam("number") int number
+				   /*@ModelAttribute MampfCart cart*/) {
+		cart.addToCart(item, Quantity.of(number));
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}
 
 	@GetMapping("/cart")
-	String basket(@ModelAttribute TreeMap<Item.Domain, Cart> cart,
+	String basket(/*@ModelAttribute MampfCart cart*/
 				  Model model) {
-		model.addAttribute("n", cart.size());
-		model.addAttribute("domains", cart);
+		model.addAttribute("n", cart.getSize());
+		model.addAttribute("domains", cart.getStuff());
 		return "cart";
 	}
 	
 	@PostMapping("cart/clear")
-	String clearCart(@ModelAttribute TreeMap<Item.Domain, Cart> cart) {
-		for(Item.Domain cartDomain: cart.keySet()) {
-			cart.get(cartDomain).clear();
-		}
+	String clearCart() {
 		cart.clear();
 		return "redirect:/cart";
 	}
@@ -125,13 +124,13 @@ public class OrderController {
 	 */
 	@PostMapping("cart/setNewAmount")
 	String addCartItem(@RequestParam String cartitemId,
-					   @RequestParam int newAmount,
-					   @ModelAttribute TreeMap<Item.Domain, Cart> cart) {
+					   @RequestParam int newAmount
+					   /*@ModelAttribute MampfCart cart*/) {
 		
 		//Optional<CartItem> cartitem = cart.getItem(cartitemId);
-		CartItem cartItem = getCartItem(cart, cartitemId);
-		if(cartItem == null) {
-			updateCart(cart, cartItem, newAmount);
+		CartItem cartItem = cart.getCartItem(cartitemId);
+		if(cartItem != null) {
+			cart.updateCart(cartItem, newAmount);
 		}
 		return "redirect:/cart";
 	}
@@ -162,10 +161,11 @@ public class OrderController {
 	
 	
 	@PostMapping("cart/remove")
-	String removeCartItem(@RequestParam String cartitemId, @ModelAttribute TreeMap<Item.Domain, Cart> cart) {
-		CartItem cartitem = getCartItem(cart, cartitemId);
+	String removeCartItem(@RequestParam String cartitemId
+						  /*@ModelAttribute MampfCart cart*/) {
+		CartItem cartitem = cart.getCartItem(cartitemId);
 		if(cartitem != null) {
-			removeFromCart(cart, cartitem);
+			cart.removeFromCart(cartitem);
 		}
 		return "redirect:/cart";
 	}
@@ -249,63 +249,7 @@ public class OrderController {
 
 /* CART FUNCTIONS */
 	
-	private Cart getDomainCart(Map<Item.Domain,Cart> cart, Item.Domain domain) {
-		if(cart == null || domain == null){
-			return null;
-		}
-		if(cart.containsKey(domain)) {
-			return cart.get(domain);
-		}
-		return null;
-	}
 	
-	private CartItem addToCart(Map<Item.Domain,Cart> cart, Item item, Quantity itemQuantity) {
-		Cart domainCart = getDomainCart(cart, item.getDomain());
-		CartItem cartitem = null;
-		if(domainCart != null) {
-			cartitem = domainCart.addOrUpdateItem(item, itemQuantity);
-		}else {
-			domainCart = new Cart();
-			cartitem = domainCart.addOrUpdateItem(item, itemQuantity);
-			cart.put(item.getDomain(),domainCart);
-		}
-		return cartitem;
-	}
-	
-	private void updateCart(Map<Item.Domain,Cart> cart, CartItem cartItem, int itemAmount) {
-		Cart domainCart = getDomainCart(cart, ((Item)cartItem.getProduct()).getDomain());
-		if(domainCart == null) {
-			return;
-		}
-		int newAmount = cartItem.getQuantity().getAmount().intValue()+itemAmount;
-		if(newAmount < 1) {
-			removeFromCart(cart, cartItem);
-		}else {
-			domainCart.addOrUpdateItem((Item)cartItem.getProduct(), itemAmount);
-		}
-	
-	}
-	
-	private void removeFromCart(Map<Item.Domain,Cart> cart, CartItem cartItem) {
-		Cart cartDomain = getDomainCart(cart, ((Item)cartItem.getProduct()).getDomain());
-		if(cartDomain != null) {
-			cartDomain.removeItem(cartItem.getId());
-			//delete domain too:
-			if(cartDomain.isEmpty()) {
-				cart.remove(((Item)cartItem.getProduct()).getDomain());
-			}
-		}
-	}
-	
-	private CartItem getCartItem(Map<Item.Domain, Cart> cart, String cartitemId) {
-		for(Item.Domain itemDomain: cart.keySet()) {
-			Optional<CartItem> cartitem = cart.get(itemDomain).getItem(cartitemId);
-			if(cartitem.isPresent()) {
-				return cartitem.get();
-			}
-		}
-		return null;
-	}
 	
 	
 	
