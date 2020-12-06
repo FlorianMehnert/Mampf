@@ -2,6 +2,7 @@ package mampf.employee;
 
 import javax.validation.Valid;
 
+import mampf.user.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class EmployeeController {
@@ -30,8 +32,16 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/intern/employees/add")
-	String registerNew(@Valid RegistrationForm form, Errors error){
+	String registerNew(@Valid RegistrationForm form, Errors error, RedirectAttributes redirAttrs){
 
+		boolean err = false;
+		if(form.getRole() != "COOK" || form.getRole() != "SERVICE"){
+			redirAttrs.addFlashAttribute("noType", "This type of employee doesn't exist");
+			err = true;
+		}
+		if(err){
+			return "redirect:/intern/employees/add";
+		}
 		if(error.hasErrors()){
 			return "redirect:/intern/employees";
 		}

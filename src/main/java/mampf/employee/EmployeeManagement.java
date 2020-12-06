@@ -2,12 +2,17 @@ package mampf.employee;
 
 
 
+import mampf.order.MampfDate;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import mampf.order.MampfOrder;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -48,5 +53,23 @@ public class EmployeeManagement {
 
 	public Streamable<Employee> findAll() {
 		return employees.findAll();
+	}
+
+	public List<Employee> freeEmployees(LocalDateTime date, Employee.Role role){
+		List<Employee> freeEmployees = new ArrayList<>();
+		for(Employee employee: employees.findAll()) {
+			boolean isFree = true;
+			for (MampfOrder bookedOrder : employee.getBooked()){
+				if(bookedOrder.getDate().hasTimeOverlap(date)){
+					isFree = false;
+				}
+			}
+			if(isFree == true){
+				if(employee.getRole().equals(role)){
+					freeEmployees.add(employee);
+				}
+			}
+		}
+		return freeEmployees;
 	}
 }
