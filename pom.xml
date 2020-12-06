@@ -4,6 +4,19 @@
 
 	<artifactId>swt20w10</artifactId>
 	<version>1.0.0.BUILD-SNAPSHOT</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>14</source>
+					<target>14</target>
+					<compilerArgs>--enable-preview</compilerArgs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<name>swt20w10</name>
 	<description>ST lab project of group swt20w10</description>

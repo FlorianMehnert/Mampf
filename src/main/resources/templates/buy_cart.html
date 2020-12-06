@@ -81,7 +81,6 @@
                 <label style="position: relative; left: 5px">
                     <input type="radio" name="payMethod" style="position: relative; left: -3px" value="Check"/>Überweisung
                 </label>
-                <div style="flex: auto">
                     <div class="mmpf-mb-timetable mmpf-mb-time">
                         <label for="start">Wählen sie eine Zeit aus, wann ihr Frühstück geliefert werden soll.</label>
                         <input type="time" id="start" name="start" min="07:00" max="14:00" required>
@@ -90,7 +89,6 @@
                 <label for="address" style="position: relative; left: 12px">Address: </label>
                 <input id="address" name="address" type="text" style="position: relative; left: 12px" th:field="*{address}" th:errorclass="fieldError" required="required"/>
                 <button type="submit" class="btn btn-outline-primary" style="position: relative; left: 15px">Bestellung erstellen</button>
-                </div>
             </form>
         </div>
 
