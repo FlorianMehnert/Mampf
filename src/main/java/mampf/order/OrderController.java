@@ -1,51 +1,24 @@
 package mampf.order;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Currency;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap.KeySetView;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
+import com.mysema.commons.lang.Pair;
+import mampf.Util;
+import mampf.catalog.BreakfastItem;
+import mampf.catalog.Item;
 import org.javamoney.moneta.Money;
-import org.salespointframework.Salespoint;
-import org.salespointframework.catalog.Product;
-import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-import org.salespointframework.order.Order;
-import org.salespointframework.payment.Cash;
 import org.salespointframework.quantity.Metric;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
-import org.springframework.data.annotation.Transient;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import mampf.catalog.BreakfastItem;
-import mampf.catalog.Item;
-import mampf.catalog.MampfCatalog;
-import mampf.employee.Employee;
-import mampf.employee.EmployeeManagement;
-import mampf.inventory.Inventory;
-
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.RequestParam;
+import javax.validation.Valid;
+import java.util.*;
 
 
 @Controller
@@ -54,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class OrderController {
 	
 	//TODO: find better solution for saving dates:
-	//private MobileBreakfastForm mobileBreakfastForm = null;
+
 	//needed when FOOD is a reducable item:
 	public class BreakfastMappedItems extends Item
 		{
@@ -72,19 +45,15 @@ public class OrderController {
 		}
 	
 	private final MampfOrderManager orderManager;
-	private final MampfCatalog catalog;
-	//private final Inventory inventory;
-	//private final EmployeeManagement employeeManagement;
-	
-	public OrderController(MampfOrderManager orderManager/*, Inventory inventory, EmployeeManagement employeeManagement*/,MampfCatalog catalog) {
-		this.orderManager = orderManager;this.catalog=catalog;/* this.inventory = inventory; this.employeeManagement = employeeManagement;*/
+
+	public OrderController(MampfOrderManager orderManager) {
+		this.orderManager = orderManager;
 	}
 
 /* CART */
 	
 	@ModelAttribute("cart")
 	Cart initializeCart() {
-		//mobileBreakfastForm = null;
 		return new Cart();
 	}
 
@@ -94,7 +63,6 @@ public class OrderController {
 		//int amount = number <= 0 || number > 5 ? 1 : number;
 		//TODO: negativ amount, xyz...
 		cart.addOrUpdateItem(item, Quantity.of(number));
-
 		return "redirect:/catalog/" + item.getDomain();
 	}
 
@@ -166,33 +134,35 @@ public class OrderController {
 	
 	//choose to buy:
 	@PostMapping("/pay")
-	String chooseToBuy(Model model,@ModelAttribute Cart cart, @RequestParam String domain, DateFormular form) {
-
-		
-		model.addAttribute("events", getDomainItems(cart,domain));
+	public String chooseToBuy(Model model, @ModelAttribute Cart cart, @RequestParam String domain, DateFormular form) {
+		model.addAttribute("events", getDomainItems(cart, Util.parseDomainName(domain).toString()));
 		model.addAttribute("domainChoosen", domain);
 		model.addAttribute("form", form);
 		return "buy_cart";
 	}	
 	
 	//TODO: replace domain with optionals
-	Map<Item.Domain,List<CartItem>> getDomainItems(Cart cart,String domain){
-		Map<Item.Domain,List<CartItem>> events = new HashMap<>();
+	Map<String,List<CartItem>> getDomainItems(Cart cart, String domain){
+		Map<String,List<CartItem>> events = new HashMap<>();
 		boolean checkForDomain = (!domain.equals("none")); 
-		for(CartItem cartitem: cart) {
-			Item item = (Item)cartitem.getProduct();
+		for(CartItem cartitem: cart){
+			Item item = (Item) cartitem.getProduct();
 			Item.Domain itemDomain = item.getDomain();
 			
 			//skip item if not of requested domain
-			if(checkForDomain)
-				if(!itemDomain.equals(Item.Domain.valueOf(domain)))continue;
-			
-			if(events.containsKey(itemDomain))
-			//add to list
-				{events.get(itemDomain).add(cartitem);}
-			else
-			//just create new list
-				{List<CartItem> event=new ArrayList<>();event.add(cartitem);events.put(itemDomain, event);}
+			if(checkForDomain && !itemDomain.equals(Item.Domain.valueOf(domain))){
+				continue;
+			}
+
+			if(events.containsKey(itemDomain)){
+				//add to list
+				events.get(Util.renderDomainName(itemDomain.toString())).add(cartitem);
+			}else {
+				//just create new list
+				List<CartItem> event = new ArrayList<>();
+				event.add(cartitem);
+				events.put(Util.renderDomainName(itemDomain.toString()), event);
+			}
 		}
 		return events;
 	}
@@ -206,23 +176,23 @@ public class OrderController {
 			{return "redirect:/login";}
 		
 		//formular fehler
-		if (result.hasErrors() /*|| form.invalid()*/)
-			{/*TODO*/return "redirect:/cart";}
+		if (result.hasErrors() /*|| form.invalid()*/) {
+			/*TODO*/return "redirect:/cart";
+		}
 		
-		Map<Item.Domain, List<CartItem>> orders = getDomainItems(cart, domainChoosen);
+		Map<String, List<CartItem>> orders = getDomainItems(cart, domainChoosen);
 		//MobileBreakfastForm mbForm;
 		//List<MampfOrder> createdOrders = new ArrayList<>();
-		for(Item.Domain domain : orders.keySet()) 
-			
+		for(String domainStr : orders.keySet()) {
+			Item.Domain domain = Util.parseDomainName(domainStr);
 			//create new cart:
-			{Cart orderCart = new Cart();
-			for(CartItem cartitem: orders.get(domain)) 
-				{orderCart.addOrUpdateItem(cartitem.getProduct(), cartitem.getQuantity());}
+			Cart orderCart = new Cart();
+			for(CartItem cartitem: orders.get(domain)) {
+				orderCart.addOrUpdateItem(cartitem.getProduct(), cartitem.getQuantity());
+			}
 			
 			//create order:
-			MampfOrder order = orderManager.createOrder(orderCart,
-														form, 
-														userAccount.get());
+			MampfOrder order = orderManager.createOrder(orderCart, form, userAccount.get());
 			
 			//remove cartitem and save the created orders:
 			if(order != null)
