@@ -23,7 +23,8 @@
 <div>
     <br>
 
-
+	<div>
+	<div th:text="${n}"></div>
     <div th:each="domain : ${domains}">
     	<h1 th:text="${domain.key}"></h1>
     	
@@ -107,8 +108,8 @@
 	</div>
 	
     <div class="ui two column centered grid">
-    	<div class="value"><span th:text="${{cart.price}}">1337</span></div>
-         <form method="post" th:action="@{/cart/clear}"><button type="submit">Warenkorb leeren</button></form>
+    	<!--  <div class="value"><span th:text="${{cart.price}}">1337</span></div>
+         --><form method="post" th:action="@{/cart/clear}"><button type="submit">Warenkorb leeren</button></form>
             <!-- sec:authorize="hasRole('INDIVIDUAL')" -->
 		      <form method="post" th:action="@{/pay}"> 
 		       <input type="hidden" name="domain" th:value="none"/>

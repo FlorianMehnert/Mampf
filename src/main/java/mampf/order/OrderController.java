@@ -1,31 +1,22 @@
 package mampf.order;
 
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap.KeySetView;
-import java.util.stream.Collectors;
+import java.util.TreeMap;
 
 import javax.validation.Valid;
 
 import org.javamoney.moneta.Money;
-import org.salespointframework.Salespoint;
-import org.salespointframework.catalog.Product;
-import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-import org.salespointframework.order.Order;
-import org.salespointframework.payment.Cash;
 import org.salespointframework.quantity.Metric;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
-import org.springframework.data.annotation.Transient;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,12 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
-import mampf.catalog.MampfCatalog;
-import mampf.employee.Employee;
-import mampf.employee.EmployeeManagement;
-import mampf.inventory.Inventory;
 
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -53,60 +39,83 @@ import org.springframework.web.bind.annotation.RequestParam;
 @SessionAttributes("cart")
 public class OrderController {
 	
-	//TODO: find better solution for saving dates:
-	//private MobileBreakfastForm mobileBreakfastForm = null;
-	//needed when FOOD is a reducable item:
-	public class BreakfastMappedItems extends Item
-		{
-		//@Transient
+	public class BreakfastMappedItems extends Item{
 		private MobileBreakfastForm form;
 		public BreakfastMappedItems(String name,
 										  Money price,
 										  String description,
-										  MobileBreakfastForm form) 
-			{super(name, price, 
+										  MobileBreakfastForm form) {
+			super(name, price, 
 				   Item.Domain.MOBILE_BREAKFAST,
 				   Item.Category.FOOD,
-				   description);this.form=form;}
-		public MobileBreakfastForm getForm() {return form;}
+				   description);
+			this.form=form;
 		}
+		public MobileBreakfastForm getForm() {
+			return form;
+		}
+	}
 	
 	private final MampfOrderManager orderManager;
-	private final MampfCatalog catalog;
-	//private final Inventory inventory;
-	//private final EmployeeManagement employeeManagement;
 	
-	public OrderController(MampfOrderManager orderManager/*, Inventory inventory, EmployeeManagement employeeManagement*/,MampfCatalog catalog) {
-		this.orderManager = orderManager;this.catalog=catalog;/* this.inventory = inventory; this.employeeManagement = employeeManagement;*/
+	public OrderController(MampfOrderManager orderManager) {
+		this.orderManager = orderManager;
 	}
 
 /* CART */
 	
 	@ModelAttribute("cart")
-	Cart initializeCart() {
+	TreeMap<Item.Domain, Cart> initializeCart() {
 		//mobileBreakfastForm = null;
-		return new Cart();
+		TreeMap<Item.Domain, Cart> cart = new TreeMap<Item.Domain, Cart>();
+		
+		Item i1 = new Item("test1",Money.of(2,"EUR"),Item.Domain.EVENTCATERING,Item.Category.FOOD,"d");
+		Item i2 = new Item("test2",Money.of(2,"EUR"),Item.Domain.PARTYSERVICE,Item.Category.FOOD,"d");
+		Item i3 = new Item("test3",Money.of(2,"EUR"),Item.Domain.PARTYSERVICE,Item.Category.FOOD,"d");
+		Item i4 = new Item("test3",Money.of(2,"EUR"),Item.Domain.MOBILE_BREAKFAST,Item.Category.FOOD,"d");
+		
+		CartItem c1 = addToCart(cart, i1, Quantity.of(10));
+		CartItem c2 = addToCart(cart, i2, Quantity.of(10));
+		CartItem c3 = addToCart(cart, i3, Quantity.of(1));
+		CartItem c4 = addToCart(cart, i4, Quantity.of(1));
+		addToCart(cart, i1, Quantity.of(10));
+		
+		
+		updateCart(cart, c1, -2);
+		updateCart(cart, c2, -10);
+		updateCart(cart, c3, -10);
+		//updateCart(cart, c4, -10);
+		updateCart(cart, c4, 10); //should not work
+		
+		//removeFromCart(cart, c4); //should not be able
+		//removeFromCart(cart, c1); 
+		
+		return cart;
+		
+		//return new TreeMap<Item.Domain, Cart>();
 	}
 
 	@PostMapping("/cart")
-	String addItem(@RequestParam("pid") Item item, @RequestParam("number") int number, @ModelAttribute Cart cart) {
-
-		//int amount = number <= 0 || number > 5 ? 1 : number;
-		//TODO: negativ amount, xyz...
-		cart.addOrUpdateItem(item, Quantity.of(number));
-
-		return "redirect:/catalog/" + item.getDomain();
+	String addItem(@RequestParam("pid") Item item,
+				   @RequestParam("number") int number,
+				   @ModelAttribute TreeMap<Item.Domain, Cart> cart) {
+		addToCart(cart, item, Quantity.of(number));
+		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}
 
 	@GetMapping("/cart")
-	String basket(Model model/*, DateFormular form*/,@ModelAttribute Cart cart) {
-		//model.addAttribute("form", form);
-		model.addAttribute("domains", getDomainItems(cart,"none"));
+	String basket(@ModelAttribute TreeMap<Item.Domain, Cart> cart,
+				  Model model) {
+		model.addAttribute("n", cart.size());
+		model.addAttribute("domains", cart);
 		return "cart";
 	}
 	
 	@PostMapping("cart/clear")
-	String clearCart(@ModelAttribute Cart cart) {
+	String clearCart(@ModelAttribute TreeMap<Item.Domain, Cart> cart) {
+		for(Item.Domain cartDomain: cart.keySet()) {
+			cart.get(cartDomain).clear();
+		}
 		cart.clear();
 		return "redirect:/cart";
 	}
@@ -115,24 +124,20 @@ public class OrderController {
 	 * 	handles adding and removing the amount of a cartitem
 	 */
 	@PostMapping("cart/setNewAmount")
-	String addCartItem(@RequestParam String cartitemId, @RequestParam int newAmount, @ModelAttribute Cart cart) {
-		Optional<CartItem> cartitem = cart.getItem(cartitemId);
+	String addCartItem(@RequestParam String cartitemId,
+					   @RequestParam int newAmount,
+					   @ModelAttribute TreeMap<Item.Domain, Cart> cart) {
 		
-		if(cartitem.isEmpty()) {
-			return "redirect:/cart";
+		//Optional<CartItem> cartitem = cart.getItem(cartitemId);
+		CartItem cartItem = getCartItem(cart, cartitemId);
+		if(cartItem == null) {
+			updateCart(cart, cartItem, newAmount);
 		}
-		if(newAmount < 1) {
-			cart.removeItem(cartitemId);
-			return "redirect:/cart";
-		}
-		int diffAmount = newAmount - cartitem.get().getQuantity().getAmount().intValue();
-
-		cart.addOrUpdateItem(cartitem.get().getProduct(), Quantity.of(diffAmount, Metric.UNIT));
 		return "redirect:/cart";
 	}
 
-	@PostMapping("/cart/add/mobile-breakfast")
-	String orderMobileBreakfast(@ModelAttribute Cart cart, @LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form){
+	/*@PostMapping("/cart/add/mobile-breakfast")
+	String orderMobileBreakfast( @LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form){
 
 		if(userAccount.isEmpty()) 
 			{return "redirect:/login";}
@@ -141,7 +146,7 @@ public class OrderController {
 		for(Item item: catalog.findByDomain(Item.Domain.MOBILE_BREAKFAST)) 
 			{if(item.getName().equals(form.getBeverage()))b=((BreakfastItem)item);
 			if(item.getName().equals(form.getDish()))d=((BreakfastItem)item);}
-		if(b != null && d != null)*/
+		if(b != null && d != null)
 		//TODO check for valid form
 		cart.addOrUpdateItem(new 
 				BreakfastMappedItems(
@@ -153,30 +158,31 @@ public class OrderController {
 		
 		return "redirect:/cart";
 	}
-
+*/
 	
 	
 	@PostMapping("cart/remove")
-	String removeCartItem(@RequestParam String cartitemId, @ModelAttribute Cart cart) {
-		
-		if(!cart.getItem(cartitemId).isPresent()) return "redirect:/cart";
-		cart.removeItem(cartitemId);
+	String removeCartItem(@RequestParam String cartitemId, @ModelAttribute TreeMap<Item.Domain, Cart> cart) {
+		CartItem cartitem = getCartItem(cart, cartitemId);
+		if(cartitem != null) {
+			removeFromCart(cart, cartitem);
+		}
 		return "redirect:/cart";
 	}
 	
 	//choose to buy:
-	@PostMapping("/pay")
-	String chooseToBuy(Model model,@ModelAttribute Cart cart, @RequestParam String domain, DateFormular form) {
+	/*@PostMapping("/pay")
+	String chooseToBuy(Model model, @RequestParam String domain, DateFormular form) {
 
 		
 		model.addAttribute("events", getDomainItems(cart,domain));
 		model.addAttribute("domainChoosen", domain);
 		model.addAttribute("form", form);
 		return "buy_cart";
-	}	
+	}	*/
 	
 	//TODO: replace domain with optionals
-	Map<Item.Domain,List<CartItem>> getDomainItems(Cart cart,String domain){
+	/*Map<Item.Domain,List<CartItem>> getDomainItems(Cart cart,String domain){
 		Map<Item.Domain,List<CartItem>> events = new HashMap<>();
 		boolean checkForDomain = (!domain.equals("none")); 
 		for(CartItem cartitem: cart) {
@@ -195,19 +201,16 @@ public class OrderController {
 				{List<CartItem> event=new ArrayList<>();event.add(cartitem);events.put(itemDomain, event);}
 		}
 		return events;
-	}
+	}*/
 	
 	
 	
-	@PostMapping("/checkout")
+	/*@PostMapping("/checkout")
 	String buy(@RequestParam String domainChoosen, @ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
 		
 		if(userAccount.isEmpty()) 
 			{return "redirect:/login";}
 		
-		//formular fehler
-		if (result.hasErrors() /*|| form.invalid()*/)
-			{/*TODO*/return "redirect:/cart";}
 		
 		Map<Item.Domain, List<CartItem>> orders = getDomainItems(cart, domainChoosen);
 		//MobileBreakfastForm mbForm;
@@ -240,9 +243,72 @@ public class OrderController {
 		}
 		//order fehler:
 		//TODO
-		return "redirect:/cart";*/
+		return "redirect:/cart";
 		
+	}*/
+
+/* CART FUNCTIONS */
+	
+	private Cart getDomainCart(Map<Item.Domain,Cart> cart, Item.Domain domain) {
+		if(cart == null || domain == null){
+			return null;
+		}
+		if(cart.containsKey(domain)) {
+			return cart.get(domain);
+		}
+		return null;
 	}
+	
+	private CartItem addToCart(Map<Item.Domain,Cart> cart, Item item, Quantity itemQuantity) {
+		Cart domainCart = getDomainCart(cart, item.getDomain());
+		CartItem cartitem = null;
+		if(domainCart != null) {
+			cartitem = domainCart.addOrUpdateItem(item, itemQuantity);
+		}else {
+			domainCart = new Cart();
+			cartitem = domainCart.addOrUpdateItem(item, itemQuantity);
+			cart.put(item.getDomain(),domainCart);
+		}
+		return cartitem;
+	}
+	
+	private void updateCart(Map<Item.Domain,Cart> cart, CartItem cartItem, int itemAmount) {
+		Cart domainCart = getDomainCart(cart, ((Item)cartItem.getProduct()).getDomain());
+		if(domainCart == null) {
+			return;
+		}
+		int newAmount = cartItem.getQuantity().getAmount().intValue()+itemAmount;
+		if(newAmount < 1) {
+			removeFromCart(cart, cartItem);
+		}else {
+			domainCart.addOrUpdateItem((Item)cartItem.getProduct(), itemAmount);
+		}
+	
+	}
+	
+	private void removeFromCart(Map<Item.Domain,Cart> cart, CartItem cartItem) {
+		Cart cartDomain = getDomainCart(cart, ((Item)cartItem.getProduct()).getDomain());
+		if(cartDomain != null) {
+			cartDomain.removeItem(cartItem.getId());
+			//delete domain too:
+			if(cartDomain.isEmpty()) {
+				cart.remove(((Item)cartItem.getProduct()).getDomain());
+			}
+		}
+	}
+	
+	private CartItem getCartItem(Map<Item.Domain, Cart> cart, String cartitemId) {
+		for(Item.Domain itemDomain: cart.keySet()) {
+			Optional<CartItem> cartitem = cart.get(itemDomain).getItem(cartitemId);
+			if(cartitem.isPresent()) {
+				return cartitem.get();
+			}
+		}
+		return null;
+	}
+	
+	
+	
 	
 /* ORDERS */
 	
@@ -274,30 +340,6 @@ public class OrderController {
 		model.addAttribute("orders", orders);
 		return "orders";
 	}
-	
-	
-	
-	// @PostMapping("/pay") //, Errors result, result.hasErrors() || 
-	// String payOrder(@RequestParam("oid") MampfOrder order, @RequestParam("payment") int choosenPayment, @LoggedIn Optional<UserAccount> useraccount, Model model) {
-	// 	//TODO: error mapping
-		
-		
-	// 	if (!useraccount.isPresent()) {
-	// 		//TODO: add some fancy errors
-	// 		return "buy_order";
-	// 	}
-		
-	// 	//MampfOrder order = oM.findNewestOrder(useraccount.get());
-	// 	//model.addAttribute("order", order);
-			
-	// 	orderManager.payOrder(order);
-		
-	// 	//TODO: complete order if possible
-	// 	//TODO: show order instead of index
-	// 	return "redirect:/index";
-		
-	// }
-	
 	
 	
 }
