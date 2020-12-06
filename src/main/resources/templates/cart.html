@@ -21,12 +21,10 @@
 <div class="container">
 <h1>Warenkorb</h1>
 <div>
-    <br>
-
-	<div>
-	<div th:text="${n}"></div>
+    
     <div th:each="domain : ${domains}">
-    	<h1 th:text="${domain.key}"></h1>
+    <br>
+    	<h3 th:text="${domain.key}"></h3>
     	
     	<table class="table">
             <thead>
@@ -38,7 +36,7 @@
             </tr>
             </thead>
             <tbody th:remove="all-but-first">
-
+			<div th:with="cart=${domain.value}">
             <tr th:each="item : ${domain.value} ">
                 <td th:text="${item.productName}">Last Action Hero</td>
                 <td>
@@ -77,6 +75,14 @@
                     </form>
                 </td>
             </tr>
+            
+            <tr><td></td><td></td><td th:text = "${cart.price}">
+            	</td><td><form method="post" th:action="@{/pay}">
+            <input type="hidden" name="domain" th:value="${domain.key}"/>
+	    	<button type="submit">kaufen</button>
+	    </form></td>
+            </tr>
+            </div>
             </tbody>
         </table>
         <!--  <table class="ui celled table"><thead><tr><th>Titel</th><th>Anzahl</th><th>Preis</th><th></th></tr></thead><tbody>
@@ -101,10 +107,7 @@
             </tr>
           </tbody></table>-->
           
-        <form method="post" th:action="@{/pay}">
-            <input type="hidden" name="domain" th:value="${domain.key}"/>
-	    	<button type="submit">kaufen</button>
-	    </form>
+        
 	</div>
 	
     <div class="ui two column centered grid">

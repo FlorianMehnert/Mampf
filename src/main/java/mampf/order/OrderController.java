@@ -96,7 +96,9 @@ public class OrderController {
 		//return new TreeMap<Item.Domain, Cart>();
 		return new MampfCart();
 	}*/
-
+	/**
+	 * adds item to cart
+	 */
 	@PostMapping("/cart")
 	String addItem(@RequestParam("pid") Item item,
 				   @RequestParam("number") int number
@@ -104,7 +106,9 @@ public class OrderController {
 		cart.addToCart(item, Quantity.of(number));
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}
-
+	/**
+	 * view cart
+	 */
 	@GetMapping("/cart")
 	String basket(/*@ModelAttribute MampfCart cart*/
 				  Model model) {
@@ -112,7 +116,9 @@ public class OrderController {
 		model.addAttribute("domains", cart.getStuff());
 		return "cart";
 	}
-	
+	/**
+	 * clears cart
+	 */
 	@PostMapping("cart/clear")
 	String clearCart() {
 		cart.clear();
@@ -134,20 +140,17 @@ public class OrderController {
 		}
 		return "redirect:/cart";
 	}
-
-	/*@PostMapping("/cart/add/mobile-breakfast")
+	
+	/**
+	 * adds breakfast choice to cart as one cartitem
+	 */
+	@PostMapping("/cart/add/mobile-breakfast")
 	String orderMobileBreakfast( @LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form){
 
-		if(userAccount.isEmpty()) 
-			{return "redirect:/login";}
-		
-		/*BreakfastItem b = null, d = null;
-		for(Item item: catalog.findByDomain(Item.Domain.MOBILE_BREAKFAST)) 
-			{if(item.getName().equals(form.getBeverage()))b=((BreakfastItem)item);
-			if(item.getName().equals(form.getDish()))d=((BreakfastItem)item);}
-		if(b != null && d != null)
-		//TODO check for valid form
-		cart.addOrUpdateItem(new 
+		if(userAccount.isEmpty()) {
+			return "redirect:/login";
+		}
+		cart.addToCart(new 
 				BreakfastMappedItems(
 						"Mobile Breakfast Choice: "+form.getBeverage().getName()+", "+form.getDish().getName(),
 						BreakfastItem.BREAKFAST_PRICE,
@@ -157,9 +160,11 @@ public class OrderController {
 		
 		return "redirect:/cart";
 	}
-*/
+
 	
-	
+	/**
+	 * removes cartitem from cart
+	 */
 	@PostMapping("cart/remove")
 	String removeCartItem(@RequestParam String cartitemId
 						  /*@ModelAttribute MampfCart cart*/) {
