@@ -57,7 +57,7 @@ class UserController {
 	}
 
 	@GetMapping("/register")
-	String register(Model model, RegistrationForm form) {
+	public String register(Model model, RegistrationForm form) {
 		model.addAttribute("form", form);
 		return "register";
 	}
@@ -86,8 +86,9 @@ class UserController {
 	@GetMapping("/userDetails/")
 	@PreAuthorize("isAuthenticated()")
 	public String userDetails(Model model, Authentication authentication) {
-		if (userManagement.findUserByUsername(authentication.getName()).isPresent()) {
-			model.addAttribute("user", userManagement.findUserByUsername(authentication.getName()).get());
+		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+		if (user.isPresent()) {
+			model.addAttribute("user", user.get());
 			return "userDetails";
 		}
 		return "redirect:/";
@@ -96,11 +97,11 @@ class UserController {
 	@GetMapping("/userDetailsAsBoss/{userId}")
 	@PreAuthorize("hasRole('BOSS')")
 	public String userDetailsAsBoss(@PathVariable long userId, Model model) {
-		if (userManagement.findUserById(userId).isEmpty()) {
+		Optional<User> user = userManagement.findUserById(userId);
+		if (user.isEmpty()) {
 			return "users";
 		}
-		User user = userManagement.findUserById(userId).get();
-		model.addAttribute("user", user);
+		model.addAttribute("user", user.get());
 		return "userDetails";
 	}
 

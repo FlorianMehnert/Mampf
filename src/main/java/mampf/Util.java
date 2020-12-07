@@ -14,7 +14,7 @@ public class Util {
 	}
 
 	public static Domain parseDomainName(String domain){
-		String formatted = domain.toUpperCase().replace("\s", "_");
+		String formatted = domain.toUpperCase().replace("\\s", "_");
 		return Domain.valueOf(formatted);
 	}
 

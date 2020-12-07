@@ -1,15 +1,12 @@
 package mampf.employee;
 
 import mampf.order.MampfOrder;
-import org.salespointframework.useraccount.UserAccount;
 
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
