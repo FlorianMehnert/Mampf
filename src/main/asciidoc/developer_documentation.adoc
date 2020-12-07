@@ -20,8 +20,6 @@ toc::[]
 == Einführung und Ziele
 
 === Aufgabenstellung
-Aufgabenstellung: 
-
 "Cateringservice
 Essen und Trinken hält Leib und Seele zusammen“ besagt ein altes deutsches Sprichwort.
 Das dachte sich auch Hannes Wurst und baute seinen kleinen Imbissstand zu dem inzwischen
@@ -131,8 +129,6 @@ Das Wartungspotential der Software muss nahezu nicht vorhanden sein, da die Admi
 
 [[context_diagram]]
 image:images/diagrams/context_diagram.svg[context diagram]
-
-* Kontextdiagramm
 
 == Lösungsstrategie
 === Erfüllung der Qualitätsziele
@@ -270,7 +266,7 @@ a| * mampf.MampfWebConfiguration
 |===
 
 == Bausteinsicht
-* Entwurfsklassendiagramme der einzelnen Packages
+In der Bausteinsicht werden die Entwurfsklassendiagramme der einzelnen Packages aufgezeigt.
 
 === Mampf
 
@@ -390,23 +386,8 @@ image:images/diagrams/employee_package.svg[pkg employee diagram]
 | Role | Die Rolle, die ein Mitarbeiter/Employee haben kann: Koch (Cook) oder Service-Personal (Service).
 |===
 
-=== Rückverfolgbarkeit zwischen Analyse- und Entwurfsmodell
-_Die folgende Tabelle zeigt die Rückverfolgbarkeit zwischen Entwurfs- und Analysemodell. Falls eine Klasse aus einem externen Framework im Entwurfsmodell eine Klasse des Analysemodells ersetzt,
-wird die Art der Verwendung dieser externen Klasse in der Spalte *Art der Verwendung* mithilfe der folgenden Begriffe definiert:_
-
-* Inheritance/Interface-Implementation
-* Class Attribute
-* Method Parameter
-
-[options="header"]
-|===
-|Klasse/Enumeration (Analysemodell) |Klasse/Enumeration (Entwurfsmodell) |Art der Verwendung
-|...|...|...
-|===
-
-
 == Laufzeitsicht
-* Darstellung der Komponenteninteraktion anhand eines Sequenzdiagramms, welches die relevantesten Interaktionen darstellt.
+In der Laufzeitsicht werden die Komponenteninteraktionen anhand von Sequenzdiagrammen dargestellt.
 
 === Catalog
 
@@ -428,5 +409,6 @@ image:images/diagrams/developer_doc_6_5_Inventory.svg[sequence diagram - invento
 
 
 == Technische Schulden
-* Auflistung der nicht erreichten Quality Gates und der zugehörigen SonarQube Issues zum Zeitpunkt der Abgabe
+In dieser Sektion sollen später nicht erreichte Quality Gates und zugehörige
+SonarQube Issues zum Zeitpunkt der Abgabe stehen.
 
