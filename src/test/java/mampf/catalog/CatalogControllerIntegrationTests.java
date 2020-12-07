@@ -36,7 +36,7 @@ public class CatalogControllerIntegrationTests {
 
 	@Test 
 	void MobileBreakfastIntegrationTest() throws Exception {
-		mvc.perform(get("/catalog/mobile-breakfast"))
+		mvc.perform(get("/mobile-breakfast"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("mobile-breakfast"))
 			.andExpect(model().attributeExists("domainTitle"))
