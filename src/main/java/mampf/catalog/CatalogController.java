@@ -126,7 +126,7 @@ public class CatalogController {
 		}
 		model.addAttribute("categories", reorganizedItems);
 		model.addAttribute("domainTitle", "Mobile Breakfast");
-		return "mobile-breakfast.html";
+		return "mobile-breakfast";
 	}
 
 	@GetMapping("/catalog/item/detail/{item}")
