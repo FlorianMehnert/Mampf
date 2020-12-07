@@ -21,11 +21,11 @@
 <div class="container">
 <h1>Bestellung erstellen</h1>
 <div>
-    <br>
-
-    <div th:each="domain : ${events}">
-    	<h1 th:text="${domain.key}"></h1>
-        <table class="ui celled table"><thead><tr><th>Titel</th><th>Anzahl</th><th>Preis</th><th></th></tr></thead><tbody>
+<table> <tr><td>
+    <div th:each="domain : ${domains}">
+    	<br>
+    	<h3 th:text="${domain.key}"></h3>
+        <table class="ui celled table" th:with="cart=${domain.value}"><thead><tr><th>Titel</th><th>Anzahl</th><th>Preis</th><th></th></tr></thead><tbody>
             <tr th:each="item : ${domain.value} ">
                 <td th:text="${item.productName}">Last Action Hero</td>
                 <td > <table><tr><td><div th:text="${item.quantity}">10</div></td>
@@ -36,26 +36,29 @@
                  </form>--></tr></table> </td>
                 <td th:text="${{item.price}}">10 Euro</td><td></td>
             </tr>
+            <tr><td></td><td></td><td th:text="${{cart.price}}">10 Euro</td><td></td></tr>
           </tbody></table>
-          
+          Gesamtpreis:<div th:text="${total}"></div>
         <!-- TODO: <form method="post" th:action="@{/setDate}">
             <input type="hidden" name="domainId" th:value="${domain}"/>
 	    	<button type="submit">kaufen</button>
 	    </form>-->
 	</div>
-	
+	</td><td>
     <div class="ui two column centered grid">
-    	<div class="value"><span th:text="${{cart.price}}">1337</span></div>
+    	<!-- <div class="value"><span th:text="${{cart.price}}">1337</span></div>
          <form method="post" th:action="@{/cart/clear}"><button type="submit">Warenkorb leeren</button></form>
             <!-- sec:authorize="hasRole('INDIVIDUAL')" -->
 		<form method="post" role="form" class="ui form" id="form" th:action="@{/checkout}" th:object="${form}"> 
 		<input type="hidden" name="domainChoosen" th:value="${domainChoosen}"/> <!-- save between or "none"-->
-		<label><input type="radio" name="payMethod" value="Bar" checked="checked"/>Bar</label><label><input  type="radio" name="payMethod"  value="Check"/>Überweisung</label>
-		<label for="start">Start: </label><input id="start" name="start" type="datetime-local" th:field="*{startDate}" th:errorclass="fieldError" required="required"/>
-		<label for="address">Address: </label><input id="address" name="address" type="text" th:field="*{address}" th:errorclass="fieldError" required="required"/>
-		<button type="submit" class="ui button">Bestellung erstellen</button>
+		<label><input type="radio" name="payMethod" value="Bar" checked="checked"/>Bar</label><br><label><input  type="radio" name="payMethod"  value="Check"/>Überweisung</label>
+		<br><label for="start">Start: </label><input id="start" name="start" type="datetime-local" th:field="*{startDate}" th:errorclass="fieldError" required="required"/>
+		<br><label for="address">Address: </label><input id="address" name="address" type="text" th:field="*{address}" th:errorclass="fieldError" required="required"/>
+		<br><button type="submit" class="ui button">Bestellung erstellen</button>
 		</form>
-   	</div>
+   	</div></td>
+</tr>
+</table>
     
 <!-- 
 

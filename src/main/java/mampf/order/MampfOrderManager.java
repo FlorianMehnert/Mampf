@@ -33,8 +33,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MampfOrderManager {
 	
-	static enum ValidationState{
-		OK,NO_PERSONAL,NO_STOCK,NO_ITEM
+	public static enum ValidationState{
+		NO_PERSONAL,NO_STOCK,NO_ITEM
 	};
 	private final OrderManagement<MampfOrder> orderManagement;
 	private final Inventory inventory;
@@ -224,81 +224,89 @@ public class MampfOrderManager {
 		return validations;
 	}
 	
-	public MampfOrder createOrder(Cart cart, 
-								  Item.Domain domain, 
-								  DateFormular form, 
-								  UserAccount userAccount) {
+	public List<MampfOrder> createOrders(Map<Item.Domain, Cart> carts,  
+										 DateFormular form, 
+										 UserAccount userAccount) {
 		
-		if(cart == null || userAccount == null || form == null)return null;
+		if(carts == null || userAccount == null || form == null)return null;
 		
-		
-		MampfOrder order;
-		
-		if(domain.equals(Item.Domain.MOBILE_BREAKFAST)) {
-			order = createOrderMB(cart, form, userAccount);
-			
-		}else {
-			//create usual order:
-			// create date with date and address:
-			MampfDate orderDate = new MampfDate(form.getStartDate(), form.getAddress()); 
-			order = new MampfOrder(userAccount,
-								   createPayMethod(form.getPayMethod(),userAccount), 
-								   domain,
-								   orderDate);
-			orderDate.setOrder(order);
-			cart.addItemsTo(order);
-		}
-		
-		//set personal as booked:
 		Map<String, List<Employee>> personalLeft = null;
-		
-		for(CartItem cartitem: cart) {
-			if(((Item)cartitem.getProduct()).getCategory().equals(Item.Category.STAFF)) {
-				personalLeft = new HashMap<>();
-				for(Employee.Role role: Employee.Role.values()) {
-					personalLeft.put(role.toString(), 
-									 getfreeEmployee(form.getStartDate(), role));
+		for(Item.Domain domain: carts.keySet()) {
+			for(CartItem cartitem: carts.get(domain)) {
+				if(((Item)cartitem.getProduct()).getCategory().equals(Item.Category.STAFF)) {
+					personalLeft = new HashMap<>();
+					for(Employee.Role role: Employee.Role.values()) {
+						personalLeft.put(role.toString(), 
+										 getfreeEmployee(form.getStartDate(), role));
+					}
+					break;
 				}
-				break;
 			}
 		}
-	
-		Item item;
-		Quantity itemQuantity;
 		
-		for(CartItem cartItem: cart) {
-			item = ((Item)cartItem.getProduct());
-			itemQuantity = cartItem.getQuantity();
+		
+		List<MampfOrder> orders = new ArrayList<>();
+		for(Item.Domain domain: carts.keySet()) {
 			
-			if(item.getCategory().equals(Item.Category.STAFF)){
-				StaffItem personalItem = ((StaffItem)item);
-				String personalItemType = personalItem.getType().toString();
+			Cart cart = carts.get(domain);
+			
+			MampfOrder order;
+			
+			if(domain.equals(Item.Domain.MOBILE_BREAKFAST)) {
+				order = createOrderMB(cart, form, userAccount);
 				
-				List<Employee> freeStaff = personalLeft.get(personalItemType);
+			}else {
+				//create usual order:
+				// create date with date and address:
+				MampfDate orderDate = new MampfDate(form.getStartDate(), form.getAddress()); 
+				order = new MampfOrder(userAccount,
+									   createPayMethod(form.getPayMethod(),userAccount), 
+									   domain,
+									   orderDate);
+				orderDate.setOrder(order);
+				cart.addItemsTo(order);
+			}
+			
+			//set personal as booked:
+		
+			Item item;
+			Quantity itemQuantity;
+			
+			for(CartItem cartItem: cart) {
+				item = ((Item)cartItem.getProduct());
+				itemQuantity = cartItem.getQuantity();
 				
-				int personalAmount = itemQuantity.getAmount().intValue();
-				Employee employee;
-				for(int i = 0; i < personalAmount; i++) {
-					if(!freeStaff.isEmpty()){
-						employee = freeStaff.remove(0);
-						employee.setBooked(order);
-						order.addEmployee(employee);
+				if(item.getCategory().equals(Item.Category.STAFF)){
+					StaffItem personalItem = ((StaffItem)item);
+					String personalItemType = personalItem.getType().toString();
+					
+					List<Employee> freeStaff = personalLeft.get(personalItemType);
+					
+					int personalAmount = itemQuantity.getAmount().intValue();
+					Employee employee;
+					for(int i = 0; i < personalAmount; i++) {
+						if(!freeStaff.isEmpty()){
+							employee = freeStaff.remove(0);
+							employee.setBooked(order);
+							order.addEmployee(employee);
+						}
 					}
 				}
 			}
+		
+			if(!orderManagement.payOrder(order))return null; 
+			
+	
+			//will (indirectly) reduce item amount if possible
+			//mb orders throws error
+			if(!domain.equals(Item.Domain.MOBILE_BREAKFAST))orderManagement.completeOrder(order);
+			
+			orderManagement.save(order);
+			if(!order.isCompleted())return null;
+			orders.add(order);
 		}
-	
-		if(!orderManagement.payOrder(order))return order; 
 		
-
-		//will (indirectly) reduce item amount if possible
-		//if(!orderDomain.equals(Item.Domain.MOBILE_BREAKFAST))orderManagement.completeOrder(order);
-		orderManagement.completeOrder(order);
-		
-		orderManagement.save(order);
-		if(!order.isCompleted())return null;
-	
-		return order;
+		return orders;
 		
 	}
 	

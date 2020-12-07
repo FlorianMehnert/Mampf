@@ -2,18 +2,15 @@ package mampf.order;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import javax.validation.Valid;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-import org.salespointframework.quantity.Metric;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
@@ -30,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
+import mampf.order.MampfOrderManager.ValidationState;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -112,8 +110,9 @@ public class OrderController {
 	@GetMapping("/cart")
 	String basket(/*@ModelAttribute MampfCart cart*/
 				  Model model) {
-		model.addAttribute("n", cart.getSize());
-		model.addAttribute("domains", cart.getStuff());
+		Map<Item.Domain, Cart> domains = cart.getStuff();
+		model.addAttribute("domains", domains);
+		model.addAttribute("total", cart.getTotal(domains.values()));
 		return "cart";
 	}
 	/**
@@ -175,92 +174,66 @@ public class OrderController {
 		return "redirect:/cart";
 	}
 	
-	//choose to buy:
-	/*@PostMapping("/pay")
-	String chooseToBuy(Model model, @RequestParam String domain, DateFormular form) {
+	/**
+	 * view buying site
+	 */
+	@GetMapping("/pay/{domain}")
+	String chooseToBuy(Model model, 
+					   @PathVariable String domain, DateFormular form) {
 
-		
-		model.addAttribute("events", getDomainItems(cart,domain));
+		Map<Item.Domain, Cart> domains = cart.getDomainItems(domain);
+		model.addAttribute("domains", domains);
 		model.addAttribute("domainChoosen", domain);
+		model.addAttribute("total", cart.getTotal(domains.values()));
 		model.addAttribute("form", form);
 		return "buy_cart";
-	}	*/
+	}	
 	
-	//TODO: replace domain with optionals
-	/*Map<Item.Domain,List<CartItem>> getDomainItems(Cart cart,String domain){
-		Map<Item.Domain,List<CartItem>> events = new HashMap<>();
-		boolean checkForDomain = (!domain.equals("none")); 
-		for(CartItem cartitem: cart) {
-			Item item = (Item)cartitem.getProduct();
-			Item.Domain itemDomain = item.getDomain();
-			
-			//skip item if not of requested domain
-			if(checkForDomain)
-				if(!itemDomain.equals(Item.Domain.valueOf(domain)))continue;
-			
-			if(events.containsKey(itemDomain))
-			//add to list
-				{events.get(itemDomain).add(cartitem);}
-			else
-			//just create new list
-				{List<CartItem> event=new ArrayList<>();event.add(cartitem);events.put(itemDomain, event);}
+	/**
+	 * buy cart(s)
+	 */
+	@PostMapping("/checkout")
+	String buy(@RequestParam String domainChoosen,
+			   @Valid DateFormular form,
+			   Errors result,
+			   @LoggedIn Optional<UserAccount> userAccount,
+			   RedirectAttributes redirectAttributes) {
+		
+		if(userAccount.isEmpty()) {
+			return "redirect:/login";
 		}
-		return events;
-	}*/
-	
-	
-	
-	/*@PostMapping("/checkout")
-	String buy(@RequestParam String domainChoosen, @ModelAttribute Cart cart, @Valid DateFormular form, Errors result, @LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
 		
-		if(userAccount.isEmpty()) 
-			{return "redirect:/login";}
+		Map<Item.Domain,Cart> carts = cart.getDomainItems(domainChoosen);
+		Map<Item.Domain,List<ValidationState>> validations = 
+									orderManager.validateCarts(
+											carts, form);
 		
+		if(!validations.isEmpty()) {
+			//error handling
+			//send errors to specific pay redirect
+			return "redirect:/cart";
+		}
 		
-		Map<Item.Domain, List<CartItem>> orders = getDomainItems(cart, domainChoosen);
-		//MobileBreakfastForm mbForm;
-		//List<MampfOrder> createdOrders = new ArrayList<>();
-		for(Item.Domain domain : orders.keySet()) 
-			
-			//create new cart:
-			{Cart orderCart = new Cart();
-			for(CartItem cartitem: orders.get(domain)) 
-				{orderCart.addOrUpdateItem(cartitem.getProduct(), cartitem.getQuantity());}
-			
-			//create order:
-			MampfOrder order = orderManager.createOrder(orderCart,
-														form, 
-														userAccount.get());
-			
-			//remove cartitem and save the created orders:
-			if(order != null)
-				//remove items from main cart:
-				{for(CartItem cartitem: orderCart) 
-					{cart.removeItem(cartitem.getProduct().getId().getIdentifier());} 
-				}	
-			}
+		List<MampfOrder> orders = orderManager.createOrders(carts, form, userAccount.get());
 		
-		//TODO: mark new created order
+		List<Item.Domain> domains = new ArrayList<>();
+		for(Item.Domain domain : carts.keySet()) {
+			domains.add(domain);
+		}
+		for(Item.Domain domain : domains) {
+			cart.removeCart(domain);
+		} 
+		
+		// success handling
+		
 		return "redirect:/userOrders";
-		/*if(order != null) {
-			redirectAttributes.addAttribute("id", order.getId().getIdentifier());
-			return "redirect:/orders/detail/{id}";
-		}
-		//order fehler:
-		//TODO
-		return "redirect:/cart";
-		
-	}*/
+	}
 
-/* CART FUNCTIONS */
-	
-	
-	
-	
-	
-	
 /* ORDERS */
 	
+	/**
+	 * lists orders ever for adminuser
+	 */
 	@GetMapping("/orders")
 	@PreAuthorize("hasRole('BOSS')")
 	String orders(Model model) {
@@ -269,6 +242,9 @@ public class OrderController {
 		model.addAttribute("orders", orders);
 		return "orders";
 	}
+	/**
+	 * lists orders of a user
+	 */
 
 	@GetMapping("/orders/detail/{order}")
 	//@PreAuthorize("hasRole('BOSS')")
@@ -284,11 +260,10 @@ public class OrderController {
 	
 	@GetMapping("/userOrders")
 	String orderUser(Model model, @LoggedIn Optional<UserAccount> userAccount) {
-		if(userAccount.isEmpty())return "redirect:/";
+		if(userAccount.isEmpty())return "redirect:/login";
 		List<MampfOrder> orders = orderManager.findByUserAcc(userAccount.get());
 		model.addAttribute("orders", orders);
 		return "orders";
 	}
-	
 	
 }

@@ -77,10 +77,8 @@
             </tr>
             
             <tr><td></td><td></td><td th:text = "${cart.price}">
-            	</td><td><form method="post" th:action="@{/pay}">
-            <input type="hidden" name="domain" th:value="${domain.key}"/>
-	    	<button type="submit">kaufen</button>
-	    </form></td>
+            	</td><td><a th:href="'/pay/' + ${domain.key}" type="submit">kaufen</a>
+	    </td>
             </tr>
             </div>
             </tbody>
@@ -109,20 +107,15 @@
           
         
 	</div>
-	
+	Gesamtpreis:<div th:text="${total}"></div>
     <div class="ui two column centered grid">
     	<!--  <div class="value"><span th:text="${{cart.price}}">1337</span></div>
          --><form method="post" th:action="@{/cart/clear}"><button type="submit">Warenkorb leeren</button></form>
             <!-- sec:authorize="hasRole('INDIVIDUAL')" -->
-		      <form method="post" th:action="@{/pay}"> 
-		       <input type="hidden" name="domain" th:value="none"/>
-		       <!-- <label><input type="radio" name="payMethod" value="Bar" checked="checked"/>Bar</label><label><input  type="radio" name="payMethod"  value="Check"/>Check</label>
-		 	   <label for="start">Start: </label><input id="start" name="start" type="datetime-local" th:field="*{startDate}" th:errorclass="fieldError" required="required"/>
-		       <label for="end">End: </label><input id="end" name="end" type="datetime-local" th:field="*{endDate}" th:errorclass="fieldError" required="required"/>
-		       <label for="address">Address: </label><input id="address" name="address" type="text" th:field="*{address}" th:errorclass="fieldError" required="required"/>
-		       --><button type="submit" class="ui button">alles kaufen</button>
-              </form>
+		      <a th:href="'/pay/_'">alles kaufen</a>
+              
    	</div>
+   	<br>
     
 <!--  
     <div th:if="${cart.empty}">
