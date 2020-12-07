@@ -81,7 +81,7 @@ public class CatalogController {
 		}
 
 		// reorganizing the items of the chosen domain to show them each under its category
-		Iterable<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
+		ArrayList<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
 		Iterator<Item> iterator = filteredCatalog.iterator();
 		Map<String, ArrayList<Item>> categorizedItems = new HashMap<>();
 		while(iterator.hasNext()){
