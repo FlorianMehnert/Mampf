@@ -2,10 +2,6 @@ package mampf.user;
 
 import com.mysema.commons.lang.Pair;
 import mampf.Util;
-import mampf.catalog.Item;
-import mampf.employee.Employee;
-import org.salespointframework.inventory.UniqueInventoryItem;
-import org.salespointframework.useraccount.Role;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,8 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Optional;
 
 @Controller
 class UserController {
@@ -33,7 +28,7 @@ class UserController {
 	}
 
 	@PostMapping("/register")
-	String registerNew(@Valid @ModelAttribute("form")
+	public String registerNew(@Valid @ModelAttribute("form")
 							   RegistrationForm form, Errors result, RedirectAttributes redirAttrs) {
 		boolean err = false;
 		for (User user : userManagement.findAll()) {
@@ -63,7 +58,7 @@ class UserController {
 	}
 
 	@GetMapping("/register")
-	String register(Model model, RegistrationForm form) {
+	public String register(Model model, RegistrationForm form) {
 		model.addAttribute("form", form);
 		return "register";
 	}
@@ -92,8 +87,9 @@ class UserController {
 	@GetMapping("/userDetails/")
 	@PreAuthorize("isAuthenticated()")
 	public String userDetails(Model model, Authentication authentication) {
-		if (userManagement.findUserByUsername(authentication.getName()).isPresent()) {
-			model.addAttribute("user", userManagement.findUserByUsername(authentication.getName()).get());
+		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+		if (user.isPresent()) {
+			model.addAttribute("user", user.get());
 			return "userDetails";
 		}
 		return "redirect:/";
@@ -102,11 +98,11 @@ class UserController {
 	@GetMapping("/userDetailsAsBoss/{userId}")
 	@PreAuthorize("hasRole('BOSS')")
 	public String userDetailsAsBoss(@PathVariable long userId, Model model) {
-		if (userManagement.findUserById(userId).isEmpty()) {
+		Optional<User> user = userManagement.findUserById(userId);
+		if (user.isEmpty()) {
 			return "users";
 		}
-		User user = userManagement.findUserById(userId).get();
-		model.addAttribute("user", user);
+		model.addAttribute("user", user.get());
 		return "userDetails";
 	}
 

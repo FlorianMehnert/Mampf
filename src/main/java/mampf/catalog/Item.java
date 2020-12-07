@@ -2,8 +2,6 @@ package mampf.catalog;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
-import org.salespointframework.catalog.ProductIdentifier;
-import org.salespointframework.inventory.InventoryItemIdentifier;
 
 import javax.persistence.Entity;
 

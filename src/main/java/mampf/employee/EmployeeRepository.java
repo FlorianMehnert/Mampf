@@ -1,9 +1,12 @@
 package mampf.employee;
 
 import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Streamable;
+
+import mampf.employee.Employee.Role;
 
 interface EmployeeRepository extends CrudRepository<Employee, Long>{
 
@@ -15,10 +18,26 @@ interface EmployeeRepository extends CrudRepository<Employee, Long>{
 		Iterator<Employee> iterator = employees.iterator();
 		while (iterator.hasNext()) {
 			Employee currentEmployee = iterator.next();
-			if (currentEmployee.getName() == name) {
+			if (currentEmployee.getName().equals(name)) {
 				return currentEmployee;
 			}
 		}
 		return null;
-	};
+	}
+
+	default ArrayList<Employee> findByRole(Role role){
+		if(role == null){
+			throw new IllegalArgumentException("role cannot be null");
+		}
+		ArrayList<Employee> employeesWithRole = new ArrayList<>();
+		Streamable<Employee> employees = this.findAll();
+		Iterator<Employee> iterator = employees.iterator();
+		while (iterator.hasNext()) {
+			Employee currentEmployee = iterator.next();
+			if (currentEmployee.getRole() == role) {
+				employeesWithRole.add(currentEmployee);
+			}
+		}
+		return employeesWithRole;
+	}
 }

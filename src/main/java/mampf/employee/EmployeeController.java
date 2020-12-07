@@ -2,9 +2,7 @@ package mampf.employee;
 
 import javax.validation.Valid;
 
-import mampf.user.User;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
@@ -27,15 +25,15 @@ public class EmployeeController {
 
 	@PreAuthorize("hasRole('BOSS')")
 	@GetMapping("/intern/employees/add")
-	String createEmployee(Model model) {
+	public String createEmployee(Model model) {
 		return "employee_add";
 	}
 
 	@PostMapping("/intern/employees/add")
-	String registerNew(@Valid RegistrationForm form, Errors error, RedirectAttributes redirAttrs){
+	public String registerNew(@Valid RegistrationForm form, Errors error, RedirectAttributes redirAttrs){
 
 		boolean err = false;
-		if(form.getRole() != "COOK" || form.getRole() != "SERVICE"){
+		if(form.getRole().equals("COOK") || form.getRole().equals("SERVICE")){
 			redirAttrs.addFlashAttribute("noType", "This type of employee doesn't exist");
 			err = true;
 		}
@@ -53,7 +51,7 @@ public class EmployeeController {
 
 	@PreAuthorize("hasRole('BOSS')")
 	@GetMapping("/intern/employees")
-	String register(Model model){
+	public String register(Model model){
 		model.addAttribute("employees", employeeManagement.findAll());
 		return "employees";
 	}

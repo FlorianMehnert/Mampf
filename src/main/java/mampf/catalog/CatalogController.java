@@ -110,7 +110,7 @@ public class CatalogController {
 	}
 
 	@GetMapping("/mobile-breakfast")
-	String mobileBreakfast(Model model){
+	public String mobileBreakfast(Model model){
 		Map<String, ArrayList<Item>> reorganizedItems = new HashMap<>();
 		Iterator<Item> breakFastItems = this.catalog.findByDomain(Item.Domain.MOBILE_BREAKFAST).iterator();
 		while(breakFastItems.hasNext()){
