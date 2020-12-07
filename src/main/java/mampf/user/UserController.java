@@ -2,10 +2,6 @@ package mampf.user;
 
 import com.mysema.commons.lang.Pair;
 import mampf.Util;
-import mampf.catalog.Item;
-import mampf.employee.Employee;
-import org.salespointframework.inventory.UniqueInventoryItem;
-import org.salespointframework.useraccount.Role;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -13,12 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 @Controller
 class UserController {
@@ -33,25 +26,26 @@ class UserController {
 	}
 
 	@PostMapping("/register")
-	String registerNew(@Valid @ModelAttribute("form")
-							   RegistrationForm form, Errors result, RedirectAttributes redirAttrs) {
-		boolean err = false;
+	String registerNew(@Valid @ModelAttribute("form") RegistrationForm form, Errors result) {
 		for (User user : userManagement.findAll()) {
 			if ((form.getUsername().equals(user.getUserAccount().getUsername()))) {
-				redirAttrs.addFlashAttribute("userAlreadyExists", "This Username is already taken!");
-				err = true;
+				result.rejectValue("username", "RegistrationForm.username.exists", "This Username is already taken!");
 			}
 			if ((form.getEmail().equals(user.getUserAccount().getEmail()))) {
-				redirAttrs.addFlashAttribute("EMailAlreadyExists", "This E-Mail does exists already!");
-				err = true;
+				result.rejectValue("email", "RegistrationForm.username.exists", "This E-Mail does exists already!");
 			}
 		}
-		if (form.getRole().equals("INDIVIDUAL") && (form.getCompanyName().length() > 0 || form.getAccessCode().length() > 0)) {
-			redirAttrs.addFlashAttribute("wrongInput", "Bad inputs were used!");
-			err = true;
+		if(form.getRole().equals("EMPLOYEE") && form.getAccessCode().length() != 6 ) {
+			result.rejectValue("accessCode", "RegistrationForm.accessCode.NotEmpty","You've entered an incorrect access code!");
 		}
-		if (err) {
-			return "redirect:/register";
+		if (form.getRole().equals("EMPLOYEE") && userManagement.findCompany(form.getAccessCode()).isEmpty()) {
+			result.rejectValue("accessCode", "RegistrationForm.accessCode.notExists","You've entered a wrong access code!");
+		}
+		if (form.getRole().equals("COMPANY") && form.getCompanyName().length() == 0) {
+			result.rejectValue("companyName", "RegistrationForm.companyName.NotEmpty","The company name can not be empty!");
+		}
+		if (form.getRole().equals("INDIVIDUAL") && (form.getCompanyName().length() > 0 || form.getAccessCode().length() > 0)) {
+			result.reject("wrongInput", "Bad inputs were used!");
 		}
 		if (result.hasErrors()) {
 			return "register";
