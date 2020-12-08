@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,13 +33,13 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/intern/employees/add")
-	public String registerNew(@Valid RegistrationForm form, Errors error){
+	public String registerNew(@Valid @ModelAttribute("form")RegistrationForm form, Errors error){
 		if(!form.getRole().equals("COOK") || !form.getRole().equals("SERVICE")){
 			error.rejectValue("role", "This type of employee does not exist");
 		}
 
 		if(error.hasErrors()){
-			return "redirect:/intern/employees";
+			return "employee_add";
 		}
 
 		employeeManagement.createEmployee(form);

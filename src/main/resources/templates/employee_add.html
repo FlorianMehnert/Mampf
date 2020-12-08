@@ -28,6 +28,10 @@
     </header>
     <form class="ui form" th:action="@{/intern/employees/add}" method="post" th:object="${form}">
       <div>
+        <p class="ui negative message" th:if="${#fields.hasErrors('*')}">
+          Einige Angaben sind nicht korrekt.
+        </p>
+
         <div class="form-group">
           <label for="username" th:text="#{employee.username}">Username</label>
           <input class="form-control" th:errorclass="fieldError" required="required"
@@ -54,7 +58,7 @@
                  type="text" id="last_name" name="last_name" autofocus="autofocus" th:field="*{last_name}"/>
           <div class="invalid-feedback" th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}">
             <br/>
-            <p>Nachmename muss nicht null sein</p>
+            <p>Nachname muss nicht null sein</p>
           </div>
         </div>
         <br>
@@ -62,6 +66,7 @@
           <label for="role" th:text="#{employee.role}">Role</label>
           <input class="form-control"  required="required"
                  type="text" id="role" name="role" autofocus="autofocus" /> <br/>
+          <small>Enter cook or service</small>
         </div>
         <br>
         <button class="ui primary button" type="submit" th:text="#{employee.add}"> Mitarbeiter hinzufügen</button>
