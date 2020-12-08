@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -29,11 +28,14 @@ public class CheckoutForm {
 	@NotEmpty()
 	private final String payMethod;
 
-	public CheckoutForm(LocalDate startDate, String address, String payMethod, LocalTime startTime) {
+	private String generalError;
+
+	public CheckoutForm(LocalDate startDate, String address, String payMethod, LocalTime startTime, String generalError) {
 		this.startDate = startDate;
 		this.address = address;
 		this.payMethod = payMethod;
 		this.startTime = startTime;
+		this.generalError = generalError;
 	}
 
 	public LocalDateTime getStartDateTime() {
@@ -58,4 +60,7 @@ public class CheckoutForm {
 		return startTime != null ? startTime.format(formatter) : LocalTime.now().format(formatter);
 	}
 
+	public String getGeneralError() {
+		return generalError;
+	}
 }

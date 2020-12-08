@@ -163,7 +163,11 @@ public class OrderController {
 		Map<Item.Domain, Cart> carts = cart.getDomainItems(domainChoosen);
 		Map<Item.Domain, List<ValidationState>> validations = orderManager.validateCarts(carts, form);
 
-		if (!validations.isEmpty() || result.hasErrors()) {
+		if(!validations.isEmpty()) {
+			result.rejectValue("generalError",  "CheckoutForm.generalError.NoStuffLeft","There is no free stuff or personal for the selected time left!");
+		}
+
+		if (result.hasErrors()) {
 			model.addAttribute("domains", carts);
 			model.addAttribute("domainChoosen", domainChoosen);
 			model.addAttribute("total", cart.getTotal(carts.values()));
