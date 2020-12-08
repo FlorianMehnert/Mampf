@@ -17,6 +17,8 @@ import org.salespointframework.useraccount.UserAccount;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,18 +43,19 @@ public class MampfOrderManager {
 	private final MampfCatalog catalog;
 	private final EmployeeManagement employeeManagement;
 
-	public MampfOrderManager(OrderManagement<MampfOrder> orderManagement, Inventory inventory,
-							 EmployeeManagement employeeManagement, MampfCatalog catalog) {
+	public MampfOrderManager(OrderManagement<MampfOrder> orderManagement, 
+							 Inventory inventory,
+							 EmployeeManagement employeeManagement,
+							 MampfCatalog catalog) {
 		this.orderManagement = orderManagement;
 		this.inventory = inventory;
 		this.employeeManagement = employeeManagement;
 		this.catalog = catalog;
-
 	}
 	
-	private PaymentMethod createPayMethod(String payMethod,UserAccount userAccount) {
-		PaymentMethod method = Cash.CASH; //bydefault
-		//if(payMethod.equals("Cash")) method = Cash.CASH; 
+	private PaymentMethod createPayMethod(String payMethod,
+										  UserAccount userAccount) {
+		PaymentMethod method = Cash.CASH; 
 		if(payMethod.equals("Check")) {
 			method = new Cheque(userAccount.getUsername(),
 								userAccount.getId().getIdentifier(),
@@ -64,59 +67,76 @@ public class MampfOrderManager {
 		return method;
 	}
 	
-	private List<Employee> getfreeEmployee(LocalDateTime startDate, Employee.Role role) {
-	
-		//get free employees by date:
-		//MampfOrder bookedOrder;
-		boolean isFree = true;
-		List<Employee> freeEmployee = new ArrayList<>();
-		//TODO: employeeManagement method?
-		for(Employee employee: employeeManagement.findAll()) {
-			isFree = true;
-			for(MampfOrder bookedOrder : employee.getBooked())
-				if(bookedOrder.getDate().hasTimeOverlap(startDate))
-					{isFree = false; break;}
-			
-			if(isFree) 
-				if(employee.getRole().equals(role)) freeEmployee.add(employee);
-			
+	private boolean hasStaff(Collection<Cart> carts) {
+		for(Cart cart: carts) {
+			if(cart.get().
+			   anyMatch(cartitem -> ((Item)cartitem.getProduct()).
+					   				getCategory().
+					   				equals(Item.Category.STAFF))) {
+				return true;
+			}
 		}
-		return freeEmployee;
+		return false;
 	}
 	
-	private MampfOrder createOrderMB(Cart cart,
+	private Map<String, Integer> getPersonalAmount(DateFormular form){
+		Map<String, Integer> personalLeftSize = new HashMap<>();
+		for(Map.Entry<String, List<Employee>> entry : getPersonal(form).entrySet()) {
+			personalLeftSize.put(entry.getKey(), entry.getValue().size());
+		}
+		return personalLeftSize;
+	}
+	
+	private Map<String, List<Employee>> getPersonal(DateFormular form){
+		Map<String, List<Employee>> personalLeft = new HashMap<>();
+		for(Employee.Role role: Employee.Role.values()) {
+			List<Employee> xcy = employeeManagement.
+					 getFreeEmployees(
+							 form.getStartDate(),
+							 role);
+			personalLeft.put(role.toString(), xcy);
+		}
+		return personalLeft;
+	}
+	
+	private MampfDate createDateMB(OrderController.BreakfastMappedItems item) {
+		return new MampfDate(item.
+							 getForm().
+							 getDays().
+				  			 keySet().
+				  			 stream().
+				  			 filter(weekday -> item.
+				  					 		   getForm().
+				  					 		   getDays().
+				  					 		   get(weekday).
+				  					 		   booleanValue()).
+				  			 		toArray(String[]::new),
+				  			 item.
+				  			 getForm().
+				  			 getTime());
+	}
+	
+	private MampfOrder createOrderMB(CartItem cartitem,
 									 DateFormular form, 
 									 UserAccount account) {
-		//creates special order for mobile breakfast
-		
 		//get mapper-item:
-		CartItem cartitem = cart.get().findFirst().get();
-		OrderController.BreakfastMappedItems item = 
-				((OrderController.BreakfastMappedItems)cartitem.getProduct());
+		BreakfastMappedItems item = (BreakfastMappedItems)cartitem.
+														  getProduct();
 		//add choice:
-		//TODO: cannot be removed from inventory
+		Cart cart = new Cart();
 		cart.addOrUpdateItem(item.getForm().getBeverage(),Quantity.of(1));
 		cart.addOrUpdateItem(item.getForm().getDish(),Quantity.of(1));
 		
-		
 		//create special date:
 		// days and time
-		MampfDate orderDate = 
-				new MampfDate(item.getForm().getDays().
-							  keySet().stream().filter(weekday -> 
-							  		item.getForm().getDays().get(weekday).booleanValue()).toArray(String[]::new),
-							  item.getForm().getTime()); 
-		
+		MampfDate orderDate = createDateMB(item);
 		MampfOrder order = new MampfOrder(account,
 										  createPayMethod(form.getPayMethod(),
-												  account),
+												  		  account),
 										  Item.Domain.MOBILE_BREAKFAST,
 										  orderDate);
 		orderDate.setOrder(order);
-		//add prize as chargeline
 		order.addChargeLine(item.getPrice(), "static prize for a breakfast");
-		//remove mapper-item:
-		cart.removeItem(cartitem.getId());
 		
 		cart.addItemsTo(order);
 		
@@ -140,28 +160,16 @@ public class MampfOrderManager {
 	public Map<Item.Domain, List<ValidationState>> validateCarts(Map<Item.Domain, Cart> carts,
 														   DateFormular form){
 		
-		Map<Item.Domain, List<ValidationState>> validations = new HashMap<>();
-		
+		Map<Item.Domain, List<ValidationState>> validations = new EnumMap<>(Item.Domain.class);
 		Map<String, Integer> personalLeft = null;
-		
-		for(Item.Domain domain: carts.keySet()) {
-			for(CartItem cartitem: carts.get(domain)) {
-				if(((Item)cartitem.getProduct()).getCategory().equals(Item.Category.STAFF)) {
-					personalLeft = new HashMap<>();
-					for(Employee.Role role: Employee.Role.values()) {
-						personalLeft.put(role.toString(), 
-										 Integer.valueOf(getfreeEmployee
-												 (form.getStartDate(), role).
-												 size()));
-					}
-					break;
-				}
-			}
+		if(hasStaff(carts.values())) {
+			personalLeft = getPersonalAmount(form);
 		}
 		
 		
-		for(Item.Domain domain: carts.keySet()) {
-			Cart cart = carts.get(domain);
+		for(Map.Entry<Item.Domain, Cart> entry : carts.entrySet()) {
+			Item.Domain domain = entry.getKey();
+			Cart cart = entry.getValue();
 			
 			for(CartItem cartitem: cart) {
 				List<CartItem> checkitems = new ArrayList<>();
@@ -204,7 +212,7 @@ public class MampfOrderManager {
 							Integer amountLeft = personalLeft.get(staffType);
 							
 							//reduce
-							if(amountLeft > 0) {
+							if(amountLeft > -1) {
 								amountLeft -= checkitem.getQuantity().getAmount().intValue();
 								personalLeft.put(staffType, amountLeft); //?
 							}
@@ -231,17 +239,8 @@ public class MampfOrderManager {
 		if(carts == null || userAccount == null || form == null)return null;
 		
 		Map<String, List<Employee>> personalLeft = null;
-		for(Item.Domain domain: carts.keySet()) {
-			for(CartItem cartitem: carts.get(domain)) {
-				if(((Item)cartitem.getProduct()).getCategory().equals(Item.Category.STAFF)) {
-					personalLeft = new HashMap<>();
-					for(Employee.Role role: Employee.Role.values()) {
-						personalLeft.put(role.toString(), 
-										 getfreeEmployee(form.getStartDate(), role));
-					}
-					break;
-				}
-			}
+		if(hasStaff(carts.values())) {
+			personalLeft = getPersonal(form);
 		}
 		
 		
@@ -253,7 +252,9 @@ public class MampfOrderManager {
 			MampfOrder order;
 			
 			if(domain.equals(Item.Domain.MOBILE_BREAKFAST)) {
-				order = createOrderMB(cart, form, userAccount);
+				order = createOrderMB(cart.iterator().next(), 
+									  form,
+									  userAccount);
 				
 			}else {
 				//create usual order:
@@ -299,7 +300,8 @@ public class MampfOrderManager {
 	
 			//will (indirectly) reduce item amount if possible
 			//mb orders throws error
-			if(!domain.equals(Item.Domain.MOBILE_BREAKFAST))orderManagement.completeOrder(order);
+			//if(!domain.equals(Item.Domain.MOBILE_BREAKFAST))orderManagement.completeOrder(order);
+			orderManagement.completeOrder(order);
 			
 			orderManagement.save(order);
 			if(!order.isCompleted())return null;
@@ -323,7 +325,7 @@ public class MampfOrderManager {
 	public ArrayList<MampfOrder> findAll() {
 		Stream<MampfOrder> stream = orderManagement.findAll(Pageable.unpaged()).get();
 		List<MampfOrder> list = stream.collect(Collectors.toList());
-		return new ArrayList<MampfOrder>(list);
+		return new ArrayList<>(list);
 	}
 
 	public List<MampfOrder> findByUserAcc(UserAccount account) {

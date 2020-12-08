@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
@@ -29,10 +28,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
-@SessionAttributes("cart")
+@SessionAttributes("mampfCart")
 public class OrderController {
-
-	private MampfCart cart = new MampfCart();
 
 	public class BreakfastMappedItems extends Item {
 		private MobileBreakfastForm form;
@@ -54,18 +51,17 @@ public class OrderController {
 	}
 
 	/* CART */
-
-	/*
-	 * @ModelAttribute("cart") MampfCart initializeCart() { return new MampfCart();
-	 * }
-	 */
+	@ModelAttribute("mampfCart")
+	MampfCart initializeCart() {return new MampfCart();}
+	
 	/**
 	 * adds item to cart
 	 */
 	@PostMapping("/cart")
-	public String addItem(@RequestParam("pid") Item item, @RequestParam("number") int number
-	/* @ModelAttribute MampfCart cart */) {
-		cart.addToCart(item, Quantity.of(number));
+	public String addItem(@RequestParam("pid") Item item, 
+						  @RequestParam("number") int number,
+						  @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		mampfCart.addToCart(item, Quantity.of(number));
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}
 
@@ -73,11 +69,12 @@ public class OrderController {
 	 * view cart
 	 */
 	@GetMapping("/cart")
-	public String basket(/* @ModelAttribute MampfCart cart */
-			Model model) {
-		Map<Item.Domain, Cart> domains = cart.getStuff();
+	public String basket(Model model,
+						 @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		
+		Map<Item.Domain, Cart> domains = mampfCart.getStuff();
 		model.addAttribute("domains", domains);
-		model.addAttribute("total", cart.getTotal(domains.values()));
+		model.addAttribute("total", mampfCart.getTotal(domains.values()));
 		return "cart";
 	}
 
@@ -85,8 +82,8 @@ public class OrderController {
 	 * clears cart
 	 */
 	@PostMapping("cart/clear")
-	public String clearCart() {
-		cart.clear();
+	public String clearCart(@ModelAttribute("mampfCart") MampfCart mampfCart) {
+		mampfCart.clear();
 		return "redirect:/cart";
 	}
 
@@ -94,13 +91,13 @@ public class OrderController {
 	 * handles adding and removing the amount of a cartitem
 	 */
 	@PostMapping("cart/setNewAmount")
-	public String addCartItem(@RequestParam String cartitemId, @RequestParam int newAmount
-	/* @ModelAttribute MampfCart cart */) {
+	public String addCartItem(@RequestParam String cartitemId,
+							  @RequestParam int newAmount,
+							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		// Optional<CartItem> cartitem = cart.getItem(cartitemId);
-		CartItem cartItem = cart.getCartItem(cartitemId);
+		CartItem cartItem = mampfCart.getCartItem(cartitemId);
 		if (cartItem != null) {
-			cart.updateCart(cartItem, newAmount);
+			mampfCart.updateCart(cartItem, newAmount);
 		}
 		return "redirect:/cart";
 	}
@@ -109,14 +106,23 @@ public class OrderController {
 	 * adds breakfast choice to cart as one cartitem
 	 */
 	@PostMapping("/cart/add/mobile-breakfast")
-	public String orderMobileBreakfast(@LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form) {
-
+	public String orderMobileBreakfast(@LoggedIn Optional<UserAccount> userAccount,
+									   @Valid MobileBreakfastForm form,
+									   @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		if(form.getBeverage() == null || form.getDish() == null) {
+			return "redirect:/mobile-breakfast";
+		}
 		if (userAccount.isEmpty()) {
 			return "redirect:/login";
 		}
-		cart.addToCart(new BreakfastMappedItems(
-				"Mobile Breakfast Choice: " + form.getBeverage().getName() + ", " + form.getDish().getName(),
-				BreakfastItem.BREAKFAST_PRICE, "Employee Choice of beverage and dish", form), Quantity.of(1));
+		mampfCart.addToCart(
+			 new BreakfastMappedItems("Mobile Breakfast Choice: " +
+					 				  form.getBeverage().getName() +", "+
+					 				  form.getDish().getName(),
+					 				  BreakfastItem.BREAKFAST_PRICE,
+					 				  "Employee Choice of beverage and dish",
+					 				  form),
+			 Quantity.of(1));
 
 		return "redirect:/cart";
 	}
@@ -125,11 +131,11 @@ public class OrderController {
 	 * removes cartitem from cart
 	 */
 	@PostMapping("cart/remove")
-	public String removeCartItem(@RequestParam String cartitemId
-	/* @ModelAttribute MampfCart cart */) {
-		CartItem cartitem = cart.getCartItem(cartitemId);
+	public String removeCartItem(@RequestParam String cartitemId,
+								 @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		CartItem cartitem = mampfCart.getCartItem(cartitemId);
 		if (cartitem != null) {
-			cart.removeFromCart(cartitem);
+			mampfCart.removeFromCart(cartitem);
 		}
 		return "redirect:/cart";
 	}
@@ -138,12 +144,15 @@ public class OrderController {
 	 * view buying site
 	 */
 	@GetMapping("/pay/{domain}")
-	public String chooseToBuy(Model model, @PathVariable String domain, DateFormular form) {
+	public String chooseToBuy(Model model, 
+							  @PathVariable String domain,
+							  DateFormular form,
+							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		Map<Item.Domain, Cart> domains = cart.getDomainItems(domain);
+		Map<Item.Domain, Cart> domains = mampfCart.getDomainItems(domain);
 		model.addAttribute("domains", domains);
 		model.addAttribute("domainChoosen", domain);
-		model.addAttribute("total", cart.getTotal(domains.values()));
+		model.addAttribute("total", mampfCart.getTotal(domains.values()));
 		model.addAttribute("form", form);
 		return "buy_cart";
 	}
@@ -152,14 +161,20 @@ public class OrderController {
 	 * buy cart(s)
 	 */
 	@PostMapping("/checkout")
-	public String buy(@RequestParam String domainChoosen, @Valid DateFormular form, Errors result,
-			@LoggedIn Optional<UserAccount> userAccount, RedirectAttributes redirectAttributes) {
+	public String buy(@RequestParam String domainChoosen, 
+					  @Valid DateFormular form, 
+					  Errors result,
+					  @LoggedIn Optional<UserAccount> userAccount,
+					  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
+		if(domainChoosen == null || result.hasErrors()) {
+			return "redirect:/cart";
+		}
 		if (userAccount.isEmpty()) {
 			return "redirect:/login";
 		}
 
-		Map<Item.Domain, Cart> carts = cart.getDomainItems(domainChoosen);
+		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(domainChoosen);
 		Map<Item.Domain, List<ValidationState>> validations = orderManager.validateCarts(carts, form);
 
 		if (!validations.isEmpty()) {
@@ -175,15 +190,14 @@ public class OrderController {
 			domains.add(domain);
 		}
 		for (Item.Domain domain : domains) {
-			cart.removeCart(domain);
+			mampfCart.removeCart(domain);
 		}
-
 		// success handling
-
+			
 		return "redirect:/userOrders";
 	}
 
-	/* ORDERS */
+/* ORDERS */
 
 	/**
 	 * lists orders ever for adminuser
@@ -202,7 +216,6 @@ public class OrderController {
 	 */
 
 	@GetMapping("/orders/detail/{order}")
-	// @PreAuthorize("hasRole('BOSS')")
 	public String editOrder(@PathVariable MampfOrder order, Model model) {
 
 		model.addAttribute("order", order);

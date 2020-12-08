@@ -88,6 +88,7 @@
         <label style="position: relative; left: 5px">
           <input type="radio" name="payMethod" style="position: relative; left: -3px" value="Check" />Überweisung
         </label>
+        <label for="start">Start: </label><input id="start" name="start" type="datetime-local" th:field="*{startDate}" th:errorclass="fieldError" required="required"/>
         <!--<div class="mmpf-mb-timetable mmpf-mb-time">
                         <label for="start">Wählen sie eine Zeit aus, wann ihr Frühstück geliefert werden soll.</label>
                         <input type="time" id="start" name="start" min="07:00" max="14:00" required>
