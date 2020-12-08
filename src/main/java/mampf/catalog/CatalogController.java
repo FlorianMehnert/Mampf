@@ -81,7 +81,7 @@ public class CatalogController {
 		}
 
 		// reorganizing the items of the chosen domain to show them each under its category
-		Iterable<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
+		ArrayList<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
 		Iterator<Item> iterator = filteredCatalog.iterator();
 		Map<String, ArrayList<Item>> categorizedItems = new HashMap<>();
 		while(iterator.hasNext()){
@@ -110,7 +110,7 @@ public class CatalogController {
 	}
 
 	@GetMapping("/mobile-breakfast")
-	String mobileBreakfast(Model model){
+	public String mobileBreakfast(Model model){
 		Map<String, ArrayList<Item>> reorganizedItems = new HashMap<>();
 		Iterator<Item> breakFastItems = this.catalog.findByDomain(Item.Domain.MOBILE_BREAKFAST).iterator();
 		while(breakFastItems.hasNext()){
@@ -126,7 +126,7 @@ public class CatalogController {
 		}
 		model.addAttribute("categories", reorganizedItems);
 		model.addAttribute("domainTitle", "Mobile Breakfast");
-		return "mobile-breakfast.html";
+		return "mobile-breakfast";
 	}
 
 	@GetMapping("/catalog/item/detail/{item}")

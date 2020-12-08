@@ -45,15 +45,12 @@
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-outline-primary cont" id="add">Köche/Service hinzufügen</button>
+    <button class="btn btn-outline-primary cont">
+      <a th:href="'/intern/employees/add'">
+        Köche/Service hinzufügen
+      </a>
+    </button>
   </div>
-  </div>
-
-  <script>
-    document.getElementById("add").addEventListener("click", e => {
-      location.href = "/intern/employees/add";
-    })
-  </script>
 </body>
 
 </html>

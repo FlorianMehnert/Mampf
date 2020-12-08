@@ -12,6 +12,13 @@
   <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}" />
   <link th:href="@{/resources/css/style.css}" rel="stylesheet" href="../static/resources/css/style.css"
     type="text/css" />
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+          crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -19,8 +26,14 @@
     <header>
       <h1>Mitarbeiter hinzufügen</h1>
     </header>
-    <form class="ui form" th:action="@{/intern/employees/add}" method="post">
+    <form class="ui form" th:action="@{/intern/employees/add}" method="post" th:object="${form}">
       <div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${noType}">
+          <span th:text="#{employee.err.noType}"></span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="form-group">
           <label for="username" th:text="#{employee.username}">Username</label>
           <input class="form-control" type="text" id="username" name="username" autofocus="autofocus"/> <br/>

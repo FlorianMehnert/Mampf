@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Mampf</title>
     <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}"/>
     <link rel="icon" type="image/vnd.microsoft.icon" th:href="@{/resources/img/World_sm_or.ico}">
@@ -23,52 +24,44 @@
 <nav th:include="navigation :: navigation"></nav>
 <div class="container pb-5">
     <form class="form" role="form" th:action="@{/register}" method="post" th:object="${form}">
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${wrongInput}">
-            <span th:text="#{register.err.grey}"></span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert"
-             th:if="${EMailAlreadyExists}">
-            <span th:text="#{register.err.email}"></span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert"
-             th:if="${userAlreadyExists}">
-            <span th:text="#{register.err.username}"></span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="alert alert-warning alert-dismissible fade show" role="alert"
-             th:if="${#fields.hasAnyErrors()}">
-            <span th:text="#{register.err.any}"></span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
 
         <div class="form-group">
             <label for="username" th:text="#{register.username}">Username</label>
-            <input class="form-control" type="text" id="username" name="username" autofocus="autofocus"/> <br/>
+            <input class="form-control" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
+                   type="text" id="username" name="username" autofocus="autofocus" th:field="*{username}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+
+            </div>
         </div>
 
         <div class="form-group">
             <label for="firstname" th:text="#{register.firstname}">Firstname</label>
-            <input class="form-control" type="text" id="firstname" name="firstname" autofocus="autofocus"/> <br/>
+            <input class="form-control" th:classappend="${#fields.hasErrors('firstname')} ? 'is-invalid' : ''"
+                   type="text" id="firstname" name="firstname" autofocus="autofocus" th:field="*{firstname}"/>
+
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}">
+
+            </div>
         </div>
 
         <div class="form-group">
             <label for="lastname" th:text="#{register.lastname}">Lastname</label>
-            <input class="form-control" type="text" id="lastname" name="lastname" autofocus="autofocus"/> <br/>
+            <input class="form-control" th:classappend="${#fields.hasErrors('lastname')} ? 'is-invalid' : ''"
+                   type="text" id="lastname" name="lastname" autofocus="autofocus" th:field="*{lastname}"/>
+
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">
+
+            </div>
         </div>
 
         <div class="form-group">
             <label for="password" th:text="#{register.password}">Password</label>
-            <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelpBlock"/> <br/>
+            <input class="form-control" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                   type="password" id="password" name="password" aria-describedby="passwordHelpBlock"/>
+
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+
+            </div>
             <small id="passwordHelpBlock" class="form-text text-muted">
                 Your password must be 5-20 characters long.
             </small>
@@ -76,12 +69,16 @@
 
         <div class="form-group">
             <label for="password">Adresse</label>
-            <input class="form-control" type="text" id="address" name="address"/> <br/>
+            <input class="form-control" th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''"
+                   type="text" id="address" name="address" th:field="*{address}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">
+
+            </div>
         </div>
 
         <div class="form-group">
             <label for="role">Typ des Benutzerzugangs</label>
-            <select class="form-control" id="role" name="role">
+            <select class="form-control" id="role" name="role" th:field="*{role}">
                 <option value="INDIVIDUAL" th:text="#{register.individuell}">INDIVIDUAL</option>
                 <option value="EMPLOYEE" th:text="#{register.employee}">EMPLOYEE</option>
                 <option value="COMPANY" th:text="#{register.company}">COMPANY</option>
@@ -90,18 +87,25 @@
 
         <div class="form-group">
             <label for="email">E-Mail</label>
-            <input class="form-control" type="email" id="email" name="email"/> <br/>
+            <input class="form-control" type="email" id="email" name="email" th:field="*{email}"/>
         </div>
 
         <div id="companyNameGroup" class="form-group">
-            <label for="companyName" th:text="#{register.companyname}">Firmenname (nur bei Company)</label>
-            <input class="form-control" type="text" id="companyName" name="companyName"/> <br/>
+            <label for="companyName" th:text="#{register.companyname}">Name der Firma</label>
+            <input class="form-control" th:classappend="${#fields.hasErrors('companyName')} ? 'is-invalid' : ''"
+                   type="text" id="companyName" name="companyName" th:field="*{companyName}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}">
+
+            </div>
         </div>
 
         <div id="accessCodeGroup" class="form-group">
-            <label for="accessCode" th:text="#{register.accessCode}">AccessCode (nur bei Employee)</label>
-            <input class="form-control" type="text" id="accessCode" name="accessCode" minlength="6" maxlength="6"/>
-            <br/>
+            <label for="accessCode" th:text="#{register.accessCode}">AccessCode</label>
+            <input class="form-control" th:classappend="${#fields.hasErrors('accessCode')} ? 'is-invalid' : ''"
+                   type="text" id="accessCode" name="accessCode" minlength="6" maxlength="6" th:field="*{accessCode}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('accessCode')}" th:errors="*{accessCode}">
+
+            </div>
         </div>
 
         <button type="submit" class="btn btn-outline-primary float-right">Konto erstellen</button>
@@ -109,7 +113,7 @@
 </div>
 <script type="application/javascript">
 $(function() {
-    $('#role').change(function () {
+    function changeDisplayOfRoleDependingInput() {
         switch ($('#role').val()) {
             case "EMPLOYEE":
                 $('#companyNameGroup').css('display', 'none');
@@ -123,9 +127,9 @@ $(function() {
                 $('#companyNameGroup').css('display', 'none');
                 $('#accessCodeGroup').css('display', 'none');
         }
-    });
-    $('#companyNameGroup').css('display', 'none');
-    $('#accessCodeGroup').css('display', 'none');
+    }
+    $('#role').change(changeDisplayOfRoleDependingInput);
+    changeDisplayOfRoleDependingInput();
 
 })
 </script>

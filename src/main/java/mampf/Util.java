@@ -12,14 +12,19 @@ public class Util {
 	public static Domain parseDomainEnum(String domain){
 		return Domain.valueOf(domain.toUpperCase().replace("-", "_"));
 	}
+
+	public static Domain parseDomainName(String domain){
+		String formatted = domain.toUpperCase().replace("\\s", "_");
+		return Domain.valueOf(formatted);
+	}
+
 	public static String renderDomainName(String domain){
 		if(domain == null || domain.length() == 0){
 			return "";
 		}
 		domain = domain.toLowerCase().replaceAll("(-|_)", " ");
 		String[] domainArray = domain.split(" ");
-		return Arrays.asList(domainArray)
-		.stream()
+		return Arrays.stream(domainArray)
 		.map(e -> e.substring(0, 1).toUpperCase() + e.substring(1))
 		.collect(Collectors.joining(" "));
 	}

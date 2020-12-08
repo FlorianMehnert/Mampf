@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
+
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
@@ -18,11 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import mampf.catalog.BreakfastItem;
@@ -56,7 +53,6 @@ public class OrderController {
 	}
 	
 	private final MampfOrderManager orderManager;
-	
 	public OrderController(MampfOrderManager orderManager) {
 		this.orderManager = orderManager;
 	}
@@ -65,33 +61,6 @@ public class OrderController {
 	
 	/*@ModelAttribute("cart")
 	MampfCart initializeCart() {
-		//mobileBreakfastForm = null;
-		MampfCart cart = new MampfCart(1);
-		
-		Item i1 = new Item("test1",Money.of(2,"EUR"),Item.Domain.EVENTCATERING,Item.Category.FOOD,"d");
-		Item i2 = new Item("test2",Money.of(2,"EUR"),Item.Domain.PARTYSERVICE,Item.Category.FOOD,"d");
-		Item i3 = new Item("test3",Money.of(2,"EUR"),Item.Domain.PARTYSERVICE,Item.Category.FOOD,"d");
-		Item i4 = new Item("test3",Money.of(2,"EUR"),Item.Domain.MOBILE_BREAKFAST,Item.Category.FOOD,"d");
-		
-		CartItem c1 = cart.addToCart(i1, Quantity.of(10));
-		CartItem c2 = cart.addToCart(i2, Quantity.of(10));
-		CartItem c3 = cart.addToCart(i3, Quantity.of(1));
-		CartItem c4 = cart.addToCart(i4, Quantity.of(1));
-		cart.addToCart(i1, Quantity.of(10));
-		
-		
-		cart.updateCart(c1, -2);
-		cart.updateCart(c2, -10);
-		cart.updateCart(c3, -10);
-		//cart.updateCart(c4, -10);
-		cart.updateCart(c4, 10); //should not work
-		
-		//removeFromCart(cart, c4); //should not be able
-		//removeFromCart(cart, c1); 
-		
-		return cart;
-		
-		//return new TreeMap<Item.Domain, Cart>();
 		return new MampfCart();
 	}*/
 	/**
