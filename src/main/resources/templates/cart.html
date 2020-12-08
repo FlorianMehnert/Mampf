@@ -66,10 +66,6 @@
                     </div>
                   </form>
                 </td>
-                <!--  <form method="post" th:action="@{/cart}">
-                <input type="hidden" name="cartitemId" value="0" th:value="${item.id}"/>
-                 <button type="submit">+</button>
-                 </form>-->
                 <td th:text="${{item.price}}">10 Euro</td>
                 <td>
                   <form class="form-inline" method="post" th:action="@{/cart/setNewAmount}">
@@ -86,55 +82,36 @@
                 </td>
               </tr>
 
-              <tr>
-                <td></td>
-                <td></td>
-                <td th:text="${cart.price}">
-                </td>
-                <td><a th:href="'/pay/' + ${domain.key}" type="submit">kaufen</a>
-                </td>
-              </tr>
             </div>
           </tbody>
         </table>
-        <!--  <table class="ui celled table"><thead><tr><th>Titel</th><th>Anzahl</th><th>Preis</th><th></th></tr></thead><tbody>
-            <tr th:each="item : ${domain.value} ">
-                <td th:text="${item.productName}">Last Action Hero</td>
-                <td > <table><tr><td><div th:text="${item.quantity}">10</div></td>
-                <td><form method="post" action="/cart/add">
-			      <input type="hidden" name="cartitemId" th:value="${item.id}"/>
-			       
-			      <input type="hidden" name="amount" value="1" placeholder="Anzahl">
-			      <button type="submit" name="add" value="true">+</button> 
-			      <button type="submit" name="add" value="false">-</button></form>
-			    </td><!--  <form method="post" th:action="@{/cart}">
-                <input type="hidden" name="cartitemId" value="0" th:value="${item.id}"/>
-                 <button type="submit">+</button>
-                 </form></tr></table> </td>
-                <td th:text="${{item.price}}">10 Euro</td><td>
-                <form method="post" th:action="@{/cart/remove}">
-                <input type="hidden" name="cartitemId" th:value="${item.id}"/>
-			    <button type="submit">entfernen</button>
-			    </form>  </td>
-            </tr>
-          </tbody></table>-->
-      </div>
-      Gesamtpreis:<div th:text="${total}"></div>
-      <div class="ui two column centered grid">
-
-        <div class="value"><span th:text="${{total}}">1337</span></div>
-        <form method="post" th:action="@{/cart/clear}"><button style="position:relative; top: 5px"
-            class="btn btn-outline-primary float-left" type="submit">Warenkorb leeren</button></form>
-        <!-- sec:authorize="hasRole('INDIVIDUAL')" -->
-        <div class="container pb-5">
-          <!--<form method="post" th:action="@{/pay}">
-		       <input type="hidden" name="domain" th:value="none"/>
-		       <button type="submit" style="position:relative; left: 5px; top: 5px" class="btn btn-outline-primary float-left">alles kaufen</button>
-              </form>-->
-          <a th:href="'/pay/_'">alles kaufen</a>
-          <!-- <button class="btn btn-outline-primary" type="submit">kaufen</button> -->
+        <div class="mb-4 container">
+          <div class="row">
+            <div th:text="${{domain.value.price}}" class="col">
+            </div>
+            <div class="col float-right">
+              <form class="form-inline justify-content-end" method="get" th:action="@{/pay/{domain}(domain=${domain.key})}">
+                <button class="btn btn-primary" type="submit">Kaufen</button>
+              </form>
+            </div>
+          </div>
         </div>
 
+      </div>
+      <div class="container">
+        <div class="row pb-3">
+          <div class="col">
+            Gesamtpreis:<span th:text="${{total}}"></span>
+          </div>
+        </div>
+        <div class="row">
+          <form method="post" th:action="@{/cart/clear}" class="form-inline col">
+            <button class="btn btn-outline-secondary" type="submit">Warenkorb leeren</button>
+          </form>
+          <form method="get" th:action="@{/pay/_}" class="form-inline justify-content-end col">
+            <button class="btn btn-outline-primary" type="submit">Alles kaufen</button>
+          </form>
+        </div>
       </div>
       <br>
     </div>
