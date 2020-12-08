@@ -18,11 +18,8 @@ public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 					return Optional.of(item);
 				}
 			}
-			return Optional.empty();
-		}else{
-			return Optional.empty();
 		}
-
+		return Optional.empty();
 	}
 	default Optional<UniqueInventoryItem> reduceAmount(Product product, Quantity amount) {
 		Optional<UniqueInventoryItem> theItem = this.findByProduct(product);
