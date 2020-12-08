@@ -370,7 +370,7 @@ image:images/diagrams/developer_doc_5_5_Orders_.svg[pkg order building block dia
 
 === Employee
 [[pkg_employee_diagram]]
-image:images/diagrams/employee_package.svg[pkg employee diagram]
+image:images/diagrams/employee_package_new.svg[pkg employee diagram]
 
 [options="header"]
 |===
