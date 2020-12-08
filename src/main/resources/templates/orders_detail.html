@@ -17,13 +17,19 @@
   <div class="root">
     <h2 th:text="${order}">Id</h2>
     <div class="content">
-      <b>id: </b><div th:text="${order.id}"></div>
-      <b>Useraccount: </b><div th:text="${order.userAccount}"></div>
-      <b>Payment: </b><div th:text="${order.payMethod}"></div>
-      <b>Status: </b><div th:text="${order.orderStatus}"></div>
-      <b>CreationDate: </b><div th:text="${order.dateCreated}"></div>
+      <b>id: </b>
+      <div th:text="${order.id}"></div>
+      <b>Useraccount: </b>
+      <div th:text="${order.userAccount}"></div>
+      <b>Payment: </b>
+      <div th:text="${order.payMethod}"></div>
+      <b>Status: </b>
+      <div th:text="${order.orderStatus}"></div>
+      <b>CreationDate: </b>
+      <div th:text="${order.dateCreated}"></div>
       <br>
-      <b>Date: </b><div th:text="${order.date}"></div>
+      <b>Date: </b>
+      <div th:text="${order.date}"></div>
       <table th:if="${!employees.isEmpty()}" class="ui table">
         <thead>
           <tr>
@@ -38,7 +44,7 @@
           </tr>
         </tbody>
       </table>
-      
+
       <table class="ui table">
         <thead>
           <tr>
@@ -51,12 +57,12 @@
           <tr th:each="orderLine : ${orderLines}">
             <td th:text="${orderLine.productName}"></td>
             <td th:text="${orderLine.quantity}"></td>
-          	<td th:text="${orderLine.price}"></td>
+            <td th:text="${orderLine.price}"></td>
           </tr>
           <tr>
-          	<td ></td>
-          	<td></td>
-          	<td th:text="${order.total}"></td>
+            <td></td>
+            <td></td>
+            <td th:text="${order.total}"></td>
           </tr>
         </tbody>
       </table>
