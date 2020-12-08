@@ -26,130 +26,88 @@
 
 
 
-  <div class="container" style="top: 20px">
-
-    <div th:each="domain : ${domains}">
+  <div class="container" th:each="domain : ${domains}">
+    <div class="row">
       <br>
       <h3 th:text="${domain.key}"></h3>
-      <table class="ui celled table" th:with="cart=${domain.value}">
-        <thead>
-          <tr>
-            <th>Titel</th>
-            <th>Anzahl</th>
-            <th>Preis</th>
-            <th></th>
-          </tr>
+      <table class="table table-hover">
+        <thead class="thead-light">
+        <tr>
+          <th>Titel</th>
+          <th>Anzahl</th>
+          <th>Preis</th>
+        </tr>
         </thead>
-        <tbody>
+        <tbody th:remove="all-but-first">
+        <div th:with="cart=${domain.value}">
           <tr th:each="item : ${domain.value} ">
-            <td th:text="${item.productName}">Last Action Hero</td>
-            <td>
-              <table>
-                <tr>
-                  <td>
-                    <div th:text="${item.quantity}">10</div>
-                  </td>
-                  <td>
-                  </td>
-                  <!--  <form method="post" th:action="@{/cart}">
-                <input type="hidden" name="cartitemId" value="0" th:value="${item.id}"/>
-                 <button type="submit">+</button>
-                 </form>-->
-                </tr>
-              </table>
-            </td>
-            <td th:text="${{item.price}}">10 Euro</td>
-            <td></td>
+            <td th:text="${item.productName}"></td>
+            <td th:text="${item.quantity.getAmount()}"></td>
+            <td th:text="${{item.price}}"></td>
           </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td th:text="${{cart.price}}">10 Euro</td>
-            <td></td>
-          </tr>
+        </div>
         </tbody>
       </table>
-      Gesamtpreis:<div th:text="${total}"></div>
+    </div>
+    <div class="row mt-3">
+      <span th:text="${'Preis für '+ domain.key + ':  ' + total}"></span>
+    </div>
 
 
-      <div class="value pb-2">
-        <span th:text="${{total}}" style="position: relative; left: -3px">hier steht der Gesamtpreis</span>
-      </div>
+    <div class="row mt-3">
+        <b th:text="${'Gesamtpreis: ' + total}"></b>
+    </div>
+    <div class="row mt-2">
       <form method="post" class="pb-2" style="position: relative; left: -3px" th:action="@{/cart/clear}">
         <button class="btn btn-outline-primary" style="top: 20px" type="submit">Warenkorb leeren</button>
       </form>
-      <!-- sec:authorize="hasRole('INDIVIDUAL')" -->
-      <form method="post" role="form" class="form reorder" id="form" th:action="@{/checkout}" th:object="${form}">
-        <input type="hidden" name="domainChoosen" th:value="${domainChoosen}" /> <!-- save between or "none"-->
-        <label>
-          <input type="radio" name="payMethod" style="position: relative; left: -3px" value="Bar"
-            checked="checked" />Bar
-        </label>
-        <label style="position: relative; left: 5px">
-          <input type="radio" name="payMethod" style="position: relative; left: -3px" value="Check" />Überweisung
-        </label>
-        <!--<div class="mmpf-mb-timetable mmpf-mb-time">
-                        <label for="start">Wählen sie eine Zeit aus, wann ihr Frühstück geliefert werden soll.</label>
-                        <input type="time" id="start" name="start" min="07:00" max="14:00" required>
-                        <small>Von 7 bis 14 Uhr</small>
-                    </div>-->
-        <label for="address" style="position: relative; left: 12px">Address: </label>
-        <input id="address" name="address" type="text" style="position: relative; left: 12px" th:field="*{address}"
-          th:errorclass="fieldError" required="required" />
-        <button type="submit" class="btn btn-outline-primary" style="position: relative; left: 15px">Bestellung
-          erstellen</button>
+    </div>
+    <div class="row mt-3">
+      <h4>Bestellung abschließen</h4>
+    </div>
+    <div class="row mt-3">
+      <form method="post" role="form" id="form" th:action="@{/checkout}" th:object="${form}">
+        <input type="hidden" name="domainChoosen" th:value="${domainChoosen}" />
+        <div class="form-check form-check-inline">
+          <input id="barChecked" class="form-check-input" type="radio" name="payMethod" value="Bar" checked="checked" />
+          <label for="barChecked" class="form-check-label">Bar</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input id="checkChecked" class="form-check-input" type="radio" name="payMethod" value="Check" />
+          <label for="checkChecked" class="form-check-label">Überweisung</label>
+        </div>
+        <div class="form-group mt-2">
+          <label for="address">Address</label>
+          <input id="address" class="form-control" th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''"
+                 name="address" type="text" th:field="*{address}"/>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">
+
+          </div>
+        </div>
+        <div class="form-group mt-2">
+          <label for="startDate">Datum:</label>
+          <input id="startDate" class="form-control" th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid' : ''"
+                 name="startDate" type="text" th:field="*{startDate}"/>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
+
+          </div>
+        </div>
+        <div class="form-group mt-2">
+          <label for="startTime">Uhrzeit:</label>
+          <input id="startTime" class="form-control" th:classappend="${#fields.hasErrors('startTime')} ? 'is-invalid' : ''"
+                 name="startDate" type="text" th:field="*{startTime}"/>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}">
+
+          </div>
+        </div>
+        <button type="submit" class="btn btn-outline-primary">Bestellung erstellen</button>
       </form>
+
+    </div>
     </div>
 
-    <!--
-
-            <table class="table table-hover">
-                <thead class="thead-light">
-                <tr>
-                    <th>Link</th>
-                    <th>Name</th>
-                    <th>Anzahl</th>
-                    <th>Preis</th>
-                </tr>
-                </thead>
-                <tbody th:remove="all-but-first">
-                <tr th:each=" item : ${cart}">
-                    <td>
-                        <a class="nav-link form-inline" th:href="@{/catalog/{domain}(domain=${item.getProduct().getDomain()})}">
-                            <button type="submit" class="btn btn-link">
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                                </svg>
-                                <span th:text="${item.getProductName()}"></span>
-                            </button>
-                        </a>
-                    </td>
-                    <td th:text="${item.getQuantity()}">aabbcc</td>
-                    <td th:text="${item.getPrice()}" >--</td>
-                    <td>
-                        <form class="form-inline" method="post" th:action="@{/checkout}">
-                            <input type="hidden" name="dateid" value="0" th:value="${item.getId()}"/>
-                            <button class="btn btn-primary" type="submit">Event kaufen</button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <!-- <a th:href="@{/checkout/{dateid}(dateid=${event.key.id})}"> Event kaufen </a>
-
-        </div>
-
-        <div class="d-flex">
-            <form class="form-inline" method="post" th:action="@{/clear}">
-                <button class="btn btn-outline-primary" type="submit">Warenkorb leeren</button>
-            </form>
-            <form class="justify-content-between ml-auto form-inline" method="post" th:action="@{/checkoutAll}">
-                <!-- <input type="hidden" name="dateid" value="0" th:value="null"/>
-                <button class="btn btn-outline-primary" type="submit">Warenkorb kaufen</button>
-            </form>
-         -->
   </div>
-  </div>
+</div>
 </body>
 
 </html>
