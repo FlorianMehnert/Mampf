@@ -33,19 +33,14 @@ public class User {
 		return userAccount;
 	}
 
-	public static Role AccountRoleFromUserRole(UserRole role)
-	{
-		return Role.of(role.name());
-	}
-
 	public Optional<Company> getCompany() {
 		return Optional.ofNullable(company);
 	}
 
 	public void setCompany(Company company) {
-//		if(userAccount.getRoles().toList().contains(UserRole.COMPANY.name())) {
+		if(userAccount.hasRole(Role.of(UserRole.COMPANY.name()))) {
 			this.company = company;
-//		}
+		}
 	}
 
 	public String getAddress() {

@@ -27,7 +27,7 @@ class UserController {
 	}
 
 	@PostMapping("/register")
-	String registerNew(@Valid @ModelAttribute("form") RegistrationForm form, Errors result) {
+	public String registerNew(@Valid @ModelAttribute("form") RegistrationForm form, Errors result) {
 		for (User user : userManagement.findAll()) {
 			if ((form.getUsername().equals(user.getUserAccount().getUsername()))) {
 				result.rejectValue("username", "RegistrationForm.username.exists", "This Username is already taken!");
@@ -79,7 +79,6 @@ class UserController {
 			Pair<User, String> map = new Pair<>(user, role);
 			list.add(map);
 		}
-		System.out.println(list);
 		model.addAttribute("pairs", list);
 		return "users";
 	}

@@ -83,7 +83,7 @@ public class OrderController {
 	 * 	handles adding and removing the amount of a cartitem
 	 */
 	@PostMapping("cart/setNewAmount")
-	String addCartItem(@RequestParam String cartitemId, @RequestParam int newAmount, @ModelAttribute Cart cart) {
+	public String addCartItem(@RequestParam String cartitemId, @RequestParam int newAmount, @ModelAttribute Cart cart) {
 		Optional<CartItem> cartitem = cart.getItem(cartitemId);
 		
 		if(cartitem.isEmpty()) {
@@ -123,14 +123,7 @@ public class OrderController {
 	}
 
 	
-	
-	@PostMapping("cart/remove")
-	String removeCartItem(@RequestParam String cartitemId, @ModelAttribute Cart cart) {
-		
-		if(!cart.getItem(cartitemId).isPresent()) return "redirect:/cart";
-		cart.removeItem(cartitemId);
-		return "redirect:/cart";
-	}
+
 	
 	//choose to buy:
 	@PostMapping("/pay")
@@ -180,14 +173,14 @@ public class OrderController {
 			/*TODO*/return "redirect:/cart";
 		}
 		
-		Map<String, List<CartItem>> orders = getDomainItems(cart, domainChoosen);
+		Map<String, List<CartItem>> orders = getDomainItems(cart, domainChoosen.toUpperCase().replace("\\s", "_"));
 		//MobileBreakfastForm mbForm;
 		//List<MampfOrder> createdOrders = new ArrayList<>();
 		for(String domainStr : orders.keySet()) {
-			Item.Domain domain = Util.parseDomainName(domainStr);
+
 			//create new cart:
 			Cart orderCart = new Cart();
-			for(CartItem cartitem: orders.get(domain)) {
+			for(CartItem cartitem: orders.get(domainStr)) {
 				orderCart.addOrUpdateItem(cartitem.getProduct(), cartitem.getQuantity());
 			}
 			
@@ -195,12 +188,13 @@ public class OrderController {
 			MampfOrder order = orderManager.createOrder(orderCart, form, userAccount.get());
 			
 			//remove cartitem and save the created orders:
-			if(order != null)
+			if(order != null) {
 				//remove items from main cart:
-				{for(CartItem cartitem: orderCart) 
-					{cart.removeItem(cartitem.getProduct().getId().getIdentifier());} 
-				}	
+				for(CartItem cartitem: orderCart) {
+					cart.removeItem(cartitem.getId());
+				}
 			}
+		}
 		
 		//TODO: mark new created order
 		return "redirect:/userOrders";

@@ -22,6 +22,9 @@
                     <a class="nav-link" href="catalog.html" th:href="@{/cart}" sec:authorize="!hasRole('BOSS')">Warenkorb</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="orders.html" th:href="@{/userOrders}" sec:authorize="!hasRole('BOSS')">Meine Bestellungen</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="orders.html" th:href="@{/orders}" sec:authorize="hasRole('BOSS')">Bestellungen</a>
                 </li>
 

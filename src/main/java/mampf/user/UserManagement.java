@@ -120,8 +120,9 @@ public class UserManagement {
 	}
 
 	public void denyAuthenticationById(long userId) {
-		if(this.findUserById(userId).isPresent()) {
-			User user = this.findUserById(userId).get();
+		Optional<User> optionalUser= this.findUserById(userId);
+		if(optionalUser.isPresent()) {
+			User user = optionalUser.get();
 			if(!user.getUserAccount().hasRole(Role.of(UserRole.BOSS.name()))) {
 				user.getUserAccount().setEnabled(false);
 				users.save(user);
