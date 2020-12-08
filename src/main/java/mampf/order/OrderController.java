@@ -168,7 +168,7 @@ public class OrderController {
 			return "redirect:/cart";
 		}
 
-		List<MampfOrder> orders = orderManager.createOrders(carts, form, userAccount.get());
+		orderManager.createOrders(carts, form, userAccount.get());
 
 		List<Item.Domain> domains = new ArrayList<>();
 		for (Item.Domain domain : carts.keySet()) {
@@ -214,8 +214,9 @@ public class OrderController {
 
 	@GetMapping("/userOrders")
 	public String orderUser(Model model, @LoggedIn Optional<UserAccount> userAccount) {
-		if (userAccount.isEmpty())
+		if (userAccount.isEmpty()) {
 			return "redirect:/login";
+		}
 		List<MampfOrder> orders = orderManager.findByUserAcc(userAccount.get());
 		model.addAttribute("orders", orders);
 		return "orders";
