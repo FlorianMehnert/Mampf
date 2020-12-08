@@ -21,51 +21,30 @@
 </head>
 <body>
 <nav th:include="navigation :: navigation"></nav>
-<div class="container">
-    <h1>Bestellung erstellen</h1>
-    <div>
-        <br>
 
-        <div th:each="domain : ${events}">
-            <h1 th:text="${domain.key}"></h1>
-            <table class="table table-hover">
-                <thead class="thead-light">
-                <tr>
-                    <th>Titel</th>
-                    <th>Anzahl</th>
-                    <th>Preis</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="item : ${domain.value} ">
-                    <td th:text="${item.productName}">Last Action Hero</td>
-                    <td>
-                        <table>
-                            <tr>
-                                <td>
-                                    <div th:text="${item.quantity}">10</div>
-                                </td>
-                                <td>
-                                </td><!--  <form method="post" th:action="@{/cart}">
-                <input type="hidden" name="cartitemId" value="0" th:value="${item.id}"/>
-                 <button type="submit">+</button>
-                 </form>--></tr>
-                        </table>
-                    </td>
-                    <td th:text="${{item.price}}">10 Euro</td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
 
-            <!-- TODO: <form method="post" th:action="@{/setDate}">
-                <input type="hidden" name="domainId" th:value="${domain}"/>
-                <button type="submit">kaufen</button>
-            </form>-->
-        </div>
 
         <div class="container" style="top: 20px">
+          
+           <div th:each="domain : ${domains}">
+    	<br>
+    	<h3 th:text="${domain.key}"></h3>
+        <table class="ui celled table" th:with="cart=${domain.value}"><thead><tr><th>Titel</th><th>Anzahl</th><th>Preis</th><th></th></tr></thead><tbody>
+            <tr th:each="item : ${domain.value} ">
+                <td th:text="${item.productName}">Last Action Hero</td>
+                <td > <table><tr><td><div th:text="${item.quantity}">10</div></td>
+                <td>
+			    </td><!--  <form method="post" th:action="@{/cart}">
+                <input type="hidden" name="cartitemId" value="0" th:value="${item.id}"/>
+                 <button type="submit">+</button>
+                 </form>--></tr></table> </td>
+                <td th:text="${{item.price}}">10 Euro</td><td></td>
+            </tr>
+            <tr><td></td><td></td><td th:text="${{cart.price}}">10 Euro</td><td></td></tr>
+          </tbody></table>
+          Gesamtpreis:<div th:text="${total}"></div>
+             
+          
             <div class="value pb-2">
                 <span th:text="${{cart.price}}" style="position: relative; left: -3px">hier steht der Gesamtpreis</span>
             </div>
@@ -81,11 +60,11 @@
                 <label style="position: relative; left: 5px">
                     <input type="radio" name="payMethod" style="position: relative; left: -3px" value="Check"/>Überweisung
                 </label>
-                    <div class="mmpf-mb-timetable mmpf-mb-time">
+                    <!--<div class="mmpf-mb-timetable mmpf-mb-time">
                         <label for="start">Wählen sie eine Zeit aus, wann ihr Frühstück geliefert werden soll.</label>
                         <input type="time" id="start" name="start" min="07:00" max="14:00" required>
                         <small>Von 7 bis 14 Uhr</small>
-                    </div>
+                    </div>-->
                 <label for="address" style="position: relative; left: 12px">Address: </label>
                 <input id="address" name="address" type="text" style="position: relative; left: 12px" th:field="*{address}" th:errorclass="fieldError" required="required"/>
                 <button type="submit" class="btn btn-outline-primary" style="position: relative; left: 15px">Bestellung erstellen</button>

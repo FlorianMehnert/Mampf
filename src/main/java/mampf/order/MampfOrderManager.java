@@ -3,11 +3,10 @@ package mampf.order;
 import mampf.catalog.Item;
 import mampf.catalog.StaffItem;
 import mampf.catalog.MampfCatalog;
-
-
 import mampf.employee.Employee;
 import mampf.employee.EmployeeManagement;
 import mampf.inventory.Inventory;
+import mampf.order.OrderController.BreakfastMappedItems;
 
 import org.salespointframework.order.OrderManagement;
 import org.salespointframework.payment.Cash;
@@ -18,28 +17,25 @@ import org.salespointframework.useraccount.UserAccount;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-
-
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.salespointframework.inventory.UniqueInventoryItem;
-
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-import org.salespointframework.order.Order;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MampfOrderManager {
-
+	
+	public static enum ValidationState{
+		NO_PERSONAL,NO_STOCK,NO_ITEM
+	};
 	private final OrderManagement<MampfOrder> orderManagement;
 	private final Inventory inventory;
 	private final MampfCatalog catalog;
@@ -53,22 +49,18 @@ public class MampfOrderManager {
 		this.catalog = catalog;
 
 	}
-
-	public Order save(MampfOrder order) {
-		return orderManagement.save(order);
-	}
-
 	
 	private PaymentMethod createPayMethod(String payMethod,UserAccount userAccount) {
 		PaymentMethod method = Cash.CASH; //bydefault
 		//if(payMethod.equals("Cash")) method = Cash.CASH; 
-		if(payMethod.equals("Check")) 
-			{method = new Cheque(userAccount.getUsername(),
-								 userAccount.getId().getIdentifier(),
-								 "checknummer 1",
-								 userAccount.getFirstname(),
-								 LocalDateTime.now(),
-								 "a bank","a banks address","a banks data");}
+		if(payMethod.equals("Check")) {
+			method = new Cheque(userAccount.getUsername(),
+								userAccount.getId().getIdentifier(),
+								"checknummer 1",
+								userAccount.getFirstname(),
+								LocalDateTime.now(),
+								"a bank","a banks address","a banks data");
+		}
 		return method;
 	}
 	
@@ -92,54 +84,6 @@ public class MampfOrderManager {
 		return freeEmployee;
 	}
 	
-	private int getEmployeeAmount(Cart cart, /*Employee.Role*/ StaffItem.Type type) {
-		
-		int employeeAmount = 0;
-		
-		Item item;
-		
-		for(CartItem cartItem: cart) {
-			item = ((Item)cartItem.getProduct());
-			
-			//handle item amount: check after complete order
-			//handle personal: 
-			if(item.getCategory().equals(Item.Category.STAFF)) 
-				{StaffItem staffItem = (StaffItem)item;
-				if(staffItem.getType().equals(type))
-					employeeAmount+= cartItem.getQuantity().getAmount().intValue();}
-		}
-
-		return employeeAmount;
-		//TODO
-
-	}
-	
-	private void setEmloyees(Cart cart, MampfOrder order, List<Employee> freeCooks, List<Employee> freeServicePersonal) {
-
-		Item item;
-		Quantity itemQuantity;
-		
-		for(CartItem cartItem: cart) {
-			item = ((Item)cartItem.getProduct());
-			itemQuantity = cartItem.getQuantity();
-			
-			if(item.getCategory().equals(Item.Category.STAFF))
-				{StaffItem personalItem = ((StaffItem)item);
-				StaffItem.Type personalItemType = personalItem.getType();
-				
-				//TODO: find better solution:
-				int personalAmount = itemQuantity.getAmount().intValue();
-				Employee employee;
-				for(int i = 0; i < personalAmount; i++) 
-					{employee = null;
-					if(personalItemType.equals(StaffItem.Type.COOK))employee = freeCooks.remove(0);
-					if(personalItemType.equals(StaffItem.Type.SERVICE))employee = freeServicePersonal.remove(0);
-					if(employee != null)
-						{employee.setBooked(order);order.addEmployee(employee);}}
-				}
-		}
-	}
-	
 	private MampfOrder createOrderMB(Cart cart,
 									 DateFormular form, 
 									 UserAccount account) {
@@ -152,7 +96,7 @@ public class MampfOrderManager {
 		//add choice:
 		//TODO: cannot be removed from inventory
 		cart.addOrUpdateItem(item.getForm().getBeverage(),Quantity.of(1));
-		cart.addOrUpdateItem(item.getForm().getDish(),Quantity.of(0));
+		cart.addOrUpdateItem(item.getForm().getDish(),Quantity.of(1));
 		
 		
 		//create special date:
@@ -181,95 +125,191 @@ public class MampfOrderManager {
 	}
 
 
-	public MampfOrder createOrder(Cart cart, 
-								  DateFormular form, 
-								  UserAccount userAccount) {
-		//TODO: Forms optional 
-		//validates Cart, 
-		// creates Date
-		// creates Order
-		// pays Order (order should be added)
-		// (if possible) completes order
-		//reduces high amount of iteration-steps
-		
-	
-		if(cart == null || userAccount == null)return null;
-	
-		
-		Item.Domain orderDomain = ((Item)cart.iterator().next().getProduct()).getDomain();
-		
-		MampfOrder order;
-		List<Employee> freeCooks = null, freeServicePersonal = null;
-		
-		if(orderDomain.equals(Item.Domain.MOBILE_BREAKFAST)) {
-			order = createOrderMB(cart, form, userAccount);
-			if(order == null)return null;
-			
+	private void updateValidations(Map<Item.Domain, List<ValidationState>> validations,
+								   Item.Domain domain, 
+								   ValidationState state) {
+		if(validations.containsKey(domain)) {
+			validations.get(domain).add(state);
 		}else {
-			//create usual order:
-			// create date with date and address:
-			MampfDate orderDate = new MampfDate(form.getStartDate(), form.getAddress()); 
-			order = new MampfOrder(userAccount,
-								   createPayMethod(form.getPayMethod(),userAccount), 
-								   orderDomain,
-								   orderDate);
-			orderDate.setOrder(order);
-			cart.addItemsTo(order);
-			
-			
-			LocalDateTime startDate = form.getStartDate();
-			freeCooks = getfreeEmployee(startDate, Employee.Role.COOK); 
-			freeServicePersonal = getfreeEmployee(startDate, Employee.Role.SERVICE);
-			
-			//TODO: check if order is really not existing when returning 
-			if(freeCooks.size() < getEmployeeAmount(cart, StaffItem.Type.COOK) ||
-					freeServicePersonal.size() < getEmployeeAmount(cart, StaffItem.Type.SERVICE)) return null;
+			List<ValidationState> stateList = new ArrayList<>();
+			stateList.add(state);
+			validations.put(domain, stateList);
 		}
-		
+	}
 	
-		if(!orderManagement.payOrder(order))return order; 
+	public Map<Item.Domain, List<ValidationState>> validateCarts(Map<Item.Domain, Cart> carts,
+														   DateFormular form){
 		
-
-		//will (indirectly) reduce item amount if possible
-		if(!orderDomain.equals(Item.Domain.MOBILE_BREAKFAST))orderManagement.completeOrder(order);
+		Map<Item.Domain, List<ValidationState>> validations = new HashMap<>();
 		
+		Map<String, Integer> personalLeft = null;
 		
-		orderManagement.save(order);
-		if(!order.isCompleted())return null;
-		
-	//ADD VALIDATED PERSONAL:
-	// there should never be a error
-		
-		if(!orderDomain.equals(Item.Domain.MOBILE_BREAKFAST)) {
-			setEmloyees(cart, order, freeCooks, freeServicePersonal);
+		for(Item.Domain domain: carts.keySet()) {
+			for(CartItem cartitem: carts.get(domain)) {
+				if(((Item)cartitem.getProduct()).getCategory().equals(Item.Category.STAFF)) {
+					personalLeft = new HashMap<>();
+					for(Employee.Role role: Employee.Role.values()) {
+						personalLeft.put(role.toString(), 
+										 Integer.valueOf(getfreeEmployee
+												 (form.getStartDate(), role).
+												 size()));
+					}
+					break;
+				}
+			}
 		}
-		return order;
+		
+		
+		for(Item.Domain domain: carts.keySet()) {
+			Cart cart = carts.get(domain);
+			
+			for(CartItem cartitem: cart) {
+				List<CartItem> checkitems = new ArrayList<>();
+				Item item = (Item)cartitem.getProduct();
+				
+				if(item.getDomain().equals(Item.Domain.MOBILE_BREAKFAST)) {
+					MobileBreakfastForm breakfastForm = ((BreakfastMappedItems)item).getForm();
+					checkitems.add(new Cart().
+								   addOrUpdateItem(breakfastForm.getBeverage(),
+										    	   Quantity.of(1)));
+					checkitems.add(new Cart().
+								   addOrUpdateItem(breakfastForm.getDish(),
+										   		   Quantity.of(1)));
+				}else {
+					checkitems.add(cartitem);
+				}
+					
+				for(CartItem checkitem: checkitems) {
+					Optional<Item> catalogItem = catalog.findById(checkitem.getProduct().getId());
+					
+					if(catalogItem.isPresent()) {
+						//are there other 'items' like personal??
+
+						Optional<UniqueInventoryItem> inventoryItem =  
+								inventory.findByProduct(catalogItem.get());
+						if(inventoryItem.isPresent()) {
+							Quantity inventoryItemQuantity = inventoryItem.get().getQuantity();
+							//replace with function call?
+							//finite and not reducable amount:
+							if(inventoryItemQuantity.isGreaterThan(Quantity.of(0))&&
+									inventoryItemQuantity.isLessThan(checkitem.getQuantity())) {
+								updateValidations(validations, domain, ValidationState.NO_STOCK);
+							}
+						}
+						
+						if(catalogItem.get().getCategory().
+								equals(Item.Category.STAFF)) {
+							String staffType = ((StaffItem)item).getType().toString();
+							
+							Integer amountLeft = personalLeft.get(staffType);
+							
+							//reduce
+							if(amountLeft > 0) {
+								amountLeft -= checkitem.getQuantity().getAmount().intValue();
+								personalLeft.put(staffType, amountLeft); //?
+							}
+							//error
+							if(amountLeft < 0){
+								updateValidations(validations, domain, ValidationState.NO_PERSONAL);
+							}
+						}
+					}else {
+						//item is not in the catalog
+						updateValidations(validations, domain, ValidationState.NO_ITEM);
+					}
+				}
+			}
+		}
+		
+		return validations;
+	}
+	
+	public List<MampfOrder> createOrders(Map<Item.Domain, Cart> carts,  
+										 DateFormular form, 
+										 UserAccount userAccount) {
+		
+		if(carts == null || userAccount == null || form == null)return null;
+		
+		Map<String, List<Employee>> personalLeft = null;
+		for(Item.Domain domain: carts.keySet()) {
+			for(CartItem cartitem: carts.get(domain)) {
+				if(((Item)cartitem.getProduct()).getCategory().equals(Item.Category.STAFF)) {
+					personalLeft = new HashMap<>();
+					for(Employee.Role role: Employee.Role.values()) {
+						personalLeft.put(role.toString(), 
+										 getfreeEmployee(form.getStartDate(), role));
+					}
+					break;
+				}
+			}
+		}
+		
+		
+		List<MampfOrder> orders = new ArrayList<>();
+		for(Item.Domain domain: carts.keySet()) {
+			
+			Cart cart = carts.get(domain);
+			
+			MampfOrder order;
+			
+			if(domain.equals(Item.Domain.MOBILE_BREAKFAST)) {
+				order = createOrderMB(cart, form, userAccount);
+				
+			}else {
+				//create usual order:
+				// create date with date and address:
+				MampfDate orderDate = new MampfDate(form.getStartDate(), form.getAddress()); 
+				order = new MampfOrder(userAccount,
+									   createPayMethod(form.getPayMethod(),userAccount), 
+									   domain,
+									   orderDate);
+				orderDate.setOrder(order);
+				cart.addItemsTo(order);
+			}
+			
+			//set personal as booked:
+		
+			Item item;
+			Quantity itemQuantity;
+			
+			for(CartItem cartItem: cart) {
+				item = ((Item)cartItem.getProduct());
+				itemQuantity = cartItem.getQuantity();
+				
+				if(item.getCategory().equals(Item.Category.STAFF)){
+					StaffItem personalItem = ((StaffItem)item);
+					String personalItemType = personalItem.getType().toString();
+					
+					List<Employee> freeStaff = personalLeft.get(personalItemType);
+					
+					int personalAmount = itemQuantity.getAmount().intValue();
+					Employee employee;
+					for(int i = 0; i < personalAmount; i++) {
+						if(!freeStaff.isEmpty()){
+							employee = freeStaff.remove(0);
+							employee.setBooked(order);
+							order.addEmployee(employee);
+						}
+					}
+				}
+			}
+		
+			if(!orderManagement.payOrder(order))return null; 
+			
+	
+			//will (indirectly) reduce item amount if possible
+			//mb orders throws error
+			if(!domain.equals(Item.Domain.MOBILE_BREAKFAST))orderManagement.completeOrder(order);
+			
+			orderManagement.save(order);
+			if(!order.isCompleted())return null;
+			orders.add(order);
+		}
+		
+		return orders;
 		
 	}
 	
-	
-	//public boolean payOrder(MampfOrder order) {
-		
-	//}
-
-
-	//public boolean payOrder(MampfOrder order) {
-	//}
-
-	public void completeOrder(MampfOrder order) {
-		orderManagement.completeOrder(order);
-	}
-
-
-	/*public boolean validateCart(Cart cart, DateFormular form) {
-	}*/
-
-	 /*public void addEmployee(MampfOrder order, Employee employee) {
-	 	order.addEmployee(employee);
-	 	if (order.isDone()){
-	 		orderManagement.completeOrder(order);
-	 	}
-	 }*/
 
 
 	public MampfOrder findOrderById(UserAccount user){
@@ -286,15 +326,6 @@ public class MampfOrderManager {
 		return new ArrayList<MampfOrder>(list);
 	}
 
-
-	/* public List<MampfOrder> findNewest(UserAccount account) {
-	 	List<MampfOrder> res = new ArrayList<>();
-	 	for (MampfOrder order : orderManagement.findBy(account))
-	 		if (order.isOpen())
-	 			res.add(order);
-	 	return res;
-	 }*/
-
 	public List<MampfOrder> findByUserAcc(UserAccount account) {
 		List<MampfOrder> res = new ArrayList<>();
 		for (MampfOrder order : orderManagement.findBy(account))
@@ -302,11 +333,6 @@ public class MampfOrderManager {
 		return res;
 	}
 
-	 /*public List<MampfOrder> findByEmployee(Employee employee) {
-	 	List<MampfOrder> res = new ArrayList<>();
-	 	for (MampfOrder order : orderManagement.findBy(OrderStatus.PAID))
-	 		if (!order.isDone())
-	 			res.add(order);
-	 	return res;
-	 }*/
+	
+
 }
