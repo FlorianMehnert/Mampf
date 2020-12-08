@@ -20,8 +20,7 @@ public class Company {
 
 	private @Id @GeneratedValue long id;
 
-	public Company(String name)
-	{
+	public Company(String name)	{
 		this.name = name;
 		this.accessCode = RandomString.make(6);
 	}

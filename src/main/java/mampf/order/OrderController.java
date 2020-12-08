@@ -129,7 +129,6 @@ public class OrderController {
 		return "redirect:/cart";
 	}
 
-	
 	/**
 	 * removes cartitem from cart
 	 */
@@ -184,6 +183,7 @@ public class OrderController {
 		}
 		
 		List<MampfOrder> orders = orderManager.createOrders(carts, form, userAccount.get());
+
 		
 		List<Item.Domain> domains = new ArrayList<>();
 		for(Item.Domain domain : carts.keySet()) {
