@@ -39,7 +39,7 @@
           <td th:text="${employee.role}">Role</td>
           <td>
             <ul>
-              <li th:each="date : ${employee.booked}" th:text="date"></li>
+              <li th:each="date : ${employee.booked}"><a th:href="'/orders/detail/' + ${date.id}" th:text="${date.id}">order</a></li>
             </ul>
           </td>
         </tr>
