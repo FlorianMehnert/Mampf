@@ -186,7 +186,6 @@ In der Datei _application.properties_ müssen dazu die folgenden Zeilen auskomme
 
 [[ui_diagram]]
 image:images/diagrams/ui-diagram.png[ui diagram]
-*TODO: add diagram*
 
 ==== Verwendung externer Frameworks
 
@@ -320,12 +319,11 @@ image:images/diagrams/developer_doc_5_4_Inventory.svg[pkg inventory building blo
 |===
 |Klasse/Enumeration |Description
 | Inventory | Eine Erweiterung des UniqueInventory, um die einzelnen Mampf-Items von `Item` zu managen.
-| Category | Enumeration, die die jeweilige Kategorie eines Produktes oder einer Dienstleistung `Item`, die in einer
-Domäne angeboten wird, beschreibt.
-| Domain | Enumeration, die die jeweilige Domäne eines (bspw. PartyService) der zu vertreibenden Produkte und
-Dienstleistungen `Item` beschreibt.
-| Item | Beschreibt alle Produkte und Dienstleistungen die Mampf vertreibt.
-| MampfCatalog | Eine Erweiterung des Salepoint Catalog, um Mampf spezifische Funktionalitäten hinzuzufügen.
+| InventoryController | Diese Klasse ist ein Spring-Controller, der die Requests zum Erhöhen der Quantitäten im
+Inventory, sowie die Requests zum Anzeigen der inventory Seite bearbeitet.
+| InventoryInitializer | Eine Implementierung des DataInitializers, welche das Inventar mithilfe des Catalogs
+und mehreren Regeln bezüglich der Quantitäten der einzelnen Gegenstände initialisiert.
+
 |===
 
 === Order
@@ -372,7 +370,7 @@ image:images/diagrams/developer_doc_5_5_Orders_.svg[pkg order building block dia
 
 === Employee
 [[pkg_employee_diagram]]
-image:images/diagrams/employee_package.svg[pkg employee diagram]
+image:images/diagrams/employee_package_new.svg[pkg employee diagram]
 
 [options="header"]
 |===

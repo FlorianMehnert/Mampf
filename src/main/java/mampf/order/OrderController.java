@@ -1,6 +1,8 @@
 package mampf.order;
 
 import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @SessionAttributes("mampfCart")
 public class OrderController {
 
+	private MampfCart cart = new MampfCart();
+	private final TemporalAmount delayForEarliestPossibleBookingDate;
+
 	public class BreakfastMappedItems extends Item {
 		private MobileBreakfastForm form;
 
@@ -49,6 +54,7 @@ public class OrderController {
 
 	public OrderController(MampfOrderManager orderManager) {
 		this.orderManager = orderManager;
+		this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 	}
 
 	/* CART */
@@ -128,36 +134,20 @@ public class OrderController {
 		return "redirect:/cart";
 	}
 
-	/**
-	 * removes cartitem from cart
-	 */
-	@PostMapping("cart/remove")
-	public String removeCartItem(@RequestParam String cartitemId,
-								 @ModelAttribute("mampfCart") MampfCart mampfCart) {
-		CartItem cartitem = mampfCart.getCartItem(cartitemId);
-		if (cartitem != null) {
-			mampfCart.removeFromCart(cartitem);
-		}
-		return "redirect:/cart";
-	}
 
 	/**
 	 * view buying site
 	 */
 	@GetMapping("/pay/{domain}")
-	public String chooseToBuy(Model model, 
+	public String chooseToBuy(Model model,
 							  @PathVariable String domain,
-							  DateFormular form,
+							  CheckoutForm form,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
 		Map<Item.Domain, Cart> domains = mampfCart.getDomainItems(domain);
 		model.addAttribute("domains", domains);
 		model.addAttribute("domainChoosen", domain);
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
-		if(domains.size() == 1 && domains.containsKey(Item.Domain.MOBILE_BREAKFAST)) {
-			form.setAddress("Company XYZ");
-			form.setStartDate(LocalDateTime.now());
-		}
 		model.addAttribute("form", form);
 		return "buy_cart";
 	}
@@ -166,29 +156,29 @@ public class OrderController {
 	 * buy cart(s)
 	 */
 	@PostMapping("/checkout")
-	public String buy(@RequestParam String domainChoosen, 
-					  @Valid DateFormular form, 
-					  Errors result,
-					  @LoggedIn Optional<UserAccount> userAccount,
-					  @ModelAttribute("mampfCart") MampfCart mampfCart) {
+	//TODO: remove domainChoosen and use form instead
+	public String buy(Model model, @RequestParam String domainChoosen, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
+					  @LoggedIn UserAccount userAccount, @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		if(domainChoosen == null || result.hasErrors()) {
-			return "redirect:/cart";
-		}
-		if (userAccount.isEmpty()) {
-			return "redirect:/login";
+		if(form.getStartDateTime().isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
+			result.rejectValue("startDate", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
 		}
 
 		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(domainChoosen);
 		Map<Item.Domain, List<ValidationState>> validations = orderManager.validateCarts(carts, form);
 
-		if (!validations.isEmpty()) {
-			// error handling
-			// send errors to specific pay redirect
-			return "redirect:/cart";
+		if(!validations.isEmpty()) {
+			result.rejectValue("generalError",  "CheckoutForm.generalError.NoStuffLeft","There is no free stuff or personal for the selected time left!");
 		}
 
-		orderManager.createOrders(carts, form, userAccount.get());
+		if (result.hasErrors()) {
+			model.addAttribute("domains", carts);
+			model.addAttribute("domainChoosen", domainChoosen);
+			model.addAttribute("total", cart.getTotal(carts.values()));
+			return "buy_cart";
+		}
+
+		orderManager.createOrders(carts, form, userAccount);
 
 		List<Item.Domain> domains = new ArrayList<>();
 		for (Item.Domain domain : carts.keySet()) {

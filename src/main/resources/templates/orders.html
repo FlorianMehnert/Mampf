@@ -31,12 +31,14 @@
         <thead class="thead-light">
           <tr>
             <th>Bestellung</th>
+            <th>Status</th>
             <th>View</th>
           </tr>
         </thead>
         <tbody>
           <tr th:each=" order : ${orders}">
             <td th:text="${order.id}">name</td>
+            <td th:text="${order.getOrderStatus().name()}">name</td>
             <!-- <td><a th:href="'/orders/detail?order='+${order.id}">view</a></td>
              -->
             <td><a th:href="'/orders/detail/'+${order.id}">view</a></td>
