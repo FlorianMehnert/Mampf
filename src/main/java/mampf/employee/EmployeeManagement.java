@@ -54,13 +54,26 @@ public class EmployeeManagement {
 
 	public List<Employee> getFreeEmployees(LocalDateTime date, Employee.Role role){
 		List<Employee> freeEmployees = new ArrayList<>();
+		boolean isFree = true;
 		for(Employee employee: employees.findByRole(role)) {
+			//änderung: 
+			// fall: es existieren keine bookedOrders -> "es wird nie freie employees geben"
+			// fall: date überschneidet mehrere order -> nur einmal hinzufügen
+			// -> durch isFree kann nur maximal einmal, falls möglich, der employee geaddet werden
+			isFree = true;
 			for (MampfOrder bookedOrder : employee.getBooked()){
-				if(!bookedOrder.getDate().hasTimeOverlap(date)){
-					freeEmployees.add(employee);
+				if(bookedOrder.getDate().hasTimeOverlap(date)){
+					isFree = false;
+					break;
 				}
+			}
+			
+			if(isFree) {
+				freeEmployees.add(employee);
 			}
 		}
 		return freeEmployees;
+		
 	}
+		
 }

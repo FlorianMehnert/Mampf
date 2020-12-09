@@ -16,12 +16,9 @@ import org.salespointframework.payment.Cash;
 import org.salespointframework.payment.Cheque;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.useraccount.UserAccount;
-import org.springframework.data.annotation.Transient;
 
 @Entity
 public class MampfOrder extends Order {
-	// TODO: addEmployee, findByCategory
-
 	private Item.Domain domain;
 
 	@OneToOne(cascade = CascadeType.ALL)
@@ -34,17 +31,17 @@ public class MampfOrder extends Order {
 	private MampfOrder() {
 	}
 
-	public MampfOrder(UserAccount account, PaymentMethod paymentMethod, Item.Domain domain, MampfDate date) {
-		// TODO: create with nullable date or mbform
+	public MampfOrder(UserAccount account,
+					  PaymentMethod paymentMethod,
+					  Item.Domain domain,
+					  MampfDate date) {
 		super(account, paymentMethod);
 		this.date = date;
 		employees = new ArrayList<>();
-		// TODO: make sure: every mb-domain has a non null form
 		this.domain = domain;
 	}
 
 	public void addEmployee(Employee employee) {
-		// TODO: nullcheck
 		employees.add(employee);
 	}
 
@@ -59,7 +56,8 @@ public class MampfOrder extends Order {
 	public List<Employee> getEmployees() {
 		return employees;
 	}
-
+	
+	@Override
 	public String toString() {
 		return "Order: " + this.getDomain().toString();
 	}

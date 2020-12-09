@@ -34,8 +34,8 @@ class InventoryInitializer implements DataInitializer {
 						inventory.save(new UniqueInventoryItem(item, Quantity.of(20)));
 					} else if (item.getName().equals("Tischdecke")) {
 						inventory.save(new UniqueInventoryItem(item, Quantity.of(25)));
-					} else if (item.getCategory() == Item.Category.FOOD) {
-						inventory.save(new UniqueInventoryItem(item, Quantity.of(-1)));
+					} else if (item.getCategory() == Item.Category.FOOD || item.getCategory() == Item.Category.STAFF) {
+						inventory.save(new UniqueInventoryItem(item, Quantity.of(10000))); //testing purpose: just a big number
 					} else {
 						inventory.save(new UniqueInventoryItem(item, Quantity.of(10)));
 					}
