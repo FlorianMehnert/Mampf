@@ -34,7 +34,7 @@ public class EmployeeController {
 
 	@PostMapping("/intern/employees/add")
 	public String registerNew(@Valid @ModelAttribute("form")RegistrationForm form, Errors error){
-		if(!form.getRole().equals("COOK") || !form.getRole().equals("SERVICE")){
+		if(!form.getRole().equals("COOK") && !form.getRole().equals("SERVICE")){
 			error.rejectValue("role", "This type of employee does not exist");
 		}
 
