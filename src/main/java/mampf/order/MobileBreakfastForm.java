@@ -1,22 +1,18 @@
 package mampf.order;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import mampf.catalog.BreakfastItem;
 
 public class MobileBreakfastForm {
-	//@NotEmpty(message = "beverage should not be empty") //
 	@NotNull(message = "beverage should be set")
 	private final BreakfastItem beverage;
 
-	//@NotEmpty(message = "dish should not be empty") //
 	@NotNull(message = "dish should be set")
 	private final BreakfastItem dish;
 

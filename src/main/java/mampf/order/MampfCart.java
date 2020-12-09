@@ -1,7 +1,6 @@
 package mampf.order;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -14,7 +13,7 @@ import org.salespointframework.quantity.Quantity;
 import mampf.catalog.Item;
 
 public class MampfCart{
-	private Map<Item.Domain, Cart> stuff = new TreeMap<>();;
+	private Map<Item.Domain, Cart> stuff = new TreeMap<>();
 	MampfCart(){}
 	/**
 	 * get cart of domain
@@ -59,11 +58,11 @@ public class MampfCart{
 		if(domainCart == null) {
 			return;
 		}
-		//int newAmount = cartItem.getQuantity().getAmount().intValue()+itemAmount;
 		if(itemAmount < 1) {
 			removeFromCart(cartItem);
 		}else {
-			domainCart.addOrUpdateItem((Item)cartItem.getProduct(), itemAmount-cartItem.getQuantity().getAmount().intValue());
+			domainCart.addOrUpdateItem(cartItem.getProduct(),
+									   itemAmount-cartItem.getQuantity().getAmount().intValue());
 		}
 	
 	}
@@ -96,8 +95,9 @@ public class MampfCart{
 	 * @return CartItem or null
 	 */
 	public CartItem getCartItem(String cartitemId) {
-		for(Item.Domain itemDomain: stuff.keySet()) {
-			Optional<CartItem> cartitem = stuff.get(itemDomain).getItem(cartitemId);
+		for(Map.Entry<Item.Domain, Cart> entry : stuff.entrySet()) {
+			Optional<CartItem> cartitem = stuff.get(entry.getKey()).
+										  getItem(cartitemId);
 			if(cartitem.isPresent()) {
 				return cartitem.get();
 			}

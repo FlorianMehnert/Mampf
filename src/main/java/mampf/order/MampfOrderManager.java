@@ -29,15 +29,16 @@ import java.util.Optional;
 import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
+import org.salespointframework.order.OrderLine;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MampfOrderManager {
 	
-	public static enum ValidationState{
+	enum ValidationState{
 		NO_PERSONAL,NO_STOCK,NO_ITEM
-	};
+	}
 	private final OrderManagement<MampfOrder> orderManagement;
 	private final Inventory inventory;
 	private final MampfCatalog catalog;
@@ -97,6 +98,73 @@ public class MampfOrderManager {
 			personalLeft.put(role.toString(), xcy);
 		}
 		return personalLeft;
+	}
+	
+	private List<CartItem> createCheckItems(CartItem cartitem) {
+		
+		Item item = ((Item)cartitem.getProduct());
+		List<CartItem> checkitems = new ArrayList<>();
+		if(item.getDomain().equals(Item.Domain.MOBILE_BREAKFAST)) {
+			MobileBreakfastForm breakfastForm = ((BreakfastMappedItems)item).getForm();
+			checkitems.add(new Cart().
+						   addOrUpdateItem(breakfastForm.getBeverage(),
+								    	   Quantity.of(1)));
+			checkitems.add(new Cart().
+						   addOrUpdateItem(breakfastForm.getDish(),
+								   		   Quantity.of(1)));
+		}else {
+			checkitems.add(cartitem);
+		}
+		return checkitems;
+	}
+	
+	private void checkForAmount(CartItem checkitem,
+								Item catalogItem,
+								Map<Item.Domain, List<ValidationState>> validations,
+								Item.Domain domain) {
+		
+		Optional<UniqueInventoryItem> inventoryItem =  inventory.findByProduct(catalogItem);
+		if(inventoryItem.isPresent()) {
+			Quantity inventoryItemQuantity = inventoryItem.get().getQuantity();
+			
+			//finite and not reducable amount:
+			if(inventoryItemQuantity.isGreaterThan(Quantity.of(0))&&
+					inventoryItemQuantity.isLessThan(checkitem.getQuantity())) {
+				updateValidations(validations, domain, ValidationState.NO_STOCK);
+			}
+		}
+	}
+	
+	private void setPersonalBooked(MampfOrder order,
+								   Map<String, List<Employee>> personalLeft) {
+		Item item;
+		Quantity itemQuantity;
+		
+		for(OrderLine orderline: order.getOrderLines()) {
+			Optional<Item> itemOptional = catalog.findById(orderline.getProductIdentifier());
+			if(itemOptional.isEmpty()) {
+				continue;
+			}
+			item = itemOptional.get();
+			itemQuantity = orderline.getQuantity();
+			
+			if(item.getCategory().equals(Item.Category.STAFF)){
+				StaffItem personalItem = ((StaffItem)item);
+				String personalItemType = personalItem.getType().toString();
+				
+				List<Employee> freeStaff = personalLeft.get(personalItemType);
+				
+				int personalAmount = itemQuantity.getAmount().intValue();
+				Employee employee;
+				for(int i = 0; i < personalAmount; i++) {
+					if(!freeStaff.isEmpty()){
+						employee = freeStaff.remove(0);
+						employee.setBooked(order);
+						order.addEmployee(employee);
+					}
+				}
+			}
+		}
 	}
 	
 	private MampfDate createDateMB(OrderController.BreakfastMappedItems item) {
@@ -165,66 +233,36 @@ public class MampfOrderManager {
 		if(hasStaff(carts.values())) {
 			personalLeft = getPersonalAmount(form);
 		}
-		
-		
 		for(Map.Entry<Item.Domain, Cart> entry : carts.entrySet()) {
 			Item.Domain domain = entry.getKey();
 			Cart cart = entry.getValue();
-			
 			for(CartItem cartitem: cart) {
-				List<CartItem> checkitems = new ArrayList<>();
-				Item item = (Item)cartitem.getProduct();
-				
-				if(item.getDomain().equals(Item.Domain.MOBILE_BREAKFAST)) {
-					MobileBreakfastForm breakfastForm = ((BreakfastMappedItems)item).getForm();
-					checkitems.add(new Cart().
-								   addOrUpdateItem(breakfastForm.getBeverage(),
-										    	   Quantity.of(1)));
-					checkitems.add(new Cart().
-								   addOrUpdateItem(breakfastForm.getDish(),
-										   		   Quantity.of(1)));
-				}else {
-					checkitems.add(cartitem);
-				}
-					
-				for(CartItem checkitem: checkitems) {
+				for(CartItem checkitem: createCheckItems(cartitem)) {
 					Optional<Item> catalogItem = catalog.findById(checkitem.getProduct().getId());
 					
-					if(catalogItem.isPresent()) {
-						//are there other 'items' like personal??
-
-						Optional<UniqueInventoryItem> inventoryItem =  
-								inventory.findByProduct(catalogItem.get());
-						if(inventoryItem.isPresent()) {
-							Quantity inventoryItemQuantity = inventoryItem.get().getQuantity();
-							//replace with function call?
-							//finite and not reducable amount:
-							if(inventoryItemQuantity.isGreaterThan(Quantity.of(0))&&
-									inventoryItemQuantity.isLessThan(checkitem.getQuantity())) {
-								updateValidations(validations, domain, ValidationState.NO_STOCK);
-							}
-						}
-						
-						if(catalogItem.get().getCategory().
-								equals(Item.Category.STAFF)) {
-							String staffType = ((StaffItem)item).getType().toString();
-							
-							Integer amountLeft = personalLeft.get(staffType);
-							
-							//reduce
-							if(amountLeft > -1) {
-								amountLeft -= checkitem.getQuantity().getAmount().intValue();
-								personalLeft.put(staffType, amountLeft); //?
-							}
-							//error
-							if(amountLeft < 0){
-								updateValidations(validations, domain, ValidationState.NO_PERSONAL);
-							}
-						}
-					}else {
-						//item is not in the catalog
+					if(!catalogItem.isPresent()) {
 						updateValidations(validations, domain, ValidationState.NO_ITEM);
+						continue;
 					}
+					
+					checkForAmount(checkitem, catalogItem.get(),validations, domain);
+					
+					if(catalogItem.get().getCategory().equals(Item.Category.STAFF)) {
+						String staffType = ((StaffItem)catalogItem.get()).getType().toString();
+						
+						Integer amountLeft = personalLeft.get(staffType);
+						
+						//reduce
+						if(amountLeft > -1) {
+							amountLeft -= checkitem.getQuantity().getAmount().intValue();
+							personalLeft.put(staffType, amountLeft); 
+						}
+						//error
+						if(amountLeft < 0){
+							updateValidations(validations, domain, ValidationState.NO_PERSONAL);
+						}
+					}
+					
 				}
 			}
 		}
@@ -236,18 +274,21 @@ public class MampfOrderManager {
 										 DateFormular form, 
 										 UserAccount userAccount) {
 		
-		if(carts == null || userAccount == null || form == null)return null;
+		if(carts == null || userAccount == null || form == null) {
+			return new ArrayList<>(); //sonarcube
+		}
 		
-		Map<String, List<Employee>> personalLeft = null;
+		Map<String, List<Employee>> personalLeft = new HashMap<>(); //sonarcube
 		if(hasStaff(carts.values())) {
 			personalLeft = getPersonal(form);
 		}
 		
 		
 		List<MampfOrder> orders = new ArrayList<>();
-		for(Item.Domain domain: carts.keySet()) {
+		for(Map.Entry<Item.Domain, Cart> entry : carts.entrySet()) {
 			
-			Cart cart = carts.get(domain);
+			Item.Domain domain = entry.getKey();
+			Cart cart = entry.getValue();
 			
 			MampfOrder order;
 			
@@ -268,43 +309,13 @@ public class MampfOrderManager {
 				cart.addItemsTo(order);
 			}
 			
-			//set personal as booked:
-		
-			Item item;
-			Quantity itemQuantity;
+			setPersonalBooked(order, personalLeft);
 			
-			for(CartItem cartItem: cart) {
-				item = ((Item)cartItem.getProduct());
-				itemQuantity = cartItem.getQuantity();
-				
-				if(item.getCategory().equals(Item.Category.STAFF)){
-					StaffItem personalItem = ((StaffItem)item);
-					String personalItemType = personalItem.getType().toString();
-					
-					List<Employee> freeStaff = personalLeft.get(personalItemType);
-					
-					int personalAmount = itemQuantity.getAmount().intValue();
-					Employee employee;
-					for(int i = 0; i < personalAmount; i++) {
-						if(!freeStaff.isEmpty()){
-							employee = freeStaff.remove(0);
-							employee.setBooked(order);
-							order.addEmployee(employee);
-						}
-					}
-				}
-			}
-		
-			if(!orderManagement.payOrder(order))return null; 
+			if(!orderManagement.payOrder(order))return orders; 
 			
-	
-			//will (indirectly) reduce item amount if possible
-			//mb orders throws error
-			//if(!domain.equals(Item.Domain.MOBILE_BREAKFAST))orderManagement.completeOrder(order);
 			orderManagement.completeOrder(order);
 			
 			orderManagement.save(order);
-			if(!order.isCompleted())return null;
 			orders.add(order);
 		}
 		
@@ -322,7 +333,7 @@ public class MampfOrderManager {
 		return orderManagement;
 	}
 
-	public ArrayList<MampfOrder> findAll() {
+	public List<MampfOrder> findAll() {
 		Stream<MampfOrder> stream = orderManagement.findAll(Pageable.unpaged()).get();
 		List<MampfOrder> list = stream.collect(Collectors.toList());
 		return new ArrayList<>(list);

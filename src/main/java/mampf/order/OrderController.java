@@ -1,5 +1,6 @@
 package mampf.order;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -153,6 +154,10 @@ public class OrderController {
 		model.addAttribute("domains", domains);
 		model.addAttribute("domainChoosen", domain);
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
+		if(domains.size() == 1 && domains.containsKey(Item.Domain.MOBILE_BREAKFAST)) {
+			form.setAddress("Company XYZ");
+			form.setStartDate(LocalDateTime.now());
+		}
 		model.addAttribute("form", form);
 		return "buy_cart";
 	}
@@ -206,7 +211,7 @@ public class OrderController {
 	@PreAuthorize("hasRole('BOSS')")
 	public String orders(Model model) {
 
-		ArrayList<MampfOrder> orders = orderManager.findAll();
+		List<MampfOrder> orders = orderManager.findAll();
 		model.addAttribute("orders", orders);
 		return "orders";
 	}
