@@ -329,44 +329,21 @@ und mehreren Regeln bezüglich der Quantitäten der einzelnen Gegenstände initi
 === Order
 
 [[pkg_order_building_block_diagram]]
-image:images/diagrams/developer_doc_5_5_Orders_.svg[pkg order building block diagram]
+image:images/diagrams/developer_doc_5_5_Orders.svg[pkg order building block diagram]
 
 [options="header"]
 |===
 |Klasse/Enumeration |Description
 | OrderController | Ein Spring MVC Controller.
-| MampfOrderManager | Eine Erweiterung des Salespoint `OrderManager`, um einzelne MampfOrder zu verwalten.
+| MampfOrderManager | Eine Komponente zum managen (z.b. erstellen und validieren)von Bestellungen `MampfOrder`
 | MampfOrder | Eine Erweiterung von der Salespoint `Order`, um einzelne Mampf Bestellungen zu verwalten.
+| ValitationState | Enumeration welche eine fehlerhafte validieren von Bestellungen repräsentieren kann.
+| MampfCart | Eine Sessionkomponente des `OrderController` um einzelne `Item` zu verwalten.
+| MampfDate | repräsentiert zeitliche Komponente einer `MampfOrder`.
+| BreakfastMappedItems | stellt eine Mobile Breakfast - Itemauswahl im Warenkorb `MampfCart` dar.
+| CheckoutForm | Spring Komponente, Formular für auswahl Zahlmethode,Datum,Uhrzeit.
+| MobileBreakfastForm | Spring Komponente, Formular für auswahl des Mobile Breakfast Angebotes im Katalog.
 |===
-
-
-
-
-//mampf.order
-
-//[[pkg_order_building_block_diagram]]
-//image:images/diagrams/developer_doc_5_5_Orders_.svg[pkg order building block diagram]
-
-//mampf.cart
-
-//[[pkg_order_building_block_diagram]]
-//image:images/diagrams/developer_doc_5_5_Orders_cart.svg[pkg cart building block diagram]
-
-//[options="header"]
-//|===
-//|Klasse/Enumeration |Description
-//| OrderController | Ein Spring MVC Controller.
-//| MampfOrderManager | Eine Erweiterung des Salespoint `OrderManager`, um einzelne MampfOrder zu verwalten.
-//| MampfOrder | Eine Erweiterung von der Salespoint `Order`, um einzelne Mampf Bestellungen zu verwalten.
-//| MampfOrderLine | Eine Erweiterung des Salespoint `OrderLine`, repräsentiert eine Bestellungseinheit.
-//| CartController | Ein Spring MVC Controller, zum kaufen von Angeboten.
-//| MampfCart | Eine Erweiterung des Salespoint `Cart`, um einzelne MampfCartObject zu verwalten.
-//| MampfCartObject | Eine Erweiterung von der Salespoint `Product`, repräsentiert einen Warenkorbinhalteinheit.
-//| MampfCartItem | Eine Erweiterung des Salespoint `CartItem` (optional).
-//| Date | repräsentiert Termin (Zeit+Ort).
-//| DateForm | Spring Komponente, Formular für Date.
-//| PaymentForm | Spring Komponente, Formular für PaymentMethod.
-//|===
 
 === Employee
 [[pkg_employee_diagram]]
@@ -395,7 +372,7 @@ image:images/diagrams/developer_doc_6_1_Catalog.svg[sd_catalog_diagram]
 === Order
 
 [[sd_catalog_diagram]]
-image:images/diagrams/developer_doc_6_4_Orders_.svg[sd_order_diagram]
+image:images/diagrams/developer_doc_6_4_Orders.svg[sd_order_diagram]
 
 === Employee
 [[sd_employee_diagram]]
