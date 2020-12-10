@@ -34,10 +34,21 @@ public interface Inventory extends UniqueInventory<UniqueInventoryItem> {
 		return sortableList;
 	}
 
+	default List<UniqueInventoryItem> sortByCategory() {
+		List<UniqueInventoryItem> list = this.findAll().toList();
+		List<UniqueInventoryItem> sortableList = new ArrayList<>(list);
+		sortableList.sort(new SortByName());
+		return sortableList;
+	}
+
 	class SortByName implements Comparator<UniqueInventoryItem> {
 		@Override
 		public int compare(UniqueInventoryItem a, UniqueInventoryItem b) {
-			return a.getProduct().getName().compareTo(b.getProduct().getName());
+			int comp = a.getProduct().getName().compareTo(b.getProduct().getName());
+			if(comp == 0){
+				comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+			}
+			return comp;
 		}
 	}
 }
