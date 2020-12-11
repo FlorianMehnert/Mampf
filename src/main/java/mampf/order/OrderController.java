@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import mampf.user.User;
+import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
@@ -18,6 +20,7 @@ import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -35,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class OrderController {
 
 	private MampfCart cart = new MampfCart();
+	private UserManagement userManagement;
 	private final TemporalAmount delayForEarliestPossibleBookingDate;
 
 	public class BreakfastMappedItems extends Item {
@@ -52,9 +56,10 @@ public class OrderController {
 
 	private final MampfOrderManager orderManager;
 
-	public OrderController(MampfOrderManager orderManager) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement) {
 		this.orderManager = orderManager;
 		this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
+		this.userManagement = userManagement;
 	}
 
 	/* CART */
@@ -158,7 +163,7 @@ public class OrderController {
 	@PostMapping("/checkout")
 	//TODO: remove domainChoosen and use form instead
 	public String buy(Model model, @RequestParam String domainChoosen, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
-					  @LoggedIn UserAccount userAccount, @ModelAttribute("mampfCart") MampfCart mampfCart) {
+					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
 		if(form.getStartDateTime().isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
 			result.rejectValue("startDate", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
@@ -171,6 +176,12 @@ public class OrderController {
 			result.rejectValue("generalError",  "CheckoutForm.generalError.NoStuffLeft","There is no free stuff or personal for the selected time left!");
 		}
 
+		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+		if (user.isEmpty()) {
+			result.rejectValue("generalError",  "CheckoutForm.generalError.NoLogin","There was an error during your login process");
+		}
+
+
 		if (result.hasErrors()) {
 			model.addAttribute("domains", carts);
 			model.addAttribute("domainChoosen", domainChoosen);
@@ -178,7 +189,7 @@ public class OrderController {
 			return "buy_cart";
 		}
 
-		orderManager.createOrders(carts, form, userAccount);
+		orderManager.createOrders(carts, form, user.get());
 
 		List<Item.Domain> domains = new ArrayList<>();
 		for (Item.Domain domain : carts.keySet()) {

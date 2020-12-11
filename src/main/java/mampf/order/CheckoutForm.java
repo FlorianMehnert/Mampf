@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 public class CheckoutForm {
 
-	@DateTimeFormat(pattern = "dd.MM.yyyy")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message = "{CheckoutForm.startDate.NotNull}")
 	private final LocalDate startDate;
 
@@ -22,17 +22,16 @@ public class CheckoutForm {
 	private final LocalTime startTime;
 
 	//@NotEmpty(message = "address empty") // s
-	@NotEmpty()
-	private final String address;
 
 	@NotEmpty()
 	private final String payMethod;
 
 	private String generalError;
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private final DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("H:m");
 
-	public CheckoutForm(LocalDate startDate, String address, String payMethod, LocalTime startTime, String generalError) {
+	public CheckoutForm(LocalDate startDate, String payMethod, LocalTime startTime, String generalError) {
 		this.startDate = startDate;
-		this.address = address;
 		this.payMethod = payMethod;
 		this.startTime = startTime;
 		this.generalError = generalError;
@@ -44,20 +43,18 @@ public class CheckoutForm {
 		}
 		return startDate.atTime(startTime);
 	}
-	public String getAddress() {
-		return address;
-	}
 	public String getPayMethod() {
 		return payMethod;
 	}
 	public String getStartDate() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		return startDate != null ? startDate.format(formatter) : LocalDate.now().format(formatter);
+	}
+	public String getToday() {
+		return LocalDate.now().format(formatter);
 	}
 
 	public String getStartTime() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m");
-		return startTime != null ? startTime.format(formatter) : LocalTime.now().format(formatter);
+		return startTime != null ? startTime.format(formatterTime) : LocalTime.now().format(formatterTime);
 	}
 
 	public String getGeneralError() {

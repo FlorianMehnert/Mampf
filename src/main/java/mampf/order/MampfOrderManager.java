@@ -8,6 +8,7 @@ import mampf.employee.EmployeeManagement;
 import mampf.inventory.Inventory;
 import mampf.order.OrderController.BreakfastMappedItems;
 
+import mampf.user.User;
 import org.salespointframework.order.OrderManagement;
 import org.salespointframework.payment.Cash;
 import org.salespointframework.payment.Cheque;
@@ -272,9 +273,9 @@ public class MampfOrderManager {
 	
 	public List<MampfOrder> createOrders(Map<Item.Domain, Cart> carts,  
 										 CheckoutForm form,
-										 UserAccount userAccount) {
+										 User user) {
 		
-		if(carts == null || userAccount == null || form == null) {
+		if(carts == null || user == null || form == null) {
 			return new ArrayList<>(); //sonarcube
 		}
 		
@@ -295,14 +296,14 @@ public class MampfOrderManager {
 			if(domain.equals(Item.Domain.MOBILE_BREAKFAST)) {
 				order = createOrderMB(cart.iterator().next(), 
 									  form,
-									  userAccount);
+									  user.getUserAccount());
 				
 			}else {
 				//create usual order:
 				// create date with date and address:
-				MampfDate orderDate = new MampfDate(form.getStartDateTime(), form.getAddress());
-				order = new MampfOrder(userAccount,
-									   createPayMethod(form.getPayMethod(),userAccount), 
+				MampfDate orderDate = new MampfDate(form.getStartDateTime(), user.getAddress());
+				order = new MampfOrder(user.getUserAccount(),
+									   createPayMethod(form.getPayMethod(),user.getUserAccount()),
 									   domain,
 									   orderDate);
 				orderDate.setOrder(order);

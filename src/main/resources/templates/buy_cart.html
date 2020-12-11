@@ -52,7 +52,8 @@
     <div class="row mt-3">
       <span th:text="${'Preis für '+ domain.key + ':  ' + total}"></span>
     </div>
-
+  </div>
+  <div class="container">
 
     <div class="row mt-3">
         <b th:text="${'Gesamtpreis: ' + total}"></b>
@@ -87,17 +88,9 @@
           <label for="checkChecked" class="form-check-label">Überweisung</label>
         </div>
         <div class="form-group mt-2">
-          <label for="address">Address</label>
-          <input id="address" class="form-control" th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''"
-                 name="address" type="text" th:field="*{address}"/>
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">
-
-          </div>
-        </div>
-        <div class="form-group mt-2">
           <label for="startDate">Datum:</label>
           <input id="startDate" class="form-control" th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid' : ''"
-                 name="startDate" type="text" th:field="*{startDate}"/>
+                 name="startDate" type="date" th:field="*{startDate}"/>
           <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
 
           </div>
@@ -105,7 +98,7 @@
         <div class="form-group mt-2">
           <label for="startTime">Uhrzeit:</label>
           <input id="startTime" class="form-control" th:classappend="${#fields.hasErrors('startTime')} ? 'is-invalid' : ''"
-                 name="startDate" type="text" th:field="*{startTime}"/>
+                 name="startDate" type="time" th:min="*{getToday()}" th:field="*{startTime}"/>
           <div class="invalid-feedback" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}">
 
           </div>
@@ -113,7 +106,6 @@
         <button type="submit" class="btn btn-outline-primary">Bestellung erstellen</button>
       </form>
 
-    </div>
     </div>
 
   </div>
