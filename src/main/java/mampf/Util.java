@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
 
 public class Util {
@@ -20,6 +21,16 @@ public class Util {
 	public static final String ANSI_WHITE = "\u001B[37m";
 
 	//private static final SecureRandom random = new SecureRandom();
+	public static int compareCategories(Item.Category a, Item.Category b){
+		for(int i = 0; i < (java.lang.Math.max(a.toString().length(), b.toString().length())); i++){
+			int dif = a.toString().getBytes()[i] - b.toString().getBytes()[i];
+			if(dif != 0){
+				return dif;
+			}
+		}
+		return 0;
+	}
+
 	public static Domain parseDomainEnum(String domain){
 		return Domain.valueOf(domain.toUpperCase().replace("-", "_"));
 	}
