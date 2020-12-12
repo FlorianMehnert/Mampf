@@ -70,7 +70,7 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		 */
 		@Override
 		public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-			int comp = a.getProduct().getName().compareTo(b.getProduct().getName());
+			int comp = Util.compareCategories(a.getProduct().getName(), b.getProduct().getName());
 			if (comp == 0) {
 				comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
 			}

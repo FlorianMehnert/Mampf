@@ -21,7 +21,7 @@ public class Util {
 	public static final String ANSI_WHITE = "\u001B[37m";
 
 	//private static final SecureRandom random = new SecureRandom();
-	public static int compareCategories(Item.Category a, Item.Category b){
+	public static <T> int compareCategories(T a, T b){
 		for(int i = 0; i < (java.lang.Math.max(a.toString().length(), b.toString().length())); i++){
 			int dif = a.toString().getBytes()[i] - b.toString().getBytes()[i];
 			if(dif != 0){
