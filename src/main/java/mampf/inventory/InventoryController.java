@@ -36,11 +36,11 @@ public class InventoryController {
 		return "redirect:/inventory";
 	}
 
-	@GetMapping("inventory/sort/name")
+	@GetMapping("inventory/{path}")
 	@PreAuthorize("hasRole('BOSS')")
-	public String sortByName(Model model) {
+	public String sortByPath(Model model, @PathVariable String path) {
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
-		for (UniqueMampfItem item : inventory.findAllAndSort("name")) {
+		for (UniqueMampfItem item : inventory.findAllAndSort(path)) {
 			String name = nullCategory(item);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
@@ -49,33 +49,10 @@ public class InventoryController {
 		return "inventory";
 	}
 
-	@GetMapping("inventory/sort/category")
-	@PreAuthorize("hasRole('BOSS')")
-	public String sortByCategory(Model model) {
-		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
-		for (UniqueMampfItem item : inventory.findAllAndSort("category")) {
-			String name = nullCategory(item);
-			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
-			names.add(pair);
-		}
-		model.addAttribute("names", names);
-		return "inventory";
-	}
-
-
-	@GetMapping("inventory/sort/amount")
-	@PreAuthorize("hasRole('BOSS')")
-	public String sortByAmount(Model model) {
-		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
-		for (UniqueMampfItem item : inventory.findAllAndSort("amount")) {
-			String name = nullCategory(item);
-			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
-			names.add(pair);
-		}
-		model.addAttribute("names", names);
-		return "inventory";
-	}
-
+	/**
+	 * used to render Domain names
+	 * @param item {@link UniqueMampfItem} whose Categpry gets converted to String
+	 */
 	public String nullCategory(UniqueMampfItem item) {
 		String name = "";
 		if (((Item) item.getProduct()).getCategory() != null) {
