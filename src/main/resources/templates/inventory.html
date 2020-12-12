@@ -9,7 +9,7 @@
             integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
             crossorigin="anonymous"></script>
     <link rel="icon" type="image/vnd.microsoft.icon" th:href="@{/resources/img/World_sm_or.ico}">
-    <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}"/>
 
     <!-- Bootstrap -->
     <!-- CSS -->
@@ -22,31 +22,50 @@
 <nav th:include="navigation :: navigation"></nav>
 <div class="container pb-5">
     <header>
+        <style>
+            a {
+                color: #495057;
+            }
+        </style>
         <h1 th:text="#{inventory.title}">Bestand</h1>
     </header>
     <table class="table table-hover">
         <thead class="thead-light">
         <tr>
-            <th th:text="#{inventory.name}" class="col-6" colspan="1" style="width: 30%">Bestand</th>
-            <th th:text="#{inventory.category}" class="col-6" colspan="1" style="width: 15%">Category</th>
-            <th th:text="#{inventory.count.now}" class="col-6" colspan="1" style="width: 20%">aktueller Stand</th>
-            <th th:text="#{inventory.add}" class="text-right col-6" colspan="1" style="width: 40%">Aktionen</th>
-
+            <th><a th:text="#{inventory.name}" th:href="@{/inventory/sort/name}" class="text-left col-6"
+                   style="width: 30%">Bestand</a></th>
+            <th><a th:text="#{inventory.category}" th:href="@{/inventory/sort/category}" class="text-left col-6"
+                   style="width: 20%">Category</a></th>
+            <th><a th:text="#{inventory.count.now}" th:href="@{/inventory/sort/amount}" class="text-left col-6"
+                   style="width: 20%">aktueller Stand</a></th>
+            <th th:text="#{inventory.add}" class="text-right col-6" style="width: 30%">Aktionen</th>
         </tr>
         </thead>
         <tbody th:remove="all-but-first">
         <tr th:each="pair : ${names}">
-            <td th:text="${pair.getFirst().getProduct().getName()}">name</td>
-            <td th:text="${pair.getSecond()}">category</td>
-            <td th:text="#{inventory.infinity}" th:if="${pair.getFirst().quantity.getAmount() == -1}">quantity</td>
-            <td th:text="${{pair.getFirst().quantity}}" th:if="!${pair.getFirst().quantity.getAmount() == -1}">quantity</td>
+            <td th:text="${pair.getFirst().getProduct().getName()}" class="text-left">name</td>
+            <td th:text="${pair.getSecond()}" class="text-left">category</td>
+            <td th:text="#{inventory.infinity}" th:if="${pair.getFirst().getCategory().equals(pair.getFirst().getCategory().FOOD) || pair.getFirst().getCategory().equals(pair.getFirst().getCategory().STAFF)}" class="text-left">quantity</td>
+
+            <td th:text="${{pair.getFirst().getQuantity()}}" th:if="!${pair.getFirst().getCategory().equals(pair.getFirst().getCategory().FOOD) || pair.getFirst().getCategory().equals(pair.getFirst().getCategory().STAFF)}"
+                class="text-left">quantity
+            </td>
+
+
             <td>
                 <form class="form reorder" method="post" th:action="@{/inventory/add}">
-                    <input type="hidden" name="item" value="0" th:value="${pair.getFirst().getProduct().getId()}" />
-                    <button type="submit" class="btn btn-outline-primary float-right cont" th:method="delete" th:if="!${pair.getFirst().quantity.getAmount() == -1}" th:text="#{inventory.add}">Mehr hinzufügen</button>
+                    <input type="hidden" name="item" value="0" th:value="${pair.getFirst().getProduct().getId()}"/>
+
+                    <button type="submit" class="btn btn-outline-primary float-right cont" th:method="delete"
+                            th:if="!${pair.getFirst().getCategory().equals(pair.getFirst().getCategory().FOOD) || pair.getFirst().getCategory().equals(pair.getFirst().getCategory().STAFF)}" th:text="#{inventory.add}">Mehr
+                        hinzufügen
+                    </button>
+
                     <div class="field">
                         <label for="number"></label>
-                        <input style="position:relative; left: -5px;" class="form-control w-25 float-right " th:if="!${pair.getFirst().quantity.getAmount() == -1}" id="number" type="number" name="number" min="1" max="100000" value="1" /><br />
+                        <input style="position:relative; left: -5px;" class="form-control w-25 float-right "
+                               th:if="!${pair.getFirst().getCategory().equals(pair.getFirst().getCategory().FOOD) || pair.getFirst().getCategory().equals(pair.getFirst().getCategory().STAFF)}" id="number" type="number"
+                               name="number" min="1" max="100000" value="1"/><br/>
                     </div>
                 </form>
             </td>
