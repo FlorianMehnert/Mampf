@@ -1,0 +1,287 @@
+/* 
+
+  TODO: 
+    - change box-shadow from bootstrap default to new primary color
+
+*/
+
+:root {
+  /* Colors */
+  --m-primary: #C2714F;
+  --m-secondary: #D0CD94;
+
+  --m-primary-hover: #985234;
+
+  /* Default-Font-Color */
+  /* Used for various classes with which you can adjust contrasts between colors */
+  --m-color: #000;
+
+  /* Font-Sizes */
+  --m-text-size-small: 1rem;
+  --m-text-size-normal: 1.2rem;
+  --m-text-size-big: 6rem;
+  --m-text-size-huge: 10rem;
+  --m-text-size-super: 12rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.m-actions {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.5rem 4rem;
+  padding-bottom: 3rem;
+  flex-direction: column;
+  align-items: center;
+}
+
+.m-actions-full-width {
+  width: 100%;
+}
+
+.m-align-center {
+  text-align: center;
+}
+
+.m-align-left {
+  text-align: left;
+}
+
+.m-align-right {
+  text-align: right;
+}
+
+.m-color-black {
+  --m-color: #000;
+}
+
+.m-color-white {
+  --m-color: #fff;
+}
+
+.m-btn {
+  font-size: var(--m-text-size-normal);
+}
+
+.m-btn-outlined {
+  border: 1px solid var(--m-color);
+  color: var(--m-color);
+  font-size: var(--m-text-size-normal);
+}
+
+.m-btn-primary {
+  border: #C2714F;
+  color: #fff;
+  background-color: #C2714F;
+}
+
+.m-btn-primary:hover {
+  color: #fff;
+  background-color: var(--m-primary-hover);
+}
+
+.m-btn-outlined:hover {
+  color: var(--m-color);
+}
+
+.m-blank-space {
+  width: 100%;
+  height: 20rem;
+}
+
+.m-centered {
+  margin: auto;
+}
+
+.m-colored-primary {
+  background-color: var(--m-primary);
+  color: #fff;
+}
+
+.m-colored-secondary {
+  background-color: var(--m-secondary);
+}
+
+.m-container {
+  max-width: 100rem;
+  margin: auto;
+}
+
+.m-container-fluid{
+  max-width: 100%;
+}
+
+.m-container-header {
+  position: relative;
+  display: flex;
+  margin-bottom: 10rem;
+}
+
+.m-content {
+  padding-top: 5rem;
+}
+
+.m-flex {
+  display: flex;
+}
+
+.m-flex-align-center{
+  align-items: center;
+}
+
+.m-flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.m-flex-row{
+  flex-wrap: nowrap;
+  flex-direction: column;
+  flex-flow: row;
+}
+
+.m-flex-column {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.m-heading {
+  display: inline-block;
+  border-top: 2px solid var(--m-color);
+  font-size: 4rem;
+  flex-basis: 100%;
+  margin: 0 2rem;
+  margin-top: 2rem;
+  font-family: 'Aquiline', sans-serif;
+}
+
+.m-heading-big {
+  font-size: var(--m-text-size-big);
+}
+
+.m-heading-huge {
+  font-size: var(--m-text-size-huge);
+  font-family: 'Aquiline', sans-serif;
+}
+
+.m-heading-super {
+  font-size: var(--m-text-size-huge);
+}
+
+.m-image {
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.m-image-size-medium {
+  width: 60rem;
+}
+
+.m-no-padding {
+  padding: 0;
+}
+
+.m-no-margin {
+  margin: 0;
+}
+
+.m-push-left {
+  transform: translate(-5rem, 0);
+}
+
+.m-push-right{
+  transform: translate(5rem, 0);
+}
+
+.m-row-margin {
+  margin: 3rem 0;
+}
+
+.m-section-padding {
+  padding: 10rem 0;
+}
+
+.m-text {
+  font-size: var(--m-text-size-normal);
+  text-align: justify;
+}
+
+.m-text-padding {
+  padding: 0 4rem;
+}
+
+.m-text-promo {
+  line-height: 2;
+}
+
+/* Odd options for odd display odd content */
+
+.m-actions-odd {
+  align-items: baseline;
+  padding: 0;
+  flex-direction: unset;
+}
+
+.m-flex-odd {
+  flex-flow: row-reverse;
+}
+
+.m-heading-odd {
+  transform: translate(-7rem, 18rem);
+}
+
+.m-text-odd {
+  transform: translate(-47rem, -9rem);
+  padding: 0 8rem;
+}
+
+/* MAMPF Navigation-Bar */
+
+.m-nav {
+  position: fixed;
+  width: 100%;
+  height: 5rem;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 99;
+  background-color:#fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.m-nav-main{
+  flex: 1;
+}
+
+.m-nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  padding-left: 3rem;
+  height: 100%;
+}
+
+.m-nav ul .m-nav-link{
+  text-decoration: none;
+  color: var(--m-color);
+  height: inherit;
+  margin: 0 1rem;
+}
+
+.m-nav ul .m-nav-link li{
+  font-size: var(--m-text-size-normal);
+  padding: 0 1rem;
+  padding-top: 1.5rem;
+  border-bottom: 7px solid transparent;
+  transition: all ease-in-out 200ms;
+}
+
+.m-nav ul .m-nav-link:hover li {
+  border-bottom: 7px solid var(--m-primary);
+}
