@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+
+<div th:fragment="navigation">
+    <div class="m-nav">
+      <div class="m-brand">MAMPF</div>
+      <ul class="m-nav-main">
+        <a class="m-nav-link" th:href="@{/catalog}">
+          <li>Catalog</li>
+        </a>
+        <a class="m-nav-link" th:href="@{/cart}">
+          <li>Warenkorb</li>
+        </a>
+      </ul>
+
+      <ul>
+        <a class="btn m-btn m-btn-primary" th:href="@{/login}">
+          <li>Login</li>
+        </a>
+        <a class="m-nav-link" href="/register">
+          <li>Registrieren</li>
+        </a>
+      </ul>
+    </div>
+</div>
+</body>
+</html>
