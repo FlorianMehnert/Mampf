@@ -3,15 +3,14 @@ package mampf.inventory;
 import com.mysema.commons.lang.Pair;
 import mampf.Util;
 import mampf.catalog.Item;
-import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 
@@ -26,19 +25,37 @@ public class InventoryController {
 
 	@PostMapping("/inventory/add")
 	public String add(@RequestParam("item") Item item,
-					  @RequestParam("number") int number, RedirectAttributes redirAttributes){
-		UniqueInventoryItem currentItem = inventory.findByProduct(item).get();
-			if (!currentItem.getQuantity().equals(Quantity.of(-1))) {
-				inventory.delete(currentItem);
-				currentItem.increaseQuantity(Quantity.of(number));
-				inventory.save(currentItem);
-			}
-			return "redirect:/inventory";
+					  @RequestParam("number") int number) {
+		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
+		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
+		if (!currentItem.getQuantity().equals(Quantity.of(10000))) {
+			inventory.delete(currentItem);
+			newItem.increaseMampfQuantity(number);
+			inventory.save(newItem);
+		}
+		return "redirect:/inventory";
 	}
 
-	public String nullCategory(UniqueInventoryItem item){
+	@GetMapping("inventory/{path}")
+	@PreAuthorize("hasRole('BOSS')")
+	public String sortByPath(Model model, @PathVariable String path) {
+		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
+		for (UniqueMampfItem item : inventory.findAllAndSort(path)) {
+			String name = nullCategory(item);
+			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
+			names.add(pair);
+		}
+		model.addAttribute("names", names);
+		return "inventory";
+	}
+
+	/**
+	 * used to render Domain names
+	 * @param item {@link UniqueMampfItem} whose Categpry gets converted to String
+	 */
+	public String nullCategory(UniqueMampfItem item) {
 		String name = "";
-		if(((Item) item.getProduct()).getCategory() != null){
+		if (((Item) item.getProduct()).getCategory() != null) {
 			name = Util.renderDomainName(((Item) item.getProduct()).getCategory().toString());
 		}
 		return name;
@@ -47,10 +64,10 @@ public class InventoryController {
 	@GetMapping("/inventory")
 	@PreAuthorize("hasRole('BOSS')")
 	public String inventory(Model model) {
-		ArrayList<Pair<UniqueInventoryItem, String>> names = new ArrayList<>();
-		for(UniqueInventoryItem item:inventory.findAllAndSort()){
+		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
+		for (UniqueMampfItem item : inventory.findAllAndSort("")) {
 			String name = nullCategory(item);
-			Pair<UniqueInventoryItem, String> pair = new Pair<>(item, name);
+			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
 		model.addAttribute("names", names);

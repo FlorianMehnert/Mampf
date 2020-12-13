@@ -5,10 +5,32 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
 
 public class Util {
+
+	public static final String ANSI_RESET = "\u001B[0m";
+	public static final String ANSI_BLACK = "\u001B[30m";
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_GREEN = "\u001B[32m";
+	public static final String ANSI_YELLOW = "\u001B[33m";
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_PURPLE = "\u001B[35m";
+	public static final String ANSI_CYAN = "\u001B[36m";
+	public static final String ANSI_WHITE = "\u001B[37m";
+
 	//private static final SecureRandom random = new SecureRandom();
+	public static <T> int compareCategories(T a, T b){
+		for(int i = 0; i < (java.lang.Math.max(a.toString().length(), b.toString().length())); i++){
+			int dif = a.toString().getBytes()[i] - b.toString().getBytes()[i];
+			if(dif != 0){
+				return dif;
+			}
+		}
+		return 0;
+	}
+
 	public static Domain parseDomainEnum(String domain){
 		return Domain.valueOf(domain.toUpperCase().replace("-", "_"));
 	}

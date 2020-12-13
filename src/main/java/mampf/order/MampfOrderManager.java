@@ -6,6 +6,7 @@ import mampf.catalog.MampfCatalog;
 import mampf.employee.Employee;
 import mampf.employee.EmployeeManagement;
 import mampf.inventory.Inventory;
+import mampf.inventory.UniqueMampfItem;
 import mampf.order.OrderController.BreakfastMappedItems;
 
 import mampf.user.User;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Optional;
 
-import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 import org.salespointframework.order.OrderLine;
@@ -124,7 +124,7 @@ public class MampfOrderManager {
 								Map<Item.Domain, List<ValidationState>> validations,
 								Item.Domain domain) {
 		
-		Optional<UniqueInventoryItem> inventoryItem =  inventory.findByProduct(catalogItem);
+		Optional<UniqueMampfItem> inventoryItem =  inventory.findByProduct(catalogItem);
 		if(inventoryItem.isPresent()) {
 			Quantity inventoryItemQuantity = inventoryItem.get().getQuantity();
 			

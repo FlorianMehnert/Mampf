@@ -6,7 +6,6 @@ import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.Test;
 import org.salespointframework.inventory.InventoryItemIdentifier;
 import org.salespointframework.inventory.UniqueInventory;
-import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,7 +34,7 @@ class InventoryTest {
 	private MampfCatalog mampfCatalog;
 
 	@Autowired
-	private UniqueInventory<UniqueInventoryItem> uniqueInventory;
+	private UniqueInventory<UniqueMampfItem> uniqueInventory;
 
 	@Autowired
 	private InventoryController inventoryController;
@@ -74,13 +73,13 @@ class InventoryTest {
 
 	@Test
 	void addItem() throws Exception {
-		UniqueInventoryItem someItem = inventory.findAll().toList().get(0);
+		UniqueMampfItem someItem = inventory.findAll().toList().get(0);
 		Quantity amountBefore = someItem.getQuantity();
 		InventoryItemIdentifier id = someItem.getId();
 		LinkedMultiValueMap<String, String> parameters = getParams((Item) someItem.getProduct(), 1);
 		this.mvc.perform(post("/inventory/add")
 				.params(parameters));
-		Optional<UniqueInventoryItem> inventoryItemOptional = inventory.findById(id);
+		Optional<UniqueMampfItem> inventoryItemOptional = inventory.findById(id);
 		Quantity amountAfter = inventoryItemOptional.get().getQuantity();
 		boolean decrease = amountAfter.isGreaterThan(amountBefore);
 		assertTrue("the amount of the item added did not get reduced", decrease);
@@ -88,18 +87,18 @@ class InventoryTest {
 
 	@Test
 	void addFoodItem() throws Exception {
-		List<UniqueInventoryItem> list = inventory.findAll().toList();
-		for(UniqueInventoryItem item : list){
-			if(item.getQuantity().equals(Quantity.of(-1))){
+		List<UniqueMampfItem> list = inventory.findAll().toList();
+		for (UniqueMampfItem item : list) {
+			if (item.getQuantity().equals(Quantity.of(-1))) {
 				this.mvc.perform(post("/inventory/add")
 						.param("item", String.valueOf(item.getProduct().getId()))
 						.param("number", "13")).andExpect(status().is3xxRedirection());
 
 				Money money = Money.of(5, "EUR");
-				Item item1 = new Item("NullItem", money,null, null,"");
-				System.out.println(inventoryController.nullCategory(new UniqueInventoryItem(item1, Quantity.of(1))));
+				Item item1 = new Item("NullItem", money, null, null, "");
+				System.out.println(inventoryController.nullCategory(new UniqueMampfItem(item1, Quantity.of(1))));
 				assertTrue("nullCategory does not return \"\" for a Quantity of -1",
-						inventoryController.nullCategory(new UniqueInventoryItem(item1, Quantity.of(1))).equals(""));
+						inventoryController.nullCategory(new UniqueMampfItem(item1, Quantity.of(1))).equals(""));
 			}
 		}
 	}
@@ -137,9 +136,9 @@ class InventoryTest {
 	@Test
 	void reduceAmountTest() {
 		//init some valid item from inventory
-		UniqueInventoryItem uniqueInventoryItem = inventory.findAll().toList().get(0);
-		Item item = (Item) uniqueInventoryItem.getProduct();
-		Quantity quantity = uniqueInventoryItem.getQuantity();
+		UniqueMampfItem uniqueMampfItem = inventory.findAll().toList().get(0);
+		Item item = (Item) uniqueMampfItem.getProduct();
+		Quantity quantity = uniqueMampfItem.getQuantity();
 		assertNotNull(item.getId());
 		assertTrue("this item does not exist in inventory",
 				inventory.reduceAmount(item, Quantity.of(1)).isPresent());
@@ -154,7 +153,7 @@ class InventoryTest {
 		assertTrue("findByName does not return Optional.empty when called with null", isEmpty);
 
 		String someName = inventory.findAll().toList().get(0).getProduct().getName();
-		Optional<UniqueInventoryItem> item = inventory.findByName(someName);
+		Optional<UniqueMampfItem> item = inventory.findByName(someName);
 		boolean notEmpty = !item.equals(Optional.empty());
 		//findByName using valid inputs
 		assertTrue("findByName returns an empty Optional", notEmpty);

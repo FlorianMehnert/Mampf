@@ -4,7 +4,6 @@ import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
 import org.salespointframework.core.DataInitializer;
 import org.salespointframework.inventory.UniqueInventory;
-import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -14,10 +13,10 @@ import org.springframework.util.Assert;
 @Order(20)
 class InventoryInitializer implements DataInitializer {
 
-	private final UniqueInventory<UniqueInventoryItem> inventory;
+	private final UniqueInventory<UniqueMampfItem> inventory;
 	private final MampfCatalog catalog;
 
-	InventoryInitializer(UniqueInventory<UniqueInventoryItem> inventory, MampfCatalog catalog) {
+	InventoryInitializer(UniqueInventory<UniqueMampfItem> inventory, MampfCatalog catalog) {
 
 		Assert.notNull(inventory, "Inventory must not be null!");
 		Assert.notNull(catalog, "VideoCatalog must not be null!");
@@ -31,13 +30,11 @@ class InventoryInitializer implements DataInitializer {
 		catalog.findAll().forEach(item -> {
 
 					if (item.getName().equals("Dekoration")) {
-						inventory.save(new UniqueInventoryItem(item, Quantity.of(20)));
+						inventory.save(new UniqueMampfItem(item, Quantity.of(20)));
 					} else if (item.getName().equals("Tischdecke")) {
-						inventory.save(new UniqueInventoryItem(item, Quantity.of(25)));
-					} else if (item.getCategory() == Item.Category.FOOD || item.getCategory() == Item.Category.STAFF) {
-						inventory.save(new UniqueInventoryItem(item, Quantity.of(10000))); //testing purpose: just a big number
+						inventory.save(new UniqueMampfItem(item, Quantity.of(25)));
 					} else {
-						inventory.save(new UniqueInventoryItem(item, Quantity.of(10)));
+						inventory.save(new UniqueMampfItem(item, Quantity.of(10)));
 					}
 
 				}
