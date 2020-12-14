@@ -62,7 +62,7 @@ public class MampfCart{
 			removeFromCart(cartItem);
 		}else {
 			domainCart.addOrUpdateItem(cartItem.getProduct(),
-									   itemAmount-cartItem.getQuantity().getAmount().intValue());
+					(long) itemAmount-cartItem.getQuantity().getAmount().intValue());
 		}
 	
 	}
