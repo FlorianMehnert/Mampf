@@ -139,7 +139,6 @@ class InventoryTest {
 	void reduceAmountTest() {
 		//init some valid item from inventory
 		UniqueMampfItem uniqueMampfItem = inventory.findAll().toList().get(0);
-		System.out.println(Util.listToString(inventory.findAll().toList()));
 		Item item = uniqueMampfItem.getItem();
 		Quantity quantity = uniqueMampfItem.getQuantity();
 		assertNotNull(item.getId());

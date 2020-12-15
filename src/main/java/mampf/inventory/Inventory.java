@@ -23,14 +23,17 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 	}
 
 	/**
-	 * reduces some {@link Product} by some Quantity
-	 * @param product which product should be reduced
+	 * reduces some {@link Item} by some Quantity
+	 * @param item which product should be reduced
 	 * @param amount by what amount should the product be reduced
 	 */
-	default Optional<UniqueMampfItem> reduceAmount(Product product, Quantity amount) {
-		Optional<UniqueMampfItem> theItem = this.findByProduct(product);
-		theItem.ifPresent(uniqueInventoryItem -> uniqueInventoryItem.decreaseQuantity(amount));
-		return theItem;
+	default Optional<UniqueMampfItem> reduceAmount(Item item, Quantity amount) {
+		UniqueMampfItem theItem = this.findByProduct(item).get();
+		Quantity quantity = theItem.getQuantity();
+		this.delete(theItem);
+		UniqueMampfItem newItem = new UniqueMampfItem(item, quantity.subtract(amount));
+		this.save(newItem);
+		return Optional.of(newItem);
 	}
 
 	/**
