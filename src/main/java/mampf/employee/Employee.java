@@ -20,7 +20,7 @@ public class Employee {
   }
   private String name;
   
-  @ManyToMany()
+  @ManyToMany
   private List<MampfOrder> booked;
   private Role role;
 
@@ -45,7 +45,7 @@ public class Employee {
   public Role getRole() {
     return this.role;
   }
-
+  @ManyToMany
   public List<MampfOrder> getBooked() {
     return this.booked;
   }

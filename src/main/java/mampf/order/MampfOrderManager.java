@@ -28,14 +28,25 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Optional;
 
+import org.salespointframework.inventory.LineItemFilter;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 import org.salespointframework.order.OrderLine;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MampfOrderManager {
+	
+	//config class??
+	@Bean
+	LineItemFilter filter() {
+	return item -> !inventory.findByProductIdentifier(item.getProductIdentifier()).
+					get().
+					getQuantity().
+					isZeroOrNegative();
+	}
 	
 	enum ValidationState{
 		NO_PERSONAL,NO_STOCK,NO_ITEM
@@ -348,5 +359,4 @@ public class MampfOrderManager {
 	}
 
 	
-
 }

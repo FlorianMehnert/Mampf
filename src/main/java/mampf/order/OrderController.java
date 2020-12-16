@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
+import mampf.catalog.Item.Domain;
 import mampf.order.MampfOrderManager.ValidationState;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,10 +37,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @PreAuthorize("isAuthenticated()")
 @SessionAttributes("mampfCart")
 public class OrderController {
-
-	private MampfCart cart = new MampfCart();
+	
+	
 	private UserManagement userManagement;
-	private final TemporalAmount delayForEarliestPossibleBookingDate;
+	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 
 	public class BreakfastMappedItems extends Item {
 		private MobileBreakfastForm form;
@@ -58,7 +59,7 @@ public class OrderController {
 
 	public OrderController(MampfOrderManager orderManager, UserManagement userManagement) {
 		this.orderManager = orderManager;
-		this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
+		//this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 		this.userManagement = userManagement;
 	}
 
@@ -149,11 +150,7 @@ public class OrderController {
 							  CheckoutForm form,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		Map<Item.Domain, Cart> domains = mampfCart.getDomainItems(domain);
-		model.addAttribute("domains", domains);
-		model.addAttribute("domainChoosen", domain);
-		model.addAttribute("total", mampfCart.getTotal(domains.values()));
-		model.addAttribute("form", form);
+		buy_cart(domain, model,mampfCart, form);
 		return "buy_cart";
 	}
 
@@ -161,15 +158,14 @@ public class OrderController {
 	 * buy cart(s)
 	 */
 	@PostMapping("/checkout")
-	//TODO: remove domainChoosen and use form instead
-	public String buy(Model model, @RequestParam String domainChoosen, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
+	public String buy(Model model, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
 					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
 		if(form.getStartDateTime().isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
 			result.rejectValue("startDate", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
 		}
 
-		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(domainChoosen);
+		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
 		Map<Item.Domain, List<ValidationState>> validations = orderManager.validateCarts(carts, form);
 
 		if(!validations.isEmpty()) {
@@ -183,9 +179,10 @@ public class OrderController {
 
 
 		if (result.hasErrors()) {
-			model.addAttribute("domains", carts);
-			model.addAttribute("domainChoosen", domainChoosen);
-			model.addAttribute("total", cart.getTotal(carts.values()));
+			//model.addAttribute("domains", carts);
+			//model.addAttribute("form", form);
+			//model.addAttribute("total", cart.getTotal(carts.values()));
+			buy_cart(form.getDomainChoosen(), model,mampfCart, form);
 			return "buy_cart";
 		}
 
@@ -201,6 +198,14 @@ public class OrderController {
 		// success handling
 			
 		return "redirect:/userOrders";
+	}
+	
+	private void buy_cart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
+		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
+		model.addAttribute("domains", domains);
+		form.setDomainChoosen(domain);	
+		model.addAttribute("total", mampfCart.getTotal(domains.values()));
+		model.addAttribute("form", form);
 	}
 
 /* ORDERS */

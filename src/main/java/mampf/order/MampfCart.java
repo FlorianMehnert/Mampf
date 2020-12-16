@@ -106,20 +106,20 @@ public class MampfCart{
 	}
 	/**
 	 * get mapped carts to domain
-	 * "_": return everything
+	 *
 	 * @param domain
 	 * @return Map<Item.Domain, Cart>, never null
 	 */
 	public Map<Item.Domain, Cart> getDomainItems(String domain){
 		Map<Item.Domain, Cart> map = new TreeMap<>();
-		if(!domain.equals("_")) {
-			for(Item.Domain type: Item.Domain.values()) {
-				if(type.name().equals(domain)) {
-					map.put(type, getDomainCart(type));
-					return map;
-				}
+		for(Map.Entry<Item.Domain, Cart> entry : stuff.entrySet()) {
+			
+			if(entry.getKey().name().equals(domain)){
+				map.put(entry.getKey(), entry.getValue());
+				return map;
 			}
 		}
+	
 		return stuff;
 	}
 	/**
