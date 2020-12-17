@@ -116,11 +116,11 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 			boolean infinitB = infinit.contains(b.getCategory());
 
 			if (infinitA && infinitB) {
-				return alternative;
+				comp = alternative;
 			}else if(infinitA){
-				return 1;
+				comp = 1;
 			}else if(infinitB){
-				return -1;
+				comp =  -1;
 			}else if(comp == 0){
 				comp = a.getProduct().getName().compareTo(b.getProduct().getName());
 			}

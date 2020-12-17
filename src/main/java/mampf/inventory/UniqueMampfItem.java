@@ -12,12 +12,10 @@ import java.math.BigDecimal;
 public class UniqueMampfItem extends UniqueInventoryItem {
 	@OneToOne
 	private mampf.catalog.Item item;
-	//private Quantity quantity;
 
 	public UniqueMampfItem(Item item, Quantity quantity) {
 		super(item, quantity);
 		this.item = item;
-		//this.quantity = quantity;
 	}
 
 	public UniqueMampfItem() {
@@ -26,11 +24,6 @@ public class UniqueMampfItem extends UniqueInventoryItem {
 	public Item getItem() {
 		return item;
 	}
-
-	/*@Override
-	public Quantity getQuantity() {
-		return quantity;
-	}*/
 	
 	
 	public void increaseMampfQuantity(int increase) {
@@ -39,7 +32,6 @@ public class UniqueMampfItem extends UniqueInventoryItem {
 		}else {
 			decreaseQuantity(Quantity.of(increase));
 		}
-		//this.quantity = Quantity.of((long) this.quantity.getAmount().intValue() + increase);
 	}
 	
 	public BigDecimal getAmount() {

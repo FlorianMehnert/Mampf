@@ -26,33 +26,37 @@ public class CheckoutForm {
 	//@NotEmpty(message = "address empty") // s
 	@NotEmpty()
 	private final String payMethod;
-	
+
 	private String domainChoosen;
 
 	private String generalError;
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private final DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("H:m");
 
-	public CheckoutForm(LocalDate startDate, String payMethod, LocalTime startTime, String generalError,String domainChoosen) {
+	public CheckoutForm(LocalDate startDate, String payMethod, LocalTime startTime,
+						String generalError, String domainChoosen) {
 		this.startDate = startDate;
 		this.payMethod = payMethod;
 		this.startTime = startTime;
 		this.generalError = generalError;
-		this.domainChoosen = domainChoosen; 
+		this.domainChoosen = domainChoosen;
 	}
 
 	public LocalDateTime getStartDateTime() {
-		if(startTime == null || startDate == null) {
+		if (startTime == null || startDate == null) {
 			return LocalDateTime.now();
 		}
 		return startDate.atTime(startTime);
 	}
+
 	public String getPayMethod() {
 		return payMethod;
 	}
+
 	public String getStartDate() {
 		return startDate != null ? startDate.format(formatter) : LocalDate.now().format(formatter);
 	}
+
 	public String getToday() {
 		return LocalDate.now().format(formatter);
 	}
@@ -64,12 +68,13 @@ public class CheckoutForm {
 	public String getGeneralError() {
 		return generalError;
 	}
-	
+
 	public String getDomainChoosen() {
 		return domainChoosen;
 	}
+
 	public void setDomainChoosen(String domainChoosen) {
 		this.domainChoosen = domainChoosen;
 	}
-	
+
 }

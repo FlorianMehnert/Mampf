@@ -169,12 +169,16 @@ public class OrderController {
 		Map<Item.Domain, List<ValidationState>> validations = orderManager.validateCarts(carts, form);
 
 		if(!validations.isEmpty()) {
-			result.rejectValue("generalError",  "CheckoutForm.generalError.NoStuffLeft","There is no free stuff or personal for the selected time left!");
+			result.rejectValue("generalError",
+					"CheckoutForm.generalError.NoStuffLeft",
+					"There is no free stuff or personal for the selected time left!");
 		}
 
 		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
 		if (user.isEmpty()) {
-			result.rejectValue("generalError",  "CheckoutForm.generalError.NoLogin","There was an error during your login process");
+			result.rejectValue("generalError",
+					"CheckoutForm.generalError.NoLogin",
+					"There was an error during your login process");
 		}
 
 

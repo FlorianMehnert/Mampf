@@ -45,7 +45,8 @@ class UserController {
 		if (form.getRole().equals("COMPANY") && form.getCompanyName().length() == 0) {
 			result.rejectValue("companyName", "RegistrationForm.companyName.NotEmpty","The company name can not be empty!");
 		}
-		if (form.getRole().equals("INDIVIDUAL") && (form.getCompanyName().length() > 0 || form.getAccessCode().length() > 0)) {
+		if (form.getRole().equals("INDIVIDUAL") &&
+				(form.getCompanyName().length() > 0 || form.getAccessCode().length() > 0)) {
 			result.reject("wrongInput", "Bad inputs were used!");
 		}
 		if (result.hasErrors()) {

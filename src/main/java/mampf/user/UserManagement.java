@@ -28,7 +28,8 @@ public class UserManagement {
 	 * @param users must not be {@literal null}.
 	 * @param userAccounts must not be {@literal null}.
 	 */
-	UserManagement(UserRepository users, @Qualifier("persistentUserAccountManagement") UserAccountManagement userAccounts) {
+	UserManagement(UserRepository users,
+				   @Qualifier("persistentUserAccountManagement") UserAccountManagement userAccounts) {
 
 		Assert.notNull(users, "CustomerRepository must not be null!");
 		Assert.notNull(userAccounts, "UserAccountManagement must not be null!");

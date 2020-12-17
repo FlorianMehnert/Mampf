@@ -26,7 +26,7 @@ public class EmployeeManagement {
 
 	public boolean createEmployee(RegistrationForm form){
 		Assert.notNull(form, "Registration form should not be null");
-		String name = form.getFirst_name() + " " + form.getLast_name();
+		String name = form.getFirstName() + " " + form.getLastName();
 		if(employees.findByName(name) != null){
 			return false;
 		}
@@ -42,10 +42,7 @@ public class EmployeeManagement {
 
 	public boolean setEmployeeBooked(long id, MampfOrder order){
 		Optional<Employee> employee = employees.findById(id);
-		if(employee.isPresent()){
-			return employee.get().setBooked(order);
-		}
-		return false;
+		return employee.map(value -> value.setBooked(order)).orElse(false);
 	}
 
 	public Streamable<Employee> findAll() {
@@ -54,7 +51,7 @@ public class EmployeeManagement {
 
 	public List<Employee> getFreeEmployees(LocalDateTime date, Employee.Role role){
 		List<Employee> freeEmployees = new ArrayList<>();
-		boolean isFree = true;
+		boolean isFree;
 		for(Employee employee: employees.findByRole(role)) {
 			//änderung: 
 			// fall: es existieren keine bookedOrders -> "es wird nie freie employees geben"

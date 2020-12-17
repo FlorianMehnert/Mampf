@@ -27,11 +27,12 @@ public class Employee {
 	private @Id @GeneratedValue long id;
 
 	@SuppressWarnings("unused")
-	private Employee(){};
+	private Employee(){}
+
 	public Employee(String name, Role role){
     	this.name = name;
     	this.role = role;
-    	this.booked = new ArrayList<MampfOrder>();
+    	this.booked = new ArrayList<>();
 	}
 
 	public long getId(){
@@ -45,6 +46,7 @@ public class Employee {
   public Role getRole() {
     return this.role;
   }
+
   @ManyToMany
   public List<MampfOrder> getBooked() {
     return this.booked;

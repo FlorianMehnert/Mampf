@@ -43,20 +43,20 @@
         </div>
         <br>
         <div class="form-group">
-          <label for="first_name" th:text="#{employee.first_name}">Vorname</label>
+          <label for="firstName" th:text="#{employee.first_name}">Vorname</label>
           <input class="form-control" th:errorclass="fieldError" required="required"
-                 type="text" id="first_name" name="first_name" autofocus="autofocus" th:field="*{first_name}"/>
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('first_name')}" th:errors="*{first_name}">
+                 type="text" id="firstName" name="firstName" autofocus="autofocus" th:field="*{firstName}"/>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
             <br/>
             <p>Vorname muss nicht null sein</p>
           </div>
         </div>
         <br>
         <div class="form-group">
-          <label for="last_name" th:text="#{employee.last_name}">Nachname</label>
+          <label for="lastName" th:text="#{employee.last_name}">Nachname</label>
           <input class="form-control" th:errorclass="fieldError" required="required"
-                 type="text" id="last_name" name="last_name" autofocus="autofocus" th:field="*{last_name}"/>
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}">
+                 type="text" id="lastName" name="lastName" autofocus="autofocus" th:field="*{lastName}"/>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
             <br/>
             <p>Nachname muss nicht null sein</p>
           </div>

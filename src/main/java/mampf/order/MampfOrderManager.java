@@ -323,7 +323,9 @@ public class MampfOrderManager {
 			
 			setPersonalBooked(order, personalLeft);
 			
-			if(!orderManagement.payOrder(order))return orders; 
+			if(!orderManagement.payOrder(order)) {
+				return orders;
+			}
 			
 			orderManagement.completeOrder(order);
 			
@@ -334,8 +336,6 @@ public class MampfOrderManager {
 		return orders;
 		
 	}
-	
-
 
 	public MampfOrder findOrderById(UserAccount user){
 		return this.orderManagement.findBy(user).get().collect(Collectors.toList()).get(0);
@@ -353,8 +353,9 @@ public class MampfOrderManager {
 
 	public List<MampfOrder> findByUserAcc(UserAccount account) {
 		List<MampfOrder> res = new ArrayList<>();
-		for (MampfOrder order : orderManagement.findBy(account))
+		for (MampfOrder order : orderManagement.findBy(account)) {
 			res.add(order);
+		}
 		return res;
 	}
 
