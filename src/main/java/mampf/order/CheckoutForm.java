@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import mampf.catalog.Item;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -22,19 +24,21 @@ public class CheckoutForm {
 	private final LocalTime startTime;
 
 	//@NotEmpty(message = "address empty") // s
-
 	@NotEmpty()
 	private final String payMethod;
+	
+	private String domainChoosen;
 
 	private String generalError;
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private final DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("H:m");
 
-	public CheckoutForm(LocalDate startDate, String payMethod, LocalTime startTime, String generalError) {
+	public CheckoutForm(LocalDate startDate, String payMethod, LocalTime startTime, String generalError,String domainChoosen) {
 		this.startDate = startDate;
 		this.payMethod = payMethod;
 		this.startTime = startTime;
 		this.generalError = generalError;
+		this.domainChoosen = domainChoosen; 
 	}
 
 	public LocalDateTime getStartDateTime() {
@@ -60,4 +64,12 @@ public class CheckoutForm {
 	public String getGeneralError() {
 		return generalError;
 	}
+	
+	public String getDomainChoosen() {
+		return domainChoosen;
+	}
+	public void setDomainChoosen(String domainChoosen) {
+		this.domainChoosen = domainChoosen;
+	}
+	
 }

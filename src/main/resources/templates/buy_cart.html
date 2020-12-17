@@ -78,7 +78,7 @@
         <div class="invalid-feedback" >
 
         </div>
-        <input type="hidden" name="domainChoosen" th:value="${domainChoosen}" />
+        <input type="hidden" name="domainChoosen" th:field="*{domainChoosen}" />
         <div class="form-check form-check-inline">
           <input id="barChecked" class="form-check-input" type="radio" name="payMethod" value="Bar" checked="checked" />
           <label for="barChecked" class="form-check-label">Bar</label>
