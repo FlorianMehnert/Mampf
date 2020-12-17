@@ -108,12 +108,8 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 			// compare Name
 			int alternative = a.getProduct().getName().compareTo(b.getProduct().getName());
 
-			Set<Item.Category> infinit = new HashSet<>();
-			infinit.add(Item.Category.FOOD);
-			infinit.add(Item.Category.STAFF);
-
-			boolean infinitA = infinit.contains(a.getCategory());
-			boolean infinitB = infinit.contains(b.getCategory());
+			boolean infinitA = Util.infinity.contains(a.getCategory());
+			boolean infinitB = Util.infinity.contains(b.getCategory());
 
 			if (infinitA && infinitB) {
 				comp = alternative;

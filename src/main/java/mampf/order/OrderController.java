@@ -150,8 +150,8 @@ public class OrderController {
 							  CheckoutForm form,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		buy_cart(domain, model,mampfCart, form);
-		return "buy_cart";
+		buyCart(domain, model,mampfCart, form);
+		return "buyCart";
 	}
 
 	/**
@@ -186,8 +186,8 @@ public class OrderController {
 			//model.addAttribute("domains", carts);
 			//model.addAttribute("form", form);
 			//model.addAttribute("total", cart.getTotal(carts.values()));
-			buy_cart(form.getDomainChoosen(), model,mampfCart, form);
-			return "buy_cart";
+			buyCart(form.getDomainChoosen(), model,mampfCart, form);
+			return "buyCart";
 		}
 
 		orderManager.createOrders(carts, form, user.get());
@@ -204,7 +204,7 @@ public class OrderController {
 		return "redirect:/userOrders";
 	}
 	
-	private void buy_cart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
+	private void buyCart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
 		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
 		model.addAttribute("domains", domains);
 		form.setDomainChoosen(domain);	
@@ -237,7 +237,7 @@ public class OrderController {
 		model.addAttribute("orderLines", order.getOrderLines());
 		model.addAttribute("employees", order.getEmployees());
 
-		return "orders_detail";
+		return "ordersDetail";
 	}
 
 	@GetMapping("/userOrders")

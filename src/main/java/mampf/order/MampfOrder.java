@@ -73,8 +73,9 @@ public class MampfOrder extends Order {
 					+ cheque.getBankAddress() + "," + cheque.getBankIdentificationNumber();
 		}
 
-		if (paymentMethod instanceof Cash)
+		if (paymentMethod instanceof Cash) {
 			res = "BAR";
+		}
 
 		return res;
 	}
