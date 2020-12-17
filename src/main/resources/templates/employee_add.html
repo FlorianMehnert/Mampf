@@ -64,9 +64,11 @@
         <br>
         <div class="form-group">
           <label for="role" th:text="#{employee.role}">Role</label>
-          <input class="form-control"  required="required"
-                 type="text" id="role" name="role" autofocus="autofocus" /> <br/>
-          <small>Enter cook or service</small>
+          <select class="form-control" id="role" name="role">
+            <option>Select...</option>
+            <option value="COOK">COOK</option>
+            <option value="SERVICE">SERVICE</option>
+          </select>
         </div>
         <br>
         <button class="ui primary button" type="submit" th:text="#{employee.add}"> Mitarbeiter hinzufügen</button>
