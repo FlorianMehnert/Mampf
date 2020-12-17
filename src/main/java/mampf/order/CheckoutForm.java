@@ -8,8 +8,6 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import mampf.catalog.Item;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 

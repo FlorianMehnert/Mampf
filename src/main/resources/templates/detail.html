@@ -33,7 +33,7 @@
       <form method="post" class="form-inline" th:action="@{/cart}">
         <div>
           <input type="hidden" name="pid" th:value="${item.id}" />
-          <input type="number" class="form-control" id="mmpf-s-amount" name="number" value="1" min="1" placeholder="Anzahl">
+          <input type="number" class="form-control" id="mmpf-s-amount" name="number" value="1" min="1" max="10000" placeholder="Anzahl">
         </div>
         <button type="submit" class="btn btn-primary mampf-s-add">Zum Warenkorb hinzufügen</button>
       </form>

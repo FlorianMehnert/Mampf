@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import mampf.inventory.Inventory;
+import mampf.inventory.UniqueMampfItem;
 import mampf.user.User;
 import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
@@ -32,6 +34,7 @@ import mampf.catalog.Item.Domain;
 import mampf.order.MampfOrderManager.ValidationState;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
@@ -40,6 +43,7 @@ public class OrderController {
 	
 	
 	private UserManagement userManagement;
+	private final Inventory inventory;
 	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 
 	public class BreakfastMappedItems extends Item {
@@ -57,23 +61,31 @@ public class OrderController {
 
 	private final MampfOrderManager orderManager;
 
-	public OrderController(MampfOrderManager orderManager, UserManagement userManagement) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
 		this.orderManager = orderManager;
 		//this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 		this.userManagement = userManagement;
+		this.inventory = inventory;
 	}
 
 	/* CART */
 	@ModelAttribute("mampfCart")
-	MampfCart initializeCart() {return new MampfCart();}
+	MampfCart initializeCart() {
+		return new MampfCart();
+	}
 	
 	/**
 	 * adds item to cart
 	 */
 	@PostMapping("/cart")
-	public String addItem(@RequestParam("pid") Item item, 
+	public String addItem(@RequestParam("pid") Item item,
 						  @RequestParam("number") int number,
 						  @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		UniqueMampfItem uniqueMampfItem = this.inventory.findByProduct(item).get();
+		if(uniqueMampfItem.getAmount().intValue() < number){
+			// TODO: Maybe add Error-Message when amount is not available
+			return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
+		}
 		mampfCart.addToCart(item, Quantity.of(number));
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}

@@ -49,7 +49,7 @@
 
                     <div class="input-group mb-3">
                       <input type="hidden" name="cartitemId" th:value="${item.id}" />
-                      <input class="form-control" type="number" name="newAmount" min="1"
+                      <input class="form-control" type="number" name="newAmount" min="1" max="10000"
                         th:value="${item.quantity.getAmount()}">
                       <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="submit">
@@ -71,7 +71,7 @@
                   <form class="form-inline" method="post" th:action="@{/cart/setNewAmount}">
 
                     <div class="input-group mb-3">
-                      <input type="hidden" name="cartitemId" th:value="${item.id}" min="1"/>
+                      <input type="hidden" name="cartitemId" th:value="${item.id}" min="1" max="10000"/>
                       <input class="form-control" type="hidden" name="newAmount" value="0">
                       <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="submit">Entfernen</button>
