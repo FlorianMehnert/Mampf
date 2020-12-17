@@ -65,7 +65,7 @@
         <div class="form-group">
           <label for="role" th:text="#{employee.role}">Role</label>
           <select class="form-control" id="role" name="role">
-            <option>Select...</option>
+            <option th:text="#{employee.role.select}">Select...</option>
             <option value="COOK">COOK</option>
             <option value="SERVICE">SERVICE</option>
           </select>
