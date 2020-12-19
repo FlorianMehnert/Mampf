@@ -81,7 +81,7 @@ public class MampfDate implements Comparable<MampfDate> {
 	public String toString() {
 		StringBuilder res = new StringBuilder();
 		if (startTime != null){
-			res.append("EventStart: ").append(startTime.toString());
+			res.append("EventStart: ").append(startTime.toString()).append(" ");
 		}
 		if (days != null) {
 			res.append("Wochentage: ");

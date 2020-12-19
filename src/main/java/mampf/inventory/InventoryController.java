@@ -3,7 +3,6 @@ package mampf.inventory;
 import com.mysema.commons.lang.Pair;
 import mampf.Util;
 import mampf.catalog.Item;
-import org.salespointframework.quantity.Quantity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
