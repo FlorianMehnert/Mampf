@@ -7,19 +7,19 @@ public class RegistrationForm {
 	private final String username;
 
 	@NotEmpty(message = "First name should not be empty")//
-	private final String first_name;
+	private final String firstName;
 
 	@NotEmpty(message = "Last name should not be empty")//
-	private final String last_name;
+	private final String lastName;
 
 	@NotEmpty(message = "Role should not be empty")//
 	private final String role;
 
 
-	public RegistrationForm(String username, String first_name, String last_name, String role){
+	public RegistrationForm(String username, String firstName, String lastName, String role){
 		this.username = username;
-		this.first_name = first_name;
-		this.last_name = last_name;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.role = role;
 
 	}
@@ -28,12 +28,12 @@ public class RegistrationForm {
 		return username;
 	}
 
-	public String getFirst_name(){
-		return  first_name;
+	public String getFirstName(){
+		return firstName;
 	}
 
-	public String getLast_name(){
-		return last_name;
+	public String getLastName(){
+		return lastName;
 	}
 
 	public String getRole(){

@@ -28,14 +28,25 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Optional;
 
+import org.salespointframework.inventory.LineItemFilter;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 import org.salespointframework.order.OrderLine;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MampfOrderManager {
+	
+	//config class??
+	@Bean
+	LineItemFilter filter() {
+	return item -> !inventory.findByProductIdentifier(item.getProductIdentifier()).
+					get().
+					getQuantity().
+					isZeroOrNegative();
+	}
 	
 	enum ValidationState{
 		NO_PERSONAL,NO_STOCK,NO_ITEM
@@ -314,7 +325,9 @@ public class MampfOrderManager {
 			
 			setPersonalBooked(order, personalLeft);
 			
-			if(!orderManagement.payOrder(order))return orders; 
+			if(!orderManagement.payOrder(order)) {
+				return orders;
+			}
 			
 			orderManagement.completeOrder(order);
 			
@@ -325,8 +338,6 @@ public class MampfOrderManager {
 		return orders;
 		
 	}
-	
-
 
 	public MampfOrder findOrderById(UserAccount user){
 		return this.orderManagement.findBy(user).get().collect(Collectors.toList()).get(0);
@@ -344,11 +355,11 @@ public class MampfOrderManager {
 
 	public List<MampfOrder> findByUserAcc(UserAccount account) {
 		List<MampfOrder> res = new ArrayList<>();
-		for (MampfOrder order : orderManagement.findBy(account))
+		for (MampfOrder order : orderManagement.findBy(account)) {
 			res.add(order);
+		}
 		return res;
 	}
 
 	
-
 }

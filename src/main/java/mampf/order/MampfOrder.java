@@ -24,7 +24,7 @@ public class MampfOrder extends Order {
 	@OneToOne(cascade = CascadeType.ALL)
 	private MampfDate date;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.MERGE)
 	private List<Employee> employees;
 
 	@SuppressWarnings("unused")
@@ -52,7 +52,8 @@ public class MampfOrder extends Order {
 	public MampfDate getDate() {
 		return date;
 	}
-
+	
+	@ManyToMany(cascade = CascadeType.MERGE)
 	public List<Employee> getEmployees() {
 		return employees;
 	}
@@ -72,9 +73,14 @@ public class MampfOrder extends Order {
 					+ cheque.getBankAddress() + "," + cheque.getBankIdentificationNumber();
 		}
 
-		if (paymentMethod instanceof Cash)
+		if (paymentMethod instanceof Cash) {
 			res = "BAR";
+		}
 
 		return res;
 	}
+	
 }
+
+
+

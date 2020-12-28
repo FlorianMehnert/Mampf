@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import mampf.inventory.Inventory;
+import mampf.inventory.UniqueMampfItem;
 import mampf.user.User;
 import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
@@ -28,18 +30,21 @@ import org.springframework.web.bind.annotation.*;
 
 import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
+import mampf.catalog.Item.Domain;
 import mampf.order.MampfOrderManager.ValidationState;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
 @SessionAttributes("mampfCart")
 public class OrderController {
-
-	private MampfCart cart = new MampfCart();
+	
+	
 	private UserManagement userManagement;
-	private final TemporalAmount delayForEarliestPossibleBookingDate;
+	private final Inventory inventory;
+	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 
 	public class BreakfastMappedItems extends Item {
 		private MobileBreakfastForm form;
@@ -56,23 +61,31 @@ public class OrderController {
 
 	private final MampfOrderManager orderManager;
 
-	public OrderController(MampfOrderManager orderManager, UserManagement userManagement) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
 		this.orderManager = orderManager;
-		this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
+		//this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 		this.userManagement = userManagement;
+		this.inventory = inventory;
 	}
 
 	/* CART */
 	@ModelAttribute("mampfCart")
-	MampfCart initializeCart() {return new MampfCart();}
+	MampfCart initializeCart() {
+		return new MampfCart();
+	}
 	
 	/**
 	 * adds item to cart
 	 */
 	@PostMapping("/cart")
-	public String addItem(@RequestParam("pid") Item item, 
+	public String addItem(@RequestParam("pid") Item item,
 						  @RequestParam("number") int number,
 						  @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		UniqueMampfItem uniqueMampfItem = this.inventory.findByProduct(item).get();
+		if(uniqueMampfItem.getAmount().intValue() < number){
+			// TODO: Maybe add Error-Message when amount is not available
+			return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
+		}
 		mampfCart.addToCart(item, Quantity.of(number));
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}
@@ -149,20 +162,15 @@ public class OrderController {
 							  CheckoutForm form,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		Map<Item.Domain, Cart> domains = mampfCart.getDomainItems(domain);
-		model.addAttribute("domains", domains);
-		model.addAttribute("domainChoosen", domain);
-		model.addAttribute("total", mampfCart.getTotal(domains.values()));
-		model.addAttribute("form", form);
-		return "buy_cart";
+		buyCart(domain, model,mampfCart, form);
+		return "buyCart";
 	}
 
 	/**
 	 * buy cart(s)
 	 */
 	@PostMapping("/checkout")
-	//TODO: remove domainChoosen and use form instead
-	public String buy(Model model, @RequestParam String domainChoosen, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
+	public String buy(Model model, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
 					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
 		for (Item.Domain domain: form.getDomains()){
@@ -171,24 +179,29 @@ public class OrderController {
 			}
 		}
 
-		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(domainChoosen);
+		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
 		Map<Item.Domain, List<ValidationState>> validations = orderManager.validateCarts(carts, form);
 
 		if(!validations.isEmpty()) {
-			result.rejectValue("generalError",  "CheckoutForm.generalError.NoStuffLeft","There is no free stuff or personal for the selected time left!");
+			result.rejectValue("generalError",
+					"CheckoutForm.generalError.NoStuffLeft",
+					"There is no free stuff or personal for the selected time left!");
 		}
 
 		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
 		if (user.isEmpty()) {
-			result.rejectValue("generalError",  "CheckoutForm.generalError.NoLogin","There was an error during your login process");
+			result.rejectValue("generalError",
+					"CheckoutForm.generalError.NoLogin",
+					"There was an error during your login process");
 		}
 
 
 		if (result.hasErrors()) {
-			model.addAttribute("domains", carts);
-			model.addAttribute("domainChoosen", domainChoosen);
-			model.addAttribute("total", cart.getTotal(carts.values()));
-			return "buy_cart";
+			//model.addAttribute("domains", carts);
+			//model.addAttribute("form", form);
+			//model.addAttribute("total", cart.getTotal(carts.values()));
+			buyCart(form.getDomainChoosen(), model,mampfCart, form);
+			return "buyCart";
 		}
 
 		orderManager.createOrders(carts, form, user.get());
@@ -203,6 +216,14 @@ public class OrderController {
 		// success handling
 			
 		return "redirect:/userOrders";
+	}
+	
+	private void buyCart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
+		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
+		model.addAttribute("domains", domains);
+		form.setDomainChoosen(domain);	
+		model.addAttribute("total", mampfCart.getTotal(domains.values()));
+		model.addAttribute("form", form);
 	}
 
 /* ORDERS */
@@ -230,7 +251,7 @@ public class OrderController {
 		model.addAttribute("orderLines", order.getOrderLines());
 		model.addAttribute("employees", order.getEmployees());
 
-		return "orders_detail";
+		return "ordersDetail";
 	}
 
 	@GetMapping("/userOrders")

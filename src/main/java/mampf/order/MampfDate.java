@@ -64,7 +64,7 @@ public class MampfDate implements Comparable<MampfDate> {
 	public void setOrder(MampfOrder order) {
 		this.order = order;
 	}
-	
+
 	public boolean equals(MampfDate d) {
 		return startTime.equals(d.getStartTime()) && address.equals(d.getAddress());
 	}
@@ -79,22 +79,25 @@ public class MampfDate implements Comparable<MampfDate> {
 	}
 
 	public String toString() {
-		String res = "";
-		if (startTime != null)
-			res += "EventStart: " + startTime.toString();
+		StringBuilder res = new StringBuilder();
+		if (startTime != null){
+			res.append("EventStart: ").append(startTime.toString());
+		}
 		if (days != null) {
-			res += "Wochentage: ";
+			res.append("Wochentage: ");
 			for (String day : days) {
-				res += day + " ";
+				res.append(day).append(" ");
 			}
 		}
 
-		if (time != null)
-			res += "Zeit: " + time.toString();
-		if (address != null)
-			res += "Anschrift: " + address;
+		if (time != null){
+			res.append("Zeit: ").append(time.toString());
+		}
+		if (address != null) {
+			res.append("Anschrift: ").append(address);
+		}
 
-		return res;
+		return res.toString();
 
 	}
 

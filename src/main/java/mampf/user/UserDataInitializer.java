@@ -38,7 +38,8 @@ public class UserDataInitializer implements DataInitializer {
 	 * @param userAccountManagement must not be {@literal null}.
 	 * @param userManagement must not be {@literal null}.
 	 */
-	UserDataInitializer(UserAccountManagement userAccountManagement, UserManagement userManagement, UserRepository userRepository) {
+	UserDataInitializer(UserAccountManagement userAccountManagement, UserManagement userManagement,
+						UserRepository userRepository) {
 
 		Assert.notNull(userAccountManagement, "UserAccountManagement must not be null!");
 		Assert.notNull(userManagement, "CustomerRepository must not be null!");
@@ -58,7 +59,8 @@ public class UserDataInitializer implements DataInitializer {
 
 		LOG.info("Creating default users and customers.");
 
-		User admin = new User(userAccountManagement.create("hansWurst", Password.UnencryptedPassword.of("123"), "mampf@mampf.de",Role.of(UserRole.BOSS.name())), "Mampf - Firmenzentrale");
+		User admin = new User(userAccountManagement.create("hansWurst", Password.UnencryptedPassword.of("123"),
+				"mampf@mampf.de",Role.of(UserRole.BOSS.name())), "Mampf - Firmenzentrale");
 		admin.getUserAccount().setFirstname("Hanst");
 		admin.getUserAccount().setLastname("Wurst");
 		userRepository.save(admin);
@@ -66,18 +68,26 @@ public class UserDataInitializer implements DataInitializer {
 		var password = "123";
 
 		List.of(//
-				new RegistrationForm("hans", "firstname", "lastname", password, "Burg Schreckenstein", "wurst@example.com", UserRole.INDIVIDUAL.name(), "", ""),
-				new RegistrationForm("dextermorgan", "firstname", "lastname", password, "Burg Schreckenstein", "Miami-Dade-County@example.com", UserRole.COMPANY.name(), "BroCompany", ""),
-				new RegistrationForm("earlhickey", "firstname", "lastname", password, "Burg Schreckenstein", "CamdenCounty-Motel@example.com", UserRole.INDIVIDUAL.name(), "", ""),
-				new RegistrationForm("mclovinfogell", "firstname", "lastname", password, "Burg Schreckenstein", "LosAngeles@example.com", UserRole.INDIVIDUAL.name(), "", "")//
+				new RegistrationForm("hans", "firstname", "lastname", password, "Burg Schreckenstein",
+						"wurst@example.com", UserRole.INDIVIDUAL.name(), "", ""),
+				new RegistrationForm("dextermorgan", "firstname", "lastname", password, "Burg Schreckenstein",
+						"Miami-Dade-County@example.com", UserRole.COMPANY.name(), "BroCompany", ""),
+				new RegistrationForm("earlhickey", "firstname", "lastname", password, "Burg Schreckenstein",
+						"CamdenCounty-Motel@example.com", UserRole.INDIVIDUAL.name(), "", ""),
+				new RegistrationForm("mclovinfogell", "firstname", "lastname", password, "Burg Schreckenstein",
+						"LosAngeles@example.com", UserRole.INDIVIDUAL.name(), "", "")//
 		).forEach(userManagement::createUser);
 
 		String accesscode = userManagement.findUserByUsername("dextermorgan").get().getCompany().get().getAccessCode();
 		List.of(//
-				new RegistrationForm("tripster", "firstname", "lastname", password, "Burg Schreckenstein", "taaaaaada@example.com", UserRole.EMPLOYEE.name(), "", accesscode),
-				new RegistrationForm("booney", "firstname", "lastname", password, "Burg Schreckenstein", "haha-es-geht-los@example.com", UserRole.EMPLOYEE.name(), "BroCompany", accesscode),
-				new RegistrationForm("klabrovsky", "firstname", "lastname", password, "Burg Schreckenstein", "test01@example.com", UserRole.EMPLOYEE.name(), "", accesscode),
-				new RegistrationForm("mcdonald", "firstname", "lastname", password, "Burg Schreckenstein", "abcdefg@example.com", UserRole.EMPLOYEE.name(), "", accesscode)//
+				new RegistrationForm("tripster", "firstname", "lastname", password, "Burg Schreckenstein",
+						"taaaaaada@example.com", UserRole.EMPLOYEE.name(), "", accesscode),
+				new RegistrationForm("booney", "firstname", "lastname", password, "Burg Schreckenstein",
+						"haha-es-geht-los@example.com", UserRole.EMPLOYEE.name(), "BroCompany", accesscode),
+				new RegistrationForm("klabrovsky", "firstname", "lastname", password, "Burg Schreckenstein",
+						"test01@example.com", UserRole.EMPLOYEE.name(), "", accesscode),
+				new RegistrationForm("mcdonald", "firstname", "lastname", password, "Burg Schreckenstein",
+						"abcdefg@example.com", UserRole.EMPLOYEE.name(), "", accesscode)//
 		).forEach(userManagement::createUser);
 	}
 }

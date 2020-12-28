@@ -31,6 +31,8 @@ public class CheckoutForm {
 	@NotEmpty()
 	private final String payMethod;
 
+	private String domainChoosen;
+
 	private String generalError;
 	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
@@ -49,12 +51,14 @@ public class CheckoutForm {
 		}
 		return LocalDate.parse(allStartDates.get(domain.name()), dateFormatter).atTime(LocalTime.parse(allStartTimes.get(domain.name()), timeFormatter));
 	}
+
 	public String getPayMethod() {
 		return payMethod;
 	}
 	public String getStartDate(String domain) {
 		return allStartDates != null ? allStartDates.get(domain) : LocalDate.now().format(dateFormatter);
 	}
+
 	public String getToday() {
 		return LocalDate.now().format(dateFormatter);
 	}

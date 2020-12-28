@@ -53,7 +53,7 @@ public class CatalogController {
 		model.addAttribute("domains", domains);
 		model.addAttribute("headline", "Mampf - Catalog");
 
-		return "catalog_index";
+		return "catalogIndex";
 	}
 
 	/**

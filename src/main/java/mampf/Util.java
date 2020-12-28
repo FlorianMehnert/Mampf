@@ -10,6 +10,9 @@ import mampf.catalog.Item.Domain;
 
 public class Util {
 
+	private Util() {
+	}
+
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final String ANSI_BLACK = "\u001B[30m";
 	public static final String ANSI_RED = "\u001B[31m";
@@ -19,6 +22,8 @@ public class Util {
 	public static final String ANSI_PURPLE = "\u001B[35m";
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
+
+	public static final List<Item.Category> infinity = List.of(Item.Category.FOOD, Item.Category.STAFF);
 
 	//private static final SecureRandom random = new SecureRandom();
 	public static <T> int compareCategories(T a, T b){

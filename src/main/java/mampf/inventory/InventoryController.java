@@ -28,7 +28,7 @@ public class InventoryController {
 					  @RequestParam("number") int number) {
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
 		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
-		if (!currentItem.getQuantity().equals(Quantity.of(10000))) {
+		if (!Util.infinity.contains(currentItem.getCategory())) {
 			inventory.delete(currentItem);
 			newItem.increaseMampfQuantity(number);
 			inventory.save(newItem);
