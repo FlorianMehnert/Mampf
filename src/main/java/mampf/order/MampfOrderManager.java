@@ -254,7 +254,7 @@ public class MampfOrderManager {
 				for(CartItem checkitem: createCheckItems(cartitem)) {
 					Optional<Item> catalogItem = catalog.findById(checkitem.getProduct().getId());
 					
-					if(!catalogItem.isPresent()) {
+					if(catalogItem.isEmpty()) {
 						updateValidations(validations, domain, ValidationState.NO_ITEM);
 						continue;
 					}

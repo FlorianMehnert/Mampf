@@ -96,9 +96,6 @@
         <b th:text="${'Gesamtpreis: ' + total}"></b>
     </div>
     <div class="row mt-2">
-      <form method="post" class="pb-2" style="position: relative; left: -3px" th:action="@{/cart/clear}">
-        <button class="btn btn-outline-primary" style="top: 20px" type="submit">Warenkorb leeren</button>
-      </form>
     </div>
     <div class="row mt-3">
       <h4>Bestellung abschließen</h4>
@@ -119,7 +116,10 @@
 
   </div>
   </form>
-</div>
+  <form method="post" class="pb-2" style="position: relative; left: -3px" th:action="@{/cart/clear}">
+    <button class="btn btn-outline-primary" style="top: 20px" type="submit">Warenkorb leeren</button>
+  </form>
+  </div>
 </body>
 
 </html>

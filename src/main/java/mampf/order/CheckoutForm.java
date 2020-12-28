@@ -56,7 +56,10 @@ public class CheckoutForm {
 		return payMethod;
 	}
 	public String getStartDate(String domain) {
-		return allStartDates != null ? allStartDates.get(domain) : LocalDate.now().format(dateFormatter);
+		if(allStartDates == null || allStartDates.get(domain) == null) {
+			return LocalDate.now().format(dateFormatter);
+		}
+		return allStartDates.get(domain);
 	}
 
 	public String getToday() {
@@ -100,5 +103,13 @@ public class CheckoutForm {
 
 	public void setAllStartDates(Map<String, String> dates) {
 		allStartDates = dates;
+	}
+
+	public String getDomainChoosen() {
+		return domainChoosen;
+	}
+
+	public void setDomainChoosen(String domainChoosen) {
+		this.domainChoosen = domainChoosen;
 	}
 }
