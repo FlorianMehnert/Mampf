@@ -91,12 +91,14 @@ public class MampfOrderManager {
 	
 	private Map<String, List<Employee>> getPersonal(CheckoutForm form){
 		Map<String, List<Employee>> personalLeft = new HashMap<>();
-		for(Employee.Role role: Employee.Role.values()) {
-			List<Employee> xcy = employeeManagement.
-					 getFreeEmployees(
-							 form.getStartDateTime(),
-							 role);
-			personalLeft.put(role.toString(), xcy);
+		for(Item.Domain domain: form.getDomains()) {
+			for(Employee.Role role: Employee.Role.values()) {
+				List<Employee> xcy = employeeManagement.
+						getFreeEmployees(
+								form.getStartDateTime(domain),
+								role);
+				personalLeft.put(role.toString(), xcy);
+			}
 		}
 		return personalLeft;
 	}
@@ -301,7 +303,7 @@ public class MampfOrderManager {
 			}else {
 				//create usual order:
 				// create date with date and address:
-				MampfDate orderDate = new MampfDate(form.getStartDateTime(), user.getAddress());
+				MampfDate orderDate = new MampfDate(form.getStartDateTime(domain), user.getAddress());
 				order = new MampfOrder(user.getUserAccount(),
 									   createPayMethod(form.getPayMethod(),user.getUserAccount()),
 									   domain,

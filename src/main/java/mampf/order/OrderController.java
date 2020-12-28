@@ -165,8 +165,10 @@ public class OrderController {
 	public String buy(Model model, @RequestParam String domainChoosen, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
 					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		if(form.getStartDateTime().isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
-			result.rejectValue("startDate", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
+		for (Item.Domain domain: form.getDomains()){
+			if(form.getStartDateTime(domain) != null && form.getStartDateTime(domain).isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
+				result.rejectValue("allStartDates["+domain.name()+"]", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
+			}
 		}
 
 		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(domainChoosen);

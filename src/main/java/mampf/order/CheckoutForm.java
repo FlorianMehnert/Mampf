@@ -5,59 +5,96 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import mampf.catalog.Item;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 public class CheckoutForm {
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@NotNull(message = "{CheckoutForm.startDate.NotNull}")
-	private final LocalDate startDate;
+	@NotEmpty()
+	private Map<String, @Valid String> allStartDates;
 
-	@DateTimeFormat(pattern = "H:m")
-	@NotNull(message = "{CheckoutForm.startTime.NotNull}")
-	private final LocalTime startTime;
+	@NotEmpty()
+	private Map<String, @Valid String> allStartTimes;
 
-	//@NotEmpty(message = "address empty") // s
+	private ArrayList<String> domainsForCheckout;
+
+	private List<Item.Domain> domains;
+
 
 	@NotEmpty()
 	private final String payMethod;
 
 	private String generalError;
-	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private final DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("H:m");
+	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
 
-	public CheckoutForm(LocalDate startDate, String payMethod, LocalTime startTime, String generalError) {
-		this.startDate = startDate;
+	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, String generalError, ArrayList<String> domainsForCheckout) {
+		this.allStartDates = startDates;
+		this.allStartTimes = startTimes;
 		this.payMethod = payMethod;
-		this.startTime = startTime;
 		this.generalError = generalError;
+		this.domainsForCheckout = domainsForCheckout;
 	}
 
-	public LocalDateTime getStartDateTime() {
-		if(startTime == null || startDate == null) {
-			return LocalDateTime.now();
+	public LocalDateTime getStartDateTime(Item.Domain domain) {
+		if(allStartDates == null || !allStartDates.containsKey(domain.name())) {
+			return null;
 		}
-		return startDate.atTime(startTime);
+		return LocalDate.parse(allStartDates.get(domain.name()), dateFormatter).atTime(LocalTime.parse(allStartTimes.get(domain.name()), timeFormatter));
 	}
 	public String getPayMethod() {
 		return payMethod;
 	}
-	public String getStartDate() {
-		return startDate != null ? startDate.format(formatter) : LocalDate.now().format(formatter);
+	public String getStartDate(String domain) {
+		return allStartDates != null ? allStartDates.get(domain) : LocalDate.now().format(dateFormatter);
 	}
 	public String getToday() {
-		return LocalDate.now().format(formatter);
+		return LocalDate.now().format(dateFormatter);
 	}
 
-	public String getStartTime() {
-		return startTime != null ? startTime.format(formatterTime) : LocalTime.now().format(formatterTime);
+	public String getTimeNow() {
+		return LocalTime.now().format(timeFormatter);
+	}
+	public String getStartTime(String domain) {
+		return allStartTimes != null ? allStartTimes.get(domain) : LocalTime.now().format(timeFormatter);
 	}
 
 	public String getGeneralError() {
 		return generalError;
+	}
+
+	public List<Item.Domain> getDomains() {
+		domains = new ArrayList<>();
+		for (Item.Domain domain: Item.Domain.values()){
+			if(allStartDates.containsKey(domain.name())) {
+				domains.add(domain);
+			}
+		}
+		return domains;
+	}
+
+	public Map<String, String> getAllStartDates() {
+		if(allStartDates == null) {
+			allStartDates = new HashMap<>();
+		}
+		return allStartDates;
+	}
+
+	public Map<String, String> getAllStartTimes() {
+		if(allStartTimes == null) {
+			allStartTimes = new HashMap<>();
+		}
+		return allStartTimes;
+	}
+
+	public void setAllStartDates(Map<String, String> dates) {
+		allStartDates = dates;
 	}
 }
