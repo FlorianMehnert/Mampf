@@ -1,6 +1,7 @@
 package mampf.order;
 
 import mampf.Util;
+import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
 import mampf.catalog.StaffItem;
 import mampf.catalog.Item.Category;
@@ -146,31 +147,26 @@ public class MampfOrderManager {
 				findFirst();
 		Item catalogItem = ((Item)checkitem.getProduct());
 		
-		if(inventoryItem.isPresent()) {
+		//finite (and existing)
+		if(inventoryItem.isPresent() && !Util.infinity.contains(catalogItem.getCategory())) {
 			
-			//finite:
-			if(!Util.infinity.contains(catalogItem.getCategory())) {
+			if(catalogItem.getCategory().equals(Category.STAFF)) {
+				//personal: there is one resource at all (therefore check and update personalLeft)
 				
-				if(catalogItem.getCategory().equals(Category.STAFF)) {
-					//personal: there is one resource at all (therefore check and update personalLeft)
-					
-					String staffType = ((StaffItem)catalogItem).getType().toString();
-					Integer amountLeft = personalLeft.get(staffType);
-					
-					if(checkitem.getQuantity().isGreaterThan(Quantity.of(amountLeft))) {
-						return Optional.of(new UniqueMampfItem(catalogItem,Quantity.of(amountLeft)));
-					}else {
-						amountLeft -= checkitem.getQuantity().getAmount().intValue();
-						personalLeft.put(staffType, amountLeft); 
-					}
-					
-				}else { //sonarcube logic: 'else if {}' is allowed...
-					if(inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity())) {
-						return inventoryItem;
-					}
+				String staffType = ((StaffItem)catalogItem).getType().toString();
+				Integer amountLeft = personalLeft.get(staffType);
+				
+				if(checkitem.getQuantity().isGreaterThan(Quantity.of(amountLeft))) {
+					return Optional.of(new UniqueMampfItem(catalogItem,Quantity.of(amountLeft)));
+				}else {
+					amountLeft -= checkitem.getQuantity().getAmount().intValue();
+					personalLeft.put(staffType, amountLeft); 
 				}
 				
-				
+			}else { //sonarcube logic: 'else if {}' is allowed...
+				if(inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity())) {
+					return inventoryItem;
+				}
 			}
 		}
 		return Optional.empty();
@@ -310,7 +306,7 @@ public class MampfOrderManager {
 	
 	public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, Cart> carts,
 														Map<Item.Domain, CheckoutForm> forms){
-		
+		List<Category> asas= Util.infinity;
 		//each domain can have mutliple errormessages:
 		Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
 		
@@ -319,16 +315,26 @@ public class MampfOrderManager {
 			Cart cart = carts.get(domain);
 			CheckoutForm form = forms.get(domain);
 			
+			//check for MB 'you are too late'-error:
+			if(domain.equals(Domain.MOBILE_BREAKFAST)) {
+				BreakfastMappedItems bfItem = (BreakfastMappedItems)cart.iterator().next().getProduct();
+				//TODO: maybe add some kind of time-intervall before theoretical start of MB?
+				if(bfItem.getStartDate().isBefore(LocalDateTime.now())) {
+					updateValidations(validations, domain, "chooce-time is already over :("); 
+				}
+			}
+			
 			//get Dates:
 			LocalDateTime startDate = getDate(true,domain,cart,form),
 						  endDate = getDate(false,domain,cart,form);
 			
-			
+			//get Items:
 			List<UniqueMampfItem> inventorySnapshot = getFreeItems(startDate, endDate);
 			Map<String,Integer> personalLeft = new HashMap<>();
 			if(hasStaff(cart)) {
 				personalLeft = getPersonalAmount(startDate, endDate);
 			}
+			
 			for(CartItem cartitem: cart) {
 				//de-map mapper-cartitems:
 				for(CartItem checkitem: createCheckItems(cartitem)) {
@@ -424,13 +430,23 @@ public class MampfOrderManager {
 		return res;
 	}
 
-	//inventorysnapshot: (what is left)
+	//inventorysnapshot: 
 	public List<UniqueMampfItem> getFreeItems(LocalDateTime fromDate, LocalDateTime toDate) {
 		
-		List<UniqueMampfItem> res = getBookedItems(fromDate, toDate);
-		for(UniqueMampfItem bookedItem: res){
-			Optional<UniqueMampfItem> inventoryItem = inventory.findByProductIdentifier(bookedItem.getItem().getId());
-			if(inventoryItem.isEmpty())continue; 
+		List<UniqueMampfItem> res = inventory.findAll().toList();
+		for(UniqueMampfItem bookedItem: getBookedItems(fromDate, toDate)){
+			int index = -1;
+			UniqueMampfItem inventoryItem = null;
+			for(int i=0; i < res.size(); i++) { 
+				inventoryItem = res.get(i);
+				
+				if(inventoryItem.getProduct().equals(bookedItem.getProduct())) {
+					index = i;
+					break;
+				}
+			}
+			if(index < 0)continue;
+			
 			//TODO: add reducable items instead of only just checking for infinity amount:			
 			/* 
 			 * -finite: 
@@ -442,8 +458,9 @@ public class MampfOrderManager {
 			 *   items which can be consumed (Food)
 			 */
 			//for finite items: set which quantity is left in stock:
-			if(!Util.infinity.contains(inventoryItem.get().getCategory())){
-				bookedItem.getQuantity().subtract(inventoryItem.get().getQuantity());
+			if(!Util.infinity.contains(inventoryItem.getCategory())){
+				res.set(index, 
+						new UniqueMampfItem((Item)inventoryItem.getProduct(), inventoryItem.getQuantity().subtract(bookedItem.getQuantity())));
 			}
 		}
 		return res;

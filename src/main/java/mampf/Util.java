@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import mampf.catalog.Item;
+import mampf.catalog.Item.Category;
 import mampf.catalog.Item.Domain;
 
 public class Util {
@@ -23,7 +24,7 @@ public class Util {
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 
-	public static final List<Item.Category> infinity = List.of(Item.Category.values()).stream().filter(i->!(i.equals(Item.Category.EQUIPMENT) && i.equals(Item.Category.STAFF))).collect(Collectors.toList());
+	public static final List<Item.Category> infinity = List.of(Category.BUFFET,Category.DECORATION,Category.DINNER_EVENT,Category.FOOD,Category.SPECIAL_OFFERS);
 
 	//private static final SecureRandom random = new SecureRandom();
 	public static <T> int compareCategories(T a, T b){

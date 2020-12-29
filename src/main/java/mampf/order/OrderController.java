@@ -145,11 +145,11 @@ public class OrderController {
 	public String addItem(@RequestParam("pid") Item item,
 						  @RequestParam("number") int number,
 						  @ModelAttribute("mampfCart") MampfCart mampfCart) {
-		UniqueMampfItem uniqueMampfItem = this.inventory.findByProduct(item).get();
-		if(uniqueMampfItem.getAmount().intValue() < number){
+		//UniqueMampfItem uniqueMampfItem = this.inventory.findByProduct(item).get();
+		//if(uniqueMampfItem.getAmount().intValue() < number){
 			// TODO: Maybe add Error-Message when amount is not available
-			return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
-		}
+		//	return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
+		//}
 		mampfCart.addToCart(item, Quantity.of(number));
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}
