@@ -12,7 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.order.Order;
@@ -28,6 +32,7 @@ import mampf.order.OrderController.BreakfastMappedItems;
 @Entity
 public class MBOrder extends MampfOrder{
 	
+	@ElementCollection(fetch = FetchType.EAGER)
 	private List<DayOfWeek> weekDays;
 	private LocalTime time;
 	private LocalDateTime endDate;

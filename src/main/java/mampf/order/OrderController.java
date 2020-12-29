@@ -84,7 +84,7 @@ public class OrderController {
 					
 			//get start and end Dates:
 			Optional<Company> company = userManagement.findCompany(user.getId());
-			startDate = LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.of(0, 0));
+			startDate = LocalDateTime.of(company.get().getBreakfastDate(),LocalTime.of(0, 0));
 			endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.of(0, 0));
 			setName(getName()+"\nFrom "+startDate.toLocalDate()+" to "+endDate.toLocalDate()+"\nEach: "+weekDays);
 			

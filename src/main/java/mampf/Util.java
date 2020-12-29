@@ -23,7 +23,7 @@ public class Util {
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 
-	public static final List<Item.Category> infinity = List.of(Item.Category.FOOD, Item.Category.STAFF);
+	public static final List<Item.Category> infinity = List.of(Item.Category.values()).stream().filter(i->!(i.equals(Item.Category.EQUIPMENT) && i.equals(Item.Category.STAFF))).collect(Collectors.toList());
 
 	//private static final SecureRandom random = new SecureRandom();
 	public static <T> int compareCategories(T a, T b){

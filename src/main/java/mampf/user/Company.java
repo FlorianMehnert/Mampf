@@ -22,11 +22,8 @@ public class Company {
 	
 	@OneToMany
 	private List<User> employees = new ArrayList<>();
-	/*
-	 * - empty: no breakfast booked
-	 * - present: represents date of start
-	 */
-	private Optional<LocalDate> breakfastDate = Optional.ofNullable(null); 
+	
+	private LocalDate breakfastDate = null; //use of optional gives hibernate error...
 	private String accessCode;
 
 	private @Id @GeneratedValue long id;
@@ -55,29 +52,29 @@ public class Company {
 		assert breakfastDate != null;
 		//TODO: set and reset as one operation
 		if(!hasbreakfastDate() || LocalDate.now().getMonthValue()<breakfastDate.getMonthValue()) {	
-			this.breakfastDate = Optional.ofNullable(breakfastDate);
+			this.breakfastDate = breakfastDate;
 			return true;
 		}
 		return false;
 	}
 	public boolean resetbreakfastDate() {
 		//MB can only be reseted when breakfastDate exists and is over 
-		if(breakfastDate.isPresent() && breakfastDate.get().isBefore(LocalDate.now())) {
-			this.breakfastDate = Optional.ofNullable(null);
+		if(hasbreakfastDate() && breakfastDate.isBefore(LocalDate.now())) {
+			this.breakfastDate = null;
 			return true;
 		}
 		return false;
 	}
 	public boolean hasbreakfastDate() {
-		return breakfastDate.isPresent();
+		return breakfastDate != null;
 	} 
-	public Optional<LocalDate> getBreakfastDate() {
+	public LocalDate getBreakfastDate() {
 		return breakfastDate;
 	}
 	public Optional<LocalDate> getBreakfastEndDate(){
 		//MB will only be booked till the month is over
 		if(hasbreakfastDate()) {
-			return Optional.ofNullable(breakfastDate.get().withDayOfMonth(breakfastDate.get().lengthOfMonth()));
+			return Optional.ofNullable(breakfastDate.withDayOfMonth(breakfastDate.lengthOfMonth()));
 		}else {
 			return Optional.ofNullable(null);
 		}
