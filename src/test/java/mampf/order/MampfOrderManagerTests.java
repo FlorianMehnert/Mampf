@@ -78,7 +78,7 @@ public class MampfOrderManagerTests {
 		 * 6 x Service
 		 */
 		for (Employee employee : employeeManager.findAll()) {
-			List<MampfOrder> booked = employee.getBooked();
+			List<EventOrder> booked = employee.getBooked();
 			booked.stream().peek(xd -> xd.getEmployees().clear());
 		}
 
@@ -190,7 +190,7 @@ public class MampfOrderManagerTests {
 		startDate = startDate.plus(a);
 		User user = userManager.findUserByUsername("hans").get();
 		CheckoutForm form = new CheckoutForm(startDate.toLocalDate(), "BAR", startDate.toLocalTime(), "", "");
-		List<MampfOrder> orders;
+		List<EventOrder> orders;
 
 		//buy all:
 		initContext();

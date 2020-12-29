@@ -1,70 +1,80 @@
 package mampf.order;
 
-import mampf.catalog.Item;
-import mampf.employee.Employee;
-
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.MappedSuperclass;
 
+import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.order.Order;
+import org.salespointframework.order.OrderLine;
 import org.salespointframework.payment.Cash;
 import org.salespointframework.payment.Cheque;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.useraccount.UserAccount;
+import org.salespointframework.quantity.Quantity;
 
-@Entity
-public class MampfOrder extends Order {
+import mampf.catalog.Item;
+import mampf.inventory.UniqueMampfItem;
+
+@MappedSuperclass
+public abstract class MampfOrder extends Order implements Comparable<MampfOrder>{
+	
+	//basic components of a order:
 	private Item.Domain domain;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	private MampfDate date;
-
-	@ManyToMany(cascade = CascadeType.MERGE)
-	private List<Employee> employees;
-
+	private LocalDateTime startDate;
+	private String adress;
+	
 	@SuppressWarnings("unused")
-	private MampfOrder() {
-	}
-
-	public MampfOrder(UserAccount account,
+	public MampfOrder() {}
+	public MampfOrder(UserAccount account, 
 					  PaymentMethod paymentMethod,
-					  Item.Domain domain,
-					  MampfDate date) {
+					  Item.Domain domain, 
+					  LocalDateTime startDate, 
+					  String adress) {
 		super(account, paymentMethod);
-		this.date = date;
-		employees = new ArrayList<>();
 		this.domain = domain;
+		this.startDate = startDate;
+		this.adress = adress;
 	}
-
-	public void addEmployee(Employee employee) {
-		employees.add(employee);
+	
+	public static boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate,
+										 LocalDateTime orderStartDate, LocalDateTime orderEndDate) {
+		return endDate.isAfter(orderStartDate)&& (orderEndDate.isAfter(startDate));
 	}
+	
+	//needed items for time span
+	abstract Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate);
 
-	public Item.Domain getDomain() {
+	
+	abstract LocalDateTime getEndDate();
+	
+	
+	public boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate) {
+		return hasTimeOverlap(startDate,endDate,getStartDate(),getEndDate());
+	}
+	
+	/*@Override
+	public boolean equals(MampfOrder d) {
+		return d.getAdress().equals(adress) && 
+			   d.getDomain().equals(domain) &&
+			   d.getStartDate().equals(startDate); 
+	}
+	*/
+	LocalDateTime getStartDate(){
+		return startDate;
+	}
+	String getAdress() {
+		return adress;
+	}
+	Item.Domain getDomain(){
 		return domain;
 	}
-
-	public MampfDate getDate() {
-		return date;
-	}
 	
-	@ManyToMany(cascade = CascadeType.MERGE)
-	public List<Employee> getEmployees() {
-		return employees;
-	}
 	
-	@Override
-	public String toString() {
-		return "Order: " + this.getDomain().toString();
-	}
-
 	public String getPayMethod() {
-		PaymentMethod paymentMethod = super.getPaymentMethod();
+		PaymentMethod paymentMethod = getPaymentMethod();
 		String res = "no payment";
 		if (paymentMethod instanceof Cheque) {
 			Cheque cheque = ((Cheque) paymentMethod);
@@ -80,7 +90,13 @@ public class MampfOrder extends Order {
 		return res;
 	}
 	
+	@Override 
+	public String toString() {
+		return "Order: " + this.getDomain().toString();
+	}
+	@Override
+	public int compareTo(MampfOrder order) {
+		assert order != null;
+		return order.getStartDate().compareTo(startDate);
+	}
 }
-
-
-

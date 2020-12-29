@@ -3,6 +3,7 @@ package mampf.user;
 import org.salespointframework.useraccount.Password;
 import org.salespointframework.useraccount.Role;
 import org.salespointframework.useraccount.UserAccountManagement;
+import org.salespointframework.useraccount.UserAccountIdentifier;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
@@ -87,6 +88,24 @@ public class UserManagement {
 		}
 		return Optional.empty();
 	}
+	/*
+	 * better save companys instead of looping through user to get the company the user is in
+	 */
+	public Optional<Company> findCompany(long UserId) {
+		Iterator<User> userIterator = users.findAll().iterator();
+		while (userIterator.hasNext()) {
+			User user = userIterator.next();
+			Optional<Company> company = user.getCompany();
+			if(company.isEmpty()) {
+				continue;
+			}
+			if(company.get().getEmployees().stream().anyMatch(e->e.getId()==UserId)) {
+				return company;
+			}
+			
+		}
+		return Optional.empty();
+	}
 
 	/**
 	 * Returns a {@link User} that matches the id
@@ -120,6 +139,21 @@ public class UserManagement {
 		return Optional.empty();
 	}
 
+	/*
+	 * probably not needed when a username is unique
+	 */
+	public Optional<User> findUserByUserAccount(UserAccountIdentifier userAccountId){
+		User user = null;
+		Iterator<User> userIterator = users.findAll().iterator();
+		do{
+			user = userIterator.next();
+			if(user.getUserAccount().getId().equals(userAccountId)) {
+				return Optional.of(user);
+			}
+		}while (userIterator.hasNext());
+		return Optional.empty();
+	} 
+	
 	public void denyAuthenticationById(long userId) {
 		Optional<User> optionalUser= this.findUserById(userId);
 		if(optionalUser.isPresent()) {

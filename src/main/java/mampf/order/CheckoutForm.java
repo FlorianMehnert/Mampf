@@ -21,7 +21,7 @@ public class CheckoutForm {
 	@NotNull(message = "{CheckoutForm.startTime.NotNull}")
 	private final LocalTime startTime;
 
-	//@NotEmpty(message = "address empty") // s
+	private String adress;
 	@NotEmpty()
 	private final String payMethod;
 
@@ -32,12 +32,13 @@ public class CheckoutForm {
 	private final DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("H:m");
 
 	public CheckoutForm(LocalDate startDate, String payMethod, LocalTime startTime,
-						String generalError, String domainChoosen) {
+						String generalError, String domainChoosen,String adress) {
 		this.startDate = startDate;
 		this.payMethod = payMethod;
 		this.startTime = startTime;
 		this.generalError = generalError;
 		this.domainChoosen = domainChoosen;
+		this.adress = adress;
 	}
 
 	public LocalDateTime getStartDateTime() {
@@ -67,12 +68,20 @@ public class CheckoutForm {
 		return generalError;
 	}
 
+	public String getAdress() {
+		return adress;
+	}
 	public String getDomainChoosen() {
 		return domainChoosen;
 	}
-
+	
+	public void setAdress(String adress) {
+		this.adress = adress;
+	}
 	public void setDomainChoosen(String domainChoosen) {
 		this.domainChoosen = domainChoosen;
 	}
+	
+	
 
 }

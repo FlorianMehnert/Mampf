@@ -1,6 +1,6 @@
 package mampf.employee;
 
-import mampf.order.MampfOrder;
+import mampf.order.EventOrder;
 
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -21,7 +21,7 @@ public class Employee {
   private String name;
   
   @ManyToMany
-  private List<MampfOrder> booked;
+  private List<EventOrder> booked;
   private Role role;
 
 	private @Id @GeneratedValue long id;
@@ -48,11 +48,11 @@ public class Employee {
   }
 
   @ManyToMany
-  public List<MampfOrder> getBooked() {
+  public List<EventOrder> getBooked() {
     return this.booked;
   }
 
-  public boolean setBooked(MampfOrder order) {
+  public boolean setBooked(EventOrder order) {
     try {
       this.booked.add(order);
     } catch (Exception ex) {
