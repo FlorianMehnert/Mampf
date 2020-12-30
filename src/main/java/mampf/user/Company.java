@@ -18,7 +18,7 @@ import java.util.Optional;
 public class Company {
 
 	private String name;
-	
+	private long bossId;
 	//TODO: from a formular instead of static
 	//time between booked MB and first possible MB Order(employees can now choose...)
 	public static final Duration awaitBreakFastChoiceDuration = Duration.ofDays(2);
@@ -31,8 +31,9 @@ public class Company {
 
 	private @Id @GeneratedValue long id;
 
-	public Company(String name)	{
+	public Company(String name,long bossId)	{
 		this.name = name;
+		this.bossId = bossId;
 		this.accessCode = RandomString.make(6);
 	}
 
@@ -91,8 +92,17 @@ public class Company {
 		return Optional.ofNullable(null);
 		
 	}
+	
+	public void setBossId(long bossId) {
+		this.bossId = bossId;
+	}
+	
 	public long getId() {
 		return id;
+	}
+	
+	public long getBossId() {
+		return bossId;
 	}
 
 	public String getAccessCode() {

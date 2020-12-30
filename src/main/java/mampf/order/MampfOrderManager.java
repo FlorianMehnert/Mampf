@@ -205,37 +205,24 @@ public class MampfOrderManager {
 		}
 	}
 	
-	
-	
-	
-	private MBOrder createOrderMB(CartItem cartitem,
-								  UserAccount account,
-								  String address,
-								  String payment) {
+	private MBOrder createOrderMB(CartItem bfCartItem, CheckoutForm form, UserAccount account) {
 		//get mapper-item:
-		BreakfastMappedItems bfItem = (BreakfastMappedItems)cartitem.
-														  getProduct();
-		//add choice:
-		//Cart cart = new Cart();
-		//cart.addOrUpdateItem(item.getBeverage(),Quantity.of(1));
-		//cart.addOrUpdateItem(item.getDish(),Quantity.of(1));
+		
+		BreakfastMappedItems bfItem = (BreakfastMappedItems)bfCartItem.getProduct();
 		Cart cart = new Cart();
-		for(CartItem checkItem:createCheckItems(cartitem)) {
+		for(CartItem checkItem:createCheckItems(bfCartItem)) {
 			cart.addOrUpdateItem(checkItem.getProduct(), checkItem.getQuantity());
 		}
 		
-		MBOrder order = new MBOrder(account,
-									createPayMethod(payment,account),
-									bfItem,address);
+		MBOrder order = new MBOrder(account,createPayMethod(form.getPayMethod(),account),bfItem);
 		
-		order.addChargeLine(cartitem.getPrice(), "mobile breakfast total");
+		order.addChargeLine(bfCartItem.getPrice(), "mobile breakfast total");
 		
 		cart.addItemsTo(order);
-		
 		return order;
-
-	}
-
+		
+	} 
+	
 
 	private void updateValidations(Map<Item.Domain, List<String>> validations,
 								   Item.Domain domain, 
@@ -249,7 +236,6 @@ public class MampfOrderManager {
 		}
 	}
 	
-	//reason why not in userManagemenet: create MBI and validation both need function
 	public boolean hasBookedMB(UserAccount userAccount) {
 
 		Optional<User> user = userManagement.findUserByUserAccount(userAccount.getId()); 
@@ -279,9 +265,9 @@ public class MampfOrderManager {
 		}else {
 			//form has the startdate and endDate (is static)
 			if(needStartDate) {
-				date = form.getStartDateTime();
+				date = form.getStartDateTime(domain);
 			}else {
-				date = EventOrder.getEndDate(form.getStartDateTime());
+				date = EventOrder.getEndDate(form.getStartDateTime(domain));
 			}
 			
 			
@@ -289,15 +275,13 @@ public class MampfOrderManager {
 		return date;
 	}
 	
-	public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, Cart> carts,
-														Map<Item.Domain, CheckoutForm> forms){
+	public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, Cart> carts,CheckoutForm form){
 		//each domain can have mutliple errormessages:
 		Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
 		
 		
 		for(Item.Domain domain : carts.keySet()) {
 			Cart cart = carts.get(domain);
-			CheckoutForm form = forms.get(domain);
 			
 			//get Dates:
 			LocalDateTime startDate = getDate(true,domain,cart,form),
@@ -308,8 +292,6 @@ public class MampfOrderManager {
 				updateValidations(validations, domain, "chooce-time is already over :("); 
 				continue;
 			}
-			
-			
 			
 			//get Items:
 			List<UniqueMampfItem> inventorySnapshot = getFreeItems(startDate, endDate);
@@ -343,41 +325,33 @@ public class MampfOrderManager {
 	
 	//CONTINUE
 	public List<MampfOrder> createOrders(Map<Item.Domain, Cart> carts,  
-										 Map<Item.Domain, CheckoutForm> forms,
-										 String payment,
+										 CheckoutForm form,
 										 User user) {
 		
 		List<MampfOrder> orders = new ArrayList<>();
-		for(Item.Domain domain : carts.keySet()) {
-			Cart cart = carts.get(domain);
-			CheckoutForm form = forms.get(domain);
+		for(Map.Entry<Domain, Cart> entry : carts.entrySet()) {
+			Domain domain = entry.getKey();
+			Cart cart = entry.getValue();
 			
 			//get Dates:
 			LocalDateTime startDate = getDate(true,domain,cart,form),
 						  endDate = getDate(false,domain,cart,form);
 			
-			
-			Map<String,List<Employee>> personalLeft = new HashMap<>();
-			if(hasStaff(cart)) {
-				personalLeft = getPersonal(startDate, endDate);
-			}
-			
 			MampfOrder order;
 			if(domain.equals(Domain.MOBILE_BREAKFAST)) {
-				order = createOrderMB(cart.iterator().next(), 
-									  user.getUserAccount(),
-									  form.getAdress(),
-									  payment);
+				order = createOrderMB(cart.iterator().next(),form,user.getUserAccount());
 				
 			}else {
 				//create usual order:
 				order = new EventOrder(user.getUserAccount(),
-									   createPayMethod(payment,user.getUserAccount()),
+									   createPayMethod(form.getPayMethod(),user.getUserAccount()),
 									   domain,
-									   startDate,form.getAdress());
+									   startDate,user.getAddress());
 				
 				cart.addItemsTo(order);
-				setPersonalBooked((EventOrder)order, personalLeft);
+				if(hasStaff(cart)) {
+					setPersonalBooked((EventOrder)order, getPersonal(startDate, endDate));
+				}
 			}
 			
 			

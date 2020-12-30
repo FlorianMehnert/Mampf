@@ -56,11 +56,12 @@ public class OrderController {
 
 	public class BreakfastMappedItems extends Item {
 		
-		private LocalTime breakfastTime;
-		private LocalDateTime startDate,endDate; 
-		private List<DayOfWeek> weekDays;
-		private BreakfastItem beverage,dish;
-		private long amount;
+		private final LocalTime breakfastTime;
+		private final LocalDateTime startDate,endDate; 
+		private final List<DayOfWeek> weekDays;
+		private final String adress;
+		private final BreakfastItem beverage,dish;
+		private final long amount;
 		
 		public BreakfastMappedItems(User user,
 									MobileBreakfastForm form) {
@@ -87,6 +88,12 @@ public class OrderController {
 			startDate = LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.of(0, 0));
 			endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.of(0, 0));
 			setName(getName()+"\nFrom "+startDate.toLocalDate()+" to "+endDate.toLocalDate()+"\nEach: "+weekDays);
+			Optional<User> boss = userManagement.findUserById(company.get().getBossId());
+			if(boss.isPresent()) {
+				adress=boss.get().getAddress();
+			}else {
+				adress="err";
+			}
 			
 			//get items:
 			beverage = form.getBeverage();
@@ -100,11 +107,12 @@ public class OrderController {
 									 weekDays, breakfastTime, 
 									 List.of(beverage.getId(),
 											 dish.getId())));
-			//the booked breakfast can also be faulty (no dates at all):
-			amount = 0;
-			if(!totalItems.isEmpty()) {
+			if(totalItems.isEmpty()) {
+				amount=0;
+			}else { 
 				amount = totalItems.get(0).getAmount().longValue();			
-			}
+			}	
+			
 		}
 		public LocalDateTime getStartDate() {
 			return startDate;
@@ -117,6 +125,9 @@ public class OrderController {
 		}
 		public BreakfastItem getDish() {
 			return dish;
+		}
+		public String getAdress() {
+			return adress;
 		}
 		public BreakfastItem getBeverage() {
 			return beverage;
@@ -251,18 +262,13 @@ public class OrderController {
 	public String buy(Model model, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
 					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		if(form.getStartDateTime().isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
-			result.rejectValue("startDate", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
+		for (Item.Domain domain: form.getDomains()){
+			if(!domain.equals(Domain.MOBILE_BREAKFAST) && form.getStartDateTime(domain) != null && form.getStartDateTime(domain).isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
+				result.rejectValue("allStartDates["+domain.name()+"]", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
+			}
 		}
-		
-		//for only one cart implementation works:
-		
-
 		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
-		Map<Item.Domain, CheckoutForm> forms = new HashMap<>();
-		forms.put(Item.Domain.valueOf(form.getDomainChoosen()), form);
-		
-		Map<Item.Domain, List<String>> validations = orderManager.validateCarts(carts, forms);
+		Map<Item.Domain, List<String>> validations = orderManager.validateCarts(carts, form);
 		
 		//TODO: advanced error handling
 		if(!validations.isEmpty()) {
@@ -288,7 +294,7 @@ public class OrderController {
 			return "buyCart";
 		}
 
-		orderManager.createOrders(carts, forms, form.getPayMethod(),user.get());
+		orderManager.createOrders(carts, form,user.get());
 
 		List<Item.Domain> domains = new ArrayList<>();
 		for (Item.Domain domain : carts.keySet()) {

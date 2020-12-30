@@ -58,7 +58,7 @@ public class UserManagement {
 		User user = new User(userAccount, form.getAddress());
 
 		if(form.getRole().equals(UserRole.COMPANY.name())) {
-			Company company = new Company(form.getCompanyName());
+			Company company = new Company(form.getCompanyName(),user.getId());
 			user.setCompany(company);
 		}
 		if(form.getRole().equals(UserRole.EMPLOYEE.name()) && findCompany(form.getAccessCode()).isPresent()) {

@@ -42,9 +42,8 @@ public class MBOrder extends MampfOrder{
 	public MBOrder() {}
 	public MBOrder(UserAccount account,
  				   PaymentMethod paymentMethod,
-				   BreakfastMappedItems bfItem,
-				   String adress) {
-		super(account, paymentMethod,Item.Domain.MOBILE_BREAKFAST,bfItem.getStartDate(),adress);
+				   BreakfastMappedItems bfItem) {
+		super(account, paymentMethod,Item.Domain.MOBILE_BREAKFAST,bfItem.getStartDate(),bfItem.getAdress());
 		this.endDate = bfItem.getEndDate();
 		this.time = bfItem.getBreakfastTime();
 		this.weekDays = bfItem.getWeekDays();
