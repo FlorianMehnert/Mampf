@@ -113,5 +113,22 @@ class UserController {
 		return "redirect:/users";
 	}
 
-
+	
+	@GetMapping("/bookBreakfast")
+	@PreAuthorize("isAuthenticated()")
+	public String bookBreakfast(Authentication authentication) {
+		
+		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+		if(user.isPresent()) {
+			Optional<Company> company = user.get().getCompany();
+			if(company.isPresent()) {
+				company.get().setBreakfastDate();
+				user.get().setCompany(company.get());
+				userManagement.getUserRepos().save(user.get());
+				return "redirect:/userDetails/";
+			}
+		}
+		return "404";
+	}
+	
 }

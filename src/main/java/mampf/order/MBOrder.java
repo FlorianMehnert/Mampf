@@ -26,6 +26,7 @@ import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
 import mampf.catalog.Item;
+import mampf.employee.Employee;
 import mampf.inventory.UniqueMampfItem;
 import mampf.order.OrderController.BreakfastMappedItems;
 
@@ -133,7 +134,6 @@ public class MBOrder extends MampfOrder{
 	LocalDateTime getEndDate() {
 		return endDate;
 	}
-	
 	
 	
 	LocalTime getTime() {

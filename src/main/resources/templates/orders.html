@@ -41,7 +41,7 @@
             <td th:text="${order.getOrderStatus().name()}">name</td>
             <!-- <td><a th:href="'/orders/detail?order='+${order.id}">view</a></td>
              -->
-            <td><a th:href="'/orders/detail/'+${order.id}">view</a></td>
+            <td><a th:href="'/orders/detail/'+${order.getId().getIdentifier()}">view</a></td>
           </tr>
         </tbody>
       </table>

@@ -154,6 +154,12 @@ public class UserManagement {
 		return Optional.empty();
 	} 
 	
+	/*
+	 * shouldnt be in the final version
+	 */
+	public UserRepository getUserRepos() {
+		return users;
+	}
 	public void denyAuthenticationById(long userId) {
 		Optional<User> optionalUser= this.findUserById(userId);
 		if(optionalUser.isPresent()) {

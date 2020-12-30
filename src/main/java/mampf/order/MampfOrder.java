@@ -1,6 +1,7 @@
 package mampf.order;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.quantity.Quantity;
 
 import mampf.catalog.Item;
+import mampf.employee.Employee;
 import mampf.inventory.UniqueMampfItem;
 
 @MappedSuperclass
@@ -47,9 +49,7 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	//needed items for time span
 	abstract Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate);
 
-	
 	abstract LocalDateTime getEndDate();
-	
 	
 	public boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate) {
 		return hasTimeOverlap(startDate,endDate,getStartDate(),getEndDate());
@@ -72,6 +72,9 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 		return domain;
 	}
 	
+	List<Employee> getEmployees(){
+		return new ArrayList<>();
+	}
 	
 	public String getPayMethod() {
 		PaymentMethod paymentMethod = getPaymentMethod();

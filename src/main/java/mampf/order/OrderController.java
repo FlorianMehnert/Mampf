@@ -24,7 +24,7 @@ import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-
+import org.salespointframework.order.OrderIdentifier;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
@@ -84,7 +84,7 @@ public class OrderController {
 					
 			//get start and end Dates:
 			Optional<Company> company = userManagement.findCompany(user.getId());
-			startDate = LocalDateTime.of(company.get().getBreakfastDate(),LocalTime.of(0, 0));
+			startDate = LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.of(0, 0));
 			endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.of(0, 0));
 			setName(getName()+"\nFrom "+startDate.toLocalDate()+" to "+endDate.toLocalDate()+"\nEach: "+weekDays);
 			
@@ -100,7 +100,11 @@ public class OrderController {
 									 weekDays, breakfastTime, 
 									 List.of(beverage.getId(),
 											 dish.getId())));
-			amount = totalItems.get(0).getAmount().longValue();			
+			//the booked breakfast can also be faulty (no dates at all):
+			amount = 0;
+			if(!totalItems.isEmpty()) {
+				amount = totalItems.get(0).getAmount().longValue();			
+			}
 		}
 		public LocalDateTime getStartDate() {
 			return startDate;
@@ -199,20 +203,23 @@ public class OrderController {
 									   @Valid MobileBreakfastForm form,
 									   @ModelAttribute("mampfCart") MampfCart mampfCart) {
 		
+		String redirect = "redirect:/mobile-breakfast";
 		if (userAccount.isEmpty()) {
 			return "redirect:/login";
 		}
 		//ERRORS:
-		//TODO: MB error: choice invalid
 		if(form.getBeverage() == null || form.getDish() == null) {
-			return "redirect:/mobile-breakfast";
-		}
-		//TODO: MB error: not possible (was not booked)
-		if(!orderManager.hasBookedMB(userAccount.get())) {
+			//TODO: MB error: choice invalid
 			
-			return "redirect:/mobile-breakfast";
+			return redirect;
 		}
-		//TODO: MB error: outdated (check if time now is after choiceTimeEnd)
+		if(!orderManager.hasBookedMB(userAccount.get())) {
+			//TODO: MB error: not possible (was not booked)
+			
+			return redirect;
+		}
+		//TODO: MB error: outdated (duplicate code from BreakfastmappedItems constructor...)(check if time now is after choiceTimeEnd)
+		
 		BreakfastMappedItems mbItem = 
 				new BreakfastMappedItems(
 						userManagement.findUserByUserAccount(userAccount.get().getId()).get(),
@@ -317,19 +324,24 @@ public class OrderController {
 		return "orders";
 	}
 
+	
+	@GetMapping("/orders/detail/{orderId}")
+	public String editOrder(@PathVariable String orderId, Model model) {
+		
+		Optional<MampfOrder> order = orderManager.findById(orderId);
+		if(order.isEmpty()) {
+			return "redirect:/";
+		}
+		model.addAttribute("order", order.get());
+		model.addAttribute("orderLines", order.get().getOrderLines());
+		model.addAttribute("employees", order.get().getEmployees());
+		
+		return "ordersDetail";
+	}
+
 	/**
 	 * lists orders of a user
 	 */
-
-	@GetMapping("/orders/detail/{order}")
-	public String editOrder(@PathVariable EventOrder order, Model model) {
-
-		model.addAttribute("order", order);
-		model.addAttribute("orderLines", order.getOrderLines());
-		model.addAttribute("employees", order.getEmployees());
-
-		return "ordersDetail";
-	}
 
 	@GetMapping("/userOrders")
 	public String orderUser(Model model, @LoggedIn Optional<UserAccount> userAccount) {

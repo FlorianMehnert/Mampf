@@ -42,6 +42,7 @@ import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 import org.salespointframework.order.Order;
+import org.salespointframework.order.OrderIdentifier;
 import org.salespointframework.order.OrderLine;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
@@ -205,23 +206,7 @@ public class MampfOrderManager {
 	}
 	
 	
-	/*
-	private MampfDate createDateMB(OrderController.BreakfastMappedItems item) {
-		return new MampfDate(item.
-							 getForm().
-							 getDays().
-				  			 keySet().
-				  			 stream().
-				  			 filter(weekday -> item.
-				  					 		   getForm().
-				  					 		   getDays().
-				  					 		   get(weekday).
-				  					 		   booleanValue()).
-				  			 		toArray(String[]::new),
-				  			 item.
-				  			 getForm().
-				  			 getTime());
-	}*/
+	
 	
 	private MBOrder createOrderMB(CartItem cartitem,
 								  UserAccount account,
@@ -275,7 +260,7 @@ public class MampfOrderManager {
 		if(company.isEmpty()) {
 			return false;
 		}
-		return company.get().hasbreakfastDate();
+		return company.get().hasBreakfastDate();
 
 	}
 	
@@ -306,7 +291,6 @@ public class MampfOrderManager {
 	
 	public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, Cart> carts,
 														Map<Item.Domain, CheckoutForm> forms){
-		List<Category> asas= Util.infinity;
 		//each domain can have mutliple errormessages:
 		Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
 		
@@ -315,18 +299,17 @@ public class MampfOrderManager {
 			Cart cart = carts.get(domain);
 			CheckoutForm form = forms.get(domain);
 			
-			//check for MB 'you are too late'-error:
-			if(domain.equals(Domain.MOBILE_BREAKFAST)) {
-				BreakfastMappedItems bfItem = (BreakfastMappedItems)cart.iterator().next().getProduct();
-				//TODO: maybe add some kind of time-intervall before theoretical start of MB?
-				if(bfItem.getStartDate().isBefore(LocalDateTime.now())) {
-					updateValidations(validations, domain, "chooce-time is already over :("); 
-				}
-			}
-			
 			//get Dates:
 			LocalDateTime startDate = getDate(true,domain,cart,form),
 						  endDate = getDate(false,domain,cart,form);
+			
+			//check for MB 'you are too late'-error:
+			if(domain.equals(Domain.MOBILE_BREAKFAST) && startDate.isBefore(LocalDateTime.now())) {
+				updateValidations(validations, domain, "chooce-time is already over :("); 
+				continue;
+			}
+			
+			
 			
 			//get Items:
 			List<UniqueMampfItem> inventorySnapshot = getFreeItems(startDate, endDate);
@@ -429,7 +412,10 @@ public class MampfOrderManager {
 		}
 		return res;
 	}
-
+	
+	public Optional<MampfOrder> findById(String orderId){
+		return orderManagement.findAll(Pageable.unpaged()).filter(order->order.getId().getIdentifier().equals(orderId)).get().findFirst();
+	}
 	//inventorysnapshot: 
 	public List<UniqueMampfItem> getFreeItems(LocalDateTime fromDate, LocalDateTime toDate) {
 		

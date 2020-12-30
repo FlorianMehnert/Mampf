@@ -4,8 +4,11 @@ import net.bytebuddy.utility.RandomString;
 
 import javax.persistence.*;
 
+import mampf.order.EventOrder;
+
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,38 +49,47 @@ public class Company {
 	}
 
 	
-	public boolean setbreakfastDate(LocalDate breakfastDate) {
-		//the given time is already adjusted with awaitoffset
+	public boolean setBreakfastDate() {
+		LocalDate breakfastDate = LocalDateTime.now().plus
+				(EventOrder.EVENTDURATION).toLocalDate();
 		//MB can only be booked once for each month
 		assert breakfastDate != null;
 		//TODO: set and reset as one operation
-		if(!hasbreakfastDate() || LocalDate.now().getMonthValue()<breakfastDate.getMonthValue()) {	
+		if(canBookNewBreakfast()) {	
 			this.breakfastDate = breakfastDate;
 			return true;
 		}
 		return false;
 	}
-	public boolean resetbreakfastDate() {
+	
+	public boolean resetBreakfastDate() {
 		//MB can only be reseted when breakfastDate exists and is over 
-		if(hasbreakfastDate() && breakfastDate.isBefore(LocalDate.now())) {
+		if(hasBreakfastDate() && breakfastDate.isBefore(LocalDate.now())) {
 			this.breakfastDate = null;
 			return true;
 		}
 		return false;
 	}
-	public boolean hasbreakfastDate() {
+	public boolean canBookNewBreakfast() {
+		return !hasBreakfastDate() || LocalDate.now().getMonthValue()<breakfastDate.getMonthValue();
+	}
+	public boolean hasBreakfastDate() {
 		return breakfastDate != null;
 	} 
-	public LocalDate getBreakfastDate() {
-		return breakfastDate;
+	public Optional<LocalDate> getBreakfastDate() {
+		if(hasBreakfastDate()) {
+			return Optional.of(breakfastDate);
+		}
+		return Optional.empty();
 	}
 	public Optional<LocalDate> getBreakfastEndDate(){
 		//MB will only be booked till the month is over
-		if(hasbreakfastDate()) {
-			return Optional.ofNullable(breakfastDate.withDayOfMonth(breakfastDate.lengthOfMonth()));
-		}else {
-			return Optional.ofNullable(null);
+		if(hasBreakfastDate()) {
+			//always the first day of the next month
+			return Optional.ofNullable(breakfastDate.withDayOfMonth(breakfastDate.lengthOfMonth()).plusDays(1));
 		}
+		return Optional.ofNullable(null);
+		
 	}
 	public long getId() {
 		return id;
