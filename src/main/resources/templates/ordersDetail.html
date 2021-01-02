@@ -20,35 +20,45 @@
 <body>
 <nav th:include="navigation :: navigation"></nav>
 <div class="container pb-5">
-    <h2 th:text="${order}">Id</h2>
+    <h3 th:text="${order}">name</h3>
+    
     <div class="content">
       <b>id: </b>
       <div th:text="${order.id}"></div>
-      <b>Useraccount: </b>
+      <b>Beschreibung:</b>
+      <div th:text="${order.getDescription()}"></div>
+      <b>Konto: </b>
       <div th:text="${order.userAccount}"></div>
-      <b>Payment: </b>
+      <b>Zahlmethode: </b>
       <div th:text="${order.payMethod}"></div>
       <b>Status: </b>
       <div th:text="${order.orderStatus}"></div>
-      <b>CreationDate: </b>
+      <b>Erstellungszeit: </b>
       <div th:text="${order.dateCreated}"></div>
-      <br>
+      <b>Startzeit:</b>
+      <div th:text="${order.startDate}"></div>
+      <b>Ort:</b>
+      <div th:text="${order.adress}"></div>
+      <b>Endzeit:</b>
+      <div th:text="${order.getEndDate()}"></div>
       
-      <table th:if="${!employees.isEmpty()}" class="ui table">
-        <thead>
+      <br/>
+      
+      <table th:if="${!order.getEmployees().isEmpty()}" class="ui table">
+        <thead class="thead-light">
           <tr>
             <th>Employee</th>
             <th>Type</th>
           </tr>
         </thead>
         <tbody>
-          <tr th:each="employee : ${employees}">
+          <tr th:each="employee : ${order.getEmployees()}">
             <td th:text="${employee.name}"></td>
             <td th:text="${employee.role}"></td>
           </tr>
         </tbody>
       </table>
-
+      
       <table class="table table-hover">
         <thead class="thead-light">
           <tr>
@@ -58,17 +68,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr th:each="orderLine : ${orderLines}">
+          <tr th:each="orderLine : ${order.orderLines}">
             <td th:text="${orderLine.productName}"></td>
             <td th:text="${orderLine.quantity}"></td>
             <td th:text="${orderLine.price}"></td>
           </tr>
+          <tr>
+          	<td><b>Gesamtpreis</b></td>
+          	<td></td>
+          	<td><b th:text="${{order.total}}"></b></td>
+          </tr>
         </tbody>
       </table>
-      <div class="container">
-        Gesamtpreis:
-        <span th:text="${{order.total}}"></span>
-      </div>
     </div>
   </div>
 </body>

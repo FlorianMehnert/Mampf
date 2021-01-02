@@ -2,6 +2,7 @@ package mampf.order;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.quantity.Quantity;
 
+import mampf.Util;
 import mampf.catalog.Item;
 import mampf.employee.Employee;
 import mampf.inventory.UniqueMampfItem;
@@ -41,6 +43,8 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 		this.adress = adress;
 	}
 	
+	public static final Comparator<MampfOrder> comparatorSortByCreation = (o1,o2)->o2.getDateCreated().compareTo(o1.getDateCreated());
+	
 	public static boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate,
 										 LocalDateTime orderStartDate, LocalDateTime orderEndDate) {
 		return endDate.isAfter(orderStartDate)&& (orderEndDate.isAfter(startDate));
@@ -50,6 +54,8 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	abstract Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate);
 
 	abstract LocalDateTime getEndDate();
+	
+	abstract String getDescription();
 	
 	public boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate) {
 		return hasTimeOverlap(startDate,endDate,getStartDate(),getEndDate());
@@ -62,44 +68,42 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 			   d.getStartDate().equals(startDate); 
 	}
 	*/
-	LocalDateTime getStartDate(){
+	public LocalDateTime getStartDate(){
 		return startDate;
 	}
-	String getAdress() {
+	public String getAdress() {
 		return adress;
 	}
-	Item.Domain getDomain(){
+	public Item.Domain getDomain(){
 		return domain;
 	}
 	
-	List<Employee> getEmployees(){
+	public List<Employee> getEmployees(){
 		return new ArrayList<>();
 	}
 	
+	
 	public String getPayMethod() {
 		PaymentMethod paymentMethod = getPaymentMethod();
-		String res = "no payment";
+		String res = "-";
 		if (paymentMethod instanceof Cheque) {
 			Cheque cheque = ((Cheque) paymentMethod);
-
-			res = "CHECK: Nutzer:" + cheque.getAccountName() + ", Überweisung an: " + cheque.getBankName() + ","
-					+ cheque.getBankAddress() + "," + cheque.getBankIdentificationNumber();
+			res = "Überweisung: Nutzer:" + cheque.getAccountName() + ", an: " + cheque.getBankName() + ","
+					+ cheque.getBankAddress() + " ," + cheque.getBankIdentificationNumber();
 		}
-
 		if (paymentMethod instanceof Cash) {
-			res = "BAR";
+			res = "Bezahlung vor Ort";
 		}
-
 		return res;
 	}
 	
 	@Override 
 	public String toString() {
-		return "Order: " + this.getDomain().toString();
+		return "Bestellung: " + Util.renderDomainName(this.getDomain().name());
 	}
 	@Override
 	public int compareTo(MampfOrder order) {
 		assert order != null;
-		return order.getStartDate().compareTo(startDate);
+		return startDate.compareTo(order.getStartDate());
 	}
 }

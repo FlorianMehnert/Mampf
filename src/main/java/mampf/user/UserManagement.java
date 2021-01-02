@@ -55,8 +55,8 @@ public class UserManagement {
 		userAccount.setFirstname(form.getFirstname());
 		userAccount.setLastname(form.getLastname());
 
-		User user = new User(userAccount, form.getAddress());
-
+		User user = users.save(new User(userAccount, form.getAddress()));
+		
 		if(form.getRole().equals(UserRole.COMPANY.name())) {
 			Company company = new Company(form.getCompanyName(),user.getId());
 			user.setCompany(company);
@@ -65,7 +65,7 @@ public class UserManagement {
 			Company company = findCompany(form.getAccessCode()).get();
 			company.addEmployee(user);
 		}
-
+		
 		return users.save(user);
 	}
 
@@ -170,5 +170,22 @@ public class UserManagement {
 			}
 		}
 	}
-
+	/**
+	 * books mobile Breakfast for a company
+	 * @param username
+	 * @return
+	 */
+	public boolean bookMobileBreakfast(String username) {
+		Optional<User> user = findUserByUsername(username);
+		if(user.isPresent()) {
+			Optional<Company> company = user.get().getCompany();
+			if(company.isPresent()) {
+				company.get().setBreakfastDate();
+				user.get().setCompany(company.get());
+				users.save(user.get());
+				return true;
+			}
+		}
+		return false;
+	}
 }

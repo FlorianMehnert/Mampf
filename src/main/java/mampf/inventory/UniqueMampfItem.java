@@ -10,21 +10,24 @@ import java.math.BigDecimal;
 
 @Entity
 public class UniqueMampfItem extends UniqueInventoryItem {
-	@OneToOne
-	private mampf.catalog.Item item;
+	//@OneToOne
+	//private mampf.catalog.Item item;
 
 	public UniqueMampfItem(Item item, Quantity quantity) {
 		super(item, quantity);
-		this.item = item;
+		//this.item = item;
 	}
 
 	public UniqueMampfItem() {
 	}
 
-	public Item getItem() {
-		return item;
-	}
+	//public Item getItem() {
+	//	return item;
+	//}
 	
+	public Item getItem() {
+		return (Item) getProduct();
+	}
 	
 	public void increaseMampfQuantity(int increase) {
 		if(increase > 0) {
@@ -40,10 +43,10 @@ public class UniqueMampfItem extends UniqueInventoryItem {
 	
 
 	public mampf.catalog.Item.Domain getDomain() {
-		return this.item.getDomain();
+		return getItem().getDomain();
 	}
 
 	public mampf.catalog.Item.Category getCategory() {
-		return this.item.getCategory();
+		return getItem().getCategory();
 	}
 }

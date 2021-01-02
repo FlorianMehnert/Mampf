@@ -21,11 +21,10 @@ public class CheckoutForm {
 
 	@NotEmpty()
 	private Map<String, @Valid String> allStartTimes;
-
-	private Map<String, List<@Valid String>> allErrors;
 	
-	private List<Item.Domain> domains;
+	private ArrayList<String> domainsForCheckout;
 
+	private List<Item.Domain> domains;
 
 	@NotEmpty()
 	private final String payMethod;
@@ -33,15 +32,17 @@ public class CheckoutForm {
 	private String domainChoosen;
 
 	private String generalError;
-	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
-
-	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, String generalError,Map<String,List<String>> allErrors) {
+	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
+	
+	public final List<String> domainsWithoutForm = List.of(Item.Domain.MOBILE_BREAKFAST.name());
+	
+	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, String generalError,ArrayList<String> domainsForCheckout) {
 		this.allStartDates = startDates;
 		this.allStartTimes = startTimes;
-		this.allErrors = allErrors;
 		this.payMethod = payMethod;
 		this.generalError = generalError;
+		this.domainsForCheckout = domainsForCheckout;
 	}
 
 	public LocalDateTime getStartDateTime(Item.Domain domain) {
@@ -86,13 +87,6 @@ public class CheckoutForm {
 		return domains;
 	}
 	
-	public Map<String,List<String>> getAllErrors() {
-		if(allStartDates == null) {
-			allErrors = new HashMap<>();
-		}
-		return allErrors;
-	}
-
 	public Map<String, String> getAllStartDates() {
 		if(allStartDates == null) {
 			allStartDates = new HashMap<>();
@@ -114,12 +108,9 @@ public class CheckoutForm {
 	public String getDomainChoosen() {
 		return domainChoosen;
 	}
-	
-	public void setAllErrors(Map<String,List<String>> allErrors) {
-		this.allErrors = allErrors;
-	}
-	
+
 	public void setDomainChoosen(String domainChoosen) {
 		this.domainChoosen = domainChoosen;
 	}
+	
 }

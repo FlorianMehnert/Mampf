@@ -1,7 +1,6 @@
 package mampf.order;
 
 import mampf.Util;
-import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
 import mampf.catalog.StaffItem;
 import mampf.catalog.Item.Category;
@@ -26,23 +25,16 @@ import org.salespointframework.useraccount.UserAccount;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.Optional;
 
-import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.inventory.LineItemFilter;
-import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-import org.salespointframework.order.Order;
-import org.salespointframework.order.OrderIdentifier;
 import org.salespointframework.order.OrderLine;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
@@ -51,15 +43,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class MampfOrderManager {
 	
-	//config class??
 	@Bean
 	LineItemFilter filter() {
 	return item -> false;
 	}
 	
-	enum ValidationState{
-		NO_PERSONAL,NO_STOCK,NO_ITEM
-	}
 
 	private final OrderManagement<MampfOrder> orderManagement;
 	private final Inventory inventory;
@@ -77,6 +65,245 @@ public class MampfOrderManager {
 		this.employeeManagement = employeeManagement;
 		this.catalog = catalog;
 		this.userManagement = userManagement;
+	}
+	
+	/**
+	 * Check if the user-(employee)s company has booked Mobile Breakfast
+	 * returns false if not so
+	 * @param userAccount
+	 * @return
+	 */
+	public boolean hasBookedMB(UserAccount userAccount) {
+
+		Optional<User> user = userManagement.findUserByUserAccount(userAccount.getId()); 
+		if(user.isEmpty()) {
+			return false;
+		}
+		Optional<Company> company = userManagement.findCompany(user.get().getId());
+		if(company.isEmpty()) {
+			return false;
+		}
+		return company.get().hasBreakfastDate();
+
+	}
+	/**
+	 * Checks if requested items (cart items)/personal are available for the given time (form)
+	 * checks if MB is in-time 
+	 * returns list of validations (domainspec.), never null 
+	 * @param carts
+	 * @param form
+	 * @return
+	 */
+	public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, Cart> carts,CheckoutForm form){
+		//each domain can have mutliple errormessages:
+		Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
+		
+		
+		for(Item.Domain domain : carts.keySet()) {
+			Cart cart = carts.get(domain);
+			
+			//get Dates:
+			LocalDateTime startDate = getDate(true,domain,cart,form),
+						  endDate = getDate(false,domain,cart,form);
+			
+			//check for MB 'you are too late'-error:
+			if(domain.equals(Domain.MOBILE_BREAKFAST) && startDate.isBefore(LocalDateTime.now())) {
+				updateValidations(validations, domain, "chooce-time is already over :("); 
+				continue;
+			}
+			
+			//get Items:
+			List<UniqueMampfItem> inventorySnapshot = getFreeItems(startDate, endDate);
+			Map<String,Integer> personalLeft = new HashMap<>();
+			if(hasStaff(cart)) {
+				personalLeft = getPersonalAmount(startDate, endDate);
+			}
+			
+			for(CartItem cartitem: cart) {
+				//de-map mapper-cartitems:
+				for(CartItem checkitem: createCheckItems(cartitem)) {
+					Optional<Item> catalogItem = catalog.findById(checkitem.getProduct().getId());
+					
+					if(catalogItem.isEmpty()) {
+						updateValidations(validations, domain, "No Item! could not find item:"+cartitem.getProductName());
+						continue;
+					}
+					
+					Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, personalLeft,checkitem);
+					if(inventoryItem.isPresent()){
+						String validationState = "No Amount! "+
+												 catalogItem.get().getCategory().name().toLowerCase()+": "+catalogItem.get().getName()+
+												 " Amount left:"+inventoryItem.get().getQuantity().getAmount();
+						updateValidations(validations, domain, validationState);
+					}	
+				}
+			}	
+		}
+		return validations;
+	}
+	
+	
+	/**
+	 * creates orders for the given items (cart items) and saves them in the SP orderManagement
+	 * sets personal to the orders
+	 * 
+	 * @param carts
+	 * @param form
+	 * @param user
+	 * @return
+	 */
+	public List<MampfOrder> createOrders(Map<Item.Domain, Cart> carts,  
+										 CheckoutForm form,
+										 User user) {
+		
+		List<MampfOrder> orders = new ArrayList<>();
+		for(Map.Entry<Domain, Cart> entry : carts.entrySet()) {
+			Domain domain = entry.getKey();
+			Cart cart = entry.getValue();
+			
+			//get Dates:
+			LocalDateTime startDate = getDate(true,domain,cart,form),
+						  endDate = getDate(false,domain,cart,form);
+			
+			MampfOrder order;
+			if(domain.equals(Domain.MOBILE_BREAKFAST)) {
+				order = createOrderMB(cart.iterator().next(),form,user.getUserAccount());
+				
+			}else {
+				//create usual order:
+				order = new EventOrder(user.getUserAccount(),
+									   createPayMethod(form.getPayMethod(),user.getUserAccount()),
+									   domain,
+									   startDate,user.getAddress());
+				
+				cart.addItemsTo(order);
+				if(hasStaff(cart)) {
+					setPersonalBooked((EventOrder)order, getPersonal(startDate, endDate));
+				}
+			}
+			
+			
+			//TODO: orderManagement.payOrder(order) how to manage errors??
+			if(!orderManagement.payOrder(order)) {
+				return orders;
+			}
+			
+			orderManagement.completeOrder(order);
+			
+			orderManagement.save(order);
+			orders.add(order);
+		}
+		
+		return orders;
+		
+	}
+
+	
+	/**
+	 * creates and returns a "inventory snapshot" (a list of UniqueMampfItems) which represents the inventory for a given time span 
+	 * calculates the snapshot from the actual inventory
+	 * checks every order for ordered items/amount
+	 * @param fromDate
+	 * @param toDate
+	 * @return
+	 */
+	public List<UniqueMampfItem> getFreeItems(LocalDateTime fromDate, LocalDateTime toDate) {
+		
+		List<UniqueMampfItem> res = new ArrayList<>(inventory.findAll().toList());
+		for(UniqueMampfItem bookedItem: getBookedItems(fromDate, toDate)){
+			int index = -1;
+			UniqueMampfItem inventoryItem = null;
+			for(int i=0; i < res.size(); i++) { 
+				inventoryItem = res.get(i);
+				
+				if(inventoryItem.getProduct().equals(bookedItem.getProduct())) {
+					index = i;
+					break;
+				}
+			}
+			if(index < 0) {
+				continue;
+			}
+			
+			//TODO: add reducable items instead of only just checking for infinity amount:			
+			/* 
+			 * -finite: 
+			 *   per request(order) non restockable items (decoration)
+			 * -infinite:
+			 *   per request(order) restockable items (Food)
+			 * maybe also:
+			 * -reducable:
+			 *   items which can be consumed (Food)
+			 */
+			//for finite items: set which quantity is left in stock:
+			if(!Util.infinity.contains(inventoryItem.getCategory())){
+				res.set(index, 
+						new UniqueMampfItem((Item)inventoryItem.getProduct(), inventoryItem.getQuantity().subtract(bookedItem.getQuantity())));
+			}
+		}
+		return res;
+	}
+	
+	/**
+	 * creates and returns a list of all ordered items for a time span
+	 * @param fromDate
+	 * @param toDate
+	 * @return
+	 */
+	//TODO: find smaller version of getBookedItems functions
+	public List<UniqueMampfItem> getBookedItems(LocalDateTime fromDate, LocalDateTime toDate){
+		List<UniqueMampfItem> res = new ArrayList<>();
+		for(Map.Entry<ProductIdentifier, Quantity> entry : getOrderItems(fromDate, toDate).entrySet()){
+			Optional<Item> catalogItem = catalog.findById(entry.getKey());
+			if(catalogItem.isEmpty())continue;
+			res.add(new UniqueMampfItem(catalogItem.get(),entry.getValue()));
+		}
+		return res;
+	}
+	
+	/**
+	 * creates and returns a list of all ordered items for a time span
+	 * @param itemMap
+	 * @return
+	 */
+	public List<UniqueMampfItem> getBookedItems(Map<ProductIdentifier, Quantity> itemMap){
+		List<UniqueMampfItem> res = new ArrayList<>();
+			
+		itemMap.forEach((id,q)->{
+			Optional<Item> catalogItem = catalog.findById(id);
+			if(catalogItem.isPresent())
+			res.add(new UniqueMampfItem(catalogItem.get(),q));
+		});
+		return res;
+	}
+	
+	/**
+	 * creates and returns a list of every Order of a useraccount 
+	 * @param account
+	 * @return
+	 */
+	public List<MampfOrder> findByUserAcc(UserAccount account) {
+		List<MampfOrder> res = new ArrayList<>();
+		for (MampfOrder order : orderManagement.findBy(account)) {
+			res.add(order);
+		}
+		return res;
+	}
+	//TODO: not working...
+	public void deleteAll() {
+		List<MampfOrder> orders = findAll();
+		for(MampfOrder order: orders) {
+			orderManagement.delete(order);
+		}
+	}
+	public Optional<MampfOrder> findById(String orderId){
+		return orderManagement.findAll(Pageable.unpaged()).filter(order->order.getId().getIdentifier().equals(orderId)).get().findFirst();
+	}
+	public List<MampfOrder> findAll() {
+		return orderManagement.findAll(Pageable.unpaged()).getContent();
+	}
+	public OrderManagement<MampfOrder> getOrderManagement() {
+		return orderManagement;
 	}
 	
 	
@@ -223,7 +450,6 @@ public class MampfOrderManager {
 		
 	} 
 	
-
 	private void updateValidations(Map<Item.Domain, List<String>> validations,
 								   Item.Domain domain, 
 								   String state) {
@@ -234,20 +460,6 @@ public class MampfOrderManager {
 			stateList.add(state);
 			validations.put(domain, stateList);
 		}
-	}
-	
-	public boolean hasBookedMB(UserAccount userAccount) {
-
-		Optional<User> user = userManagement.findUserByUserAccount(userAccount.getId()); 
-		if(user.isEmpty()) {
-			return false;
-		}
-		Optional<Company> company = userManagement.findCompany(user.get().getId());
-		if(company.isEmpty()) {
-			return false;
-		}
-		return company.get().hasBreakfastDate();
-
 	}
 	
 	private LocalDateTime getDate(boolean needStartDate, Domain domain, Cart cart, CheckoutForm form) {
@@ -273,180 +485,6 @@ public class MampfOrderManager {
 			
 		}
 		return date;
-	}
-	
-	public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, Cart> carts,CheckoutForm form){
-		//each domain can have mutliple errormessages:
-		Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
-		
-		
-		for(Item.Domain domain : carts.keySet()) {
-			Cart cart = carts.get(domain);
-			
-			//get Dates:
-			LocalDateTime startDate = getDate(true,domain,cart,form),
-						  endDate = getDate(false,domain,cart,form);
-			
-			//check for MB 'you are too late'-error:
-			if(domain.equals(Domain.MOBILE_BREAKFAST) && startDate.isBefore(LocalDateTime.now())) {
-				updateValidations(validations, domain, "chooce-time is already over :("); 
-				continue;
-			}
-			
-			//get Items:
-			List<UniqueMampfItem> inventorySnapshot = getFreeItems(startDate, endDate);
-			Map<String,Integer> personalLeft = new HashMap<>();
-			if(hasStaff(cart)) {
-				personalLeft = getPersonalAmount(startDate, endDate);
-			}
-			
-			for(CartItem cartitem: cart) {
-				//de-map mapper-cartitems:
-				for(CartItem checkitem: createCheckItems(cartitem)) {
-					Optional<Item> catalogItem = catalog.findById(checkitem.getProduct().getId());
-					
-					if(catalogItem.isEmpty()) {
-						updateValidations(validations, domain, "could not find item:"+cartitem.getProductName());
-						continue;
-					}
-					
-					Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, personalLeft,checkitem);
-					if(inventoryItem.isPresent()){
-						String validationState = "No amount! "+
-												 catalogItem.get().getCategory().name().toLowerCase()+
-												 " Amount left:"+inventoryItem.get().getQuantity().getAmount();
-						updateValidations(validations, domain, validationState);
-					}	
-				}
-			}	
-		}
-		return validations;
-	}
-	
-	//CONTINUE
-	public List<MampfOrder> createOrders(Map<Item.Domain, Cart> carts,  
-										 CheckoutForm form,
-										 User user) {
-		
-		List<MampfOrder> orders = new ArrayList<>();
-		for(Map.Entry<Domain, Cart> entry : carts.entrySet()) {
-			Domain domain = entry.getKey();
-			Cart cart = entry.getValue();
-			
-			//get Dates:
-			LocalDateTime startDate = getDate(true,domain,cart,form),
-						  endDate = getDate(false,domain,cart,form);
-			
-			MampfOrder order;
-			if(domain.equals(Domain.MOBILE_BREAKFAST)) {
-				order = createOrderMB(cart.iterator().next(),form,user.getUserAccount());
-				
-			}else {
-				//create usual order:
-				order = new EventOrder(user.getUserAccount(),
-									   createPayMethod(form.getPayMethod(),user.getUserAccount()),
-									   domain,
-									   startDate,user.getAddress());
-				
-				cart.addItemsTo(order);
-				if(hasStaff(cart)) {
-					setPersonalBooked((EventOrder)order, getPersonal(startDate, endDate));
-				}
-			}
-			
-			
-			//TODO: orderManagement.payOrder(order) how to manage errors??
-			if(!orderManagement.payOrder(order)) {
-				return orders;
-			}
-			
-			orderManagement.completeOrder(order);
-			
-			orderManagement.save(order);
-			orders.add(order);
-		}
-		
-		return orders;
-		
-	}
-
-
-	public OrderManagement<MampfOrder> getOrderManagement() {
-		return orderManagement;
-	}
-
-	public List<MampfOrder> findAll() {
-		return orderManagement.findAll(Pageable.unpaged()).getContent();
-	}
-
-	public List<MampfOrder> findByUserAcc(UserAccount account) {
-		List<MampfOrder> res = new ArrayList<>();
-		for (MampfOrder order : orderManagement.findBy(account)) {
-			res.add(order);
-		}
-		return res;
-	}
-	
-	public Optional<MampfOrder> findById(String orderId){
-		return orderManagement.findAll(Pageable.unpaged()).filter(order->order.getId().getIdentifier().equals(orderId)).get().findFirst();
-	}
-	//inventorysnapshot: 
-	public List<UniqueMampfItem> getFreeItems(LocalDateTime fromDate, LocalDateTime toDate) {
-		
-		List<UniqueMampfItem> res = inventory.findAll().toList();
-		for(UniqueMampfItem bookedItem: getBookedItems(fromDate, toDate)){
-			int index = -1;
-			UniqueMampfItem inventoryItem = null;
-			for(int i=0; i < res.size(); i++) { 
-				inventoryItem = res.get(i);
-				
-				if(inventoryItem.getProduct().equals(bookedItem.getProduct())) {
-					index = i;
-					break;
-				}
-			}
-			if(index < 0)continue;
-			
-			//TODO: add reducable items instead of only just checking for infinity amount:			
-			/* 
-			 * -finite: 
-			 *   per request(order) non restockable items (decoration)
-			 * -infinite:
-			 *   per request(order) restockable items (Food)
-			 * maybe also:
-			 * -reducable:
-			 *   items which can be consumed (Food)
-			 */
-			//for finite items: set which quantity is left in stock:
-			if(!Util.infinity.contains(inventoryItem.getCategory())){
-				res.set(index, 
-						new UniqueMampfItem((Item)inventoryItem.getProduct(), inventoryItem.getQuantity().subtract(bookedItem.getQuantity())));
-			}
-		}
-		return res;
-	}
-	
-	//TODO: find smaller version of getBookedItems functions
-	//get booked items of all orders
-	public List<UniqueMampfItem> getBookedItems(LocalDateTime fromDate, LocalDateTime toDate){
-		List<UniqueMampfItem> res = new ArrayList<>();
-		for(Map.Entry<ProductIdentifier, Quantity> entry : getOrderItems(fromDate, toDate).entrySet()){
-			Optional<Item> catalogItem = catalog.findById(entry.getKey());
-			if(catalogItem.isEmpty())continue;
-			res.add(new UniqueMampfItem(catalogItem.get(),entry.getValue()));
-		}
-		return res;
-	}
-	
-	public List<UniqueMampfItem> getBookedItems(Map<ProductIdentifier, Quantity> itemMap){
-		List<UniqueMampfItem> res = new ArrayList<>();
-			
-		itemMap.forEach((id,q)->{
-			Optional<Item> catalogItem = catalog.findById(id);
-			if(catalogItem.isPresent())
-			res.add(new UniqueMampfItem(catalogItem.get(),q));
-		});
-		return res;
 	}
 	
 	//all ordered items for a time span

@@ -52,7 +52,7 @@ public class Company {
 	
 	public boolean setBreakfastDate() {
 		LocalDate breakfastDate = LocalDateTime.now().plus
-				(EventOrder.EVENTDURATION).toLocalDate();
+				(awaitBreakFastChoiceDuration).toLocalDate();
 		//MB can only be booked once for each month
 		assert breakfastDate != null;
 		//TODO: set and reset as one operation
@@ -70,6 +70,9 @@ public class Company {
 			return true;
 		}
 		return false;
+	}
+	public void resetCompany() { //testing purpose
+		breakfastDate = null;
 	}
 	public boolean canBookNewBreakfast() {
 		return !hasBreakfastDate() || LocalDate.now().getMonthValue()<breakfastDate.getMonthValue();

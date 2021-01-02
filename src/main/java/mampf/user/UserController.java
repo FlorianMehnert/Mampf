@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
-class UserController {
+public class UserController {
 
 	private final UserManagement userManagement;
 
@@ -118,17 +118,10 @@ class UserController {
 	@PreAuthorize("isAuthenticated()")
 	public String bookBreakfast(Authentication authentication) {
 		
-		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
-		if(user.isPresent()) {
-			Optional<Company> company = user.get().getCompany();
-			if(company.isPresent()) {
-				company.get().setBreakfastDate();
-				user.get().setCompany(company.get());
-				userManagement.getUserRepos().save(user.get());
-				return "redirect:/userDetails/";
-			}
+		if(userManagement.bookMobileBreakfast(authentication.getName())) {
+			return "redirect:/userDetails/";
 		}
-		return "404";
+		return "redirect:/";
 	}
 	
 }

@@ -130,10 +130,14 @@ public class MBOrder extends MampfOrder{
 	}
 	
 	//impl.:
-	LocalDateTime getEndDate() {
+	public LocalDateTime getEndDate() {
 		return endDate;
 	}
 	
+	//impl.:
+	public String getDescription() {
+		return "Bestellung für Mobile Breakfast: je"+weekDays.toString()+" gegen "+time.toString()+" Uhr";
+	}
 	
 	LocalTime getTime() {
 		return time;

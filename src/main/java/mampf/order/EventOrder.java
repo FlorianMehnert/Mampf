@@ -27,7 +27,7 @@ import org.salespointframework.quantity.Quantity;
 @Entity
 public class EventOrder extends MampfOrder {
 	
-	public static final Duration EVENTDURATION = Duration.ofDays(2);
+	public static final Duration EVENTDURATION = Duration.ofHours(1);
 	
 	public static LocalDateTime getEndDate(LocalDateTime startDate) {
 		return startDate.plus(EVENTDURATION);
@@ -58,8 +58,12 @@ public class EventOrder extends MampfOrder {
 		return res;
 	}
 	//impl.:
-	LocalDateTime getEndDate() {
+	public LocalDateTime getEndDate() {
 		return getEndDate(getStartDate());
+	}
+	//impl.:
+	public String getDescription() {
+		return "Bestellung für ein Event";
 	}
 	
 	
