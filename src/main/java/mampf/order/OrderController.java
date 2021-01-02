@@ -251,6 +251,7 @@ public class OrderController {
 							  @PathVariable String domain,
 							  CheckoutForm form,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
+
 		model.addAttribute("validations",new HashMap<String,List<String>>());
 		return buyCart(domain, model,mampfCart, form);
 	}
@@ -266,6 +267,7 @@ public class OrderController {
 			if(!form.domainsWithoutForm.contains(domain.name()) && 
 				form.getStartDateTime(domain) != null && 
 				form.getStartDateTime(domain).isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
+
 				result.rejectValue("allStartDates["+domain.name()+"]", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
 			}
 		}

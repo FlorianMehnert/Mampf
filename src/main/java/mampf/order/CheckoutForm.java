@@ -19,6 +19,7 @@ public class CheckoutForm {
 	@NotEmpty()
 	private Map<String, @Valid String> allStartDates;
 
+
 	@NotEmpty()
 	private Map<String, @Valid String> allStartTimes;
 	
@@ -26,12 +27,14 @@ public class CheckoutForm {
 
 	private List<Item.Domain> domains;
 
+
 	@NotEmpty()
 	private final String payMethod;
 
 	private String domainChoosen;
 
 	private String generalError;
+
 	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
 	
@@ -86,7 +89,7 @@ public class CheckoutForm {
 		}
 		return domains;
 	}
-	
+
 	public Map<String, String> getAllStartDates() {
 		if(allStartDates == null) {
 			allStartDates = new HashMap<>();
@@ -112,5 +115,4 @@ public class CheckoutForm {
 	public void setDomainChoosen(String domainChoosen) {
 		this.domainChoosen = domainChoosen;
 	}
-	
 }

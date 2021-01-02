@@ -338,10 +338,12 @@ public class MampfOrderManager {
 	
 	private Map<String, List<Employee>> getPersonal(LocalDateTime startDate, LocalDateTime endDate){
 		Map<String, List<Employee>> personalLeft = new HashMap<>();
+
 		for(Employee.Role role: Employee.Role.values()) {
 			List<Employee> xcy = employeeManagement.
 					 getFreeEmployees(startDate,endDate,role);
 			personalLeft.put(role.toString(), xcy);
+
 		}
 		return personalLeft;
 	}
@@ -472,6 +474,7 @@ public class MampfOrderManager {
 				date = bfItem.getStartDate();
 			}else {
 				date = bfItem.getEndDate();
+
 			}
 			
 		}else {
