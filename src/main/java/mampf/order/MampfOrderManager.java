@@ -453,6 +453,7 @@ public class MampfOrderManager {
 	} 
 	
 	private void updateValidations(Map<Item.Domain, List<String>> validations,
+
 								   Item.Domain domain, 
 								   String state) {
 		if(validations.containsKey(domain)) {
@@ -472,6 +473,7 @@ public class MampfOrderManager {
 			BreakfastMappedItems bfItem = (BreakfastMappedItems)bfCartItem.getProduct();
 			if(needStartDate) {
 				date = bfItem.getStartDate();
+
 			}else {
 				date = bfItem.getEndDate();
 
@@ -487,6 +489,7 @@ public class MampfOrderManager {
 			
 			
 		}
+
 		return date;
 	}
 	
@@ -503,4 +506,5 @@ public class MampfOrderManager {
 		return res;
 	}
 	
+
 }

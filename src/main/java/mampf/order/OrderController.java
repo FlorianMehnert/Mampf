@@ -22,12 +22,16 @@ import javax.validation.Valid;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
 import mampf.user.Company;
+import mampf.revenue.Gain;
+import mampf.revenue.Revenue;
+
 import mampf.user.User;
 import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 import org.salespointframework.order.OrderIdentifier;
+
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
@@ -44,6 +48,7 @@ import mampf.catalog.Item.Domain;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 @Controller
 @PreAuthorize("isAuthenticated()")
 @SessionAttributes("mampfCart")
@@ -53,7 +58,9 @@ public class OrderController {
 	private UserManagement userManagement;
 	private final MampfOrderManager orderManager;
 	private final Inventory inventory;
+	public final Revenue revenue;
 	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
+
 
 	public class BreakfastMappedItems extends Item {
 		
@@ -141,11 +148,11 @@ public class OrderController {
 		}
 	}
 
-	
-	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory, Revenue revenue) {
 		this.orderManager = orderManager;
 		this.userManagement = userManagement;
 		this.inventory = inventory;
+		this.revenue = revenue;
 	}
 
 	/* CART */
@@ -161,11 +168,8 @@ public class OrderController {
 	public String addItem(@RequestParam("pid") Item item,
 						  @RequestParam("number") int number,
 						  @ModelAttribute("mampfCart") MampfCart mampfCart) {
-		//UniqueMampfItem uniqueMampfItem = this.inventory.findByProduct(item).get();
-		//if(uniqueMampfItem.getAmount().intValue() < number){
-			// TODO: Maybe add Error-Message when amount is not available
-		//	return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
-		//}
+		
+		//TODO: invalid amount check
 		mampfCart.addToCart(item, Quantity.of(number));
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}
@@ -304,7 +308,10 @@ public class OrderController {
 		}
 
 		orderManager.createOrders(carts, form,user.get());
-
+		//TODO: revenue updaten
+		//revenue.save(new Gain(form.getStartDateTime(), money));
+		//Money money = mampfCart.getTotal(domains.values());
+		
 		List<Item.Domain> domains = new ArrayList<>();
 		for (Item.Domain domain : carts.keySet()) {
 			domains.add(domain);

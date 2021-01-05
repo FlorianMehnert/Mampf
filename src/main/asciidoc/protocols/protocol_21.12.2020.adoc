@@ -1,0 +1,30 @@
+= Protokoll Gruppe 10
+
+Treffen am 21.12.2020
+
+Ort:      Online BigBlueButton +
+Beginn:   16:40 Uhr +
+Ende:     17:30 Uhr
+
+__Schriftführer:__ Florian Hauptmann
+
+*Nächstes Treffen:* +
+05.01.2021, 13:00 Uhr, BigBlueButton
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig
+- Florian Hauptmann (Protokollant)
+- Florian Mehnert (Scrum Master)
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+- Neuer Termin für Meeting wurde gefunden Uhrzeit steht noch nicht fest
+- über Weihnachten soll weiter gearbeitet werden
+
+== Aktueller Stand
+- siehe Github Issues
+
