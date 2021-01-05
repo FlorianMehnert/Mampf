@@ -22,8 +22,23 @@ __Teilnehmer:__
 - Yannik Weber
 
 == Bemerkungen
-- 
+* Es wurde dazu angehalten mehr zu arbeiten, da in der vergangenen Woche zu wenig getan wurde
+* Cross Testing wurde von Leonard Herbst angekündigt und wie dieser abläuft
+  ** Die App wird compiliert und mit den Zugangsdaten mit einem anderen Team getauscht.
+  ** Danach wird zusammen mit dem Cross-Testing-Report-Template ohne dekompilieren, die Partner-Jar getestet auf Bugs 
+* Fehlende Features wurden von Leonard Herbst erfasst und werden per Github-Issue an die Leute geteilt 
 
 == Aktueller Stand
-- 
+- Man kann nicht mehrere Platten aufeinmal kaufen -> fixed
+- Dinner und Buffet essen muss unendlich sein -> fixed
+- Catalog muss erweitert werden (ich)
+- Order muss im Front-End übersichtlicher sein
+- Order muss einen besseren Titel haben (nicht die ID)
+- Order muss einen Zeitraum haben (ist aber nicht länger als ein Tag), damit das Personal auch geblocked werden kann. Stunde wird immer aufgerundet (also 3h und 1 min zu 4 h)
+- Bei den Mitarbeitern muss der gebuchte Zeitraum aufgelistet sein
+- Bestellungen müssen nach Datum sortiert werden.
+- Ausstattung soll für den jeweiligen Zeitpunkt berechnet werden (Konstantin)
+- Umsatzübersicht implementieren (Yannik)
+
+
 
