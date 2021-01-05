@@ -3,6 +3,7 @@ package mampf.user;
 import org.salespointframework.useraccount.Password;
 import org.salespointframework.useraccount.Role;
 import org.salespointframework.useraccount.UserAccountManagement;
+import org.salespointframework.useraccount.UserAccountIdentifier;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
@@ -54,17 +55,17 @@ public class UserManagement {
 		userAccount.setFirstname(form.getFirstname());
 		userAccount.setLastname(form.getLastname());
 
-		User user = new User(userAccount, form.getAddress());
-
+		User user = users.save(new User(userAccount, form.getAddress()));
+		
 		if(form.getRole().equals(UserRole.COMPANY.name())) {
-			Company company = new Company(form.getCompanyName());
+			Company company = new Company(form.getCompanyName(),user.getId());
 			user.setCompany(company);
 		}
 		if(form.getRole().equals(UserRole.EMPLOYEE.name()) && findCompany(form.getAccessCode()).isPresent()) {
 			Company company = findCompany(form.getAccessCode()).get();
 			company.addEmployee(user);
 		}
-
+		
 		return users.save(user);
 	}
 
@@ -84,6 +85,24 @@ public class UserManagement {
 			if(user.getCompany().isPresent() && user.getCompany().get().getAccessCode().equals(accessCode)) {
 				return user.getCompany();
 			}
+		}
+		return Optional.empty();
+	}
+	/*
+	 * better save companys instead of looping through user to get the company the user is in
+	 */
+	public Optional<Company> findCompany(long UserId) {
+		Iterator<User> userIterator = users.findAll().iterator();
+		while (userIterator.hasNext()) {
+			User user = userIterator.next();
+			Optional<Company> company = user.getCompany();
+			if(company.isEmpty()) {
+				continue;
+			}
+			if(company.get().getEmployees().stream().anyMatch(e->e.getId()==UserId)) {
+				return company;
+			}
+			
 		}
 		return Optional.empty();
 	}
@@ -120,6 +139,27 @@ public class UserManagement {
 		return Optional.empty();
 	}
 
+	/*
+	 * probably not needed when a username is unique
+	 */
+	public Optional<User> findUserByUserAccount(UserAccountIdentifier userAccountId){
+		User user = null;
+		Iterator<User> userIterator = users.findAll().iterator();
+		do{
+			user = userIterator.next();
+			if(user.getUserAccount().getId().equals(userAccountId)) {
+				return Optional.of(user);
+			}
+		}while (userIterator.hasNext());
+		return Optional.empty();
+	} 
+	
+	/*
+	 * shouldnt be in the final version
+	 */
+	public UserRepository getUserRepos() {
+		return users;
+	}
 	public void denyAuthenticationById(long userId) {
 		Optional<User> optionalUser= this.findUserById(userId);
 		if(optionalUser.isPresent()) {
@@ -130,5 +170,22 @@ public class UserManagement {
 			}
 		}
 	}
-
+	/**
+	 * books mobile Breakfast for a company
+	 * @param username
+	 * @return
+	 */
+	public boolean bookMobileBreakfast(String username) {
+		Optional<User> user = findUserByUsername(username);
+		if(user.isPresent()) {
+			Optional<Company> company = user.get().getCompany();
+			if(company.isPresent()) {
+				company.get().setBreakfastDate();
+				user.get().setCompany(company.get());
+				users.save(user.get());
+				return true;
+			}
+		}
+		return false;
+	}
 }

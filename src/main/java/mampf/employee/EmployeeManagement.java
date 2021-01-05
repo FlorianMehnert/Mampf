@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import mampf.order.MampfOrder;
+import mampf.order.EventOrder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,16 +40,18 @@ public class EmployeeManagement {
 		return true;
 	}
 
-	public boolean setEmployeeBooked(long id, MampfOrder order){
+	public boolean setEmployeeBooked(long id, EventOrder order){
 		Optional<Employee> employee = employees.findById(id);
 		return employee.map(value -> value.setBooked(order)).orElse(false);
 	}
-
+	
+	
+	
 	public Streamable<Employee> findAll() {
 		return employees.findAll();
 	}
-
-	public List<Employee> getFreeEmployees(LocalDateTime date, Employee.Role role){
+	
+	public List<Employee> getFreeEmployees(LocalDateTime fromDate, LocalDateTime toDate,Employee.Role role){
 		List<Employee> freeEmployees = new ArrayList<>();
 		boolean isFree;
 		for(Employee employee: employees.findByRole(role)) {
@@ -58,8 +60,8 @@ public class EmployeeManagement {
 			// fall: date überschneidet mehrere order -> nur einmal hinzufügen
 			// -> durch isFree kann nur maximal einmal, falls möglich, der employee geaddet werden
 			isFree = true;
-			for (MampfOrder bookedOrder : employee.getBooked()){
-				if(bookedOrder.getDate().hasTimeOverlap(date)){
+			for (EventOrder bookedOrder : employee.getBooked()){
+				if(bookedOrder.hasTimeOverlap(fromDate,toDate)){
 					isFree = false;
 					break;
 				}
