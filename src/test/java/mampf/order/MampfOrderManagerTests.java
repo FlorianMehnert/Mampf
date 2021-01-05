@@ -2,9 +2,7 @@ package mampf.order;
 
 import static org.mockito.Mockito.mock;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAmount;
@@ -152,11 +150,15 @@ public class MampfOrderManagerTests {
 	@Test
 	void validateCarts() {
 		initContext();
-		LocalDateTime startDate = LocalDateTime.now();
-		TemporalAmount a = OrderController.delayForEarliestPossibleBookingDate;
-		startDate = startDate.plus(a);
+		HashMap<String, String> startDates = new HashMap();
+		HashMap<String, String> startTimes = new HashMap();
+		startDates.put(Domain.EVENTCATERING.name(), LocalDate.now().plusDays(1).toString());
+		ArrayList<String> domains = new ArrayList<>();
+		domains.add(Domain.EVENTCATERING.toString());
+		startTimes.put(Domain.EVENTCATERING.name(), LocalTime.now().toString());
 
-		CheckoutForm form = new CheckoutForm(startDate.toLocalDate(), "BAR", startDate.toLocalTime(), "", "");
+
+		CheckoutForm form = new CheckoutForm(startDates, "BAR", startTimes, "", domains);
 		Map<Domain, List<ValidationState>> validations;
 
 		//valid carts:
@@ -189,7 +191,15 @@ public class MampfOrderManagerTests {
 		TemporalAmount a = OrderController.delayForEarliestPossibleBookingDate;
 		startDate = startDate.plus(a);
 		User user = userManager.findUserByUsername("hans").get();
-		CheckoutForm form = new CheckoutForm(startDate.toLocalDate(), "BAR", startDate.toLocalTime(), "", "");
+		HashMap<String, String> startDates = new HashMap();
+		HashMap<String, String> startTimes = new HashMap();
+		startDates.put(Domain.EVENTCATERING.name(), LocalDate.now().plusDays(1).toString());
+		ArrayList<String> domains = new ArrayList<>();
+		domains.add(Domain.EVENTCATERING.toString());
+		startTimes.put(Domain.EVENTCATERING.name(), LocalTime.now().toString());
+
+
+		CheckoutForm form = new CheckoutForm(startDates, "BAR", startTimes, "", domains);
 		List<MampfOrder> orders;
 
 		//buy all:

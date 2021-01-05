@@ -161,7 +161,7 @@ public class OrderController {
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
 		buyCart(domain, model,mampfCart, form);
-		return "buyCart";
+		return "buy_cart";
 	}
 
 	/**
@@ -171,8 +171,10 @@ public class OrderController {
 	public String buy(Model model, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
 					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		if(form.getStartDateTime().isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
-			result.rejectValue("startDate", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
+		for (Item.Domain domain: form.getDomains()){
+			if(form.getStartDateTime(domain) != null && form.getStartDateTime(domain).isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
+				result.rejectValue("allStartDates["+domain.name()+"]", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
+			}
 		}
 
 		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
@@ -197,7 +199,7 @@ public class OrderController {
 			//model.addAttribute("form", form);
 			//model.addAttribute("total", cart.getTotal(carts.values()));
 			buyCart(form.getDomainChoosen(), model,mampfCart, form);
-			return "buyCart";
+			return "buy_cart";
 		}
 
 		orderManager.createOrders(carts, form, user.get());
