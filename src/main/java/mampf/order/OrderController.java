@@ -6,8 +6,6 @@ import mampf.catalog.Item.Domain;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
 import mampf.order.MampfOrderManager.ValidationState;
-import mampf.revenue.Gain;
-import mampf.revenue.Revenue;
 import mampf.user.User;
 import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
@@ -39,7 +37,6 @@ public class OrderController {
 
 	private final UserManagement userManagement;
 	private final Inventory inventory;
-	public final Revenue revenue;
 	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 
 
@@ -58,12 +55,11 @@ public class OrderController {
 
 	private final MampfOrderManager orderManager;
 
-	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory, Revenue revenue) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
 		this.orderManager = orderManager;
 		//this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 		this.userManagement = userManagement;
 		this.inventory = inventory;
-		this.revenue = revenue;
 	}
 
 	/* CART */
@@ -160,7 +156,12 @@ public class OrderController {
 							  CheckoutForm form,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		buyCart(domain, model,mampfCart, form);
+		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
+		model.addAttribute("domains", domains);
+		form.setDomainChoosen(domain);
+		Money money = mampfCart.getTotal(domains.values());
+		model.addAttribute("total", money);
+		model.addAttribute("form", form);
 		return "buy_cart";
 	}
 
@@ -223,7 +224,11 @@ public class OrderController {
 		Money money = mampfCart.getTotal(domains.values());
 		model.addAttribute("total", money);
 		model.addAttribute("form", form);
-		revenue.save(new Gain(form.getStartDateTime(), money));
+		for(Item.Domain domainToAddToRevenueList: form.getDomains()) {
+			for(CartItem cartItem: mampfCart.getDomainCart(domainToAddToRevenueList)) {
+//				revenue.save(new Gain(cartItem.getProduct(), form.getStartDateTime(domainToAddToRevenueList), money));
+			}
+		}
 	}
 
 /* ORDERS */

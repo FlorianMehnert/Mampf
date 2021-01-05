@@ -3,23 +3,23 @@ package mampf.revenue;
 import org.salespointframework.catalog.Product;
 
 import javax.money.MonetaryAmount;
-import javax.persistence.Entity;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-@Entity
-public class Gain extends Product {
-	private LocalDateTime time;
+public class Gain {
+	private Integer amount;
+	private Product product;
 
-	public Gain(LocalDateTime time, MonetaryAmount price) {
-		super("noName", price);
-		this.time = time;
+	public Gain(Product product, Integer amount) {
+		this.product = product;
+		this.amount = amount;
 	}
 
-	public Gain() {
-
+	public Product getProduct() {
+		return product;
 	}
 
-	public LocalDateTime getTime() {
-		return time;
+	public Integer getAmount() {
+		return amount;
 	}
 }
