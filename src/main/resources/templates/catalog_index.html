@@ -20,7 +20,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
     crossorigin="anonymous"></script>
-  <link rel="stylesheet" th:href="@{/resources/css/design.css}">
+  <link rel="stylesheet" href="/resources/css/design.css">
   <title th:text="${headline}">Catalog</title>
 </head>
 
@@ -28,15 +28,16 @@
   <nav th:include="navigation-new :: navigation"></nav>
   <div class="m-content">
     <section class="m-section-padding">
-      <div class="m-container m-flex m-flex-align-center">
+      <div class="m-container m-flex m-flex-align-end">
         <div class="col-9">
           <div class="m-heading m-heading-huge">Unser Angebot</div>
         </div>
         <div class="col-3">
           <div class="m-text m-text-promo">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime officiis optio quis commodi? Fugiat
-            consequuntur, magni nam cupiditate veniam atque eveniet, architecto iure odio quasi voluptatem vel sed ut.
-            Saepe.
+            Mampf bietet nicht nur das, was sie normalerweise von einem Cateringservice erwarten würden. 
+            Wir haben es uns zur Aufgabe gemacht, ihnen alles zu bieten, was sie für ein erfolgreiches 
+            Event benötigen. Von leckeren Gerichten für eine Familienfeier, über ein perfekt angerichtetes
+            Buffet, bis hin zu professioneller Unterstützung durch unser Personal.
           </div>
         </div>
       </div>
@@ -50,15 +51,13 @@
           <div class="col m-no-padding m-flex-wrap">
             <div class="m-heading m-heading-big m-push-left m-color-white m-align-left">Eventcatering</div>
             <div class="m-text m-text-padding m-text-promo">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime officiis optio quis commodi? Fugiat
-              consequuntur, magni nam cupiditate veniam atque eveniet, architecto iure odio quasi voluptatem vel sed ut.
-              Saepe.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime officiis optio quis commodi? Fugiat
-              consequuntur, magni nam cupiditate veniam atque eveniet, architecto iure odio quasi voluptatem vel sed ut.
-              Saepe.
+              Wir stellen hohe Ansprüche an unser Catering und halten die Qualität stehts sehr hoch, 
+              damit sie sich wirklich keine Gedanken um das Essen machen müssen, sondern sich stattdessen 
+              auf ihre Gäste und den Spaß konzentrieren können. Lassen sie sich von uns verwöhnen und genießen
+              sie lieber das posititve Feedback ihrer Gäste. 
             </div>
             <div class="m-actions">
-              <button class="btn m-color-white m-btn-outlined">Jetzt bestellen</button>
+              <a href="/catalog/eventcatering" class="btn m-color-white m-btn-outlined">Jetzt bestellen</a>
             </div>
           </div>
         </div>
@@ -70,15 +69,14 @@
           <div class="col m-no-padding m-flex-wrap">
             <div class="m-heading m-heading-big m-push-left m-align-right">Partyservice</div>
             <div class="m-text m-text-padding m-text-promo">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime officiis optio quis commodi? Fugiat
-              consequuntur, magni nam cupiditate veniam atque eveniet, architecto iure odio quasi voluptatem vel sed ut.
-              Saepe.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime officiis optio quis commodi? Fugiat
-              consequuntur, magni nam cupiditate veniam atque eveniet, architecto iure odio quasi voluptatem vel sed ut.
-              Saepe.
+              Wie oft waren wir nicht alle schon auf Partys, auf denen man sich dachte: "Hätte ich doch 
+              lieber zu Hause etwas gegessen." Schluss damit! Mit unseren Party-Angeboten ist ihnen der
+              Erfolg auf ihrer Party sicher. Gerichte und Getränke aller Art um ihre Gäste zufrieden zu stellen,
+              ist das Motto unseres Partyservice. Lassen sie sich nicht von nörgelden Gästen den Abend verderben
+              und buchen sie lieber eines unserer Party-Angebote.
             </div>
             <div class="m-actions">
-              <button class="btn m-color-black m-btn-outlined">Jetzt bestellen</button>
+              <a href="/catalog/partyservice" class="btn m-color-black m-btn-outlined">Jetzt bestellen</a>
             </div>
           </div>
           <div class="col m-no-padding">
@@ -96,12 +94,12 @@
           </div>
           <div class="m-flex-wrap m-flex-row m-flex-odd">
             <div class="m-text m-text-promo m-text-odd">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime officiis optio quis commodi? Fugiat
-              consequuntur, magni nam cupiditate veniam atque eveniet, architecto iure odio quasi voluptatem vel sed ut.
-              Saepe.
+              Mitarbeiter müssen leisten, aber wie sagt man so schön: "Ohne Dampf keine Leistung". Steigern sie
+              die Motivation und Leistungsfähigkeit ihrer Mitarbeiter durch unser Mobile-Breakfast und lassen sie sich
+              selbst begeistern durch unser reiches Frühstücksangebot.
             </div>
             <div class="m-actions m-actions-full-width m-actions-odd">
-              <button class="btn m-btn-outlined">Jetzt bestellen</button>
+              <a href="/mobile-breakfast" class="btn m-btn-outlined">Jetzt bestellen</a>
             </div>
           </div>
         </div>
@@ -123,12 +121,11 @@
         <div class="row m-row-margin">
           <div class="col m-flex m-no-padding">
             <div class="m-text m-text-promo">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime officiis optio quis commodi? Fugiat
-              consequuntur, magni nam cupiditate veniam atque eveniet, architecto iure odio quasi voluptatem vel sed ut.
-              Saepe.
+              Probleme beim kochen? Kein Problem, buchen sie einfach Köche von uns. Wann und wo sie wollen. Unsere
+              Köche sind stehts für sie da und geben ihnen einen Einblick in die Welt der Sterne-Gastronomie.
             </div>
             <div class="m-actions m-actions-full-width">
-              <button class="btn m-btn-outlined">Jetzt bestellen</button>
+              <a href="/catalog/rent-a-cook" class="btn m-btn-outlined">Jetzt bestellen</a>
             </div>
           </div>
         </div>

@@ -131,6 +131,10 @@ html {
   align-items: center;
 }
 
+.m-flex-align-end {
+  align-items: end;
+}
+
 .m-flex-wrap {
   display: flex;
   flex-wrap: wrap;
@@ -234,8 +238,8 @@ html {
 }
 
 .m-text-odd {
-  transform: translate(-47rem, -9rem);
-  padding: 0 8rem;
+  transform: translate(-43rem, -9rem);
+  padding: 0 10rem;
 }
 
 /* MAMPF Navigation-Bar */
