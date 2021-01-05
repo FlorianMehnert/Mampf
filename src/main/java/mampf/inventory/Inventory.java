@@ -2,7 +2,6 @@ package mampf.inventory;
 
 import mampf.Util;
 import mampf.catalog.Item;
-import org.salespointframework.catalog.Product;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.quantity.Quantity;
 

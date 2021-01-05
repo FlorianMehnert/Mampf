@@ -1,23 +1,18 @@
 package mampf.order;
 
-import java.time.LocalDateTime;
-import java.time.Duration;
-import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.validation.Valid;
-
+import mampf.catalog.BreakfastItem;
+import mampf.catalog.Item;
+import mampf.catalog.Item.Domain;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
+import mampf.order.MampfOrderManager.ValidationState;
+import mampf.revenue.Gain;
+import mampf.revenue.Revenue;
 import mampf.user.User;
 import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.useraccount.web.LoggedIn;
@@ -28,26 +23,28 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import mampf.catalog.BreakfastItem;
-import mampf.catalog.Item;
-import mampf.catalog.Item.Domain;
-import mampf.order.MampfOrderManager.ValidationState;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import javax.validation.Valid;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
 @SessionAttributes("mampfCart")
 public class OrderController {
-	
-	
-	private UserManagement userManagement;
+
+	private final UserManagement userManagement;
 	private final Inventory inventory;
+	public final Revenue revenue;
 	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 
-	public class BreakfastMappedItems extends Item {
-		private MobileBreakfastForm form;
+
+	public static class BreakfastMappedItems extends Item {
+		private final MobileBreakfastForm form;
 
 		public BreakfastMappedItems(String name, Money price, String description, MobileBreakfastForm form) {
 			super(name, price, Item.Domain.MOBILE_BREAKFAST, Item.Category.FOOD, description);
@@ -61,11 +58,12 @@ public class OrderController {
 
 	private final MampfOrderManager orderManager;
 
-	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory, Revenue revenue) {
 		this.orderManager = orderManager;
 		//this.delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 		this.userManagement = userManagement;
 		this.inventory = inventory;
+		this.revenue = revenue;
 	}
 
 	/* CART */
@@ -141,12 +139,12 @@ public class OrderController {
 			return "redirect:/login";
 		}
 		mampfCart.addToCart(
-			 new BreakfastMappedItems("Mobile Breakfast Choice: " +
-					 				  form.getBeverage().getName() +", "+
-					 				  form.getDish().getName(),
-					 				  BreakfastItem.BREAKFAST_PRICE,
-					 				  "Employee Choice of beverage and dish",
-					 				  form),
+				new BreakfastMappedItems("Mobile Breakfast Choice: " +
+						form.getBeverage().getName() + ", " +
+						form.getDish().getName(),
+						BreakfastItem.BREAKFAST_PRICE,
+						"Employee Choice of beverage and dish",
+						form),
 			 Quantity.of(1));
 
 		return "redirect:/cart";
@@ -221,9 +219,11 @@ public class OrderController {
 	private void buyCart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
 		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
 		model.addAttribute("domains", domains);
-		form.setDomainChoosen(domain);	
-		model.addAttribute("total", mampfCart.getTotal(domains.values()));
+		form.setDomainChoosen(domain);
+		Money money = mampfCart.getTotal(domains.values());
+		model.addAttribute("total", money);
 		model.addAttribute("form", form);
+		revenue.save(new Gain(form.getStartDateTime(), money));
 	}
 
 /* ORDERS */

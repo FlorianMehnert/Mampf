@@ -40,6 +40,10 @@
                     <a class="nav-link" href="employees.html" th:href="@{/intern/employees}" sec:authorize="hasRole('BOSS')">Mitarbeiter</a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="revenue.html" th:href="@{/revenue}" sec:authorize="hasRole('BOSS')">Umsatz</a>
+                </li>
+
 
             </ul>
             <ul class="navbar-nav">

@@ -188,10 +188,9 @@ public class MampfOrderManager {
 				  			 keySet().
 				  			 stream().
 				  			 filter(weekday -> item.
-				  					 		   getForm().
-				  					 		   getDays().
-				  					 		   get(weekday).
-				  					 		   booleanValue()).
+									 getForm().
+									 getDays().
+									 get(weekday)).
 				  			 		toArray(String[]::new),
 				  			 item.
 				  			 getForm().
@@ -219,11 +218,8 @@ public class MampfOrderManager {
 										  orderDate);
 		orderDate.setOrder(order);
 		order.addChargeLine(item.getPrice(), "static prize for a breakfast");
-		
 		cart.addItemsTo(order);
-		
 		return order;
-
 	}
 
 
@@ -280,7 +276,6 @@ public class MampfOrderManager {
 				}
 			}
 		}
-		
 		return validations;
 	}
 	
@@ -334,9 +329,7 @@ public class MampfOrderManager {
 			orderManagement.save(order);
 			orders.add(order);
 		}
-		
 		return orders;
-		
 	}
 
 	public MampfOrder findOrderById(UserAccount user){
@@ -349,8 +342,7 @@ public class MampfOrderManager {
 
 	public List<MampfOrder> findAll() {
 		Stream<MampfOrder> stream = orderManagement.findAll(Pageable.unpaged()).get();
-		List<MampfOrder> list = stream.collect(Collectors.toList());
-		return new ArrayList<>(list);
+		return stream.collect(Collectors.toList());
 	}
 
 	public List<MampfOrder> findByUserAcc(UserAccount account) {
@@ -360,6 +352,4 @@ public class MampfOrderManager {
 		}
 		return res;
 	}
-
-	
 }
