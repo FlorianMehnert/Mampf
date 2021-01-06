@@ -119,10 +119,19 @@ public class MampfOrderManagerTests {
 
 	CheckoutForm initForm() {
 		List<String> domains = new ArrayList<>();
-		List.of(Item.Domain.values()).forEach(d->domains.add(d.name()));
-		Map<String, String> allStartDates = new HashMap<>(),allStartTimes = new HashMap<>();
-		domains.forEach(d->{allStartDates.put(d, justadate.format(CheckoutForm.dateFormatter));allStartTimes.put(d, justadate.format(CheckoutForm.timeFormatter));});
-		CheckoutForm form = new CheckoutForm(allStartDates, "Check", allStartTimes, "",null);
+		List.of(Item.Domain.values()).forEach(
+				d->domains.add(d.name())
+		);
+
+		Map<String, String> allStartDates = new HashMap<>(),allStartTimes = new HashMap<>(), allEndTimes = new HashMap<>();
+		domains.forEach(
+				d->{
+					allStartDates.put(d, justadate.format(CheckoutForm.dateFormatter));
+					allStartTimes.put(d, justadate.format(CheckoutForm.timeFormatter));
+					allEndTimes.put(d, justadate.plusHours(2).format(CheckoutForm.timeFormatter));
+				}
+		);
+		CheckoutForm form = new CheckoutForm(allStartDates, "Check", allStartTimes, allEndTimes,"",null);
 		return form;
 	}
 	
@@ -272,8 +281,8 @@ public class MampfOrderManagerTests {
 		assert order instanceof MBOrder;
 		
 		//still available:
-		assert employeeManager.getFreeEmployees(justadate, justadate.plus(EventOrder.EVENTDURATION), Employee.Role.COOK).size() == 0;
-		assert employeeManager.getFreeEmployees(justadate, justadate.plus(EventOrder.EVENTDURATION),Employee.Role.SERVICE).size() == 2;
+		assert employeeManager.getFreeEmployees(justadate, justadate.plusHours(1), Employee.Role.COOK).size() == 0;
+		assert employeeManager.getFreeEmployees(justadate, justadate.plusHours(2),Employee.Role.SERVICE).size() == 2;
 		//employees assigned:
 		assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.EVENTCATERING) && o.getEmployees().size() == 4);
 		assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getEmployees().size() == 6);

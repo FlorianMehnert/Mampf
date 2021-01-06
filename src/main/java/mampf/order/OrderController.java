@@ -7,15 +7,10 @@ import java.time.DayOfWeek;
 
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.money.MonetaryAmount;
 import javax.persistence.criteria.Order;
 import javax.validation.Valid;
 
@@ -253,19 +248,22 @@ public class OrderController {
 	@GetMapping("/pay/{domain}")
 	public String chooseToBuy(Model model,
 							  @PathVariable String domain,
-							  CheckoutForm form,
+							  @ModelAttribute("form") CheckoutForm form,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
-
-		model.addAttribute("validations",new HashMap<String,List<String>>());
-		return buyCart(domain, model,mampfCart, form);
+		model.addAttribute("validations", new HashMap<String,List<String>>());
+		return buyCart(domain, model, mampfCart, form);
 	}
 
 	/**
 	 * buy cart(s)
 	 */
 	@PostMapping("/checkout")
-	public String buy(Model model, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
+	public String buy(Model model, @RequestParam(name = "reload")Optional<Boolean> reload, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
 					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		if(reload.isPresent()) {
+			model.addAttribute("validations", new HashMap<String,List<String>>());
+			return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+		}
 
 		for (Item.Domain domain: form.getDomains()){
 			if(!form.domainsWithoutForm.contains(domain.name()) && 
@@ -325,12 +323,25 @@ public class OrderController {
 	}
 	
 	private String buyCart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
-		
 		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
-		form.setDomainChoosen(domain);	
-		model.addAttribute("domains",domains);
+		EnumMap<Domain, MonetaryAmount> totalPerDomain = new EnumMap<>(Domain.class);
+		for(Map.Entry<Domain, Cart> pair: domains.entrySet()) {
+			MonetaryAmount sum = Money.of(0, "EUR");
+			for(CartItem cartItem: domains.get(pair.getKey())) {
+				Item item = (Item) cartItem.getProduct();
+				if(item.getCategory().equals(Item.Category.STAFF)) {
+					sum = sum.add(cartItem.getPrice().multiply(form.getDurationOfDomain(pair.getKey().toString())));
+				}else{
+					sum = sum.add(cartItem.getPrice());
+				}
+			}
+			totalPerDomain.put(pair.getKey(), sum);
+		}
+		form.setDomainChoosen(domain);
+		model.addAttribute("domains", domains);
+		model.addAttribute("totalPerDomain", totalPerDomain);
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
-		model.addAttribute("form",form);
+		model.addAttribute("form", form);
 		return "buy_cart";
 	}
 

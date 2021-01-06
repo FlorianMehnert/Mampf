@@ -51,7 +51,8 @@
 					<tr>
 					  <th>Titel</th>
 					  <th>Anzahl</th>
-					  <th>Preis</th>
+					  <th>Preis pro Stunde</th>
+					  <th>Preis gesamt</th>
 					</tr>
 				</thead>
 				<tbody >
@@ -63,7 +64,7 @@
 					<tr>
 						<td><b>Summe</b></td>
 						<td ></td>
-						<td th:text="${{domain.value.price}}"></td>
+						<td th:text="${{totalPerDomain.get(domain.key)}}"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -77,15 +78,18 @@
 			<div class="invalid-feedback" th:if="${#fields.hasErrors('allStartDates['+domain.key+']')}" th:errors="*{allStartDates[__${domain.key}__]}">
 
 			</div>
-			<label for="startTime"  th:unless="${hideForm}">Uhrzeit:</label>
-			<input id="startTime" class="form-control" th:if="${#maps.containsKey(form.allStartTimes, domain.key)}" th:classappend="${#fields.hasErrors('allStartTimes['+domain.key+']')} ? 'is-invalid' : ''"
-			th:type="${hideForm}? 'hidden' : 'time'" th:field="*{allStartTimes[__${domain.key}__]}"/>
-			<input id="startTime2" class="form-control" th:unless="${#maps.containsKey(form.allStartTimes, domain.key)}" th:classappend="${#fields.hasErrors('allStartTimes['+domain.key+']')} ? 'is-invalid' : ''"
-			th:type="${hideForm}? 'hidden' : 'time'" th:name="${'allStartTimes['+ domain.key + ']'}" th:value="${form.getTimeNow()}"/>
-			<div class="invalid-feedback" th:if="${#fields.hasErrors('allStartTimes['+domain.key+']')}" th:errors="*{allStartTimes[__${domain.key}__]}">
+			<label for="startTime"  th:unless="${hideForm}">von</label>
+			<input id="startTime" class="form-control" th:name="${'allStartTimes['+domain.key+']'}" th:classappend="${#fields.hasErrors('allStartTimes['+domain.key+']')} ? 'is-invalid' : ''"
+				   th:type="${hideForm}? 'hidden' : 'time'" th:value="${form.getStartTime(domain.key)}"/>
+
+			<label for="endTime"  th:unless="${hideForm}">bis</label>
+			<input id="endTime" class="form-control" th:name="${'allEndTimes['+domain.key+']'}" th:classappend="${#fields.hasErrors('allEndTimes['+domain.key+']')} ? 'is-invalid' : ''"
+				   th:type="${hideForm}? 'hidden' : 'time'" th:value="${form.getEndTime(domain.key)}"/>
+			<div class="invalid-feedback" th:if="${#fields.hasErrors('allEndTimes['+domain.key+']')}" th:errors="*{allEndTimes[__${domain.key}__]}">
 			
 			</div>
 		</div>
+		<button type="submit" class="btn btn-outline-primary" name="reload" value="1">Neu berechnen</button>
 		<div class="form-group mt-2" >
 			<div th:each="err : ${validations.get('__${domain.key}__')}">
 			<div th:text="${err}" class="alert alert-danger alert-dismissible fade show" role="alert"></div>
@@ -114,7 +118,7 @@
 			
 		</div>
 		<br/>
-		<button type="submit" class="btn btn-outline-primary">Bestellung erstellen</button>
+		<button type="submit" class="btn btn-outline-primary" name="save">Bestellung erstellen</button>
 			
 	</div>
 	</form>

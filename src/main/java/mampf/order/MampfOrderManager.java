@@ -172,9 +172,11 @@ public class MampfOrderManager {
 			}else {
 				//create usual order:
 				order = new EventOrder(user.getUserAccount(),
-									   createPayMethod(form.getPayMethod(),user.getUserAccount()),
-									   domain,
-									   startDate,user.getAddress());
+						createPayMethod(form.getPayMethod(),user.getUserAccount()),
+						domain,
+						startDate,
+						endDate,
+						user.getAddress());
 				
 				cart.addItemsTo(order);
 				if(hasStaff(cart)) {
@@ -484,7 +486,7 @@ public class MampfOrderManager {
 			if(needStartDate) {
 				date = form.getStartDateTime(domain);
 			}else {
-				date = EventOrder.getEndDate(form.getStartDateTime(domain));
+				date = form.getEndDateTime(domain);
 			}
 			
 			

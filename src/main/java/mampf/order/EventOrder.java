@@ -26,13 +26,9 @@ import org.salespointframework.quantity.Quantity;
 
 @Entity
 public class EventOrder extends MampfOrder {
-	
-	public static final Duration EVENTDURATION = Duration.ofHours(1);
-	
-	public static LocalDateTime getEndDate(LocalDateTime startDate) {
-		return startDate.plus(EVENTDURATION);
-	}
-	
+	private LocalDateTime endDateTime;
+
+
 	@ManyToMany(cascade = CascadeType.MERGE)
 	private List<Employee> employees = new ArrayList<>();
 
@@ -42,8 +38,10 @@ public class EventOrder extends MampfOrder {
 					  PaymentMethod paymentMethod,
 					  Item.Domain domain,
 					  LocalDateTime startDate,
+					  LocalDateTime endDateTime,
 					  String adress) {
 		super(account, paymentMethod,domain,startDate,adress);
+		this.endDateTime = endDateTime;
 	}
 	
 	//impl.:
@@ -59,7 +57,7 @@ public class EventOrder extends MampfOrder {
 	}
 	//impl.:
 	public LocalDateTime getEndDate() {
-		return getEndDate(getStartDate());
+		return endDateTime;
 	}
 	//impl.:
 	public String getDescription() {
