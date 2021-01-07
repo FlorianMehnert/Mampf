@@ -29,22 +29,47 @@
         </style>
         <h1 th:text="#{revenue.title}">Umsatz</h1>
     </header>
+    <p>
+        Die Umsätze werden nach dem Erstellungsdatum angezeigt, nicht nach dem Datum, an dem sie stattfinden.
+    </p>
+    <form th:action="@{/revenue}" method="get" class="form mr-2">
+        <div class="form-group">
+            <label for="startDate">Startdatum</label>
+            <input id="startDate" class="form-control" type="date" name="startDateString" th:value="${startDateString}">
+        </div>
+        <div class="form-group">
+            <label for="endDate">Enddatum</label>
+            <input id="endDate" class="form-control" type="date" name="endDateString" th:value="${endDateString}">
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Filtern" class="form-control btn btn-outline-primary">
+        </div>
+    </form>
 
     <table class="table table-hover">
         <thead class="thead-light">
         <tr>
-            <th>time</th>
-            <th>money</th>
+            <th>Name</th>
+            <th>Kategorie</th>
+            <th>Preis pro Stück</th>
+            <th>Anzahl</th>
+            <th>Preis gesamt</th>
         </tr>
         </thead>
         <tbody th:remove="all-but-first">
         <tr th:each="gain : ${gains}">
 
-            <td th:text="${gain.getTime()}" class="text-left">name</td>
-            <td th:text="${{gain.getPrice()}}" class="text-left">quantity</td>
+            <td th:text="${gain.key.getName()}"></td>
+            <td th:text="${gain.key.getCategories().toList()}"></td>
+            <td th:text="${gain.key.price}" class="text-left">name</td>
+            <td th:text="${{gain.value.first}}" class="text-left">quantity</td>
+            <td th:text="${{gain.value.second.multiply(gain.value.first.getAmount())}}" class="text-left">quantity</td>
         </tr>
         </tbody>
     </table>
+    <div>
+        <b>Gesamtsumme: <span th:text="${{total}}"></span></b>
+    </div>
 </div>
 </body>
 </html>

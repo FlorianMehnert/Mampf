@@ -22,9 +22,6 @@ import javax.validation.Valid;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
 import mampf.user.Company;
-import mampf.revenue.Gain;
-import mampf.revenue.Revenue;
-
 import mampf.user.User;
 import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
@@ -58,7 +55,6 @@ public class OrderController {
 	private UserManagement userManagement;
 	private final MampfOrderManager orderManager;
 	private final Inventory inventory;
-	public final Revenue revenue;
 	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 
 
@@ -148,11 +144,10 @@ public class OrderController {
 		}
 	}
 
-	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory, Revenue revenue) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
 		this.orderManager = orderManager;
 		this.userManagement = userManagement;
 		this.inventory = inventory;
-		this.revenue = revenue;
 	}
 
 	/* CART */
