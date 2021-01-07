@@ -1,6 +1,7 @@
 
 package mampf.order;
 
+import mampf.catalog.Item;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mampf.catalog.Item;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
@@ -20,9 +19,10 @@ public class CheckoutForm {
 	@NotEmpty()
 	private Map<String, @Valid String> allStartDates;
 
+
 	@NotEmpty()
 	private Map<String, @Valid String> allStartTimes;
-
+	
 	private ArrayList<String> domainsForCheckout;
 
 	private List<Item.Domain> domains;
@@ -34,10 +34,13 @@ public class CheckoutForm {
 	private String domainChoosen;
 
 	private String generalError;
-	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
 
-	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, String generalError, ArrayList<String> domainsForCheckout) {
+	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
+	
+	public final List<String> domainsWithoutForm = List.of(Item.Domain.MOBILE_BREAKFAST.name());
+	
+	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, String generalError,ArrayList<String> domainsForCheckout) {
 		this.allStartDates = startDates;
 		this.allStartTimes = startTimes;
 		this.payMethod = payMethod;

@@ -26,22 +26,21 @@
     <header>
       <h1>Bestellungen</h1>
     </header>
-    <div class="container">
+    <div class="container" th:each="a : ${stuff}">
+	<h4 th:text="${a.key}"> </h4>
       <table id="sortableTable" class="table table-hover">
         <thead class="thead-light">
           <tr>
             <th>Bestellung</th>
-            <th>Status</th>
-            <th>View</th>
+            <th>Anzeigen</th>
+            <th>Erstellungsdatum</th>
           </tr>
         </thead>
         <tbody>
-          <tr th:each=" order : ${orders}">
-            <td th:text="${order.id}">name</td>
-            <td th:text="${order.getOrderStatus().name()}">name</td>
-            <!-- <td><a th:href="'/orders/detail?order='+${order.id}">view</a></td>
-             -->
-            <td><a th:href="'/orders/detail/'+${order.id}">view</a></td>
+          <tr th:each=" order : ${a.value}">
+            <td th:text="${order}">name</td>
+            <td><a th:href="'/orders/detail/'+${order.getId().getIdentifier()}">anzeigen</a></td>
+			<td th:text="${order.getDateCreated()}"></td>
           </tr>
         </tbody>
       </table>

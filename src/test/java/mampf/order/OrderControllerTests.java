@@ -88,7 +88,7 @@ public class OrderControllerTests {
 
 		mvc.perform(get("/orders")) //
 				.andExpect(status().isOk()) //
-				.andExpect(model().attributeExists("orders"));
+				.andExpect(model().attributeExists("stuff"));
 	}
 
 	

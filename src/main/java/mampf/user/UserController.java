@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
-class UserController {
+public class UserController {
 
 	private final UserManagement userManagement;
 
@@ -113,5 +113,15 @@ class UserController {
 		return "redirect:/users";
 	}
 
-
+	
+	@GetMapping("/bookBreakfast")
+	@PreAuthorize("isAuthenticated()")
+	public String bookBreakfast(Authentication authentication) {
+		
+		if(userManagement.bookMobileBreakfast(authentication.getName())) {
+			return "redirect:/userDetails/";
+		}
+		return "redirect:/";
+	}
+	
 }
