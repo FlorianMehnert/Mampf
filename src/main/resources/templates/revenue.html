@@ -32,10 +32,18 @@
     <p>
         Die Umsätze werden nach dem Erstellungsdatum angezeigt, nicht nach dem Datum, an dem sie stattfinden.
     </p>
-    <form th:action="@{/revenue}" method="get">
-        <input type="date" name="startDateString" th:value="${startDateString}">
-        <input type="date" name="endDateString" th:value="${endDateString}">
-        <input type="Submit">
+    <form th:action="@{/revenue}" method="get" class="form mr-2">
+        <div class="form-group">
+            <label for="startDate">Startdatum</label>
+            <input id="startDate" class="form-control" type="date" name="startDateString" th:value="${startDateString}">
+        </div>
+        <div class="form-group">
+            <label for="endDate">Enddatum</label>
+            <input id="endDate" class="form-control" type="date" name="endDateString" th:value="${endDateString}">
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Filtern" class="form-control btn btn-outline-primary">
+        </div>
     </form>
 
     <table class="table table-hover">

@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
-import mampf.order.MampfOrderManager.ValidationState;
+import mampf.user.Company;
 import mampf.user.User;
 import mampf.user.UserManagement;
 import org.javamoney.moneta.Money;
@@ -143,8 +143,6 @@ public class OrderController {
 			return amount;
 		}
 	}
-
-	private final MampfOrderManager orderManager;
 
 	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
 		this.orderManager = orderManager;
