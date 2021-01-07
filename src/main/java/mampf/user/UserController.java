@@ -33,7 +33,7 @@ public class UserController {
 				result.rejectValue("username", "RegistrationForm.username.exists", "This Username is already taken!");
 			}
 			if ((form.getEmail().equals(user.getUserAccount().getEmail()))) {
-				result.rejectValue("email", "RegistrationForm.username.exists", "This E-Mail does exists already!");
+				result.rejectValue("email", "RegistrationForm.email.exists", "This E-Mail does exists already!");
 			}
 		}
 		if(form.getRole().equals("EMPLOYEE") && form.getAccessCode().length() != 6 ) {
