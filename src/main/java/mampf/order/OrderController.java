@@ -150,7 +150,8 @@ public class OrderController {
 		this.inventory = inventory;
 	}
 
-	/* CART */
+/* CART */
+	
 	@ModelAttribute("mampfCart")
 	MampfCart initializeCart() {
 		return new MampfCart();
@@ -163,9 +164,9 @@ public class OrderController {
 	public String addItem(@RequestParam("pid") Item item,
 						  @RequestParam("number") int number,
 						  @ModelAttribute("mampfCart") MampfCart mampfCart) {
-		
-		//TODO: invalid amount check
-		mampfCart.addToCart(item, Quantity.of(number));
+		if(number < 1) {
+			mampfCart.addToCart(item, Quantity.of(number));
+		}
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
 	}
 
