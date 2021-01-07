@@ -29,6 +29,14 @@
         </style>
         <h1 th:text="#{revenue.title}">Umsatz</h1>
     </header>
+    <p>
+        Die Umsätze werden nach dem Erstellungsdatum angezeigt, nicht nach dem Datum, an dem sie stattfinden.
+    </p>
+    <form th:action="@{/revenue}" method="get">
+        <input type="date" name="startDateString" th:value="${startDateString}">
+        <input type="date" name="endDateString" th:value="${endDateString}">
+        <input type="Submit">
+    </form>
 
     <table class="table table-hover">
         <thead class="thead-light">
