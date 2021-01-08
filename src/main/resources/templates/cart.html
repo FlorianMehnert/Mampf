@@ -18,13 +18,16 @@
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
     crossorigin="anonymous"></script>
 
-  <title>Warenkorb</title>
+
+  <title th:if="!${domains.isEmpty()}">Warenkorb</title>
+  <title th:if="${domains.isEmpty()}">leerer Warenkorb</title>
 </head>
 
 <body>
   <nav th:include="navigation :: navigation"></nav>
   <div class="container pb-5">
-    <h1>Warenkorb</h1>
+    <h1 th:if="!${domains.isEmpty()}">Warenkorb</h1>
+    <h1 th:if="${domains.isEmpty()}">leerer Warenkorb</h1>
     <div>
 
       <div th:each="domain : ${domains}">
@@ -46,8 +49,7 @@
                 <td th:text="${item.productName}">Last Action Hero</td>
                 <td>
                   <form class="form-inline" method="post" th:action="@{/cart/setNewAmount}">
-
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-3" th:if="!${domain.key.toString().equals('MOBILE_BREAKFAST')}">
                       <input type="hidden" name="cartitemId" th:value="${item.id}" />
                       <input class="form-control" type="number" name="newAmount" min="1" max="10000"
                         th:value="${item.quantity.getAmount()}">
@@ -100,16 +102,16 @@
       </div>
       <div class="container">
         <div class="row pb-3">
-          <div class="col">
+          <div class="col" th:if="!${domains.isEmpty()}">
             Gesamtpreis:<span th:text="${{total}}"></span>
           </div>
         </div>
         <div class="row">
           <form method="post" th:action="@{/cart/clear}" class="form-inline col">
-            <button class="btn btn-outline-secondary" type="submit">Warenkorb leeren</button>
+            <button class="btn btn-outline-secondary" type="submit" th:if="!${domains.isEmpty()}">Warenkorb leeren</button>
           </form>
           <form method="get" th:action="@{/pay/_}" class="form-inline justify-content-end col">
-            <button class="btn btn-outline-primary" type="submit">Alles kaufen</button>
+            <button class="btn btn-outline-primary" type="submit" th:if="!${domains.isEmpty()}">Alles kaufen</button>
           </form>
         </div>
       </div>
