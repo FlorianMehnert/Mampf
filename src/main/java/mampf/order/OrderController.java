@@ -44,6 +44,7 @@ import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -212,21 +213,28 @@ public class OrderController {
 	@PostMapping("/cart/add/mobile-breakfast")
 	public String orderMobileBreakfast(@LoggedIn Optional<UserAccount> userAccount,
 									   @Valid MobileBreakfastForm form,
-									   @ModelAttribute("mampfCart") MampfCart mampfCart) {
+									   @ModelAttribute("mampfCart") MampfCart mampfCart,
+									   RedirectAttributes redirectAttributes
+									   ) {
 		
 		String redirect = "redirect:/mobile-breakfast";
 		if (userAccount.isEmpty()) {
 			return "redirect:/login";
 		}
 		//ERRORS:
-		if(form.getBeverage() == null || form.getDish() == null) {
-			//TODO: MB error: choice invalid
-			
+		String error = "error";
+		if(form.getBeverage() == null) {
+			redirectAttributes.addFlashAttribute(error, "Kein Getränk ausgewählt");
 			return redirect;
 		}
+
+		if(form.getDish() == null){
+			redirectAttributes.addFlashAttribute(error, "Nichts zum Essen ausgewählt");
+			return redirect;
+		}
+
 		if(!orderManager.hasBookedMB(userAccount.get())) {
-			//TODO: MB error: not possible (was not booked)
-			
+			redirectAttributes.addFlashAttribute(error, "für diesen Monat wurde kein Mobile Breakfast bestellt");
 			return redirect;
 		}
 		//TODO: MB error: outdated (duplicate code from BreakfastmappedItems constructor...)(check if time now is after choiceTimeEnd)
