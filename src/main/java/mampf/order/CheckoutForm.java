@@ -41,7 +41,7 @@ public class CheckoutForm {
 	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
 	
-	public final List<String> domainsWithoutForm = List.of(Item.Domain.MOBILE_BREAKFAST.name());
+	public static final List<String> domainsWithoutForm = List.of(Item.Domain.MOBILE_BREAKFAST.name());
 	
 	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, Map<String, String> endTimes, String generalError,ArrayList<String> domainsForCheckout) {
 		this.allStartDates = startDates;

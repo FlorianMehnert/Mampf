@@ -16,6 +16,7 @@ import javax.validation.Valid;
 
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
+import mampf.order.MampfCart.DomainCart;
 import mampf.user.Company;
 import mampf.revenue.Gain;
 import mampf.revenue.Revenue;
@@ -60,13 +61,12 @@ public class OrderController {
 	public class BreakfastMappedItems extends Item {
 		
 		private final LocalTime breakfastTime;
-		private final LocalDateTime startDate,endDate; 
 		private final List<DayOfWeek> weekDays;
 		private final String adress;
 		private final BreakfastItem beverage,dish;
 		private final long amount;
 		
-		public BreakfastMappedItems(User user,
+		public BreakfastMappedItems(User user, LocalDateTime startDate, LocalDateTime endDate,
 									MobileBreakfastForm form) {
 			
 			super("Mobile Breakfast \nChoice: " +
@@ -88,8 +88,6 @@ public class OrderController {
 					
 			//get start and end Dates:
 			Optional<Company> company = userManagement.findCompany(user.getId());
-			startDate = LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.of(0, 0));
-			endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.of(0, 0));
 			setName(getName()+"\nFrom "+startDate.toLocalDate()+" to "+endDate.toLocalDate()+"\nEach: "+weekDays);
 			Optional<User> boss = userManagement.findUserById(company.get().getBossId());
 			if(boss.isPresent()) {
@@ -107,7 +105,7 @@ public class OrderController {
 					orderManager.getBookedItems(
 					MBOrder.getItems(startDate, endDate, 
 									 startDate, endDate, 
-									 weekDays, breakfastTime, 
+									 weekDays.stream().collect(Collectors.toSet()), breakfastTime, 
 									 List.of(beverage.getId(),
 											 dish.getId())));
 			if(totalItems.isEmpty()) {
@@ -116,12 +114,6 @@ public class OrderController {
 				amount = totalItems.get(0).getAmount().longValue();			
 			}	
 			
-		}
-		public LocalDateTime getStartDate() {
-			return startDate;
-		}
-		public LocalDateTime  getEndDate() {
-			return endDate;
 		}
 		public LocalTime getBreakfastTime() {
 			return breakfastTime;
@@ -176,7 +168,8 @@ public class OrderController {
 	public String basket(Model model,
 						 @ModelAttribute("mampfCart") MampfCart mampfCart) {
 		
-		Map<Item.Domain, Cart> domains = mampfCart.getStuff();
+		mampfCart.resetCartDate();
+		Map<Item.Domain, DomainCart> domains = mampfCart.getStuff();
 		model.addAttribute("domains", domains);
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
 		return "cart";
@@ -229,15 +222,20 @@ public class OrderController {
 			
 			return redirect;
 		}
+		//TODO: MB error: mb is already booked
 		//TODO: MB error: outdated (duplicate code from BreakfastmappedItems constructor...)(check if time now is after choiceTimeEnd)
 		
-		BreakfastMappedItems mbItem = 
-				new BreakfastMappedItems(
-						userManagement.findUserByUserAccount(userAccount.get().getId()).get(),
-						form);
+		
+		User user = userManagement.findUserByUserAccount(userAccount.get().getId()).get();
+		Optional<Company> company = userManagement.findCompany(user.getId());
+		LocalDateTime startDate = LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.of(0, 0));
+		LocalDateTime endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.of(0, 0));
+		
+		BreakfastMappedItems mbItem = new BreakfastMappedItems(user,startDate,endDate,form);
 		 
 		mampfCart.addToCart(mbItem,Quantity.of(mbItem.getAmount()));
-
+		mampfCart.updateMBCart(startDate, endDate);
+		
 		return "redirect:/cart";
 	}
 
@@ -266,18 +264,18 @@ public class OrderController {
 		}
 
 		for (Item.Domain domain: form.getDomains()){
-			if(!form.domainsWithoutForm.contains(domain.name()) && 
+			if(!CheckoutForm.domainsWithoutForm.contains(domain.name()) && 
 				form.getStartDateTime(domain) != null && 
 				form.getStartDateTime(domain).isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
 
 				result.rejectValue("allStartDates["+domain.name()+"]", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
 			}
 		}
-		
-		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
+		mampfCart.updateCart(form);
+		Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
 		Map<Item.Domain, List<String>> validations = new HashMap<>();
 		if(!result.hasErrors()) {
-			validations = orderManager.validateCarts(carts, form);
+			validations = orderManager.validateCarts(carts);
 		}
 		
 		Map<String, List<String>> validationsStr = new HashMap<>();
@@ -323,23 +321,9 @@ public class OrderController {
 	}
 	
 	private String buyCart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
-		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
-		EnumMap<Domain, MonetaryAmount> totalPerDomain = new EnumMap<>(Domain.class);
-		for(Map.Entry<Domain, Cart> pair: domains.entrySet()) {
-			MonetaryAmount sum = Money.of(0, "EUR");
-			for(CartItem cartItem: domains.get(pair.getKey())) {
-				Item item = (Item) cartItem.getProduct();
-				if(item.getCategory().equals(Item.Category.STAFF)) {
-					sum = sum.add(cartItem.getPrice().multiply(form.getDurationOfDomain(pair.getKey().toString())));
-				}else{
-					sum = sum.add(cartItem.getPrice());
-				}
-			}
-			totalPerDomain.put(pair.getKey(), sum);
-		}
+		Map<Domain, DomainCart> domains = mampfCart.getDomainItems(domain);
 		form.setDomainChoosen(domain);
 		model.addAttribute("domains", domains);
-		model.addAttribute("totalPerDomain", totalPerDomain);
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
 		model.addAttribute("form", form);
 		return "buy_cart";

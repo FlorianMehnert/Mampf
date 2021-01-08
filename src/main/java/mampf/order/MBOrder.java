@@ -10,50 +10,49 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
+import org.hibernate.FetchMode;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.salespointframework.catalog.ProductIdentifier;
-import org.salespointframework.order.Order;
-import org.salespointframework.order.OrderLine;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
 import mampf.catalog.Item;
-import mampf.employee.Employee;
-import mampf.inventory.UniqueMampfItem;
 import mampf.order.OrderController.BreakfastMappedItems;
 
 @Entity
 public class MBOrder extends MampfOrder{
 	
 	@ElementCollection(fetch = FetchType.EAGER)
-	private List<DayOfWeek> weekDays;
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	private Set<DayOfWeek> weekDays;
 	private LocalTime time;
-	private LocalDateTime endDate;
 	
 	@SuppressWarnings("unused")
 	public MBOrder() {}
 	public MBOrder(UserAccount account,
  				   PaymentMethod paymentMethod,
+ 				   LocalDateTime startDate, LocalDateTime endDate,
 				   BreakfastMappedItems bfItem) {
-		super(account, paymentMethod,Item.Domain.MOBILE_BREAKFAST,bfItem.getStartDate(),bfItem.getAdress());
-		this.endDate = bfItem.getEndDate();
+		super(account, paymentMethod,Item.Domain.MOBILE_BREAKFAST,startDate, endDate, bfItem.getAdress());
 		this.time = bfItem.getBreakfastTime();
-		this.weekDays = bfItem.getWeekDays();
+		this.weekDays = bfItem.getWeekDays().stream().collect(Collectors.toSet());
 	}
 	
 	public static Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, 
 														   LocalDateTime toDate,
 														   LocalDateTime startDate, 
 														   LocalDateTime endDate,
-														   List<DayOfWeek> weekDays,
+														   Set<DayOfWeek> weekDays,
 														   LocalTime time,
 														   List<ProductIdentifier> orderLinesProductIds){
 		Map<ProductIdentifier,Quantity> res = new HashMap<>();
@@ -130,11 +129,6 @@ public class MBOrder extends MampfOrder{
 	}
 	
 	//impl.:
-	public LocalDateTime getEndDate() {
-		return endDate;
-	}
-	
-	//impl.:
 	public String getDescription() {
 		return "Bestellung für Mobile Breakfast: je"+weekDays.toString()+" gegen "+time.toString()+" Uhr";
 	}
@@ -142,7 +136,7 @@ public class MBOrder extends MampfOrder{
 	LocalTime getTime() {
 		return time;
 	}
-	List<DayOfWeek> getWeekDays() {
+	Set<DayOfWeek> getWeekDays() {
 		return weekDays;
 	}
 	

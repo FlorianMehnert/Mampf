@@ -1,47 +1,63 @@
 package mampf.order;
 
 import mampf.catalog.Item;
+import mampf.catalog.StaffItem;
 import mampf.employee.Employee;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
+import javax.money.MonetaryAmount;
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
 
+import org.javamoney.moneta.Money;
+import org.salespointframework.catalog.Product;
 import org.salespointframework.catalog.ProductIdentifier;
-import org.salespointframework.order.Order;
 import org.salespointframework.order.OrderLine;
-import org.salespointframework.payment.Cash;
-import org.salespointframework.payment.Cheque;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.quantity.Quantity;
 
 @Entity
 public class EventOrder extends MampfOrder {
-	private LocalDateTime endDateTime;
+	
+	public static final Predicate<Product> productHasPrizePerHour = p->p instanceof StaffItem;
+	
+	public static MonetaryAmount calcPrizePerHour(LocalDateTime fromDate,
+												  LocalDateTime toDate, 
+												  MonetaryAmount prizePerHour) {
+		long diff = ChronoUnit.MINUTES.between(fromDate, toDate);
+		if(diff < 1) {
+			return Money.of(0, "EUR");
+		} 
+		return prizePerHour.abs().multiply(Math.ceil(((double)diff)/ChronoUnit.HOURS.getDuration().toMinutes()));		
+	}
 
 
 	@ManyToMany(cascade = CascadeType.MERGE)
 	private List<Employee> employees = new ArrayList<>();
-
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	private List<ProductIdentifier> productsWithPrizePerHour = new ArrayList<>();
+	
 	@SuppressWarnings("unused")
 	private EventOrder() {}
 	public EventOrder(UserAccount account,
 					  PaymentMethod paymentMethod,
 					  Item.Domain domain,
 					  LocalDateTime startDate,
-					  LocalDateTime endDateTime,
+					  LocalDateTime endDate,
 					  String adress) {
-		super(account, paymentMethod,domain,startDate,adress);
-		this.endDateTime = endDateTime;
+		super(account, paymentMethod,domain,startDate,endDate,adress);
 	}
 	
 	//impl.:
@@ -56,10 +72,6 @@ public class EventOrder extends MampfOrder {
 		return res;
 	}
 	//impl.:
-	public LocalDateTime getEndDate() {
-		return endDateTime;
-	}
-	//impl.:
 	public String getDescription() {
 		return "Bestellung für ein Event";
 	}
@@ -69,14 +81,46 @@ public class EventOrder extends MampfOrder {
 		employees.add(employee);
 	}
 
-	
+	@Override
 	@ManyToMany(cascade = CascadeType.MERGE)
 	public List<Employee> getEmployees() {
 		return employees;
 	}
 	
-
 	
+	@Override 
+	public MonetaryAmount getTotal() {
+		Money total = Money.of(0, "EUR"); 
+		for(OrderLine orderLine: getOrderLines()) {
+			if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier())) {
+				total=total.add(
+				EventOrder.calcPrizePerHour(getStartDate(), getEndDate(),
+				orderLine.getPrice()	
+				)); 
+			}
+			else{
+				total=total.add(orderLine.getPrice());
+			}
+		}	
+		
+		return total;
+	}
+	
+	@Override
+	public OrderLine addOrderLine(Product product, Quantity quantity) {
+		if(productHasPrizePerHour.test(product)) {
+			productsWithPrizePerHour.add(product.getId());
+		}
+		return super.addOrderLine(product, quantity);
+	}
+	
+	@Override
+	public void remove(OrderLine orderLine) {
+		if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier())) {
+			productsWithPrizePerHour.remove(orderLine.getProductIdentifier());
+		}
+		super.remove(orderLine);
+	}
 	
 	/*@Override
 	public String toString() {
