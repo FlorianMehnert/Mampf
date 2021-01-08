@@ -1,29 +1,27 @@
 package mampf.user;
 
-import mampf.catalog.CatalogController;
-import mampf.catalog.Item;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.Errors;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.hamcrest.CoreMatchers.endsWith;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerIntegrationTest {
+class UserControllerIntegrationTest {
 	@Autowired
 	UserController userController;
 	@Autowired
@@ -73,7 +71,6 @@ public class UserControllerIntegrationTest {
 
 		mvc.perform(post("/register")
 				.params(map))
-				.andDo(print())
 				.andExpect(view().name("register"))
 				.andExpect(model().attributeHasFieldErrorCode("form", "accessCode", "RegistrationForm.accessCode.NotEmpty"));
 
@@ -96,7 +93,6 @@ public class UserControllerIntegrationTest {
 
 		mvc.perform(post("/register")
 				.params(map))
-				.andDo(print())
 				.andExpect(view().name("register"))
 				.andExpect(model().attributeHasFieldErrorCode("form", "username", "RegistrationForm.username.exists"));
 
@@ -120,7 +116,6 @@ public class UserControllerIntegrationTest {
 
 		mvc.perform(post("/register")
 				.params(map))
-				.andDo(print())
 				.andExpect(view().name("redirect:/"));
 
 	}
@@ -142,16 +137,68 @@ public class UserControllerIntegrationTest {
 
 		mvc.perform(post("/register")
 				.params(map))
-				.andDo(print())
 				.andExpect(view().name("register"))
 				.andExpect(model().attributeHasFieldErrorCode("form", "email", "RegistrationForm.email.exists"));
 
 	}
 
 	@Test
-	public void testGetAllUsersAsBoss() throws Exception{
-		mvc.perform(get("/users"))
-				.andExpect(model().size((int) userManagement.findAll().stream().count()));
+	void testGetAllUsersAsBoss() throws Exception{
+		mvc.perform(get("/users").with(user("hansWurst").roles("BOSS")))
+				.andExpect(view().name("users"))
+				.andExpect(model().attribute("pairs", Matchers.hasSize((int)userManagement.findAll().stream().count())));
+	}
+
+	@Test
+	void testGetProfile() throws Exception{
+		Optional<User> user = userManagement.findUserByUsername("hans");
+
+		assertThat(user).isPresent();
+
+		MvcResult result = mvc.perform(get("/userDetails/").with(user("hans").roles("INDIVIDUAL")))
+				.andExpect(view().name("userDetails"))
+				.andReturn();
+
+		assertThat(result.getModelAndView().getModel().get("user").toString()).hasToString(user.get().toString());
+	}
+
+	@Test
+	void testGetProfileAsBoss() throws Exception{
+
+		Optional<User> user = userManagement.findUserByUsername("hans");
+
+		assertThat(user).isPresent();
+
+		MvcResult result = mvc.perform(get("/userDetailsAsBoss/"+user.get().getId()).with(user("hansWurst").roles("BOSS")))
+				.andExpect(view().name("userDetails"))
+				.andReturn();
+
+		assertThat(result.getModelAndView().getModel().get("user").toString()).hasToString(user.get().toString());
+	}
+
+	@Test
+	void testDenyAuthenticationAndFurtherLogin() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("username", "hans");
+		params.add("password", "123");
+		mvc.perform(post("/login").params(params))
+				.andExpect(redirectedUrl("/"));
+
+		Optional<User> user = userManagement.findUserByUsername("hans");
+
+		assertThat(user).isPresent();
+
+		mvc.perform(post("/deleteUser")
+					.param("userId", String.valueOf(user.get().getId()))
+					.with(user("hansWurst").roles("BOSS")))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/users"));
+
+		userManagement.denyAuthenticationById(user.get().getId());
+
+		mvc.perform(post("/login").params(params))
+				.andExpect(redirectedUrl("/login?error"));
+
 	}
 
 }

@@ -79,11 +79,10 @@ public class UserManagement {
 	}
 
 	public Optional<Company> findCompany(String accessCode) {
-		Iterator<User> userIterator = users.findAll().iterator();
-		while (userIterator.hasNext()) {
-			User user = userIterator.next();
-			if(user.getCompany().isPresent() && user.getCompany().get().getAccessCode().equals(accessCode)) {
-				return user.getCompany();
+		for (User user : users.findAll()) {
+			Optional<Company> company = user.getCompany();
+			if (company.isPresent() && company.get().getAccessCode().equals(accessCode)) {
+				return company;
 			}
 		}
 		return Optional.empty();
@@ -91,18 +90,16 @@ public class UserManagement {
 	/*
 	 * better save companys instead of looping through user to get the company the user is in
 	 */
-	public Optional<Company> findCompany(long UserId) {
-		Iterator<User> userIterator = users.findAll().iterator();
-		while (userIterator.hasNext()) {
-			User user = userIterator.next();
+	public Optional<Company> findCompany(long userId) {
+		for (User user : users.findAll()) {
 			Optional<Company> company = user.getCompany();
-			if(company.isEmpty()) {
+			if (company.isEmpty()) {
 				continue;
 			}
-			if(company.get().getEmployees().stream().anyMatch(e->e.getId()==UserId)) {
+			if (company.get().getEmployees().stream().anyMatch(e -> e.getId() == userId)) {
 				return company;
 			}
-			
+
 		}
 		return Optional.empty();
 	}
@@ -160,6 +157,7 @@ public class UserManagement {
 	public UserRepository getUserRepos() {
 		return users;
 	}
+
 	public void denyAuthenticationById(long userId) {
 		Optional<User> optionalUser= this.findUserById(userId);
 		if(optionalUser.isPresent()) {
