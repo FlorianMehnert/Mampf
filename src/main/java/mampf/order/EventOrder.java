@@ -43,11 +43,12 @@ public class EventOrder extends MampfOrder {
 					  Item.Domain domain,
 					  LocalDateTime startDate,
 					  String adress) {
-		super(account, paymentMethod,domain,startDate,adress);
+		super(account, paymentMethod,domain,startDate,getEndDate(startDate),adress);
 	}
 	
 	//impl.:
-	Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
+	@Override
+	public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
 		//if colliding return everything:
 		Map<ProductIdentifier,Quantity> res = new HashMap<>();
 		if(hasTimeOverlap(fromDate, toDate)) {
@@ -57,10 +58,7 @@ public class EventOrder extends MampfOrder {
 		}
 		return res;
 	}
-	//impl.:
-	public LocalDateTime getEndDate() {
-		return getEndDate(getStartDate());
-	}
+	
 	//impl.:
 	public String getDescription() {
 		return "Bestellung für ein Event";

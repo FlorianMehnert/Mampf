@@ -278,30 +278,47 @@ public class MampfOrderManager {
 	}
 	
 	/**
-	 * creates and returns a list of every Order of a useraccount 
+	 * creates and returns a list of every COMPLETED Order of a useraccount 
 	 * @param account
 	 * @return
 	 */
 	public List<MampfOrder> findByUserAcc(UserAccount account) {
 		List<MampfOrder> res = new ArrayList<>();
 		for (MampfOrder order : orderManagement.findBy(account)) {
+			if(order.isCompleted())
 			res.add(order);
 		}
 		return res;
 	}
-	//TODO: not working...
-	public void deleteAll() {
-		List<MampfOrder> orders = findAll();
-		for(MampfOrder order: orders) {
-			orderManagement.delete(order);
+	/**
+	 * soft-delete: 
+	 * changes order Status to CANCELED
+	 */
+	public void deleteOrder(MampfOrder order) {
+		for(MampfOrder order_: findAll()) {
+			if(order.equals(order_)) {
+				if(order_ instanceof EventOrder) {
+					List<Employee> assignedEmployees = order.getEmployees();
+					assignedEmployees.forEach(e->e.removeBookedOrder((EventOrder)order));
+					assignedEmployees.clear();
+				}
+				
+				orderManagement.cancelOrder(order_, "delete");
+				return;
+			}
+			
 		}
 	}
 	public Optional<MampfOrder> findById(String orderId){
 		return orderManagement.findAll(Pageable.unpaged()).filter(order->order.getId().getIdentifier().equals(orderId)).get().findFirst();
 	}
 	public List<MampfOrder> findAll() {
-		return orderManagement.findAll(Pageable.unpaged()).getContent();
+		return orderManagement.findBy(OrderStatus.COMPLETED).toList();
 	}
+	/**
+	 * only 
+	 * @return
+	 */
 	public OrderManagement<MampfOrder> getOrderManagement() {
 		return orderManagement;
 	}

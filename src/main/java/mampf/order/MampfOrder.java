@@ -22,12 +22,12 @@ import mampf.catalog.Item;
 import mampf.employee.Employee;
 import mampf.inventory.UniqueMampfItem;
 
-@MappedSuperclass
-public abstract class MampfOrder extends Order implements Comparable<MampfOrder>{
+//@MappedSuperclass
+public class MampfOrder extends Order implements Comparable<MampfOrder>{
 	
 	//basic components of a order:
 	private Item.Domain domain;
-	private LocalDateTime startDate;
+	private LocalDateTime startDate,endDate;
 	private String adress;
 	
 	@SuppressWarnings("unused")
@@ -35,11 +35,12 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	public MampfOrder(UserAccount account, 
 					  PaymentMethod paymentMethod,
 					  Item.Domain domain, 
-					  LocalDateTime startDate, 
+					  LocalDateTime startDate,LocalDateTime endDate, 
 					  String adress) {
 		super(account, paymentMethod);
 		this.domain = domain;
 		this.startDate = startDate;
+		this.endDate = endDate;
 		this.adress = adress;
 	}
 	
@@ -51,11 +52,11 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	}
 	
 	//needed items for time span
-	abstract Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate);
+	/*abstract */public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){return null;}
 
-	abstract LocalDateTime getEndDate();
+	/*abstract*/public LocalDateTime getEndDate() {return endDate;}
 	
-	abstract String getDescription();
+	/*abstract*/public String getDescription() {return null;}
 	
 	public boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate) {
 		return hasTimeOverlap(startDate,endDate,getStartDate(),getEndDate());
@@ -68,6 +69,12 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 			   d.getStartDate().equals(startDate); 
 	}
 	*/
+	public void setStartDate(LocalDateTime startDate) {
+		this.startDate = startDate;
+	}
+	public void setEndDate(LocalDateTime endDate) {
+		this.endDate = endDate;
+	}
 	public LocalDateTime getStartDate(){
 		return startDate;
 	}
