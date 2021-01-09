@@ -29,21 +29,26 @@
 
       <div th:each="domain : ${domains}">
         <br>
-        <h3 th:text="${domain.key}"></h3>
+        <h3 th:text="${T(mampf.Util).renderDomainName('__${domain.key}__')}"></h3>
 
         <table class="table table-hover">
           <thead class="thead-light">
             <tr>
               <th>Titel</th>
+              <th>Kategorie</th>
               <th>Anzahl</th>
               <th>Preis</th>
               <th></th>
             </tr>
           </thead>
-          <tbody th:remove="all-but-first">
-            <div th:with="cart=${domain.value}">
-              <tr th:each="item : ${domain.value} ">
-                <td th:text="${item.productName}">Last Action Hero</td>
+          <tbody th:with="cart=${domain.value}">
+            
+              <tr th:each="item : ${cart} ">
+                <td width="35%">
+                	<p th:text="${item.productName}"></p>
+                	<div class="mmpf-cart-item-desc" th:text="${item.product.description}"></div>
+                </td>
+                <td th:text="${T(mampf.Util).renderDomainName('__${item.product.category}__')}">Kategorie</td>
                 <td>
                   <form class="form-inline" method="post" th:action="@{/cart/setNewAmount}">
 
@@ -81,14 +86,17 @@
                   </form>
                 </td>
               </tr>
-
-            </div>
+			  <tr>
+				<td>Gesamt</td>
+				<td></td>
+				<td></td>
+				<td><strong th:text="${{domain.value.price}}"></strong></td>
+				<td></td>
+			  </tr>
           </tbody>
         </table>
         <div class="mb-4 container">
           <div class="row">
-            <div th:text="${{domain.value.price}}" class="col">
-            </div>
             <div class="col float-right">
               <form class="form-inline justify-content-end" method="get" th:action="@{/pay/{domain}(domain=${domain.key})}">
                 <button class="btn btn-primary" type="submit">Kaufen</button>
@@ -101,7 +109,7 @@
       <div class="container">
         <div class="row pb-3">
           <div class="col">
-            Gesamtpreis:<span th:text="${{total}}"></span>
+            <h3>Gesamtpreis: <span th:text="${{total}}"></span>
           </div>
         </div>
         <div class="row">

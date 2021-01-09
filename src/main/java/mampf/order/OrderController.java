@@ -54,7 +54,6 @@ public class OrderController {
 	
 	private UserManagement userManagement;
 	private final MampfOrderManager orderManager;
-	private final Inventory inventory;
 	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 
 
@@ -62,7 +61,7 @@ public class OrderController {
 		
 		private final LocalTime breakfastTime;
 		private final LocalDateTime startDate,endDate; 
-		private final List<DayOfWeek> weekDays;
+		private List<DayOfWeek> weekDays = new ArrayList<>();
 		private final String adress;
 		private final BreakfastItem beverage,dish;
 		private final long amount;
@@ -70,20 +69,23 @@ public class OrderController {
 		public BreakfastMappedItems(User user,
 									MobileBreakfastForm form) {
 			
-			super("Mobile Breakfast \nChoice: " +
-	 			  form.getBeverage().getName() +", "+
+			super("Mobile Breakfast für " +
+	 			  form.getBeverage().getName() +" und "+
 	 			  form.getDish().getName(),
 	 			  BreakfastItem.BREAKFAST_PRICE, 
 	 			  Item.Domain.MOBILE_BREAKFAST, 
-	 			  Item.Category.FOOD, 
-	 			  "Employee Choice of beverage and dish");
+	 			  Item.Category.FOOD, "temp");
 			//get weekdays:
-			//TODO: save risky .valueOf() function
-			weekDays = form.getDays().keySet().stream().
+			List<String> days =form.getDays().keySet().stream().
 					   filter(k->form.getDays().get(k).booleanValue()). //get all marked weekdays
-					   map(k->DayOfWeek.valueOf(k.toUpperCase())). //convert string to weekday
+					   //map(k->DayOfWeek.valueOf(k.toUpperCase())). //convert string to weekday
+					   map(String::toUpperCase). 
 					   collect(Collectors.toList()); 		
-			
+			for(DayOfWeek weekDay: DayOfWeek.values()) {
+				if(days.contains(weekDay.name())) {
+					weekDays.add(weekDay);
+				}
+			}
 			//get breakfasttime:
 			breakfastTime = form.getTime();
 					
@@ -91,7 +93,7 @@ public class OrderController {
 			Optional<Company> company = userManagement.findCompany(user.getId());
 			startDate = LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.of(0, 0));
 			endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.of(0, 0));
-			setName(getName()+"\nFrom "+startDate.toLocalDate()+" to "+endDate.toLocalDate()+"\nEach: "+weekDays);
+			setDescription("vom "+startDate.toLocalDate()+" bis "+endDate.toLocalDate()+"je: "+weekDays+" um "+ breakfastTime);
 			Optional<User> boss = userManagement.findUserById(company.get().getBossId());
 			if(boss.isPresent()) {
 				adress=boss.get().getAddress();
@@ -144,10 +146,9 @@ public class OrderController {
 		}
 	}
 
-	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement) {
 		this.orderManager = orderManager;
 		this.userManagement = userManagement;
-		this.inventory = inventory;
 	}
 
 /* CART */
@@ -164,7 +165,7 @@ public class OrderController {
 	public String addItem(@RequestParam("pid") Item item,
 						  @RequestParam("number") int number,
 						  @ModelAttribute("mampfCart") MampfCart mampfCart) {
-		if(number < 1) {
+		if(number >0) {
 			mampfCart.addToCart(item, Quantity.of(number));
 		}
 		return "redirect:/catalog/" + item.getDomain().toString().toLowerCase();
