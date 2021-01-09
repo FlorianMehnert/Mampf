@@ -22,12 +22,12 @@ import mampf.catalog.Item;
 import mampf.employee.Employee;
 import mampf.inventory.UniqueMampfItem;
 
-//@MappedSuperclass
-public class MampfOrder extends Order implements Comparable<MampfOrder>{
+@MappedSuperclass
+public abstract class MampfOrder extends Order implements Comparable<MampfOrder>{
 	
 	//basic components of a order:
 	private Item.Domain domain;
-	private LocalDateTime startDate,endDate;
+	private LocalDateTime startDate;
 	private String adress;
 	
 	@SuppressWarnings("unused")
@@ -35,12 +35,11 @@ public class MampfOrder extends Order implements Comparable<MampfOrder>{
 	public MampfOrder(UserAccount account, 
 					  PaymentMethod paymentMethod,
 					  Item.Domain domain, 
-					  LocalDateTime startDate,LocalDateTime endDate, 
+					  LocalDateTime startDate, 
 					  String adress) {
 		super(account, paymentMethod);
 		this.domain = domain;
 		this.startDate = startDate;
-		this.endDate = endDate;
 		this.adress = adress;
 	}
 	
@@ -52,11 +51,11 @@ public class MampfOrder extends Order implements Comparable<MampfOrder>{
 	}
 	
 	//needed items for time span
-	/*abstract */public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){return null;}
+	abstract Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate);
 
-	/*abstract*/public LocalDateTime getEndDate() {return endDate;}
+	abstract LocalDateTime getEndDate();
 	
-	/*abstract*/public String getDescription() {return null;}
+	abstract String getDescription();
 	
 	public boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate) {
 		return hasTimeOverlap(startDate,endDate,getStartDate(),getEndDate());
@@ -69,12 +68,6 @@ public class MampfOrder extends Order implements Comparable<MampfOrder>{
 			   d.getStartDate().equals(startDate); 
 	}
 	*/
-	public void setStartDate(LocalDateTime startDate) {
-		this.startDate = startDate;
-	}
-	public void setEndDate(LocalDateTime endDate) {
-		this.endDate = endDate;
-	}
 	public LocalDateTime getStartDate(){
 		return startDate;
 	}

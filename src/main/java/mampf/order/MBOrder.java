@@ -43,7 +43,8 @@ public class MBOrder extends MampfOrder{
 	public MBOrder(UserAccount account,
  				   PaymentMethod paymentMethod,
 				   BreakfastMappedItems bfItem) {
-		super(account, paymentMethod,Item.Domain.MOBILE_BREAKFAST,bfItem.getStartDate(),bfItem.getEndDate(),bfItem.getAdress());
+		super(account, paymentMethod,Item.Domain.MOBILE_BREAKFAST,bfItem.getStartDate(),bfItem.getAdress());
+		this.endDate = bfItem.getEndDate();
 		this.time = bfItem.getBreakfastTime();
 		this.weekDays = bfItem.getWeekDays();
 	}
@@ -116,8 +117,7 @@ public class MBOrder extends MampfOrder{
 	}
 	
 	//impl.:
-	@Override
-	public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
+	Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
 		return getItems(fromDate,
 						toDate,
 						getStartDate(),
@@ -127,6 +127,11 @@ public class MBOrder extends MampfOrder{
 							map(oL->oL.getProductIdentifier()).
 							collect(Collectors.toList()));
 		
+	}
+	
+	//impl.:
+	public LocalDateTime getEndDate() {
+		return endDate;
 	}
 	
 	//impl.:

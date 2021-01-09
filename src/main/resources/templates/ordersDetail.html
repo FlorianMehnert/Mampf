@@ -81,6 +81,10 @@
         </tbody>
       </table>
     </div>
+	
+	<form sec:authorize="hasRole('BOSS')" th:method="get" th:action="@{/orders/delete/{id}(id=${order.getId().getIdentifier()})}">
+	<button type="submit" class="btn btn-outline-primary">Bestellung löschen</button>
+	</form>
   </div>
 </body>
 

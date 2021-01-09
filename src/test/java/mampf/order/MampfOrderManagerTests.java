@@ -304,8 +304,8 @@ public class MampfOrderManagerTests {
 		initContext();
 		initValidCart();
 		orders = orderManager.createOrders(cart.getDomainItems("_"), form, user);
-		orderManager.deleteOrder(orders.remove(0));
-		
+		//orderManager.deleteOrder(orders.remove(0));
+		orderManager.getOrderManagement().delete(orders.remove(0));
 		List<MampfOrder> delOrders = orderManager.getOrderManagement().findBy(OrderStatus.CANCELLED).toList();
 		int a=1;
 	}

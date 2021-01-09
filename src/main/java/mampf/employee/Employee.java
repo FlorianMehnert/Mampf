@@ -20,7 +20,7 @@ public class Employee {
   }
   private String name;
   
-  @ManyToMany
+  @ManyToMany(mappedBy = "employees")
   private List<EventOrder> booked;
   private Role role;
 

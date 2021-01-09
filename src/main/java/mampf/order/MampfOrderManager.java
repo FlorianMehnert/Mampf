@@ -285,25 +285,20 @@ public class MampfOrderManager {
 	public List<MampfOrder> findByUserAcc(UserAccount account) {
 		List<MampfOrder> res = new ArrayList<>();
 		for (MampfOrder order : orderManagement.findBy(account)) {
-			if(order.isCompleted())
 			res.add(order);
 		}
 		return res;
 	}
 	/**
-	 * soft-delete: 
-	 * changes order Status to CANCELED
+	 * deletes order
 	 */
 	public void deleteOrder(MampfOrder order) {
 		for(MampfOrder order_: findAll()) {
 			if(order.equals(order_)) {
 				if(order_ instanceof EventOrder) {
-					List<Employee> assignedEmployees = order.getEmployees();
-					assignedEmployees.forEach(e->e.removeBookedOrder((EventOrder)order));
-					assignedEmployees.clear();
+					order.getEmployees().forEach(e->e.removeBookedOrder((EventOrder)order));
 				}
-				
-				orderManagement.cancelOrder(order_, "delete");
+				orderManagement.delete(order_);
 				return;
 			}
 			
