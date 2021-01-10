@@ -114,7 +114,7 @@ public class MampfOrderManager {
 			
 			//get Items:
 			List<UniqueMampfItem> inventorySnapshot = getFreeItems(startDate, endDate);
-			Map<String,Integer> personalLeft = new HashMap<>();
+			Map<Employee.Role,Integer> personalLeft = new HashMap<>();
 			if(hasStaff(cart)) {
 				personalLeft = getPersonalAmount(startDate, endDate);
 			}
@@ -279,7 +279,7 @@ public class MampfOrderManager {
 	}
 	
 	/**
-	 * creates and returns a list of every Order of a useraccount 
+	 * creates and returns a list of every COMPLETED Order of a useraccount
 	 * @param account
 	 * @return
 	 */
@@ -290,19 +290,31 @@ public class MampfOrderManager {
 		}
 		return res;
 	}
-	//TODO: not working...
-	public void deleteAll() {
-		List<MampfOrder> orders = findAll();
-		for(MampfOrder order: orders) {
-			orderManagement.delete(order);
+	/**
+	 * deletes order
+	 */
+	public void deleteOrder(MampfOrder order) {
+		for(MampfOrder order_: findAll()) {
+			if(order.equals(order_)) {
+				if(order_ instanceof EventOrder) {
+					order.getEmployees().forEach(e->e.removeBookedOrder((EventOrder)order));
+				}
+				orderManagement.delete(order_);
+				return;
+			}
+
 		}
 	}
 	public Optional<MampfOrder> findById(String orderId){
 		return orderManagement.findAll(Pageable.unpaged()).filter(order->order.getId().getIdentifier().equals(orderId)).get().findFirst();
 	}
 	public List<MampfOrder> findAll() {
-		return orderManagement.findAll(Pageable.unpaged()).getContent();
+		return orderManagement.findBy(OrderStatus.COMPLETED).toList();
 	}
+	/**
+	 * only unit testing purpose
+	 * @return
+	 */
 	public OrderManagement<MampfOrder> getOrderManagement() {
 		return orderManagement;
 	}
@@ -329,21 +341,21 @@ public class MampfOrderManager {
 		
 	}
 	
-	private Map<String, Integer> getPersonalAmount(LocalDateTime startDate, LocalDateTime endDate){
-		Map<String, Integer> personalLeftSize = new HashMap<>();
-		for(Map.Entry<String, List<Employee>> entry : getPersonal(startDate,endDate).entrySet()) {
+	private Map<Employee.Role, Integer> getPersonalAmount(LocalDateTime startDate, LocalDateTime endDate){
+		Map<Employee.Role, Integer> personalLeftSize = new HashMap<>();
+		for(Map.Entry<Employee.Role, List<Employee>> entry : getPersonal(startDate,endDate).entrySet()) {
 			personalLeftSize.put(entry.getKey(), entry.getValue().size());
 		}
 		return personalLeftSize;
 	}
 	
-	private Map<String, List<Employee>> getPersonal(LocalDateTime startDate, LocalDateTime endDate){
-		Map<String, List<Employee>> personalLeft = new HashMap<>();
+	private Map<Employee.Role, List<Employee>> getPersonal(LocalDateTime startDate, LocalDateTime endDate){
+		Map<Employee.Role, List<Employee>> personalLeft = new HashMap<>();
 
 		for(Employee.Role role: Employee.Role.values()) {
 			List<Employee> xcy = employeeManagement.
 					 getFreeEmployees(startDate,endDate,role);
-			personalLeft.put(role.toString(), xcy);
+			personalLeft.put(role, xcy);
 
 		}
 		return personalLeft;
@@ -369,7 +381,7 @@ public class MampfOrderManager {
 	
 	//checkForAmount returns an empty Optional if the checked quantity is valid
 	private Optional<UniqueMampfItem> checkForAmount(List<UniqueMampfItem> inventorySnapshot,
-													 Map<String,Integer> personalLeft,
+													 Map<Employee.Role,Integer> personalLeft,
 									  				 CartItem checkitem) {
 		
 		Optional<UniqueMampfItem> inventoryItem =
@@ -384,9 +396,9 @@ public class MampfOrderManager {
 			if(catalogItem.getCategory().equals(Category.STAFF)) {
 				//personal: there is one resource at all (therefore check and update personalLeft)
 				
-				String staffType = ((StaffItem)catalogItem).getType().toString();
+				Employee.Role staffType = ((StaffItem)catalogItem).getType();
 				Integer amountLeft = personalLeft.get(staffType);
-				
+				//reduce till 0 if possible:
 				if(checkitem.getQuantity().isGreaterThan(Quantity.of(amountLeft))) {
 					return Optional.of(new UniqueMampfItem(catalogItem,Quantity.of(amountLeft)));
 				}else {
@@ -404,7 +416,7 @@ public class MampfOrderManager {
 	}
 	
 	private void setPersonalBooked(EventOrder order,
-								   Map<String, List<Employee>> personalLeft) {
+								   Map<Employee.Role, List<Employee>> personalLeft) {
 		Item item;
 		Quantity itemQuantity;
 		
@@ -417,14 +429,9 @@ public class MampfOrderManager {
 			itemQuantity = orderline.getQuantity();
 			
 			if(item.getCategory().equals(Item.Category.STAFF)){
-				StaffItem personalItem = ((StaffItem)item);
-				String personalItemType = personalItem.getType().toString();
-				
-				List<Employee> freeStaff = personalLeft.get(personalItemType);
-				
-				int personalAmount = itemQuantity.getAmount().intValue();
+				List<Employee> freeStaff = personalLeft.get(((StaffItem)item).getType());
 				Employee employee;
-				for(int i = 0; i < personalAmount; i++) {
+				for(int i = 0; i < itemQuantity.getAmount().intValue(); i++) {
 					if(!freeStaff.isEmpty()){
 						employee = freeStaff.remove(0);
 						employee.setBooked(order);
@@ -453,7 +460,6 @@ public class MampfOrderManager {
 	} 
 	
 	private void updateValidations(Map<Item.Domain, List<String>> validations,
-
 								   Item.Domain domain, 
 								   String state) {
 		if(validations.containsKey(domain)) {

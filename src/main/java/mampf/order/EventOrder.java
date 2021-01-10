@@ -20,6 +20,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.javamoney.moneta.Money;
@@ -47,10 +48,9 @@ public class EventOrder extends MampfOrder {
 		} 
 		return prizePerHour.abs().multiply(Math.ceil(((double)diff)/ChronoUnit.HOURS.getDuration().toMinutes()));		
 	}
-
-
-
+  
 	@ManyToMany(cascade = CascadeType.MERGE)
+
 	private List<Employee> employees = new ArrayList<>();
 	
 	@ElementCollection(fetch = FetchType.EAGER)

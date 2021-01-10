@@ -31,6 +31,7 @@ import mampf.catalog.BreakfastItem;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
 
+import org.salespointframework.order.OrderStatus;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -114,7 +115,11 @@ public class MampfOrderManagerTests {
 		 * Order-Stock
 		 * is just empty
 		 */
-		//orderManager.deleteAll();
+		//error: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: mampf.order.EventOrder.employees, could not initialize proxy - no Session
+		/*orderManager.findAll().forEach(
+			order->{orderManager.deleteOrder(order);}
+		);*/ 
+		
 	}
 
 	CheckoutForm initForm() {
@@ -169,7 +174,7 @@ public class MampfOrderManagerTests {
 				new MobileBreakfastForm(
 						(BreakfastItem) d.stream().filter(p -> p.getName().equals("Kuchen")).findFirst().get(),
 						(BreakfastItem) d.stream().filter(p -> p.getName().equals("Tee")).findFirst().get(),
-						"true", "true", "true", "true", "true", LocalTime.of(7, 30).format(DateTimeFormatter.ISO_LOCAL_TIME)), cart);
+						"true", "true", "true", "true", "true", LocalTime.of(7, 30).format(DateTimeFormatter.ISO_LOCAL_TIME)), cart, null);
 
 		d = catalog.findByDomain(Domain.PARTYSERVICE);
 		orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.SPECIAL_OFFERS) && p.getName().equals("Sushi Abend")).findFirst().get(), 3, cart);
@@ -252,6 +257,7 @@ public class MampfOrderManagerTests {
 		initValidCart();
 		orders = orderManager.createOrders(cart.getDomainItems("_"), form, user);
 		
+		
 		assert orders.size() == 4;
 		assert orders.stream().allMatch(o -> o.isCompleted());
 		order = orders.stream().filter(o->o.getDomain().equals(Item.Domain.EVENTCATERING)).findFirst().get();
@@ -297,10 +303,7 @@ public class MampfOrderManagerTests {
 		assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getOrderLines().toList().size() == 1);
 		
 
-
 	}
-
-	
 	
 }
 

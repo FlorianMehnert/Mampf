@@ -2,7 +2,6 @@ package mampf.order;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.LocalDate;
 import java.time.DayOfWeek;
 
 import java.time.Duration;
@@ -18,15 +17,10 @@ import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
 import mampf.order.MampfCart.DomainCart;
 import mampf.user.Company;
-import mampf.revenue.Gain;
-import mampf.revenue.Revenue;
-
 import mampf.user.User;
 import mampf.user.UserManagement;
-import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-import org.salespointframework.order.OrderIdentifier;
 
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
@@ -42,7 +36,7 @@ import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
 
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -54,7 +48,6 @@ public class OrderController {
 	private UserManagement userManagement;
 	private final MampfOrderManager orderManager;
 	private final Inventory inventory;
-	public final Revenue revenue;
 	public static final TemporalAmount delayForEarliestPossibleBookingDate = Duration.ofHours(5);
 
 
@@ -135,11 +128,10 @@ public class OrderController {
 		}
 	}
 
-	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory, Revenue revenue) {
+	public OrderController(MampfOrderManager orderManager, UserManagement userManagement, Inventory inventory) {
 		this.orderManager = orderManager;
 		this.userManagement = userManagement;
 		this.inventory = inventory;
-		this.revenue = revenue;
 	}
 
 	/* CART */
@@ -188,11 +180,11 @@ public class OrderController {
 	 * handles adding and removing the amount of a cartitem
 	 */
 	@PostMapping("cart/setNewAmount")
-	public String addCartItem(@RequestParam String cartitemId,
+	public String addCartItem(@RequestParam String cartItemId,
 							  @RequestParam int newAmount,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		CartItem cartItem = mampfCart.getCartItem(cartitemId);
+		CartItem cartItem = mampfCart.getCartItem(cartItemId);
 		if (cartItem != null) {
 			mampfCart.updateCart(cartItem, newAmount);
 		}
@@ -205,21 +197,28 @@ public class OrderController {
 	@PostMapping("/cart/add/mobile-breakfast")
 	public String orderMobileBreakfast(@LoggedIn Optional<UserAccount> userAccount,
 									   @Valid MobileBreakfastForm form,
-									   @ModelAttribute("mampfCart") MampfCart mampfCart) {
+									   @ModelAttribute("mampfCart") MampfCart mampfCart,
+									   RedirectAttributes redirectAttributes
+									   ) {
 		
 		String redirect = "redirect:/mobile-breakfast";
 		if (userAccount.isEmpty()) {
 			return "redirect:/login";
 		}
 		//ERRORS:
-		if(form.getBeverage() == null || form.getDish() == null) {
-			//TODO: MB error: choice invalid
-			
+		String error = "error";
+		if(form.getBeverage() == null) {
+			redirectAttributes.addFlashAttribute(error, "Kein Getränk ausgewählt");
 			return redirect;
 		}
+
+		if(form.getDish() == null){
+			redirectAttributes.addFlashAttribute(error, "Nichts zum Essen ausgewählt");
+			return redirect;
+		}
+
 		if(!orderManager.hasBookedMB(userAccount.get())) {
-			//TODO: MB error: not possible (was not booked)
-			
+			redirectAttributes.addFlashAttribute(error, "für diesen Monat wurde kein Mobile Breakfast bestellt");
 			return redirect;
 		}
 		//TODO: MB error: mb is already booked
@@ -313,7 +312,7 @@ public class OrderController {
 
 		if (result.hasErrors()) {
 			model.addAttribute("validations",validationsStr);
-			return buyCart(form.getDomainChoosen(), model,mampfCart, form);
+			return buyCart(form.getDomainChosen(), model,mampfCart, form);
 		}
 
 		orderManager.createOrders(carts, form,user.get());
@@ -337,6 +336,7 @@ public class OrderController {
 		Map<Domain, DomainCart> domains = mampfCart.getDomainItems(domain);
 		form.setDomainChoosen(domain);
 		model.addAttribute("domains", domains);
+
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
 		model.addAttribute("form", form);
 		return "buy_cart";
@@ -345,7 +345,7 @@ public class OrderController {
 /* ORDERS */
 
 	/**
-	 * lists orders ever for adminuser
+	 * lists every orders ever made for adminuser
 	 */
 	@GetMapping("/orders")
 	@PreAuthorize("hasRole('BOSS')")
@@ -354,8 +354,9 @@ public class OrderController {
 		model.addAttribute("stuff", getSortedOrders(Optional.empty(), Optional.empty()));
 		return "orders";
 	}
-
-	
+	/**
+	 * shows Order
+	 */
 	@GetMapping("/orders/detail/{orderId}")
 	public String editOrder(@PathVariable String orderId, Model model) {
 		
@@ -367,7 +368,6 @@ public class OrderController {
 		model.addAttribute("isMB", order.get() instanceof MBOrder);
 		return "ordersDetail";
 	}
-
 	/**
 	 * lists orders of a user
 	 */
@@ -379,6 +379,24 @@ public class OrderController {
 		
 		model.addAttribute("stuff", getSortedOrders(Optional.of(MampfOrder.comparatorSortByCreation), userAccount));
 		return "orders";
+	}
+	/**
+	 * boss: delete a order
+	 */
+	@PreAuthorize("hasRole('BOSS')")
+	//@DeleteMapping(value = "/orders/delete?id={orderId}")
+	@GetMapping("/orders/delete/{orderId}")
+	public String deleteOrder(@PathVariable Optional<String> orderId) {
+		String redirect="redirect:/";
+		if(orderId.isEmpty()) {
+			return redirect;
+		}
+		Optional<MampfOrder> order = orderManager.findById(orderId.get());
+		if(order.isEmpty()) {
+			return redirect;
+		}
+		orderManager.deleteOrder(order.get());
+		return "redirect:/orders";
 	}
 	
 	private Map<String,List<MampfOrder>> getSortedOrders(Optional<Comparator<MampfOrder>> comp, Optional<UserAccount> userAccount){

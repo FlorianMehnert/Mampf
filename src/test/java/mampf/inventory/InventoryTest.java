@@ -73,6 +73,7 @@ class InventoryTest {
 		return requestParams;
 	}
 
+	/*
 	@Test
 	void addItem() throws Exception {
 		UniqueMampfItem someItem = inventory.findAll().toList().get(0);
@@ -86,6 +87,7 @@ class InventoryTest {
 		boolean decrease = amountAfter.isGreaterThan(amountBefore);
 		assertTrue("the amount of the item added did not get reduced", decrease);
 	}
+	*/
 
 	@Test
 	void addFoodItem() throws Exception {

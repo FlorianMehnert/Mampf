@@ -78,16 +78,16 @@ public class UserDataInitializer implements DataInitializer {
 						"LosAngeles@example.com", UserRole.INDIVIDUAL.name(), "", "")//
 		).forEach(userManagement::createUser);
 
-		String accesscode = userManagement.findUserByUsername("dextermorgan").get().getCompany().get().getAccessCode();
+		String accessCode = userManagement.findUserByUsername("dextermorgan").get().getCompany().get().getAccessCode();
 		List.of(//
 				new RegistrationForm("tripster", "firstname", "lastname", password, "Burg Schreckenstein",
-						"taaaaaada@example.com", UserRole.EMPLOYEE.name(), "", accesscode),
+						"taaaaaada@example.com", UserRole.EMPLOYEE.name(), "", accessCode),
 				new RegistrationForm("booney", "firstname", "lastname", password, "Burg Schreckenstein",
-						"haha-es-geht-los@example.com", UserRole.EMPLOYEE.name(), "BroCompany", accesscode),
+						"haha-es-geht-los@example.com", UserRole.EMPLOYEE.name(), "BroCompany", accessCode),
 				new RegistrationForm("klabrovsky", "firstname", "lastname", password, "Burg Schreckenstein",
-						"test01@example.com", UserRole.EMPLOYEE.name(), "", accesscode),
+						"test01@example.com", UserRole.EMPLOYEE.name(), "", accessCode),
 				new RegistrationForm("mcdonald", "firstname", "lastname", password, "Burg Schreckenstein",
-						"abcdefg@example.com", UserRole.EMPLOYEE.name(), "", accesscode)//
+						"abcdefg@example.com", UserRole.EMPLOYEE.name(), "", accessCode)//
 		).forEach(userManagement::createUser);
 	}
 }
