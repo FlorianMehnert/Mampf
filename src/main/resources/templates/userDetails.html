@@ -75,9 +75,9 @@
             <td>Gebuchtes Frühstück</td>
             <td>
             	<form th:if="${user.company.get().canBookNewBreakfast()}" method="get" th:action="@{/bookBreakfast}">
-            		<button type="submit" class="btn btn-primary"> für den aktuellen/nächsten Monat buchen</button> 
+            		<button type="submit" th:text="'mobile breakfast ab: '+${user.company.get().getNextBreakfastDate()}+' buchen'"class="btn btn-primary"> für den aktuellen/nächsten Monat buchen</button> 
             	</form>
-            	<span th:if="${user.company.get().hasBreakfastDate()}" th:text="${'für den aktuellen Monat: '+user.company.get().getBreakfastDate().get()}"> </span>
+            	<span th:unless="${user.company.get().canBookNewBreakfast()}" th:text="${'aktueller Buchungstermin: '+user.company.get().getBreakfastDate().get()+'  bis zum: '+user.company.get().getBreakfastEndDate().get()}"> </span>
             </td>
         </tr>
         <tr th:if="${user.userAccount.hasRole('COMPANY')}">

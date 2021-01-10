@@ -115,7 +115,11 @@ public class MampfOrderManagerTests {
 		 * Order-Stock
 		 * is just empty
 		 */
-		//orderManager.deleteAll();
+		//error: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: mampf.order.EventOrder.employees, could not initialize proxy - no Session
+		/*orderManager.findAll().forEach(
+			order->{orderManager.deleteOrder(order);}
+		);*/ 
+		
 	}
 
 	CheckoutForm initForm() {
@@ -290,24 +294,6 @@ public class MampfOrderManagerTests {
 		assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getOrderLines().toList().size() == 1);
 		
 
-	}
-	
-	@Test
-	void deleteAll() {
-		CheckoutForm form = initForm();
-		User user = userManager.findUserByUsername("hans").get();
-		
-		MampfOrder order;
-		List<MampfOrder> orders;
-
-		//buy all:
-		initContext();
-		initValidCart();
-		orders = orderManager.createOrders(cart.getDomainItems("_"), form, user);
-		//orderManager.deleteOrder(orders.remove(0));
-		orderManager.getOrderManagement().delete(orders.remove(0));
-		List<MampfOrder> delOrders = orderManager.getOrderManagement().findBy(OrderStatus.CANCELLED).toList();
-		int a=1;
 	}
 	
 }

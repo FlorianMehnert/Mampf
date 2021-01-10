@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
@@ -34,7 +35,7 @@ public class EventOrder extends MampfOrder {
 		return startDate.plus(EVENTDURATION);
 	}
 	
-	@ManyToMany(cascade = CascadeType.MERGE)
+	@ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
 	private List<Employee> employees = new ArrayList<>();
 
 	@SuppressWarnings("unused")

@@ -33,7 +33,7 @@ import mampf.order.OrderController.BreakfastMappedItems;
 @Entity
 public class MBOrder extends MampfOrder{
 	
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection()
 	private List<DayOfWeek> weekDays;
 	private LocalTime time;
 	private LocalDateTime endDate;
