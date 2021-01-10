@@ -1,16 +1,13 @@
 package mampf.catalog;
 
 import javax.persistence.Entity;
-
 import org.javamoney.moneta.Money;
+import mampf.employee.Employee.Role;
 
 @Entity
 public class StaffItem extends Item {
-	public static enum Type {
-		COOK, SERVICE
-	}
-
-	private Type type;
+	
+	private Role type;
 
 	@SuppressWarnings("unused")
 	private StaffItem() {
@@ -22,14 +19,14 @@ public class StaffItem extends Item {
 		Domain domain, 
 		Category category, 
 		String description, 
-		Type type
+		Role type
 		) {
 		super(name, price, domain, category, description);
 
 		this.type = type;
 	}
 
-	public Type getType() {
+	public Role getType() {
 		return type;
 	}
 }

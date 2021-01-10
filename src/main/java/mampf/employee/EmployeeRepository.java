@@ -1,12 +1,10 @@
 package mampf.employee;
 
-import java.util.Iterator;
-import java.util.ArrayList;
-
+import mampf.employee.Employee.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Streamable;
 
-import mampf.employee.Employee.Role;
+import java.util.ArrayList;
 
 interface EmployeeRepository extends CrudRepository<Employee, Long>{
 

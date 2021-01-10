@@ -1,9 +1,14 @@
 package mampf.order;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+
+import javax.money.MonetaryAmount;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
@@ -11,16 +16,87 @@ import org.salespointframework.order.CartItem;
 import org.salespointframework.quantity.Quantity;
 
 import mampf.catalog.Item;
+import mampf.catalog.StaffItem;
+import mampf.catalog.Item.Domain;
 
 public class MampfCart{
-	private Map<Item.Domain, Cart> stuff = new TreeMap<>();
+	private Map<Item.Domain, DomainCart> stuff = new TreeMap<>();
+	
+	public class DomainCart extends Cart{
+		
+		private LocalDateTime startDate = null;
+		private LocalDateTime endDate = null;
+		
+		public DomainCart() {
+			super();
+		}
+		
+		public void setDate(LocalDateTime startDate, LocalDateTime endDate) {
+			this.startDate = startDate;
+			this.endDate = endDate;
+		}
+		public void resetDate() {
+			this.startDate = null;
+			this.endDate = null;
+		}
+		public LocalDateTime getStartDate() {
+			return startDate;
+		}
+		public LocalDateTime getEndDate() {
+			return endDate;
+		}
+		
+		public Map<CartItem, MonetaryAmount> getItems(){
+			Map<CartItem, MonetaryAmount> stuff = new HashMap<>();
+			Iterator<CartItem> it = get().iterator();
+			while(it.hasNext()) {
+				CartItem cartitem = it.next();
+				Money price;
+				if(startDate == null || endDate == null) {
+					price = (Money)cartitem.getPrice();
+				}else {
+					price = (Money)getPriceOfCartItem(cartitem);
+				}
+				stuff.put(cartitem,price);
+			}	
+			return stuff;
+		}
+		
+		@Override
+		public MonetaryAmount getPrice() {
+			if(startDate == null || endDate == null) {
+				return super.getPrice();
+			}
+			Money price = Money.of(0, "EUR"); 
+			Iterator<CartItem> it = get().iterator();
+			while(it.hasNext()) {	
+				price = price.add(getPriceOfCartItem(it.next()));
+			}	
+			
+			return price;
+		}
+		
+		private MonetaryAmount getPriceOfCartItem(CartItem cartItem) {
+			if(EventOrder.productHasPrizePerHour.test(cartItem.getProduct())) {
+				return
+				EventOrder.calcPrizePerHour(startDate, endDate,
+				cartItem.getPrice());
+			}
+			else{
+				return cartItem.getPrice();
+			}
+			
+		}
+	}
+	
+	
 	MampfCart(){}
 	/**
 	 * get cart of domain
 	 * @param domain
 	 * @return Cart or null
 	 */
-	public Cart getDomainCart(Item.Domain domain) {
+	public DomainCart getDomainCart(Item.Domain domain) {
 		if(domain == null){
 			return null;
 		}
@@ -36,12 +112,12 @@ public class MampfCart{
 	 * @return CartItem
 	 */
 	public CartItem addToCart(Item item, Quantity itemQuantity) {
-		Cart domainCart = getDomainCart(item.getDomain());
+		DomainCart domainCart = getDomainCart(item.getDomain());
 		CartItem cartitem = null;
 		if(domainCart != null) {
 			cartitem = domainCart.addOrUpdateItem(item, itemQuantity);
 		}else {
-			domainCart = new Cart();
+			domainCart = new DomainCart();
 			cartitem = domainCart.addOrUpdateItem(item, itemQuantity);
 			stuff.put(item.getDomain(),domainCart);
 		}
@@ -65,6 +141,34 @@ public class MampfCart{
 					(long) itemAmount-cartItem.getQuantity().getAmount().intValue());
 		}
 	
+	}
+	public void updateCart(CheckoutForm form) {
+		//update all but no Mobile Breakfast
+		Map<String, String> allStartDates = form.getAllStartDates();
+		Map<String, String> allEndTimes = form.getAllStartDates();
+		for(Item.Domain domain: Item.Domain.values()) {
+			if(allStartDates.containsKey(domain.name()) && allEndTimes.containsKey(domain.name())) {
+				if(CheckoutForm.domainsWithoutForm.contains(domain.name()))continue;
+				DomainCart cart = getDomainCart(domain);
+				if(cart != null) {
+					cart.setDate(form.getStartDateTime(domain), form.getEndDateTime(domain));
+				}
+			}
+		}
+	}
+	public void updateMBCart(LocalDateTime startDate, LocalDateTime endDate){
+		//only update Mobile Breakfast
+		DomainCart cart = getDomainCart(Item.Domain.MOBILE_BREAKFAST);
+		if(cart != null) {
+			cart.setDate(startDate, endDate);
+		}
+	}
+	
+	public void resetCartDate() {
+		stuff.entrySet().forEach(entry->{
+			if(!CheckoutForm.domainsWithoutForm.contains(entry.getKey().name()))
+				entry.getValue().resetDate();
+		});
 	}
 	/**
 	 * removes cartitem
@@ -91,11 +195,12 @@ public class MampfCart{
 	}
 	/**
 	 * get cartitem by cartitemId
-	 * @param cartitemId
+	 * @param cartItemId
 	 * @return CartItem or null
 	 */
 	public CartItem getCartItem(String cartitemId) {
-		for(Map.Entry<Item.Domain, Cart> entry : stuff.entrySet()) {
+		for(Map.Entry<Item.Domain, DomainCart> entry : stuff.entrySet()) {
+
 			Optional<CartItem> cartitem = stuff.get(entry.getKey()).
 										  getItem(cartitemId);
 			if(cartitem.isPresent()) {
@@ -110,9 +215,9 @@ public class MampfCart{
 	 * @param domain
 	 * @return Map<Item.Domain, Cart>, never null
 	 */
-	public Map<Item.Domain, Cart> getDomainItems(String domain){
-		Map<Item.Domain, Cart> map = new TreeMap<>();
-		for(Map.Entry<Item.Domain, Cart> entry : stuff.entrySet()) {
+	public Map<Item.Domain, DomainCart> getDomainItems(String domain){
+		Map<Item.Domain, DomainCart> map = new TreeMap<>();
+		for(Map.Entry<Item.Domain, DomainCart> entry : stuff.entrySet()) {
 			
 			if(entry.getKey().name().equals(domain)){
 				map.put(entry.getKey(), entry.getValue());
@@ -127,7 +232,7 @@ public class MampfCart{
 	 * @param carts
 	 * @return Money
 	 */
-	public Money getTotal(Collection<Cart> carts) {
+	public Money getTotal(Collection<DomainCart> carts) {
 		Money res = Money.of(0, "EUR");
 		if(carts != null) {
 			for(Cart cart: carts) {
@@ -142,7 +247,7 @@ public class MampfCart{
 	public void clear() {
 		stuff.clear();
 	}
-	public Map<Item.Domain, Cart> getStuff(){
+	public Map<Item.Domain, DomainCart> getStuff(){
 		return stuff;
 	}
 	

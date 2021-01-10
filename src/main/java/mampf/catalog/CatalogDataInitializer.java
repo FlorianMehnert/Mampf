@@ -6,7 +6,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import mampf.catalog.StaffItem.Type;
+import mampf.employee.Employee.Role;
 
 @Component
 @Order(20)
@@ -24,11 +24,6 @@ class CatalogDataInitializer implements DataInitializer {
 	@Override
 	public void initialize() {
 
-		/*Änderungen: 
-		 * falls das Angebot eine Anzahl an Personal (Cook/Service) anfordert ist das Item eine Personalinstanz und von
-		 * der Kategorie PERSONEN
-		 * falls das Angebot eine Anzahl im Inventar betrifft ist das Item von der Kategorie EQUIPMENT 
-		 * (für reduzierbare gegenstände wie personal eine extra klasse?)*/
 		if (mampfCatalog.findAll().iterator().hasNext()) {
 			return;
 		}
@@ -56,9 +51,9 @@ class CatalogDataInitializer implements DataInitializer {
 				Item.Domain.EVENTCATERING, Item.Category.EQUIPMENT,"pro 4 Personen, 5€ Ausleihgebühr"));
 
 		mampfCatalog.save(new StaffItem("Koch/Köchin pro 10 Personen", Money.of(11.88,"EUR"),
-				Item.Domain.EVENTCATERING, Item.Category.STAFF,perPerson, Type.COOK));
+				Item.Domain.EVENTCATERING, Item.Category.STAFF,perPerson, Role.COOK));
 		mampfCatalog.save(new StaffItem("Service-Personal", Money.of(13.56,"EUR"),
-				Item.Domain.EVENTCATERING, Item.Category.STAFF,perFive, Type.SERVICE));
+				Item.Domain.EVENTCATERING, Item.Category.STAFF,perFive, Role.SERVICE));
 
 		mampfCatalog.save(new Item("Schinkenplatte", Money.of(20,"EUR"),
 				Item.Domain.PARTYSERVICE, Item.Category.FOOD,perFive));
@@ -88,8 +83,8 @@ class CatalogDataInitializer implements DataInitializer {
 				Money.of(0, "EUR"), BreakfastItem.Type.BEVERAGE));
 
 		mampfCatalog.save(new StaffItem("Koch/Köchin pro 10 Personen",
-				Money.of(11.88,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,perPerson, Type.COOK));
+				Money.of(11.88,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,perPerson, Role.COOK));
 		mampfCatalog.save(new StaffItem("Service-Personal",
-				Money.of(13.56,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,perFive, Type.SERVICE));
+				Money.of(13.56,"EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF,perFive, Role.SERVICE));
 	}
 }

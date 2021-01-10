@@ -2,10 +2,6 @@ package mampf.revenue;
 
 import org.salespointframework.catalog.Product;
 
-import javax.money.MonetaryAmount;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class Gain {
 	private Integer amount;
 	private Product product;

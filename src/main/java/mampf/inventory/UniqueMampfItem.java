@@ -5,25 +5,18 @@ import org.salespointframework.inventory.UniqueInventoryItem;
 import org.salespointframework.quantity.Quantity;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 import java.math.BigDecimal;
 
 @Entity
 public class UniqueMampfItem extends UniqueInventoryItem {
-	//@OneToOne
-	//private mampf.catalog.Item item;
 
 	public UniqueMampfItem(Item item, Quantity quantity) {
 		super(item, quantity);
-		//this.item = item;
 	}
 
 	public UniqueMampfItem() {
 	}
 
-	//public Item getItem() {
-	//	return item;
-	//}
 	
 	public Item getItem() {
 		return (Item) getProduct();
