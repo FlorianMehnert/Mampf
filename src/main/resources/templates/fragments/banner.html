@@ -1,0 +1,16 @@
+<div th:fragment="banner(title)">
+  <section class="m-section-padding m-colored-primary m-centered">
+    <div th:text="${title}" class="m-heading-huge">Domain</div>
+  </section>
+</div>
+
+<div th:fragment="item(title, category, domain, item)">
+  <section class="m-colored-primary m-heading-huge-padding">
+    <div class="m-container">
+      <div class="m-centered">
+        <div th:text="${domain} + ' - ' + ${category}" class="m-heading m-no-border m-inline-block"></div>
+      </div>
+      <div th:text="${title}" class="m-heading-huge m-font-aquiline m-centered">Domain</div>
+    </div>
+  </section>
+</div>

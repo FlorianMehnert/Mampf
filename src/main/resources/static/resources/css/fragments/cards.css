@@ -1,0 +1,79 @@
+.m-card {
+  /* border: 1px solid #aaa; */
+  margin: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.m-card__data {
+  display: flex;
+}
+
+.m-card__cata-spaced-between {
+  flex: 100%;
+  justify-content: space-between;
+}
+
+.m-flex-column {
+  flex-direction: column;
+}
+
+.m-card__section {
+  padding: 1rem 2rem;
+}
+
+.m-card__title {
+  font-size: 1.7rem;
+}
+
+.m-card__price {
+  font-size: 1.7rem;
+}
+
+.m-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.m-card-section {
+  border: 3px #ccc;
+  border-style: dashed;
+  max-width: 90%;
+  margin: 1rem auto;
+  padding: 2rem;
+}
+
+.m-devider {
+  border-top: 2px solid #777;
+  margin: 2rem 0 0 0;
+}
+
+.m-cart__row{
+  margin: 1rem 0;
+  margin-right: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.m-cart__sum {
+  font-size: 1.7rem;
+  color: var(--m-primary);
+}
+
+.m-cart__sum-label {
+  font-size: 1.7rem;
+  padding-right: 1rem;
+}
+
+div[class*="m-cart__overview-total"] {
+  font-size: 1.7rem;
+}
+
+
+/* .m-card__actions form {
+  padding-right: 1rem;
+} */

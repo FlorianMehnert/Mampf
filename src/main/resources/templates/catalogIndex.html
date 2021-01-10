@@ -2,33 +2,127 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-
-  <script th:src="@{/webjars/jquery/jquery.min.js}" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <link rel="icon" type="image/vnd.microsoft.icon" th:href="@{/resources/img/cook_icon.ico}">
-  <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}" />
-
-  <!-- Bootstrap -->
-  <!-- CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
-  <!-- Bootstrap -->
-  <!-- jQuery and JS bundle w/ Popper.js -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-
-  <title th:text="${headline}">Catalog</title>
+  <div th:replace="fragments/head :: styles"></div>
+  <div th:replace="fragments/head :: scripts"></div>
+  <div th:replace="fragments/head :: meta(${headline})"></div>
 </head>
 
 <body>
-<nav th:include="navigation :: navigation"></nav>
-  <div class="root">
+  <nav th:include="navigation-new :: navigation"></nav>
+  <div class="m-content">
+    <section class="m-section-padding">
+      <div class="m-container m-flex m-flex-align-end">
+        <div class="col-9">
+          <div class="m-heading m-heading-huge m-font-aquiline">Unser Angebot</div>
+        </div>
+        <div class="col-3">
+          <div class="m-text m-text-promo">
+            Mampf bietet nicht nur das, was sie normalerweise von einem Cateringservice erwarten würden.
+            Wir haben es uns zur Aufgabe gemacht, ihnen alles zu bieten, was sie für ein erfolgreiches
+            Event benötigen. Von leckeren Gerichten für eine Familienfeier, über ein perfekt angerichtetes
+            Buffet, bis hin zu professioneller Unterstützung durch unser Personal.
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="m-colored-primary">
+      <div class="m-container-fluid">
+        <div class="row m-no-margin">
+          <div class="col m-no-padding">
+            <img class="m-image" src="/resources/img/catalog_index/catering.jpg" alt="catering">
+          </div>
+          <div class="col m-no-padding m-flex-wrap">
+            <div class="m-heading m-heading-big m-push-left m-color-white m-align-left  m-font-aquiline">Eventcatering</div>
+            <div class="m-text m-text-padding m-text-promo">
+              Wir stellen hohe Ansprüche an unser Catering und halten die Qualität stehts sehr hoch,
+              damit sie sich wirklich keine Gedanken um das Essen machen müssen, sondern sich stattdessen
+              auf ihre Gäste und den Spaß konzentrieren können. Lassen sie sich von uns verwöhnen und genießen
+              sie lieber das posititve Feedback ihrer Gäste.
+            </div>
+            <div class="m-actions">
+              <a href="/catalog/eventcatering" class="btn m-color-white m-btn-outlined">Jetzt bestellen</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="m-container-fluid">
+        <div class="row m-no-margin">
+          <div class="col m-no-padding m-flex-wrap">
+            <div class="m-heading m-heading-big m-push-left m-align-right m-font-aquiline">Partyservice</div>
+            <div class="m-text m-text-padding m-text-promo">
+              Wie oft waren wir nicht alle schon auf Partys, auf denen man sich dachte: "Hätte ich doch
+              lieber zu Hause etwas gegessen." Schluss damit! Mit unseren Party-Angeboten ist ihnen der
+              Erfolg auf ihrer Party sicher. Gerichte und Getränke aller Art um ihre Gäste zufrieden zu stellen,
+              ist das Motto unseres Partyservice. Lassen sie sich nicht von nörgelden Gästen den Abend verderben
+              und buchen sie lieber eines unserer Party-Angebote.
+            </div>
+            <div class="m-actions">
+              <a href="/catalog/partyservice" class="btn m-color-black m-btn-outlined">Jetzt bestellen</a>
+            </div>
+          </div>
+          <div class="col m-no-padding">
+            <img class="m-image" src="/resources/img/catalog_index/partyservice.jpg" alt="partyservice">
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="m-section-padding m-colored-secondary">
+      <div class="m-container">
+        <div class="row m-no-margin">
+          <div class="m-container-header">
+            <img class="m-image m-image-size-medium" src="/resources/img/catalog_index/breakfast.jpg" alt="breakfast">
+            <div class="m-heading-huge m-heading-odd m-font-aquiline">Mobile Breakfast</div>
+          </div>
+          <div class="m-flex-wrap m-flex-row m-flex-odd">
+            <div class="m-text m-text-promo m-text-odd">
+              Mitarbeiter müssen leisten, aber wie sagt man so schön: "Ohne Dampf keine Leistung". Steigern sie
+              die Motivation und Leistungsfähigkeit ihrer Mitarbeiter durch unser Mobile-Breakfast und lassen sie sich
+              selbst begeistern durch unser reiches Frühstücksangebot.
+            </div>
+            <div class="m-actions m-actions-full-width m-actions-odd">
+              <a href="/mobile-breakfast" class="btn m-btn-outlined">Jetzt bestellen</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="m-section-padding">
+      <div class="m-container m-centered">
+        <div class="row m-no-margin">
+          <div class="col m-flex m-no-padding">
+            <div class="m-flex-column">
+              <div class="m-heading-huge m-font-aquiline">Rent</div>
+              <div class="m-heading-huge m-font-aquiline">A</div>
+              <div class="m-heading-huge m-font-aquiline">Cook</div>
+            </div>
+            <img class="m-image m-image-size-medium m-push-right" src="/resources/img/catalog_index/cook.jpg"
+              alt="catering">
+          </div>
+        </div>
+        <div class="row m-row-margin">
+          <div class="col m-flex m-no-padding">
+            <div class="m-text m-text-promo">
+              Probleme beim kochen? Kein Problem, buchen sie einfach Köche von uns. Wann und wo sie wollen. Unsere
+              Köche sind stehts für sie da und geben ihnen einen Einblick in die Welt der Sterne-Gastronomie.
+            </div>
+            <div class="m-actions m-actions-full-width">
+              <a href="/catalog/rent-a-cook" class="btn m-btn-outlined">Jetzt bestellen</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- <div class="root">
     <h1>Catalog</h1>
     <div class="content">
       <div class="mmpf-tiles-wrapper">
         <a th:each="domain : ${domains}" th:text="${domain.title}" th:href="'/catalog/' + ${domain.href}">Domainname</a>
       </div>
     </div>
-  </div>
+  </div> -->
 </body>
 
 </html>
