@@ -20,8 +20,10 @@
     </section>
     <section>
       <div class="m-container-small">
-        <th:block th:each=" order : ${orders}">
-          <div th:replace="fragments/cards::orders(${order}, ${order.getOrderStatus().name()}, ${order.id})"></div>
+        <th:block th:each=" orders : ${stuff}">
+          <th:block th:each="order : ${orders.value}">
+            <div th:replace="fragments/cards::orders(${order}, ${order.getOrderStatus().name()}, ${order.id})"></div>
+          </th:block>
         </th:block>
       </div>
     </section>
