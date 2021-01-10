@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -24,6 +25,7 @@ import javax.persistence.ManyToMany;
 import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
 import org.salespointframework.catalog.ProductIdentifier;
+import org.salespointframework.order.CartItem;
 import org.salespointframework.order.OrderLine;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.useraccount.UserAccount;
@@ -56,7 +58,7 @@ public class EventOrder extends MampfOrder {
 	
 	@SuppressWarnings("unused")
 	private EventOrder() {}
-	public EventOrder(MampfCatalog catalog, UserAccount account,
+	public EventOrder(UserAccount account,
 					  PaymentMethod paymentMethod,
 					  Item.Domain domain,
 					  LocalDateTime startDate,
@@ -129,6 +131,23 @@ public class EventOrder extends MampfOrder {
 		}	
 		
 		return total;
+	}
+	
+	public Map<OrderLine, MonetaryAmount> getItems(){
+		Map<OrderLine, MonetaryAmount> stuff = new HashMap<>();
+		Iterator<OrderLine> it = getOrderLines().iterator();
+		while(it.hasNext()) {
+			OrderLine orderLine = it.next();
+			Money price;
+			if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier())) {
+				price=(Money)EventOrder.calcPrizePerHour(getStartDate(), getEndDate(),orderLine.getPrice());
+			}
+			else{
+				price=(Money)orderLine.getPrice();
+			}
+			stuff.put(orderLine,price);
+		}	
+		return stuff;
 	}
 	
 	@Override

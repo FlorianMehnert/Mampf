@@ -63,19 +63,36 @@
         <thead class="thead-light">
           <tr>
             <th>ProduktName</th>
-            <th>Anzahl</th>
-            <th>Preis</th>
+            <th>Anzahl pro Stunde</th>
+            <th>Preis pro Stunde</th>
+			<th>Preis gesamt</th>
           </tr>
-        </thead>
-        <tbody>
-          <tr th:each="orderLine : ${order.orderLines}">
-            <td th:text="${orderLine.productName}"></td>
-            <td th:text="${orderLine.quantity}"></td>
-            <td th:text="${orderLine.price}"></td>
-          </tr>
+        </thead> 
+        <tbody th:unless="${isMB}">
+          <tr th:each="item : ${order.getItems()}">
+            <td th:text="${item.key.productName}"></td>
+            <td th:text="${item.key.quantity}"></td>
+            <td th:text="${{item.key.price}}"></td>
+			<td th:text="${{item.value}}"></td>
+		  </tr>
           <tr>
           	<td><b>Gesamtpreis</b></td>
           	<td></td>
+			<td></td>
+          	<td><b th:text="${{order.total}}"></b></td>
+          </tr>
+        </tbody>
+		<tbody th:if="${isMB}">
+          <tr th:each="item : ${order.getOrderLines()}">
+            <td th:text="${item.productName}"></td>
+            <td th:text="${item.quantity}"></td>
+            <td> - </td>
+			<td> - </td>
+		  </tr>
+          <tr>
+          	<td><b>Gesamtpreis</b></td>
+          	<td></td>
+			<td></td>
           	<td><b th:text="${{order.total}}"></b></td>
           </tr>
         </tbody>

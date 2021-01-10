@@ -170,7 +170,7 @@ public class MampfOrderManager {
 				
 			}else {
 				//create usual order:
-				order = new EventOrder(catalog, user.getUserAccount(),
+				order = new EventOrder(user.getUserAccount(),
 						createPayMethod(form.getPayMethod(),user.getUserAccount()),
 						domain,
 						startDate,

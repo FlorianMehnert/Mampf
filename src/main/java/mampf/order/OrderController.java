@@ -364,6 +364,7 @@ public class OrderController {
 			return "redirect:/";
 		}
 		model.addAttribute("order", order.get());
+		model.addAttribute("isMB", order.get() instanceof MBOrder);
 		return "ordersDetail";
 	}
 
