@@ -258,20 +258,33 @@ public class OrderController {
 	@PostMapping("/checkout")
 	public String buy(Model model, @RequestParam(name = "reload")Optional<Boolean> reload, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
 					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		mampfCart.updateCart(form);
 		if(reload.isPresent()) {
 			model.addAttribute("validations", new HashMap<String,List<String>>());
 			return buyCart(form.getDomainChoosen(), model, mampfCart, form);
 		}
 
 		for (Item.Domain domain: form.getDomains()){
-			if(!CheckoutForm.domainsWithoutForm.contains(domain.name()) && 
-				form.getStartDateTime(domain) != null && 
-				form.getStartDateTime(domain).isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
+			if(!CheckoutForm.domainsWithoutForm.contains(domain.name())) { 
+				LocalDateTime startDate = form.getStartDateTime(domain);
+				LocalDateTime endDate = form.getEndDateTime(domain);
+				String errVar = "allStartDates["+domain.name()+"]";
+				String errDomain = "CheckoutForm.startDate";
+				
+				if(startDate == null || endDate == null) {
+					result.rejectValue(errVar, errDomain+".Invalid","Bitte Datum eingeben!");
+					continue;
+				}
+				if(startDate.isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
 
-				result.rejectValue("allStartDates["+domain.name()+"]", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
+					result.rejectValue(errVar, errDomain+".NotFuture", "Das Datum muss in der Zukunft liegen!");
+				}
+				if(startDate.isAfter(endDate)) {
+					result.rejectValue(errVar, errDomain+".idk", "keine negativen Bestellungen erlaubt!");
+				}
 			}
 		}
-		mampfCart.updateCart(form);
+		
 		Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
 		Map<Item.Domain, List<String>> validations = new HashMap<>();
 		if(!result.hasErrors()) {

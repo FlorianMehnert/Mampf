@@ -50,20 +50,22 @@
 				<thead class="thead-light">
 					<tr>
 					  <th>Titel</th>
-					  <th>Anzahl</th>
+					  <th>Anzahl pro Stunde</th>
 					  <th>Preis pro Stunde</th>
 					  <th>Preis gesamt</th>
 					</tr>
 				</thead>
-				<tbody >
-					<tr th:each="item : ${domain.value} ">
-						<td th:text="${item.productName}"></td>
-						<td th:text="${item.quantity.getAmount()}"></td>
-						<td th:text="${{item.price}}"></td>
+				<tbody ><!-- item is a map: CartItem->Money -->
+					<tr th:each="item : ${domain.value.getItems()} ">
+						<td th:text="${item.key.productName}"></td>
+						<td th:text="${item.key.quantity.getAmount()}"></td>
+						<td th:text="${{item.key.price}}"></td>
+						<td th:text="${{item.value}}"></td>
 					</tr>
 					<tr>
 						<td><b>Summe</b></td>
 						<td ></td>
+						<td></td>
 						<td th:text="${{domain.value.price}}"></td>
 					</tr>
 				</tbody>
@@ -89,7 +91,6 @@
 			
 			</div>
 		</div>
-		<button type="submit" class="btn btn-outline-primary" name="reload" value="1">Neu berechnen</button>
 		<div class="form-group mt-2" >
 			<div th:each="err : ${validations.get('__${domain.key}__')}">
 			<div th:text="${err}" class="alert alert-danger alert-dismissible fade show" role="alert"></div>
@@ -107,6 +108,7 @@
 		</div>
 		<div class="row mt-3">
 			<input type="hidden" name="domainChoosen" th:field="*{domainChoosen}" th:value="${domainChoosen}"/>
+			
 			<div class="form-check form-check-inline">
 				<input id="barChecked" class="form-check-input" type="radio" name="payMethod" value="Bar" checked="checked" />
 				<label for="barChecked" class="form-check-label">Bar</label>
@@ -118,7 +120,8 @@
 			
 		</div>
 		<br/>
-		<button type="submit" class="btn btn-outline-primary" name="save">Bestellung erstellen</button>
+		<button type="submit" class="btn btn-outline-primary" name="reload" value="1">Neu berechnen</button>
+		<button  type="submit" class="btn btn-outline-primary" name="save">Bestellung erstellen</button>
 			
 	</div>
 	</form>

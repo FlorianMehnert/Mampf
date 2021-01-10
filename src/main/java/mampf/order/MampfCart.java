@@ -2,6 +2,7 @@ package mampf.order;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +46,22 @@ public class MampfCart{
 			return endDate;
 		}
 		
+		public Map<CartItem, MonetaryAmount> getItems(){
+			Map<CartItem, MonetaryAmount> stuff = new HashMap<>();
+			Iterator<CartItem> it = get().iterator();
+			while(it.hasNext()) {
+				CartItem cartitem = it.next();
+				Money price;
+				if(startDate == null || endDate == null) {
+					price = (Money)cartitem.getPrice();
+				}else {
+					price = (Money)getPriceOfCartItem(cartitem);
+				}
+				stuff.put(cartitem,price);
+			}	
+			return stuff;
+		}
+		
 		@Override
 		public MonetaryAmount getPrice() {
 			if(startDate == null || endDate == null) {
@@ -52,20 +69,23 @@ public class MampfCart{
 			}
 			Money price = Money.of(0, "EUR"); 
 			Iterator<CartItem> it = get().iterator();
-			while(it.hasNext()) {
-				CartItem cartItem = it.next();
-				if(EventOrder.productHasPrizePerHour.test(cartItem.getProduct())) {
-					price=price.add(
-					EventOrder.calcPrizePerHour(startDate, endDate,
-					cartItem.getPrice()	
-					)); 
-				}
-				else{
-					price=price.add(cartItem.getPrice());
-				}
+			while(it.hasNext()) {	
+				price = price.add(getPriceOfCartItem(it.next()));
 			}	
 			
 			return price;
+		}
+		
+		private MonetaryAmount getPriceOfCartItem(CartItem cartItem) {
+			if(EventOrder.productHasPrizePerHour.test(cartItem.getProduct())) {
+				return
+				EventOrder.calcPrizePerHour(startDate, endDate,
+				cartItem.getPrice());
+			}
+			else{
+				return cartItem.getPrice();
+			}
+			
 		}
 	}
 	
