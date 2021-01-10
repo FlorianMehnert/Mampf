@@ -2,153 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <link rel="icon" type="image/vnd.microsoft.icon" th:href="@{/resources/img/World_sm_or.ico}">
-  <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
-
-  <!-- Bootstrap -->
-  <!-- CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
-  <!-- Bootstrap -->
-  <!-- jQuery and JS bundle w/ Popper.js -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-          crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-
-  <title th:text="'Mampf - ' + ${domainTitle}">Catalog</title>
+  <div th:replace="fragments/head :: styles"></div>
+  <div th:replace="fragments/head :: scripts"></div>
+  <div th:replace="fragments/head :: meta(${domainTitle})"></div>
 </head>
 
-<body></body>
-  <nav th:include="navigation :: navigation"></nav>
-  <div class="root">
-    <h1 th:text="${domainTitle}">Domain</h1>
-    <div class="content">
-
+<body>
+  <nav th:include="navigation-new :: navigation"></nav>
+  <div class="m-content">
+    <section class="m-section-padding m-colored-primary m-centered">
+      <div th:text="${domainTitle}" class="m-heading-huge m-font-aquiline">Domain</div>
+    </section>
+    <div class="m-container-small">
       <div class="mmpf-category-wrapper" th:each="category : ${catalog}">
-        <div class="mmpf-c-title" th:text="${category.key}"></div>
-        <div class="mmpf-c-card" th:each="item : ${category.value}" th:attr="data-item=${item.id}">
-          <div class="mmpf-c-card-title" th:text="${item.name}"></div>
-          <div class="mmpf-c-card-price" th:text="${item.price}"></div>
-          <div class="mmpf-c-card-description" th:text=${item.description}></div>
-          <form th:action="'/catalog/item/detail/' + ${item.id}" method="get">
-            <button type="submit" class="btn btn-primary button mmpf-c-card-add">
-              <i class="fas fa-plus"></i>
-            </button>
-          </form>
+        <div class="m-heading m-heading-big m-centered m-no-border m-padding-bottom  m-font-aquiline" th:text="${category.key}">Category</div>
 
-          <!-- only with javascript support | thanks people of sti -->
-          <!-- <button type="button" class="ui primary button mmpf-c-card-add"><i class="mmpf-clear plus icon"></i></button> -->
-        </div>
+        <!-- For each item render an ordering card -->
+        <th:block th:each="item : ${category.value}">
+          <div th:replace="fragments/cards::ordering(${item})"></div>
+        </th:block>
       </div>
     </div>
   </div>
-  <div id="mmpf-sidebar">
-    <div class="mmpf-s-root">
-      <div class="mmpf-s-title">title</div>
-      <div class="mmpf-s-price" id="id_mmpf-s-price">44€</div>
-      <div class="flex-break"></div>
-      <div class="mmpf-s-form">
-        <div class="ui input">
-          <input type="text" id="mmpf-s-amount" placeholder="Anzahl">
-        </div>
-        <button type="button" class="btn btn-primary button mampf-s-add">Zum Warenkorb hinzufügen</button>
-      </div>
-    </div>
-  </div>
-  <div class="overlay"></div>
+  <div class="m-content"></div>
 </body>
-
-<!-- <script>
-  (function (win){
-    function Mampf(){}
-
-    Mampf.Events = {}
-
-    Mampf.Events.openSidebar = async function (event) {
-      const id = event.target.closest('.mmpf-c-card').dataset.item;
-      const itemData = await Mampf.XHR.fetchItem(id);
-      console.log(itemData);
-      Mampf.Render.renderSidebarContent(itemData);
-      Mampf.Render.SlideSidebar(true);
-    }
-
-    Mampf.Render = {};
-
-    Mampf.Render.renderSidebarContent = function (itemData) {
-      console.log(itemData);
-      const sidebar_root = document.querySelector("#mmpf-sidebar .mmpf-s-root");
-      sidebar_root.innerHTML = "";
-      const template = `
-      <div class="mmpf-s-title">${itemData.name}</div>
-      <div class="mmpf-s-price">${itemData.price.number}€</div>
-      <div class="flex-break"></div>
-      <div class="mmpf-s-description">${itemData.description}</div>
-      <div class="flex-break"></div>
-      <form method="post" action="/cart">
-      <div class="ui input">
-      <input type="hidden" name="pid" value="${itemData.id.identifier}"/>
-      <input type="number" id="mmpf-s-amount" name="number" value="1" placeholder="Anzahl">
-      </div>
-      <button type="submit" class="ui primary button mampf-s-add">Zum Warenkorb hinzufügen</button>  
-      </form>
-      </div>
-      `;
-      sidebar_root.innerHTML = template;
-    }
-
-    Mampf.Render.SlideSidebar = function (toggle) {
-      const sidebar = $("#mmpf-sidebar");
-      const overlay = $(".overlay");
-      if(toggle) {
-        overlay.fadeIn(200);
-        sidebar.delay(200).animate({
-          height: "40%"
-        }, 300);
-      }
-      else {
-        sidebar.animate({
-          height: "0%"
-        }, 300);
-        overlay.delay(300).fadeOut(200);
-      }
-    }
-
-    Mampf.XHR = {};
-
-    Mampf.XHR.fetchItem = async function (id) {
-      console.log(id);
-      return new Promise((resolve, reject) => {
-        fetch(`${location.origin}/_api/catalog/item/${id}`)
-          .then(buffer => buffer.json())
-          .then(data => resolve(data))
-          .catch(err => {
-            console.error(err);
-            // alert("Check console, something went wrong!");
-          })
-      });
-    }
-
-    Mampf.Util = {}
-
-    Mampf.Util.AddEventListeners = function () {
-      document.querySelectorAll(".mmpf-c-card-add").forEach(e => {
-        e.addEventListener("click", Mampf.Events.openSidebar);
-      })
-
-      document.querySelector(".overlay").addEventListener("click", () => {
-        Mampf.Render.SlideSidebar(false);
-      })
-    }
-
-    Mampf.Main = function () {
-      Mampf.Util.AddEventListeners();
-    }
-
-    Mampf.Main();
-  })(window);
-</script> -->
 
 </html>

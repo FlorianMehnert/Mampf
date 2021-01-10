@@ -133,6 +133,8 @@ public class CatalogController {
 	public String detail(Model model, @PathVariable Item item){
 		assert item != null;
 		model.addAttribute("title", item.getName());
+		model.addAttribute("category", Util.renderDomainName(item.getCategory().toString()));
+		model.addAttribute("domain", Util.renderDomainName(item.getDomain().toString()));
 		model.addAttribute("item", item);
 		model.addAttribute("quantity", this.inventory.findByProduct(item).get().getQuantity());
 		return "detail.html";

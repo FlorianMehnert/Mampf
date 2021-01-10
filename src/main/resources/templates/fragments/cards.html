@@ -1,0 +1,94 @@
+<!-- Ordering Card - Used in catalog to add a product to the cart -->
+
+
+<div th:fragment="ordering(item)" class="m-card shadow">
+  <div class="m-card__section m-card__data m-flex-column">
+    <div class="m-card__title" th:text="${item.name}">ItemName</div>
+    <div class="m-card__desc m-text" th:text="${item.description}">ItemPrice</div>
+    <div class="m-card__price m-text m-font-color-primary" th:text="${item.price}">ItemPrice</div>
+  </div>
+  <div class="m-card__section">
+    <form th:action="'/catalog/item/detail/' + ${item.id}" method="get">
+      <button type="submit" class="btn btn-primary m-card__add">
+        <i class="fas fa-plus"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+<div th:fragment="cart(itemName, amount, price)" class="m-card shadow">
+  <div class="m-card__section m-card__data m-card__cata-spaced-between">
+    <div class="m-card__title" th:text="${itemName}">ItemName</div>
+    <div class="m-card__price m-text m-font-color-primary" th:text="${price}">ItemPrice</div>
+  </div>
+  <div class="m-card__section m-card__actions">
+    <form method="post" th:action="@{/cart/setNewAmount}">
+      <div class="input-group">
+        <input type="hidden" name="cartitemId" th:value="${item.id}" />
+        <input class="form-control" type="number" name="newAmount" th:value="${amount}">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="submit">
+            <i class="fas fa-redo"></i> Aktualisieren
+          </button>
+        </div>
+      </div>
+    </form>
+    <form method="post" th:action="@{/cart/setNewAmount}">
+      <input type="hidden" name="cartitemId" th:value="${item.id}" />
+      <input class="form-control" type="hidden" name="newAmount" value="0">
+      <button type="submit" class="btn btn-primary m-card__add">
+        <i class="fas fa-trash-alt"></i> Entfernen
+      </button>
+    </form>
+  </div>
+</div>
+
+<div th:fragment="pay(itemName, amount, price)" class="m-card shadow">
+  <div class="m-card__section m-card__data m-card__cata-spaced-between">
+    <div class="m-card__title" th:text="${itemName}">ItemName</div>
+    <div class="m-card__price m-text m-font-color-primary" th:text="${price}"></div>
+  </div>
+  <div class="m-card__section m-card__actions">
+    <div class="input-group">
+      <h4 th:text="'Anzahl: ' + ${amount}"></h4>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="orderItem(itemName, amount, id)" class="m-card m-bordered">
+  <div class="m-card__section m-card__data m-card__cata-spaced-between">
+    <a class="m-font-color-primary" th:href="'/catalog/item/detail/' + ${id}">
+      <div class="m-card__title" th:text="${itemName}">ItemName</div>
+    </a>
+  </div>
+  <div class="m-card__section m-card__actions">
+    <div class="input-group">
+      <h4 th:text="'Anzahl: ' + ${amount}"></h4>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="orders(_order, status, id)" class="m-card shadow">
+  <div class="m-card__section m-flex m-card__cata-spaced-between m-colored-primary">
+    <div class="m-text-small" th:text="${_order.dateCreated}">OrderName</div>
+    <div class="m-text-small" th:text="'Bestellnr.: ' + ${_order.id}"></div>
+    <div class="m-text-small" th:text="'Status: ' + ${status}"></div>
+  </div>
+  <div class="m-card__section m-centered m-colored-gray m-width-100">
+    <h3 th:text="${_order.getDomain()}"></h3>
+  </div>
+  <div class="m-card__section m-flex-wrap m-flex-basis">
+    <div class="m-margin-right m-flex-item-40" th:each="orderLine : ${_order.getOrderLines()}">
+      <div th:replace="fragments/cards::orderItem(${orderLine.productName}, ${orderLine.quantity}, ${orderLine.productIdentifier})"></div>
+    </div>
+  </div>
+  <div sec:authorize="hasRole('BOSS')" class="m-card__section m-card__actions m-flex-flex-end">
+    <a th:href="'/orders/detail/'+${order.id}" class="btn btn-primary m-card__add">
+      <i class="fas fa-info"></i> Details
+    </a>
+  </div>
+  <div class="m-card__section m-colored-gray m-color-white m-flex m-flex-space-between m-width-100">
+    <div class="m-text-small" th:text="'Eventbeginn: ' + ${_order.date.getStartTime()}">OrderName</div>
+    <div class="m-text-small" th:text="'Addresse: ' + ${_order.date.getAddress()}">OrderName</div>
+  </div>
+</div>

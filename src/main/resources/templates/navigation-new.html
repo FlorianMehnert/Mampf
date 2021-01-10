@@ -4,16 +4,45 @@
 
 <div th:fragment="navigation">
     <div class="m-nav">
-      <div class="m-brand">MAMPF</div>
+      <div class="m-brand m-font-aquiline"><a th:href="@{/}" class="m-nav-link">M</a></div>
       <ul class="m-nav-main">
-        <a class="m-nav-link" th:href="@{/catalog}">
-          <li>Catalog</li>
-        </a>
+        <div class="m-nav-with-submenu">
+          <a class="m-nav-link" th:href="@{/catalog}">
+            <li>Catalog</li>
+          </a>
+          <div class="m-nav-submenu">
+            <div class="m-text"> | </div>
+            <a class="m-nav-link" th:href="@{/catalog/eventcatering}">
+              <li>Eventcatering</li>
+            </a>
+            <a class="m-nav-link" th:href="@{/catalog/partyservice}">
+              <li>Party-Service</li>
+            </a>
+            <a class="m-nav-link" th:href="@{/catalog/mobile-breakfast}">
+              <li>Mobile-Breakfast</li>
+            </a>
+            <a class="m-nav-link" th:href="@{/catalog/rent-a-cook}">
+              <li>Rent-A-Cook</li>
+            </a>
+          </div>
+        </div>
         <a class="m-nav-link" th:href="@{/cart}">
           <li>Warenkorb</li>
         </a>
-        <a class="m-nav-link" th:href="@{/userOrders}">
+        <a class="m-nav-link" sec:authorize="!hasRole('BOSS')" th:href="@{/userOrders}">
           <li>Bestellungen</li>
+        </a>
+        <a class="m-nav-link" sec:authorize="hasRole('BOSS')" th:href="@{/orders}">
+          <li>Bestellungen</li>
+        </a>
+        <a sec:authorize="hasRole('BOSS')" class="m-nav-link" th:href="@{/inventory/name}">
+          <li>Lager</li>
+        </a>
+        <a sec:authorize="hasRole('BOSS')" class="m-nav-link" th:href="@{/users}">
+          <li>Kundenliste</li>
+        </a>
+        <a sec:authorize="hasRole('BOSS')" class="m-nav-link" th:href="@{/intern/employees}">
+          <li>Mitarbeiter</li>
         </a>
       </ul>
 
@@ -26,11 +55,11 @@
             Profil
           </li>
         </a>
-        <a class="btn btn-outline-primary" th:href="@{/login}" sec:authorize="!isAuthenticated()">
-          <li>Login</li>
-        </a>
         <a class="m-nav-link" href="/register" sec:authorize="!isAuthenticated()">
           <li>Registrieren</li>
+        </a>
+        <a class="btn m-btn-outlined" th:href="@{/login}" sec:authorize="!isAuthenticated()">
+          <li>Login</li>
         </a>
         <form class="form-inline" sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
           <button type="submit" class="btn m-btn btn-secondary">Logout</button>

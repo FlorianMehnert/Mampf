@@ -2,23 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <link rel="icon" type="image/vnd.microsoft.icon" th:href="@{/resources/img/World_sm_or.ico}">
-  <script th:src="@{/webjars/jquery/jquery.min.js}" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}" />
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-          crossorigin="anonymous"></script>
-  <!-- Bootstrap -->
-  <!-- CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
-  <title>Bestellungsdetails</title>
+  <div th:replace="fragments/head :: styles"></div>
+    <div th:replace="fragments/head :: scripts"></div>
+    <div th:replace="fragments/head :: meta('Bestelldetails')"></div>
 </head>
 
 <body>
-<nav th:include="navigation :: navigation"></nav>
+<nav th:include="navigation-new :: navigation"></nav>
+
+<div class="m-content">
+  <section class="m-colored-primary">
+    <div class="m-container m-centered">
+      <div class="m-heading m-no-border" th:text="${order}">
+        Ihre Bestellungen
+      </div>
+    </div>
+  </section>
+  <section>
+    
+  </section>
+</div>
+
 <div class="container pb-5">
     <h2 th:text="${order}">Id</h2>
     <div class="content">
