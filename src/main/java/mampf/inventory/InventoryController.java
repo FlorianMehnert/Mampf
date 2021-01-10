@@ -3,7 +3,6 @@ package mampf.inventory;
 import com.mysema.commons.lang.Pair;
 import mampf.Util;
 import mampf.catalog.Item;
-import org.salespointframework.quantity.Quantity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +27,7 @@ public class InventoryController {
 					  @RequestParam("number") int number) {
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
 		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
-		if (!currentItem.getQuantity().equals(Quantity.of(10000))) {
+		if (!Util.infinity.contains(currentItem.getCategory())) {
 			inventory.delete(currentItem);
 			newItem.increaseMampfQuantity(number);
 			inventory.save(newItem);

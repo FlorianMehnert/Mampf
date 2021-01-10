@@ -2,7 +2,6 @@ package mampf.inventory;
 
 import mampf.Util;
 import mampf.catalog.Item;
-import org.salespointframework.catalog.Product;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.quantity.Quantity;
 
@@ -23,14 +22,17 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 	}
 
 	/**
-	 * reduces some {@link Product} by some Quantity
-	 * @param product which product should be reduced
+	 * reduces some {@link Item} by some Quantity
+	 * @param item which product should be reduced
 	 * @param amount by what amount should the product be reduced
 	 */
-	default Optional<UniqueMampfItem> reduceAmount(Product product, Quantity amount) {
-		Optional<UniqueMampfItem> theItem = this.findByProduct(product);
-		theItem.ifPresent(uniqueInventoryItem -> uniqueInventoryItem.decreaseQuantity(amount));
-		return theItem;
+	default Optional<UniqueMampfItem> reduceAmount(Item item, Quantity amount) {
+		UniqueMampfItem theItem = this.findByProduct(item).get();
+		Quantity quantity = theItem.getQuantity();
+		this.delete(theItem);
+		UniqueMampfItem newItem = new UniqueMampfItem(item, quantity.subtract(amount));
+		this.save(newItem);
+		return Optional.of(newItem);
 	}
 
 	/**
@@ -105,19 +107,15 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 			// compare Name
 			int alternative = a.getProduct().getName().compareTo(b.getProduct().getName());
 
-			Set<Item.Category> infinit = new HashSet<>();
-			infinit.add(Item.Category.FOOD);
-			infinit.add(Item.Category.STAFF);
-
-			boolean infinitA = infinit.contains(a.getCategory());
-			boolean infinitB = infinit.contains(b.getCategory());
+			boolean infinitA = Util.infinity.contains(a.getCategory());
+			boolean infinitB = Util.infinity.contains(b.getCategory());
 
 			if (infinitA && infinitB) {
-				return alternative;
+				comp = alternative;
 			}else if(infinitA){
-				return 1;
+				comp = 1;
 			}else if(infinitB){
-				return -1;
+				comp =  -1;
 			}else if(comp == 0){
 				comp = a.getProduct().getName().compareTo(b.getProduct().getName());
 			}

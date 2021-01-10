@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <div th:replace="fragments/head :: styles"></div>
-    <div th:replace="fragments/head :: scripts"></div>
-    <div th:replace="fragments/head :: meta('Mitarbeiter')"></div>
+  <div th:replace="fragments/head :: scripts"></div>
+  <div th:replace="fragments/head :: meta('Mitarbeiter')"></div>
 </head>
 
 <body>
@@ -25,7 +25,7 @@
         <tbody>
           <tr th:each="employee: ${employees}">
             <td th:text="${employee.name}">Elisa Schloss</td>
-            <td th:text="${employee.role}">Role</td>
+            <td th:text="${T(mampf.Util).renderDomainName(employee.role.toString())}">Role</td>
             <td>
               <ul>
                 <li th:each="date : ${employee.booked}"><a th:href="'/orders/detail/' + ${date.id}" th:text="${date.id}">order</a></li>

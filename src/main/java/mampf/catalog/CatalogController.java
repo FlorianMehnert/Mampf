@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-// import org.salespointframework.quantity.Quantity;
-
 @Controller
 public class CatalogController {
 
@@ -53,7 +51,7 @@ public class CatalogController {
 		model.addAttribute("domains", domains);
 		model.addAttribute("headline", "Mampf - Catalog");
 
-		return "catalog_index";
+		return "catalogIndex";
 	}
 
 	/**

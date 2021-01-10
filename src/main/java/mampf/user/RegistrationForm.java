@@ -30,7 +30,8 @@ class RegistrationForm {
 
 	private final String accessCode;
 
-	public RegistrationForm(String username, @NotEmpty String firstname, @NotEmpty String lastname, String password, String address, String email, String role, String companyName, String accessCode) {
+	public RegistrationForm(String username, @NotEmpty String firstname, @NotEmpty String lastname, String password,
+							String address, String email, String role, String companyName, String accessCode) {
 		this.username = username;
 		this.firstname = firstname;
 		this.lastname = lastname;

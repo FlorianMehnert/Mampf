@@ -110,6 +110,13 @@
     </form>
   </div>
 
+	<form method="post" role="form" id="form" th:action="@{/checkout}" th:object="${form}">
+	<div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${#fields.hasErrors('generalError')}">
+		<strong>Bestellvorgang abgebrochen</strong>
+		<span th:errors="*{generalError}"></span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+		</button>
 
   <!-- <div class="container" th:each="domain : ${domains}">
     <div class="row">

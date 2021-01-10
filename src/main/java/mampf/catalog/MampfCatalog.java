@@ -9,7 +9,7 @@ import mampf.catalog.Item.Category;
 import mampf.catalog.Item.Domain;
 
 public interface MampfCatalog extends Catalog<Item> {
-	static final Sort DEFAULT_SORT = Sort.by("productIdentifier").descending();
+	Sort DEFAULT_SORT = Sort.by("productIdentifier").descending();
 
 	ArrayList<Item> findByCategory(Category cat, Sort sort);
 	default ArrayList<Item> findByCategory(Category cat){

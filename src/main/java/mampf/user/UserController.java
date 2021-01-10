@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
-class UserController {
+public class UserController {
 
 	private final UserManagement userManagement;
 
@@ -33,7 +33,7 @@ class UserController {
 				result.rejectValue("username", "RegistrationForm.username.exists", "This Username is already taken!");
 			}
 			if ((form.getEmail().equals(user.getUserAccount().getEmail()))) {
-				result.rejectValue("email", "RegistrationForm.username.exists", "This E-Mail does exists already!");
+				result.rejectValue("email", "RegistrationForm.email.exists", "This E-Mail does exists already!");
 			}
 		}
 		if(form.getRole().equals("EMPLOYEE") && form.getAccessCode().length() != 6 ) {
@@ -45,7 +45,8 @@ class UserController {
 		if (form.getRole().equals("COMPANY") && form.getCompanyName().length() == 0) {
 			result.rejectValue("companyName", "RegistrationForm.companyName.NotEmpty","The company name can not be empty!");
 		}
-		if (form.getRole().equals("INDIVIDUAL") && (form.getCompanyName().length() > 0 || form.getAccessCode().length() > 0)) {
+		if (form.getRole().equals("INDIVIDUAL") &&
+				(form.getCompanyName().length() > 0 || form.getAccessCode().length() > 0)) {
 			result.reject("wrongInput", "Bad inputs were used!");
 		}
 		if (result.hasErrors()) {
@@ -112,5 +113,15 @@ class UserController {
 		return "redirect:/users";
 	}
 
-
+	
+	@GetMapping("/bookBreakfast")
+	@PreAuthorize("isAuthenticated()")
+	public String bookBreakfast(Authentication authentication) {
+		
+		if(userManagement.bookMobileBreakfast(authentication.getName())) {
+			return "redirect:/userDetails/";
+		}
+		return "redirect:/";
+	}
+	
 }

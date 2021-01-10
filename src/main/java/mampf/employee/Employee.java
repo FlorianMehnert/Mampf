@@ -1,6 +1,6 @@
 package mampf.employee;
 
-import mampf.order.MampfOrder;
+import mampf.order.EventOrder;
 
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 
 @Entity
@@ -20,18 +21,19 @@ public class Employee {
   }
   private String name;
   
-  @ManyToMany()
-  private List<MampfOrder> booked;
+  @ManyToMany(mappedBy = "employees")
+  private List<EventOrder> booked;
   private Role role;
 
 	private @Id @GeneratedValue long id;
 
 	@SuppressWarnings("unused")
-	private Employee(){};
+	private Employee(){}
+
 	public Employee(String name, Role role){
     	this.name = name;
     	this.role = role;
-    	this.booked = new ArrayList<MampfOrder>();
+    	this.booked = new ArrayList<>();
 	}
 
 	public long getId(){
@@ -46,11 +48,17 @@ public class Employee {
     return this.role;
   }
 
-  public List<MampfOrder> getBooked() {
+  @ManyToMany
+  public List<EventOrder> getBooked() {
     return this.booked;
   }
-
-  public boolean setBooked(MampfOrder order) {
+  public boolean removeBookedOrder(EventOrder order) {
+	 if(!booked.contains(order)) {
+		return false; 
+	 } 
+	 return booked.remove(order);
+  }
+  public boolean setBooked(EventOrder order) {
     try {
       this.booked.add(order);
     } catch (Exception ex) {

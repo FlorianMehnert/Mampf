@@ -1,12 +1,10 @@
 package mampf.employee;
 
-import java.util.Iterator;
-import java.util.ArrayList;
-
+import mampf.employee.Employee.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Streamable;
 
-import mampf.employee.Employee.Role;
+import java.util.ArrayList;
 
 interface EmployeeRepository extends CrudRepository<Employee, Long>{
 
@@ -15,9 +13,7 @@ interface EmployeeRepository extends CrudRepository<Employee, Long>{
 
 	default Employee findByName(String name) {
 		Streamable<Employee> employees = this.findAll();
-		Iterator<Employee> iterator = employees.iterator();
-		while (iterator.hasNext()) {
-			Employee currentEmployee = iterator.next();
+		for (Employee currentEmployee : employees) {
 			if (currentEmployee.getName().equals(name)) {
 				return currentEmployee;
 			}
@@ -31,9 +27,7 @@ interface EmployeeRepository extends CrudRepository<Employee, Long>{
 		}
 		ArrayList<Employee> employeesWithRole = new ArrayList<>();
 		Streamable<Employee> employees = this.findAll();
-		Iterator<Employee> iterator = employees.iterator();
-		while (iterator.hasNext()) {
-			Employee currentEmployee = iterator.next();
+		for (Employee currentEmployee : employees) {
 			if (currentEmployee.getRole() == role) {
 				employeesWithRole.add(currentEmployee);
 			}

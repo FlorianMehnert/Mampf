@@ -62,7 +62,7 @@ public class MampfCart{
 			removeFromCart(cartItem);
 		}else {
 			domainCart.addOrUpdateItem(cartItem.getProduct(),
-									   itemAmount-cartItem.getQuantity().getAmount().intValue());
+					(long) itemAmount-cartItem.getQuantity().getAmount().intValue());
 		}
 	
 	}
@@ -91,13 +91,13 @@ public class MampfCart{
 	}
 	/**
 	 * get cartitem by cartitemId
-	 * @param cartitemId
+	 * @param cartItemId
 	 * @return CartItem or null
 	 */
-	public CartItem getCartItem(String cartitemId) {
+	public CartItem getCartItem(String cartItemId) {
 		for(Map.Entry<Item.Domain, Cart> entry : stuff.entrySet()) {
 			Optional<CartItem> cartitem = stuff.get(entry.getKey()).
-										  getItem(cartitemId);
+										  getItem(cartItemId);
 			if(cartitem.isPresent()) {
 				return cartitem.get();
 			}
@@ -106,20 +106,20 @@ public class MampfCart{
 	}
 	/**
 	 * get mapped carts to domain
-	 * "_": return everything
+	 *
 	 * @param domain
 	 * @return Map<Item.Domain, Cart>, never null
 	 */
 	public Map<Item.Domain, Cart> getDomainItems(String domain){
 		Map<Item.Domain, Cart> map = new TreeMap<>();
-		if(!domain.equals("_")) {
-			for(Item.Domain type: Item.Domain.values()) {
-				if(type.name().equals(domain)) {
-					map.put(type, getDomainCart(type));
-					return map;
-				}
+		for(Map.Entry<Item.Domain, Cart> entry : stuff.entrySet()) {
+			
+			if(entry.getKey().name().equals(domain)){
+				map.put(entry.getKey(), entry.getValue());
+				return map;
 			}
 		}
+	
 		return stuff;
 	}
 	/**

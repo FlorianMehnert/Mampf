@@ -67,8 +67,22 @@
           <td th:text="${user.company.get().getName()}">user</td>
         </tr>
         <tr th:if="${user.userAccount.hasRole('COMPANY')}">
+<<<<<<< HEAD
           <td>AccessCode</td>
           <td th:text="${user.company.get().accessCode}">user</td>
+=======
+            <td>Gebuchtes Frühstück</td>
+            <td>
+            	<form th:if="${user.company.get().canBookNewBreakfast()}" method="get" th:action="@{/bookBreakfast}">
+            		<button type="submit" th:text="'mobile breakfast ab: '+${user.company.get().getNextBreakfastDate()}+' buchen'"class="btn btn-primary"> für den aktuellen/nächsten Monat buchen</button> 
+            	</form>
+            	<span th:unless="${user.company.get().canBookNewBreakfast()}" th:text="${'aktueller Buchungstermin: '+user.company.get().getBreakfastDate().get()+'  bis zum: '+user.company.get().getBreakfastEndDate().get()}"> </span>
+            </td>
+        </tr>
+        <tr th:if="${user.userAccount.hasRole('COMPANY')}">
+            <td>AccessCode</td>
+            <td th:text="${user.company.get().accessCode}">user</td>
+>>>>>>> origin/main
         </tr>
         <tr th:if="${user.userAccount.hasRole('COMPANY')}">
           <td>Mitarbeiter</td>
