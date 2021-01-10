@@ -1,7 +1,9 @@
 package mampf.order;
 
 import mampf.catalog.Item;
+
 import mampf.catalog.StaffItem;
+
 import mampf.employee.Employee;
 
 import java.time.LocalDateTime;
@@ -26,9 +28,11 @@ import org.salespointframework.order.OrderLine;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.quantity.Quantity;
+import org.springframework.lang.NonNullApi;
 
 @Entity
 public class EventOrder extends MampfOrder {
+
 	
 	public static final Predicate<Product> productHasPrizePerHour = p->p instanceof StaffItem;
 	
@@ -43,6 +47,7 @@ public class EventOrder extends MampfOrder {
 	}
 
 
+
 	@ManyToMany(cascade = CascadeType.MERGE)
 	private List<Employee> employees = new ArrayList<>();
 	
@@ -51,13 +56,14 @@ public class EventOrder extends MampfOrder {
 	
 	@SuppressWarnings("unused")
 	private EventOrder() {}
-	public EventOrder(UserAccount account,
+	public EventOrder(MampfCatalog catalog, UserAccount account,
 					  PaymentMethod paymentMethod,
 					  Item.Domain domain,
 					  LocalDateTime startDate,
 					  LocalDateTime endDate,
 					  String adress) {
 		super(account, paymentMethod,domain,startDate,endDate,adress);
+
 	}
 	
 	//impl.:
@@ -86,8 +92,27 @@ public class EventOrder extends MampfOrder {
 	public List<Employee> getEmployees() {
 		return employees;
 	}
-	
-	
+
+	/*@Override
+	public MonetaryAmount getTotal() {
+		MonetaryAmount total = Money.of(0, "EUR");
+		for(OrderLine orderLine: getOrderLines()) {
+			if(catalog.findById(orderLine.getProductIdentifier()).isPresent()) {
+				Item item = catalog.findById(orderLine.getProductIdentifier()).get();
+				if(item.getCategory().equals(Item.Category.STAFF)) {
+					total = total.add(item.getPrice().multiply(eventDuration()).multiply(orderLine.getQuantity().getAmount()));
+				}else{
+					total = total.add(item.getPrice()).multiply(orderLine.getQuantity().getAmount());
+				}
+			}
+		}
+		return total.add(getAllChargeLines().getTotal());
+	}
+
+	private int eventDuration() {
+		return endDateTime.toLocalTime().minusHours(getStartDate().getHour()).getHour();
+	}*/
+
 	@Override 
 	public MonetaryAmount getTotal() {
 		Money total = Money.of(0, "EUR"); 
