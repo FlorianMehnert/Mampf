@@ -2,7 +2,6 @@ package mampf.order;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.LocalDate;
 import java.time.DayOfWeek;
 
 import java.time.Duration;
@@ -16,7 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.criteria.Order;
 import javax.validation.Valid;
 
 import mampf.inventory.Inventory;
@@ -24,10 +22,8 @@ import mampf.inventory.UniqueMampfItem;
 import mampf.user.Company;
 import mampf.user.User;
 import mampf.user.UserManagement;
-import org.javamoney.moneta.Money;
 import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
-import org.salespointframework.order.OrderIdentifier;
 
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
@@ -195,11 +191,11 @@ public class OrderController {
 	 * handles adding and removing the amount of a cartitem
 	 */
 	@PostMapping("cart/setNewAmount")
-	public String addCartItem(@RequestParam String cartitemId,
+	public String addCartItem(@RequestParam String cartItemId,
 							  @RequestParam int newAmount,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-		CartItem cartItem = mampfCart.getCartItem(cartitemId);
+		CartItem cartItem = mampfCart.getCartItem(cartItemId);
 		if (cartItem != null) {
 			mampfCart.updateCart(cartItem, newAmount);
 		}
@@ -278,7 +274,7 @@ public class OrderController {
 			}
 		}
 		
-		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
+		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(form.getDomainChosen());
 		Map<Item.Domain, List<String>> validations = new HashMap<>();
 		if(!result.hasErrors()) {
 			validations = orderManager.validateCarts(carts, form);
@@ -306,7 +302,7 @@ public class OrderController {
 
 		if (result.hasErrors()) {
 			model.addAttribute("validations",validationsStr);
-			return buyCart(form.getDomainChoosen(), model,mampfCart, form);
+			return buyCart(form.getDomainChosen(), model,mampfCart, form);
 		}
 
 		orderManager.createOrders(carts, form,user.get());
@@ -329,7 +325,7 @@ public class OrderController {
 	private String buyCart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
 		
 		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
-		form.setDomainChoosen(domain);	
+		form.setDomainChosen(domain);
 		model.addAttribute("domains",domains);
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
 		model.addAttribute("form",form);

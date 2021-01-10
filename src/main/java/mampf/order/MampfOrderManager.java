@@ -278,7 +278,7 @@ public class MampfOrderManager {
 	}
 	
 	/**
-	 * creates and returns a list of every COMPLETED Order of a useraccount 
+	 * creates and returns a list of every COMPLETED Order of a useraccount
 	 * @param account
 	 * @return
 	 */
@@ -301,7 +301,7 @@ public class MampfOrderManager {
 				orderManagement.delete(order_);
 				return;
 			}
-			
+
 		}
 	}
 	public Optional<MampfOrder> findById(String orderId){

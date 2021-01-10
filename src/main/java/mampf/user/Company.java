@@ -67,16 +67,16 @@ public class Company {
 	 * @return
 	 */
 	public boolean canBookNewBreakfast() {
-		
-		return 
+
+		return
 		(breakfastDate == null) ||
-		LocalDateTime.now().isAfter( 
+		LocalDateTime.now().isAfter(
 				LocalDateTime.of(getBreakfastEndDate().get(),//is safely not null
 						LocalTime.of(0, 0).minus(awaitBreakFastChoiceDuration)));
-		
+
 	}
 	/**
-	 * estimates if there is a current breakfastDate 
+	 * estimates if there is a current breakfastDate
 	 * @return
 	 */
 	public boolean hasBreakfastDate() {
@@ -90,10 +90,10 @@ public class Company {
 	public LocalDate getNextBreakfastDate() {
 		return LocalDateTime.now().plus(awaitBreakFastChoiceDuration).toLocalDate();
 	}
-	
+
 	/**
 	 * estimates the end Date for the current breakfastDate
-	 * returns empty optional if no breakfastDate is currently available 
+	 * returns empty optional if no breakfastDate is currently available
 	 * returns optional of a localdate with the first day of the next month
 	 * @return
 	 */
@@ -106,7 +106,7 @@ public class Company {
 		return Optional.empty();
 	}
 	/**
-	 * unit testing purpose 
+	 * unit testing purpose
 	 */
 	public void resetCompany(){
 		breakfastDate = null;
@@ -117,7 +117,7 @@ public class Company {
 		}
 		return Optional.empty();
 	}
-	
+
 	public void setBossId(long bossId) {
 		this.bossId = bossId;
 	}

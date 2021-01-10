@@ -31,7 +31,7 @@ public class CheckoutForm {
 	@NotEmpty()
 	private final String payMethod;
 
-	private String domainChoosen;
+	private String domainChosen;
 
 	private String generalError;
 
@@ -108,11 +108,11 @@ public class CheckoutForm {
 		allStartDates = dates;
 	}
 
-	public String getDomainChoosen() {
-		return domainChoosen;
+	public String getDomainChosen() {
+		return domainChosen;
 	}
 
-	public void setDomainChoosen(String domainChoosen) {
-		this.domainChoosen = domainChoosen;
+	public void setDomainChosen(String domainChosen) {
+		this.domainChosen = domainChosen;
 	}
 }
