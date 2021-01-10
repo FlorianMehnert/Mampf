@@ -145,5 +145,5 @@ public class MBOrder extends MampfOrder{
 	List<DayOfWeek> getWeekDays() {
 		return weekDays;
 	}
-	
+
 }
