@@ -202,7 +202,7 @@ public class MampfCart{
 		for(Map.Entry<Item.Domain, DomainCart> entry : stuff.entrySet()) {
 
 			Optional<CartItem> cartitem = stuff.get(entry.getKey()).
-										  getItem(cartItemId);
+										  getItem(cartitemId);
 			if(cartitem.isPresent()) {
 				return cartitem.get();
 			}

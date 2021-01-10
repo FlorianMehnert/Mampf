@@ -260,7 +260,7 @@ public class OrderController {
 		mampfCart.updateCart(form);
 		if(reload.isPresent()) {
 			model.addAttribute("validations", new HashMap<String,List<String>>());
-			return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+			return buyCart(form.getDomainChosen(), model, mampfCart, form);
 		}
 
 		for (Item.Domain domain: form.getDomains()){
@@ -284,7 +284,7 @@ public class OrderController {
 			}
 		}
 		
-		Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
+		Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChosen());
 		Map<Item.Domain, List<String>> validations = new HashMap<>();
 		if(!result.hasErrors()) {
 			validations = orderManager.validateCarts(carts);
@@ -334,7 +334,7 @@ public class OrderController {
 	
 	private String buyCart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
 		Map<Domain, DomainCart> domains = mampfCart.getDomainItems(domain);
-		form.setDomainChoosen(domain);
+		form.setDomainChosen(domain);
 		model.addAttribute("domains", domains);
 
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
