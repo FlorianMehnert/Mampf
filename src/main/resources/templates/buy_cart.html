@@ -168,6 +168,81 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+	<div class="container" th:each="domain : ${domains}">
+		<div class="row">
+			<br>
+			<h3 th:text="${T(mampf.Util).renderDomainName('__${domain.key}__')}"></h3>
+			<table class="table table-hover">
+				<thead class="thead-light">
+					<tr>
+					  <th>Titel</th>
+					  <th>Anzahl</th>
+					  <th>Preis</th>
+					</tr>
+				</thead>
+				<tbody >
+					<tr th:each="item : ${domain.value} ">
+						<td th:text="${item.productName}"></td>
+						<td th:text="${item.quantity.getAmount()}"></td>
+						<td th:text="${{item.price}}"></td>
+					</tr>
+					<tr>
+						<td>Gesamt</td>
+						<td ></td>
+						<td> <strong th:text="${{domain.value.price}}"></strong></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="form-group mt-2" th:with="hideForm=${form.domainsWithoutForm.contains('__${domain.key}__')}">
+			
+			<input type="hidden" th:name="${domain.key}" th:value="${domain.key}">
+			<label for="startDate1" th:unless="${hideForm}">Datum:</label>
+			<input id="startDate1" class="form-control" th:classappend="${#fields.hasErrors('allStartDates['+domain.key+']')} ? 'is-invalid' : ''"
+				   th:type="${hideForm}? 'hidden' : 'date'" th:name="${'allStartDates['+domain.key+']'}" th:value="${form.getStartDate(domain.key)?.toString()}"/>
+			<div class="invalid-feedback" th:if="${#fields.hasErrors('allStartDates['+domain.key+']')}" th:errors="*{allStartDates[__${domain.key}__]}">
+
+			</div>
+			<label for="startTime"  th:unless="${hideForm}">Uhrzeit:</label>
+			<input id="startTime" class="form-control" th:if="${#maps.containsKey(form.allStartTimes, domain.key)}" th:classappend="${#fields.hasErrors('allStartTimes['+domain.key+']')} ? 'is-invalid' : ''"
+			th:type="${hideForm}? 'hidden' : 'time'" th:field="*{allStartTimes[__${domain.key}__]}"/>
+			<input id="startTime2" class="form-control" th:unless="${#maps.containsKey(form.allStartTimes, domain.key)}" th:classappend="${#fields.hasErrors('allStartTimes['+domain.key+']')} ? 'is-invalid' : ''"
+			th:type="${hideForm}? 'hidden' : 'time'" th:name="${'allStartTimes['+ domain.key + ']'}" th:value="${form.getTimeNow()}"/>
+			<div class="invalid-feedback" th:if="${#fields.hasErrors('allStartTimes['+domain.key+']')}" th:errors="*{allStartTimes[__${domain.key}__]}">
+			
+			</div>
+		</div>
+		<div class="form-group mt-2" >
+			<div th:each="err : ${validations.get('__${domain.key}__')}">
+			<div th:text="${err}" class="alert alert-danger alert-dismissible fade show" role="alert"></div>
+			</div>
+		</div> 
+	</div>
+	<hr><br>
+	<div class="container">
+		<div class="row">
+		<div class="col">
+		<h3 th:text="'Gesamtpreis: '+${{total}}">
+		</h3>
+		</div>
+		
+		<div class="col">
+			<div class="d-flex flex-row-reverse"><div>
+			<input type="hidden" name="domainChoosen" th:field="*{domainChoosen}" th:value="${domainChoosen}"/>
+			<div class="form-check form-check-inline">
+				<input id="barChecked" class="form-check-input" type="radio" name="payMethod" value="Bar" checked="checked" />
+				<label for="barChecked" class="form-check-label">Bar</label>
+			</div><br/>
+			<div class="form-check form-check-inline">
+				<input id="checkChecked" class="form-check-input" type="radio" name="payMethod" value="Check" />
+				<label for="checkChecked" class="form-check-label">Überweisung</label>
+			</div><br/>
+			<button type="submit" class="btn btn-outline-primary">Bestellung erstellen</button>
+			</div></div>
+		</div>
+		</div>
+	</div>
+	</form>
     <div class="container" th:each="domain : ${domains}">
       <div class="row">
         <br>
@@ -292,7 +367,6 @@
       </div>
     </div>
   </form> -->
-
 
   </div>
   </div>

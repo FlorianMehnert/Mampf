@@ -46,12 +46,19 @@ public class Item extends Product {
 		this.description = description;
 	}
 
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	@Override
 	public String toString() {
 		return "name: " + getName() + " price: " + getPrice() + " domain: " + getDomain() + " category: "
 				+ getCategory();
 	}
-
+	
+	public String getDescription() {
+		return description;
+	}
+	
 	public Domain getDomain() {
 		return this.domain;
 	}
