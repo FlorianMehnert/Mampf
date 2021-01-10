@@ -10,6 +10,7 @@ import mampf.employee.Employee;
 import mampf.employee.EmployeeManagement;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
+import mampf.order.MampfCart.DomainCart;
 import mampf.order.OrderController.BreakfastMappedItems;
 import mampf.user.Company;
 import mampf.user.User;
@@ -94,21 +95,20 @@ public class MampfOrderManager {
 	 * @param form
 	 * @return
 	 */
-	public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, Cart> carts,CheckoutForm form){
+	public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, DomainCart> carts){
 		//each domain can have mutliple errormessages:
 		Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
 		
 		
-		for(Item.Domain domain : carts.keySet()) {
-			Cart cart = carts.get(domain);
+		for(Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
+			Domain domain = entry.getKey();
+			DomainCart cart = entry.getValue();
+			LocalDateTime startDate = cart.getStartDate(),endDate = cart.getEndDate();
 			
-			//get Dates:
-			LocalDateTime startDate = getDate(true,domain,cart,form),
-						  endDate = getDate(false,domain,cart,form);
 			
 			//check for MB 'you are too late'-error:
 			if(domain.equals(Domain.MOBILE_BREAKFAST) && startDate.isBefore(LocalDateTime.now())) {
-				updateValidations(validations, domain, "chooce-time is already over :("); 
+				updateValidations(validations, domain, "Zu späte MB Auswahl"); 
 				continue;
 			}
 			
@@ -125,15 +125,15 @@ public class MampfOrderManager {
 					Optional<Item> catalogItem = catalog.findById(checkitem.getProduct().getId());
 					
 					if(catalogItem.isEmpty()) {
-						updateValidations(validations, domain, "No Item! could not find item:"+cartitem.getProductName());
+						updateValidations(validations, domain, "Item nicht vorhanden:"+cartitem.getProductName());
 						continue;
 					}
 					
 					Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, personalLeft,checkitem);
 					if(inventoryItem.isPresent()){
-						String validationState = "No Amount! "+
+						String validationState = "Keine verfügbare Auswahl "+
 												 catalogItem.get().getCategory().name().toLowerCase()+": "+catalogItem.get().getName()+
-												 " Amount left:"+inventoryItem.get().getQuantity().getAmount();
+												 " verbleibende Anzahl:"+inventoryItem.get().getQuantity().getAmount();
 						updateValidations(validations, domain, validationState);
 					}	
 				}
@@ -152,29 +152,30 @@ public class MampfOrderManager {
 	 * @param user
 	 * @return
 	 */
-	public List<MampfOrder> createOrders(Map<Item.Domain, Cart> carts,  
+	public List<MampfOrder> createOrders(Map<Item.Domain, DomainCart> carts,  
 										 CheckoutForm form,
 										 User user) {
 		
 		List<MampfOrder> orders = new ArrayList<>();
-		for(Map.Entry<Domain, Cart> entry : carts.entrySet()) {
+		for(Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
 			Domain domain = entry.getKey();
-			Cart cart = entry.getValue();
+			DomainCart cart = entry.getValue();
 			
 			//get Dates:
-			LocalDateTime startDate = getDate(true,domain,cart,form),
-						  endDate = getDate(false,domain,cart,form);
+			LocalDateTime startDate = cart.getStartDate(),endDate = cart.getEndDate();
 			
 			MampfOrder order;
 			if(domain.equals(Domain.MOBILE_BREAKFAST)) {
-				order = createOrderMB(cart.iterator().next(),form,user.getUserAccount());
+				order = createOrderMB(cart.iterator().next(),startDate,endDate,form,user.getUserAccount());
 				
 			}else {
 				//create usual order:
 				order = new EventOrder(user.getUserAccount(),
-									   createPayMethod(form.getPayMethod(),user.getUserAccount()),
-									   domain,
-									   startDate,user.getAddress());
+						createPayMethod(form.getPayMethod(),user.getUserAccount()),
+						domain,
+						startDate,
+						endDate,
+						user.getAddress());
 				
 				cart.addItemsTo(order);
 				if(hasStaff(cart)) {
@@ -441,8 +442,7 @@ public class MampfOrderManager {
 		}
 	}
 	
-	private MBOrder createOrderMB(CartItem bfCartItem, CheckoutForm form, UserAccount account) {
-		//get mapper-item:
+	private MBOrder createOrderMB(CartItem bfCartItem, LocalDateTime startDate, LocalDateTime endDate, CheckoutForm form, UserAccount account) {
 		
 		BreakfastMappedItems bfItem = (BreakfastMappedItems)bfCartItem.getProduct();
 		Cart cart = new Cart();
@@ -450,7 +450,7 @@ public class MampfOrderManager {
 			cart.addOrUpdateItem(checkItem.getProduct(), checkItem.getQuantity());
 		}
 		
-		MBOrder order = new MBOrder(account,createPayMethod(form.getPayMethod(),account),bfItem);
+		MBOrder order = new MBOrder(account,createPayMethod(form.getPayMethod(),account),startDate,endDate,bfItem);
 		
 		order.addChargeLine(bfCartItem.getPrice(), "mobile breakfast total");
 		
@@ -471,7 +471,7 @@ public class MampfOrderManager {
 		}
 	}
 	
-	private LocalDateTime getDate(boolean needStartDate, Domain domain, Cart cart, CheckoutForm form) {
+	/*private LocalDateTime getDate(boolean needStartDate, Domain domain, DomainCart cart) {
 		LocalDateTime date;
 		if(domain.equals(Domain.MOBILE_BREAKFAST)) {
 			//cart contains only one mapperItem: (otherwise the domain would not exist)
@@ -488,16 +488,14 @@ public class MampfOrderManager {
 		}else {
 			//form has the startdate and endDate (is static)
 			if(needStartDate) {
-				date = form.getStartDateTime(domain);
+				date = cart.getStartDate();
 			}else {
-				date = EventOrder.getEndDate(form.getStartDateTime(domain));
+				date = cart.getEndDate();
 			}
-			
-			
 		}
 
 		return date;
-	}
+	}*/
 	
 	//all ordered items for a time span
 	private Map<ProductIdentifier, Quantity> getOrderItems(LocalDateTime fromDate, LocalDateTime toDate) {

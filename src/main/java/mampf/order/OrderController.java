@@ -6,19 +6,16 @@ import java.time.DayOfWeek;
 
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.money.MonetaryAmount;
+import javax.persistence.criteria.Order;
 import javax.validation.Valid;
 
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
+import mampf.order.MampfCart.DomainCart;
 import mampf.user.Company;
 import mampf.user.User;
 import mampf.user.UserManagement;
@@ -57,13 +54,12 @@ public class OrderController {
 	public class BreakfastMappedItems extends Item {
 		
 		private final LocalTime breakfastTime;
-		private final LocalDateTime startDate,endDate; 
 		private final List<DayOfWeek> weekDays;
 		private final String adress;
 		private final BreakfastItem beverage,dish;
 		private final long amount;
 		
-		public BreakfastMappedItems(User user,
+		public BreakfastMappedItems(User user, LocalDateTime startDate, LocalDateTime endDate,
 									MobileBreakfastForm form) {
 			
 			super("Mobile Breakfast \nChoice: " +
@@ -85,8 +81,6 @@ public class OrderController {
 					
 			//get start and end Dates:
 			Optional<Company> company = userManagement.findCompany(user.getId());
-			startDate = LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.of(0, 0));
-			endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.of(0, 0));
 			setName(getName()+"\nFrom "+startDate.toLocalDate()+" to "+endDate.toLocalDate()+"\nEach: "+weekDays);
 			Optional<User> boss = userManagement.findUserById(company.get().getBossId());
 			if(boss.isPresent()) {
@@ -104,7 +98,7 @@ public class OrderController {
 					orderManager.getBookedItems(
 					MBOrder.getItems(startDate, endDate, 
 									 startDate, endDate, 
-									 weekDays, breakfastTime, 
+									 weekDays.stream().collect(Collectors.toSet()), breakfastTime, 
 									 List.of(beverage.getId(),
 											 dish.getId())));
 			if(totalItems.isEmpty()) {
@@ -113,12 +107,6 @@ public class OrderController {
 				amount = totalItems.get(0).getAmount().longValue();			
 			}	
 			
-		}
-		public LocalDateTime getStartDate() {
-			return startDate;
-		}
-		public LocalDateTime  getEndDate() {
-			return endDate;
 		}
 		public LocalTime getBreakfastTime() {
 			return breakfastTime;
@@ -172,7 +160,8 @@ public class OrderController {
 	public String basket(Model model,
 						 @ModelAttribute("mampfCart") MampfCart mampfCart) {
 		
-		Map<Item.Domain, Cart> domains = mampfCart.getStuff();
+		mampfCart.resetCartDate();
+		Map<Item.Domain, DomainCart> domains = mampfCart.getStuff();
 		model.addAttribute("domains", domains);
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
 		return "cart";
@@ -232,15 +221,20 @@ public class OrderController {
 			redirectAttributes.addFlashAttribute(error, "für diesen Monat wurde kein Mobile Breakfast bestellt");
 			return redirect;
 		}
+		//TODO: MB error: mb is already booked
 		//TODO: MB error: outdated (duplicate code from BreakfastmappedItems constructor...)(check if time now is after choiceTimeEnd)
 		
-		BreakfastMappedItems mbItem = 
-				new BreakfastMappedItems(
-						userManagement.findUserByUserAccount(userAccount.get().getId()).get(),
-						form);
+		
+		User user = userManagement.findUserByUserAccount(userAccount.get().getId()).get();
+		Optional<Company> company = userManagement.findCompany(user.getId());
+		LocalDateTime startDate = LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.of(0, 0));
+		LocalDateTime endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.of(0, 0));
+		
+		BreakfastMappedItems mbItem = new BreakfastMappedItems(user,startDate,endDate,form);
 		 
 		mampfCart.addToCart(mbItem,Quantity.of(mbItem.getAmount()));
-
+		mampfCart.updateMBCart(startDate, endDate);
+		
 		return "redirect:/cart";
 	}
 
@@ -251,33 +245,49 @@ public class OrderController {
 	@GetMapping("/pay/{domain}")
 	public String chooseToBuy(Model model,
 							  @PathVariable String domain,
-							  CheckoutForm form,
+							  @ModelAttribute("form") CheckoutForm form,
 							  @ModelAttribute("mampfCart") MampfCart mampfCart) {
-
-		model.addAttribute("validations",new HashMap<String,List<String>>());
-		return buyCart(domain, model,mampfCart, form);
+		model.addAttribute("validations", new HashMap<String,List<String>>());
+		return buyCart(domain, model, mampfCart, form);
 	}
 
 	/**
 	 * buy cart(s)
 	 */
 	@PostMapping("/checkout")
-	public String buy(Model model, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
+	public String buy(Model model, @RequestParam(name = "reload")Optional<Boolean> reload, @Valid @ModelAttribute("form") CheckoutForm form, Errors result,
 					  Authentication authentication, @ModelAttribute("mampfCart") MampfCart mampfCart) {
+		mampfCart.updateCart(form);
+		if(reload.isPresent()) {
+			model.addAttribute("validations", new HashMap<String,List<String>>());
+			return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+		}
 
 		for (Item.Domain domain: form.getDomains()){
-			if(!form.domainsWithoutForm.contains(domain.name()) && 
-				form.getStartDateTime(domain) != null && 
-				form.getStartDateTime(domain).isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
+			if(!CheckoutForm.domainsWithoutForm.contains(domain.name())) { 
+				LocalDateTime startDate = form.getStartDateTime(domain);
+				LocalDateTime endDate = form.getEndDateTime(domain);
+				String errVar = "allStartDates["+domain.name()+"]";
+				String errDomain = "CheckoutForm.startDate";
+				
+				if(startDate == null || endDate == null) {
+					result.rejectValue(errVar, errDomain+".Invalid","Bitte Datum eingeben!");
+					continue;
+				}
+				if(startDate.isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
 
-				result.rejectValue("allStartDates["+domain.name()+"]", "CheckoutForm.startDate.NotFuture", "Your date should be in the future!");
+					result.rejectValue(errVar, errDomain+".NotFuture", "Das Datum muss in der Zukunft liegen!");
+				}
+				if(startDate.isAfter(endDate)) {
+					result.rejectValue(errVar, errDomain+".idk", "keine negativen Bestellungen erlaubt!");
+				}
 			}
 		}
 		
-		Map<Item.Domain, Cart> carts = mampfCart.getDomainItems(form.getDomainChosen());
+		Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
 		Map<Item.Domain, List<String>> validations = new HashMap<>();
 		if(!result.hasErrors()) {
-			validations = orderManager.validateCarts(carts, form);
+			validations = orderManager.validateCarts(carts);
 		}
 		
 		Map<String, List<String>> validationsStr = new HashMap<>();
@@ -323,12 +333,12 @@ public class OrderController {
 	}
 	
 	private String buyCart(String domain, Model model, MampfCart mampfCart, CheckoutForm form) {
-		
-		Map<Domain, Cart> domains = mampfCart.getDomainItems(domain);
-		form.setDomainChosen(domain);
-		model.addAttribute("domains",domains);
+		Map<Domain, DomainCart> domains = mampfCart.getDomainItems(domain);
+		form.setDomainChoosen(domain);
+		model.addAttribute("domains", domains);
+
 		model.addAttribute("total", mampfCart.getTotal(domains.values()));
-		model.addAttribute("form",form);
+		model.addAttribute("form", form);
 		return "buy_cart";
 	}
 
@@ -355,6 +365,7 @@ public class OrderController {
 			return "redirect:/";
 		}
 		model.addAttribute("order", order.get());
+		model.addAttribute("isMB", order.get() instanceof MBOrder);
 		return "ordersDetail";
 	}
 	/**
