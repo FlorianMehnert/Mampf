@@ -27,10 +27,10 @@
         </div>
         <div class="m-cart__row m-flex-flex-end m-children-padding-left">
           <form method="post" th:action="@{/cart/clear}" class="">
-            <button class="btn btn-secondary" type="submit">Warenkorb leeren</button>
+            <button class="btn btn-secondary" th:if="!${domains.isEmpty() type="submit">Warenkorb leeren</button>
           </form>
           <form sec:authorize="!hasRole('BOSS')" method="get" th:action="@{/pay/_}" class="">
-            <button class="btn btn-outline-light" type="submit">Alles kaufen</button>
+            <button class="btn btn-outline-light" th:if="!${domains.isEmpty() type="submit">Alles kaufen</button>
           </form>
         </div>
       </div>
