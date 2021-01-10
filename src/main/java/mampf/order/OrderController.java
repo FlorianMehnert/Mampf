@@ -43,7 +43,6 @@ import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
 
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -340,7 +339,7 @@ public class OrderController {
 /* ORDERS */
 
 	/**
-	 * lists orders ever for adminuser
+	 * lists every orders ever made for adminuser
 	 */
 	@GetMapping("/orders")
 	@PreAuthorize("hasRole('BOSS')")
@@ -349,8 +348,9 @@ public class OrderController {
 		model.addAttribute("stuff", getSortedOrders(Optional.empty(), Optional.empty()));
 		return "orders";
 	}
-
-	
+	/**
+	 * shows Order
+	 */
 	@GetMapping("/orders/detail/{orderId}")
 	public String editOrder(@PathVariable String orderId, Model model) {
 		
@@ -361,7 +361,6 @@ public class OrderController {
 		model.addAttribute("order", order.get());
 		return "ordersDetail";
 	}
-
 	/**
 	 * lists orders of a user
 	 */
@@ -373,6 +372,24 @@ public class OrderController {
 		
 		model.addAttribute("stuff", getSortedOrders(Optional.of(MampfOrder.comparatorSortByCreation), userAccount));
 		return "orders";
+	}
+	/**
+	 * boss: delete a order
+	 */
+	@PreAuthorize("hasRole('BOSS')")
+	//@DeleteMapping(value = "/orders/delete?id={orderId}")
+	@GetMapping("/orders/delete/{orderId}")
+	public String deleteOrder(@PathVariable Optional<String> orderId) {
+		String redirect="redirect:/";
+		if(orderId.isEmpty()) {
+			return redirect;
+		}
+		Optional<MampfOrder> order = orderManager.findById(orderId.get());
+		if(order.isEmpty()) {
+			return redirect;
+		}
+		orderManager.deleteOrder(order.get());
+		return "redirect:/orders";
 	}
 	
 	private Map<String,List<MampfOrder>> getSortedOrders(Optional<Comparator<MampfOrder>> comp, Optional<UserAccount> userAccount){

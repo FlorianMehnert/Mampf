@@ -278,7 +278,7 @@ public class MampfOrderManager {
 	}
 	
 	/**
-	 * creates and returns a list of every Order of a useraccount 
+	 * creates and returns a list of every COMPLETED Order of a useraccount 
 	 * @param account
 	 * @return
 	 */
@@ -289,19 +289,31 @@ public class MampfOrderManager {
 		}
 		return res;
 	}
-	//TODO: not working...
-	public void deleteAll() {
-		List<MampfOrder> orders = findAll();
-		for(MampfOrder order: orders) {
-			orderManagement.delete(order);
+	/**
+	 * deletes order
+	 */
+	public void deleteOrder(MampfOrder order) {
+		for(MampfOrder order_: findAll()) {
+			if(order.equals(order_)) {
+				if(order_ instanceof EventOrder) {
+					order.getEmployees().forEach(e->e.removeBookedOrder((EventOrder)order));
+				}
+				orderManagement.delete(order_);
+				return;
+			}
+			
 		}
 	}
 	public Optional<MampfOrder> findById(String orderId){
 		return orderManagement.findAll(Pageable.unpaged()).filter(order->order.getId().getIdentifier().equals(orderId)).get().findFirst();
 	}
 	public List<MampfOrder> findAll() {
-		return orderManagement.findAll(Pageable.unpaged()).getContent();
+		return orderManagement.findBy(OrderStatus.COMPLETED).toList();
 	}
+	/**
+	 * only 
+	 * @return
+	 */
 	public OrderManagement<MampfOrder> getOrderManagement() {
 		return orderManagement;
 	}

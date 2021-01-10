@@ -31,6 +31,7 @@ import mampf.catalog.BreakfastItem;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
 
+import org.salespointframework.order.OrderStatus;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -243,6 +244,7 @@ public class MampfOrderManagerTests {
 		initValidCart();
 		orders = orderManager.createOrders(cart.getDomainItems("_"), form, user);
 		
+		
 		assert orders.size() == 4;
 		assert orders.stream().allMatch(o -> o.isCompleted());
 		order = orders.stream().filter(o->o.getDomain().equals(Item.Domain.EVENTCATERING)).findFirst().get();
@@ -288,10 +290,25 @@ public class MampfOrderManagerTests {
 		assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getOrderLines().toList().size() == 1);
 		
 
-
 	}
-
 	
+	@Test
+	void deleteAll() {
+		CheckoutForm form = initForm();
+		User user = userManager.findUserByUsername("hans").get();
+		
+		MampfOrder order;
+		List<MampfOrder> orders;
+
+		//buy all:
+		initContext();
+		initValidCart();
+		orders = orderManager.createOrders(cart.getDomainItems("_"), form, user);
+		//orderManager.deleteOrder(orders.remove(0));
+		orderManager.getOrderManagement().delete(orders.remove(0));
+		List<MampfOrder> delOrders = orderManager.getOrderManagement().findBy(OrderStatus.CANCELLED).toList();
+		int a=1;
+	}
 	
 }
 

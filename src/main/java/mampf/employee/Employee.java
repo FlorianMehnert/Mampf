@@ -20,7 +20,7 @@ public class Employee {
   }
   private String name;
   
-  @ManyToMany
+  @ManyToMany(mappedBy = "employees")
   private List<EventOrder> booked;
   private Role role;
 
@@ -51,7 +51,12 @@ public class Employee {
   public List<EventOrder> getBooked() {
     return this.booked;
   }
-
+  public boolean removeBookedOrder(EventOrder order) {
+	 if(!booked.contains(order)) {
+		return false; 
+	 } 
+	 return booked.remove(order);
+  }
   public boolean setBooked(EventOrder order) {
     try {
       this.booked.add(order);
