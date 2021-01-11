@@ -68,9 +68,11 @@ public class OrderController {
 	 			  BreakfastItem.BREAKFAST_PRICE, 
 	 			  Item.Domain.MOBILE_BREAKFAST, 
 	 			  Item.Category.FOOD, "temp");
+			this.startDate = startDate;
+			this.endDate = endDate;
 			//get weekdays:
 			List<String> days =form.getDays().keySet().stream().
-					   filter(k->form.getDays().get(k).booleanValue()). //get all marked weekdays
+					   filter(k-> form.getDays().get(k)). //get all marked weekdays
 					   //map(k->DayOfWeek.valueOf(k.toUpperCase())). //convert string to weekday
 					   map(String::toUpperCase). 
 					   collect(Collectors.toList()); 		
@@ -102,8 +104,8 @@ public class OrderController {
 			List<UniqueMampfItem> totalItems = 
 					orderManager.getBookedItems(
 					MBOrder.getItems(startDate, endDate, 
-									 startDate, endDate, 
-									 weekDays.stream().collect(Collectors.toSet()), breakfastTime, 
+									 startDate, endDate,
+							new HashSet<>(weekDays), breakfastTime,
 									 List.of(beverage.getId(),
 											 dish.getId())));
 			if(totalItems.isEmpty()) {

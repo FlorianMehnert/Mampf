@@ -194,15 +194,15 @@ public class MampfCart{
 		}
 	}
 	/**
-	 * get cartitem by cartitemId
+	 * get cartitem by cartItemId
 	 * @param cartItemId
 	 * @return CartItem or null
 	 */
-	public CartItem getCartItem(String cartitemId) {
+	public CartItem getCartItem(String cartItemId) {
 		for(Map.Entry<Item.Domain, DomainCart> entry : stuff.entrySet()) {
 
 			Optional<CartItem> cartitem = stuff.get(entry.getKey()).
-										  getItem(cartitemId);
+										  getItem(cartItemId);
 			if(cartitem.isPresent()) {
 				return cartitem.get();
 			}

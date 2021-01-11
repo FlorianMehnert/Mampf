@@ -24,7 +24,7 @@
   <div class="m-card__section m-card__actions">
     <form method="post" th:action="@{/cart/setNewAmount}">
       <div class="input-group">
-        <input type="hidden" name="cartitemId" th:value="${item.id}" />
+        <input type="hidden" name="cartItemId" th:value="${item.id}" />
         <input class="form-control" type="number" name="newAmount" th:value="${amount}">
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="submit">
@@ -34,7 +34,7 @@
       </div>
     </form>
     <form method="post" th:action="@{/cart/setNewAmount}">
-      <input type="hidden" name="cartitemId" th:value="${item.id}" />
+      <input type="hidden" name="cartItemId" th:value="${item.id}" />
       <input class="form-control" type="hidden" name="newAmount" value="0">
       <button type="submit" class="btn btn-primary m-card__add">
         <i class="fas fa-trash-alt"></i> Entfernen
