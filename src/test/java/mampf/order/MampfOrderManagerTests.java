@@ -1,42 +1,29 @@
 package mampf.order;
 
-import static org.mockito.Mockito.mock;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAmount;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import mampf.user.Company;
-import mampf.user.User;
-import mampf.user.UserManagement;
-import mampf.user.UserController;
-
+import mampf.catalog.BreakfastItem;
+import mampf.catalog.Item;
+import mampf.catalog.Item.Category;
+import mampf.catalog.Item.Domain;
 import mampf.catalog.MampfCatalog;
 import mampf.employee.Employee;
 import mampf.employee.EmployeeManagement;
-import mampf.catalog.Item;
-import mampf.catalog.Item.Domain;
-import mampf.catalog.Item.Category;
-import mampf.catalog.BreakfastItem;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
-
-import org.salespointframework.order.OrderStatus;
+import mampf.user.User;
+import mampf.user.UserController;
+import mampf.user.UserManagement;
+import org.junit.jupiter.api.Test;
 import org.salespointframework.quantity.Quantity;
-import org.salespointframework.useraccount.UserAccount;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 @SpringBootTest
@@ -54,7 +41,7 @@ public class MampfOrderManagerTests {
 	OrderController orderController;
 	@Autowired
 	UserController userController;
-	
+
 	@Autowired
 	EmployeeManagement employeeManager;
 	@Autowired
@@ -62,7 +49,7 @@ public class MampfOrderManagerTests {
 
 	private MampfCart cart;
 	private LocalDateTime justadate = LocalDateTime.now().plus(OrderController.delayForEarliestPossibleBookingDate).plus(Duration.ofDays(1));
-	
+
 
 	MampfOrderManagerTests() {
 		cart = new MampfCart();
@@ -95,7 +82,7 @@ public class MampfOrderManagerTests {
 		}
 
 		employeeManager.findAll().stream().peek(xdd -> xdd.getBooked().clear());
-		
+
 		/*
 		 * User-Stock:
 		 * ind:
@@ -108,9 +95,11 @@ public class MampfOrderManagerTests {
 		 * - trippster
 		 */
 		userManager.findAll().forEach(
-			user->{if(user.getCompany().isPresent())user.getCompany().get().resetCompany();}
+				user -> {
+					if (user.getCompany().isPresent()) user.getCompany().get().resetCompany();
+				}
 		);
-		
+
 		/*
 		 * Order-Stock
 		 * is just empty
@@ -118,33 +107,33 @@ public class MampfOrderManagerTests {
 		//error: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: mampf.order.EventOrder.employees, could not initialize proxy - no Session
 		/*orderManager.findAll().forEach(
 			order->{orderManager.deleteOrder(order);}
-		);*/ 
-		
+		);*/
+
 	}
 
 	CheckoutForm initForm() {
 		List<String> domains = new ArrayList<>();
 		List.of(Item.Domain.values()).forEach(
-				d->domains.add(d.name())
+				d -> domains.add(d.name())
 		);
 
-		Map<String, String> allStartDates = new HashMap<>(),allStartTimes = new HashMap<>(), allEndTimes = new HashMap<>();
+		Map<String, String> allStartDates = new HashMap<>(), allStartTimes = new HashMap<>(), allEndTimes = new HashMap<>();
 		domains.forEach(
-				d->{
+				d -> {
 					allStartDates.put(d, justadate.format(CheckoutForm.dateFormatter));
 					allStartTimes.put(d, justadate.format(CheckoutForm.timeFormatter));
 					allEndTimes.put(d, justadate.plusHours(2).format(CheckoutForm.timeFormatter));
 				}
 		);
-		CheckoutForm form = new CheckoutForm(allStartDates, "Check", allStartTimes, allEndTimes,"",null);
+		CheckoutForm form = new CheckoutForm(allStartDates, "Check", allStartTimes, allEndTimes, "", null);
 		return form;
 	}
-	
-	User initMB() {		
+
+	User initMB() {
 		userManager.bookMobileBreakfast("dextermorgan");
 		return userManager.findUserByUsername("tripster").get();
 	}
-	
+
 	void initValidCart() {
 		orderController.clearCart(cart);
 		/**
@@ -161,7 +150,7 @@ public class MampfOrderManagerTests {
 		 * - rca:
 		 *    6 x cook
 		 */
-		
+
 		List<Item> d = catalog.findByDomain(Domain.EVENTCATERING);
 		orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.BUFFET) && p.getName().equals("Luxus")).findFirst().get(), 1, cart);
 		orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.EQUIPMENT) && p.getName().equals("Tischdecke")).findFirst().get(), 10, cart);
@@ -169,7 +158,7 @@ public class MampfOrderManagerTests {
 
 
 		d = catalog.findByDomain(Domain.MOBILE_BREAKFAST);
-		 
+
 		orderController.orderMobileBreakfast(Optional.of(initMB().getUserAccount()),
 				new MobileBreakfastForm(
 						(BreakfastItem) d.stream().filter(p -> p.getName().equals("Kuchen")).findFirst().get(),
@@ -182,7 +171,7 @@ public class MampfOrderManagerTests {
 
 		d = catalog.findByDomain(Domain.RENT_A_COOK);
 		orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.STAFF) && p.getName().equals("Koch/Köchin pro 10 Personen")).findFirst().get(), 6, cart);
-		
+
 	}
 
 	void initInvalidCart() {
@@ -213,7 +202,7 @@ public class MampfOrderManagerTests {
 	@Test
 	void validateCarts() {
 		initContext();
-		
+
 		CheckoutForm form = initForm();
 		Map<Domain, List<String>> validations;
 		/*
@@ -245,10 +234,10 @@ public class MampfOrderManagerTests {
 
 	//@Test
 	void createOrders() {
-		
+
 		CheckoutForm form = initForm();
 		User user = userManager.findUserByUsername("hans").get();
-		
+
 		MampfOrder order;
 		List<MampfOrder> orders;
 
@@ -256,11 +245,11 @@ public class MampfOrderManagerTests {
 		initContext();
 		initValidCart();
 		orders = orderManager.createOrders(cart.getDomainItems("_"), form, user);
-		
-		
+
+
 		assert orders.size() == 4;
 		assert orders.stream().allMatch(o -> o.isCompleted());
-		order = orders.stream().filter(o->o.getDomain().equals(Item.Domain.EVENTCATERING)).findFirst().get();
+		order = orders.stream().filter(o -> o.getDomain().equals(Item.Domain.EVENTCATERING)).findFirst().get();
 		//eventorder:
 		assert order.getOrderLines().toList().size() == 3;
 		assert order.getEmployees().size() == 4;
@@ -269,30 +258,30 @@ public class MampfOrderManagerTests {
 		//assert order.getEndDate().equals(form.getStartDateTime(Item.Domain.EVENTCATERING))
 		assert order.getAdress().equals(user.getAddress());
 		assert order instanceof EventOrder;
-		
+
 		//party:
-		order = orders.stream().filter(o->o.getDomain().equals(Item.Domain.PARTYSERVICE)).findFirst().get();
+		order = orders.stream().filter(o -> o.getDomain().equals(Item.Domain.PARTYSERVICE)).findFirst().get();
 		assert order.getOrderLines().toList().size() == 2;
 		assert order instanceof EventOrder;
-		
+
 		//mb:
 		//Item.Domain d= Item.Domain.MOBILE_BREAKFAST;
 		//User boss = userManager.findUserByUsername("dextermorgan").get();
-		order = orders.stream().filter(o->o.getDomain().equals(Item.Domain.MOBILE_BREAKFAST)).findFirst().get();
+		order = orders.stream().filter(o -> o.getDomain().equals(Item.Domain.MOBILE_BREAKFAST)).findFirst().get();
 		assert order.getAdress().equals(userManager.findUserByUsername("dextermorgan").get().getAddress());
 		assert order.getEmployees().isEmpty();
-		assert order.getOrderLines().get().anyMatch(ol->ol.getProductName().equals("Kuchen"));
-		assert order.getOrderLines().get().anyMatch(ol->ol.getProductName().equals("Tee"));
+		assert order.getOrderLines().get().anyMatch(ol -> ol.getProductName().equals("Kuchen"));
+		assert order.getOrderLines().get().anyMatch(ol -> ol.getProductName().equals("Tee"));
 		assert order.getOrderLines().toList().size() == 2;
 		assert order instanceof MBOrder;
-		
+
 		//still available:
 		assert employeeManager.getFreeEmployees(justadate, justadate.plusHours(1), Employee.Role.COOK).size() == 0;
-		assert employeeManager.getFreeEmployees(justadate, justadate.plusHours(2),Employee.Role.SERVICE).size() == 2;
+		assert employeeManager.getFreeEmployees(justadate, justadate.plusHours(2), Employee.Role.SERVICE).size() == 2;
 		//employees assigned:
 		assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.EVENTCATERING) && o.getEmployees().size() == 4);
 		assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getEmployees().size() == 6);
-		
+
 
 		initContext();
 		initValidCart();
@@ -301,10 +290,10 @@ public class MampfOrderManagerTests {
 		assert orders.size() == 1;
 		assert orders.stream().allMatch(o -> o.isCompleted());
 		assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getOrderLines().toList().size() == 1);
-		
+
 
 	}
-	
+
 }
 
 
