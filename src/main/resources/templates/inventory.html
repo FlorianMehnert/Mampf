@@ -19,7 +19,18 @@
             </style>
             <h1 th:text="#{inventory.title}">Bestand</h1>
         </header>
-        <table class="table table-hover">
+        <form class="form reorder" method="get" th:action="@{inventory}">
+        <button type="submit" class="btn btn-outline-primary float-right cont"
+                th:text="#{inventory.back}">back
+            hinzufügen
+        </button>
+        </form>
+        <form class="form reorder" method="get" th:action="@{/inventory/filter}">
+            <label for="word"></label>
+            <input style="position:relative; left: -5px;" class="form-control w-25 float-right" type="search" id="word" name="word" placeholder="Suche...">
+        </form>
+
+            <table class="table table-hover" style="position: relative; top: 10px">
             <thead class="thead-light">
             <tr>
                 <th><a th:text="#{inventory.name}" th:href="@{/inventory/name}" class="text-left col-6"
@@ -50,17 +61,20 @@
                     <form class="form reorder" method="post" th:action="@{/inventory/add}">
                         <input type="hidden" name="item" value="0" th:value="${pair.getFirst().getProduct().getId()}"/>
 
-                        <button type="submit" class="btn btn-outline-primary float-right cont" th:method="delete"
+                        <button type="submit" name="negate" th:value="incr" class="btn btn-outline-primary float-right cont" th:method="delete"
                                 th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
-                                th:text="#{inventory.add}">Mehr
-                            hinzufügen
+                                text="+">+
+                        </button>
+                        <button name="negate" th:value="decr" style="position:relative; left: -5px;" type="submit" class="btn btn-outline-primary float-right cont" th:method="delete"
+                                th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
+                                text="-">-
                         </button>
 
                         <div class="field">
-                            <label for="number"></label>
-                            <input style="position:relative; left: -5px;" class="form-control w-25 float-right "
+                            <label for="number1"></label>
+                            <input style="position:relative; left: -10px;" class="form-control w-25 float-right "
                                    th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
-                                   id="number" type="number"
+                                   id="number1" type="number"
                                    name="number" min="1" max="10000" value="1"/><br/>
                         </div>
                     </form>
