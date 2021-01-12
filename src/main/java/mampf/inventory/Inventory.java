@@ -77,10 +77,15 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 				sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString()).matches(filter)));
 				break;
 			case "amount":
-				System.out.println(Util.infinityStrings.contains(filter));
+				try{
 				sortableList.removeIf(umi -> (!(Util.infinity.contains(umi.getCategory()))
 						&& (Util.infinityStrings.contains(filter)))
-						|| !(Util.infinityStrings.contains(filter)) && umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter)));
+						|| (!(Util.infinityStrings.contains(filter))
+						&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter)))
+						|| (!Util.infinityStrings.contains(filter) && Integer.valueOf(filter) == null));
+				}catch (NumberFormatException e){
+					return new ArrayList<>();
+				}
 				break;
 			default: // case name
 				sortableList.removeIf(uml -> !uml.getItem().getName().matches(filter));
