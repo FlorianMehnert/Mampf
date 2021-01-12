@@ -53,18 +53,17 @@ public class InventoryController {
 	}
 
 	@GetMapping("inventory/filter")
-	public String look(Model model, @RequestParam("word") String word){
+	public String look(Model model, @RequestParam("word") String word, @RequestParam("type") String type){
+		if(word.equals("") || model == null || type.equals("")){
+			return "inventory";
+		}
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>(); // <UniqueItem, Category as String>
-		System.out.println(word);
-		List<UniqueMampfItem> list = inventory.findAllAndFilter(word);
-		System.out.println(list);
+		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type);
 		for (UniqueMampfItem item : list) {
-			System.out.println(item);
 			String name = nullCategory(item);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
-		System.out.println(names);
 		model.addAttribute("names", names);
 		return "inventory";
 	}

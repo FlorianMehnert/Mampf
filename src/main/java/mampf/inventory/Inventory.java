@@ -68,11 +68,25 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		return sortableList;
 	}
 
-	default List<UniqueMampfItem> findAllAndFilter(String filter) {
+	default List<UniqueMampfItem> findAllAndFilter(String filter, String type) {
 		List<UniqueMampfItem> list = this.findAll().toList();
 		List<UniqueMampfItem> sortableList = new ArrayList<>(list);
 		sortableList.sort(new SortByCategory());
-		sortableList.removeIf(uml -> !uml.getItem().getName().matches(filter));
+		switch (type){
+			case "category":
+				sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString()).matches(filter)));
+				break;
+			case "amount":
+				System.out.println(Util.infinityStrings.contains(filter));
+				sortableList.removeIf(umi -> (!(Util.infinity.contains(umi.getCategory()))
+						&& (Util.infinityStrings.contains(filter)))
+						|| !(Util.infinityStrings.contains(filter)) && umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter)));
+				break;
+			default: // case name
+				sortableList.removeIf(uml -> !uml.getItem().getName().matches(filter));
+				break;
+		}
+
 		return sortableList;
 	}
 }

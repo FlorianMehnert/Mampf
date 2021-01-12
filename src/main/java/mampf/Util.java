@@ -27,6 +27,8 @@ public class Util {
 	public static final List<Item.Category> infinity = List.of(Category.BUFFET, Category.DECORATION,
 			Category.DINNER_EVENT, Category.FOOD, Category.SPECIAL_OFFERS, Category.STAFF);
 
+	public static final List<String> infinityStrings = List.of("unendlich", "infinity", "-1");
+
 	//private static final SecureRandom random = new SecureRandom();
 	public static <T> int compareCategories(T a, T b) {
 		for (int i = 0; i < (java.lang.Math.max(a.toString().length(), b.toString().length())); i++) {
