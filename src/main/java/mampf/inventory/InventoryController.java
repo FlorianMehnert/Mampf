@@ -26,26 +26,30 @@ public class InventoryController {
 
 	@PostMapping("/inventory/add")
 	public String add(@RequestParam("item") Item item,
-					  @RequestParam("number") int number,
+					  @RequestParam("number") String number,
 					  @RequestParam ("negate") String neg) {
-		System.out.println(neg);
-
+		int convNumber;
+		if(number.equals("")){
+			return "redirect:/inventory/add";
+		}else{
+			convNumber = Integer.parseInt(number);
+		}
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
 		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
 		if (!Util.infinity.contains(currentItem.getCategory())) {
 			inventory.delete(currentItem);
 			if(neg.equals("decr")){
-				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(number))) {
-					newItem.decreaseMampfQuantity(number);
+				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))) {
+					newItem.decreaseMampfQuantity(convNumber);
 				}
 			}else {
-				if(!(currentItem.getQuantity().add(Quantity.of(number)).isGreaterThan(Quantity.of(2147000000)))) {
-					newItem.increaseMampfQuantity(number);
+				if(!(currentItem.getQuantity().add(Quantity.of(convNumber)).isGreaterThan(Quantity.of(2147000000)))) {
+					newItem.increaseMampfQuantity(convNumber);
 				}
 			}
 			inventory.save(newItem);
 		}
-		return "redirect:/inventory";
+		return "redirect:/inventory/amount";
 	}
 
 	@GetMapping("inventory/filter")

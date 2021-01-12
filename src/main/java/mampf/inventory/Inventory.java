@@ -72,7 +72,7 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		List<UniqueMampfItem> list = this.findAll().toList();
 		List<UniqueMampfItem> sortableList = new ArrayList<>(list);
 		sortableList.sort(new SortByCategory());
-		sortableList.removeIf(umi -> !umi.getItem().getName().equals(filter));
+		sortableList.removeIf(uml -> !uml.getItem().getName().matches(filter));
 		return sortableList;
 	}
 }
