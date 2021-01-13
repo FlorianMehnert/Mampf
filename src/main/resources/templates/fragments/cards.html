@@ -16,13 +16,13 @@
   </div>
 </div>
 
-<div th:fragment="cart(itemName, amount, price)" class="m-card shadow">
+<div th:fragment="cart(itemName, amount, price, hideForm)" class="m-card shadow">
   <div class="m-card__section m-card__data m-card__cata-spaced-between">
     <div class="m-card__title" th:text="${itemName}">ItemName</div>
     <div class="m-card__price m-text m-font-color-primary" th:text="${price}">ItemPrice</div>
   </div>
   <div class="m-card__section m-card__actions">
-    <form method="post" th:action="@{/cart/setNewAmount}">
+    <form th:unless="${hideForm}" method="post" th:action="@{/cart/setNewAmount}">
       <div class="input-group">
         <input type="hidden" name="cartItemId" th:value="${item.id}" />
         <input class="form-control" type="number" name="newAmount" th:value="${amount}">
@@ -33,6 +33,9 @@
         </div>
       </div>
     </form>
+    <div th:if="${hideForm}" class="input-group">
+      <h4 th:text="'Anzahl: ' + ${amount}"></h4>
+    </div>
     <form method="post" th:action="@{/cart/setNewAmount}">
       <input type="hidden" name="cartItemId" th:value="${item.id}" />
       <input class="form-control" type="hidden" name="newAmount" value="0">
@@ -43,11 +46,15 @@
   </div>
 </div>
 
-<div th:fragment="pay(itemName, amount, price)" class="m-card shadow">
+<div th:fragment="pay(itemName, amount, price, desc)" class="m-card shadow">
   <div class="m-card__section m-card__data m-card__cata-spaced-between">
     <div class="m-card__title" th:text="${itemName}">ItemName</div>
     <div class="m-card__price m-text m-font-color-primary" th:text="${price}"></div>
   </div>
+  <div th:if="${!desc.equals('')}" class="m-card__section m-card__data"> 
+  	<div class="m-card__desc m-text" th:text="${desc}">ItemDesc</div>
+  </div>
+   
   <div class="m-card__section m-card__actions">
     <div class="input-group">
       <h4 th:text="'Anzahl: ' + ${amount}"></h4>
@@ -75,12 +82,18 @@
     <div class="m-text-small" th:text="'Status: ' + ${status}"></div>
   </div>
   <div class="m-card__section m-centered m-colored-gray m-width-100">
-    <h3 th:text="${_order.getDomain()}"></h3>
+    <h3 th:text="${T(mampf.Util).renderDomainName('__${_order.getDomain()}__')}"></h3>
   </div>
   <div class="m-card__section m-flex-wrap m-flex-basis">
     <div class="m-margin-right m-flex-item-40" th:each="orderLine : ${_order.getOrderLines()}">
       <div th:replace="fragments/cards::orderItem(${orderLine.productName}, ${orderLine.quantity}, ${orderLine.productIdentifier})"></div>
     </div>
+  </div>
+  <div class="m-card__section">
+  <div class="container-fluid">
+  <h4 th:text="'Summe: '+${_order.getTotal()}"></h4>
+  <span th:text="${_order.getPayMethod()}"></span>
+  </div>
   </div>
   <div sec:authorize="hasRole('BOSS')" class="m-card__section m-card__actions m-flex-flex-end">
     <a th:href="'/orders/detail/'+${order.id}" class="btn btn-primary m-card__add">

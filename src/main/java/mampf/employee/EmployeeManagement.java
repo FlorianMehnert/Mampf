@@ -55,10 +55,6 @@ public class EmployeeManagement {
 		List<Employee> freeEmployees = new ArrayList<>();
 		boolean isFree;
 		for(Employee employee: employees.findByRole(role)) {
-			//änderung: 
-			// fall: es existieren keine bookedOrders -> "es wird nie freie employees geben"
-			// fall: date überschneidet mehrere order -> nur einmal hinzufügen
-			// -> durch isFree kann nur maximal einmal, falls möglich, der employee geaddet werden
 			isFree = true;
 			for (EventOrder bookedOrder : employee.getBooked()){
 				if(bookedOrder.hasTimeOverlap(fromDate,toDate)){

@@ -130,10 +130,12 @@ public class MampfCart{
 	 */
 	public void updateCart(CartItem cartItem, int itemAmount) {
 		
-		Cart domainCart = getDomainCart(((Item)cartItem.getProduct()).getDomain());
-		if(domainCart == null) {
+		Item.Domain domain = ((Item)cartItem.getProduct()).getDomain();
+		Cart domainCart = getDomainCart(domain);
+		if(domainCart == null || CheckoutForm.domainsWithoutForm.contains(domain.name())) {
 			return;
 		}
+		
 		if(itemAmount < 1) {
 			removeFromCart(cartItem);
 		}else {
@@ -211,15 +213,15 @@ public class MampfCart{
 	}
 	/**
 	 * get mapped carts to domain
-	 *
-	 * @param domain
+	 * domain
+	 * @param domain, nullable
 	 * @return Map<Item.Domain, Cart>, never null
 	 */
-	public Map<Item.Domain, DomainCart> getDomainItems(String domain){
+	public Map<Item.Domain, DomainCart> getDomainItems(Item.Domain domain){
 		Map<Item.Domain, DomainCart> map = new TreeMap<>();
 		for(Map.Entry<Item.Domain, DomainCart> entry : stuff.entrySet()) {
 			
-			if(entry.getKey().name().equals(domain)){
+			if(entry.getKey().equals(domain)){
 				map.put(entry.getKey(), entry.getValue());
 				return map;
 			}
@@ -228,22 +230,20 @@ public class MampfCart{
 		return stuff;
 	}
 	/**
-	 * get total prize of all carts
-	 * @param carts
+	 * get total prize of all carts of domain
+	 * @param domain
 	 * @return Money
 	 */
-	public Money getTotal(Collection<DomainCart> carts) {
+	public Money getTotal(Item.Domain domain) {
 		Money res = Money.of(0, "EUR");
-		if(carts != null) {
-			for(Cart cart: carts) {
-				res = res.add(cart.getPrice());
-			}
+		for(DomainCart cart: getDomainItems(domain).values()){
+			res = res.add(cart.getPrice());
 		}
 		return res;
 	}
-	/**
-	 * clears stock
-	 */
+	public boolean isEmpty() {
+		return stuff.isEmpty();
+	}
 	public void clear() {
 		stuff.clear();
 	}
