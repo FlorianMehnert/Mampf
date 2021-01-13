@@ -25,6 +25,7 @@ public class InventoryController {
 	}
 
 	@PostMapping("/inventory/add")
+	@PreAuthorize("hasRole('BOSS')")
 	public String add(@RequestParam("item") Item item,
 					  @RequestParam("number") String number,
 					  @RequestParam ("negate") String neg) {
@@ -53,18 +54,27 @@ public class InventoryController {
 	}
 
 	@GetMapping("inventory/filter")
-	public String look(Model model, @RequestParam("word") String word, @RequestParam("type") String type){
+	@PreAuthorize("hasRole('BOSS')")
+	public String look(Model model, @RequestParam(required = false) String word, @RequestParam("type") String type, @RequestParam(required = false) boolean part){
 		if(word.equals("") || model == null || type.equals("")){
+			model.addAttribute("names", new ArrayList<>());
+			model.addAttribute("filter", "");
+			model.addAttribute("type", type);
+			model.addAttribute("part", part);
 			return "inventory";
 		}
+
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>(); // <UniqueItem, Category as String>
-		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type);
+		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type, part);
 		for (UniqueMampfItem item : list) {
 			String name = nullCategory(item);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
 		model.addAttribute("names", names);
+		model.addAttribute("filter", word);
+		model.addAttribute("type", type);
+		model.addAttribute("part", part);
 		return "inventory";
 	}
 

@@ -68,30 +68,47 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		return sortableList;
 	}
 
-	default List<UniqueMampfItem> findAllAndFilter(String filter, String type) {
+	default List<UniqueMampfItem> findAllAndFilter(String filter, String type, boolean partially) {
 		List<UniqueMampfItem> list = this.findAll().toList();
 		List<UniqueMampfItem> sortableList = new ArrayList<>(list);
 		sortableList.sort(new SortByCategory());
-		switch (type){
+		switch (type) {
 			case "category":
-				sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString()).matches(filter)));
+				if (partially) {
+					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString()).matches("(?i)" + filter)));
+				} else {
+					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString())).contains(filter));
+				}
 				break;
 			case "amount":
-				try{
-				sortableList.removeIf(umi -> (!(Util.infinity.contains(umi.getCategory()))
-						&& (Util.infinityStrings.contains(filter)))
-						|| (!(Util.infinityStrings.contains(filter))
-						&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter)))
-						|| (!Util.infinityStrings.contains(filter) && Integer.valueOf(filter) == null));
-				}catch (NumberFormatException e){
-					return new ArrayList<>();
+				if (partially) {
+					try {
+						sortableList.removeIf(umi -> {
+							if ((!(Util.infinity.contains(umi.getCategory()))
+									&& (Util.infinityStrings.contains(filter)))
+									|| (!(Util.infinityStrings.contains(filter))
+									&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter))))
+								return true;
+							if (!Util.infinityStrings.contains(filter)) {
+								Integer.valueOf(filter);
+							}
+							return false;
+						});
+					} catch (NumberFormatException e) {
+						return new ArrayList<>();
+					}
+				} else {
+					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getAmount().toString())).contains(filter));
 				}
 				break;
 			default: // case name
-				sortableList.removeIf(uml -> !uml.getItem().getName().matches(filter));
+				if (partially) {
+					sortableList.removeIf(uml -> !uml.getItem().getName().matches("(?i)" + filter));
+				} else {
+					sortableList.removeIf(umi -> !Util.renderDomainName(umi.getItem().getName()).contains(filter));
+				}
 				break;
 		}
-
 		return sortableList;
 	}
 }
