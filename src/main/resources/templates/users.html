@@ -15,7 +15,7 @@
         <h1>Kundenliste</h1>
       </header>
 
-      <form method="get" th:action="@{/users}" class="mb-5 float-right">
+      <form method="get" th:action="@{/users}" class="mb-3 float-right">
         <div class="input-group">
           <input id="filter" class="form-inline" name="filter" th:value="${filter}" placeholder="Suchen...">
           <a class="justify-content-center position-absolute" style="top: 20%; right: 35%;" th:href="@{/users}">
