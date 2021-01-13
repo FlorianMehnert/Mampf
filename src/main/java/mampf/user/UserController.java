@@ -71,15 +71,25 @@ public class UserController {
 
 	@GetMapping("/users")
 	@PreAuthorize("hasRole('BOSS')")
-	public String users(Model model) {
+	public String users(Model model, @RequestParam(required = false) String filter) {
 
 		model.addAttribute("userList", userManagement.findAll());
 		ArrayList<Pair<User, String>> list = new ArrayList<>();
 		for (User user : userManagement.findAll()) {
 			String role = Util.renderDomainName(user.getUserAccount().getRoles().toList().get(0).toString());
-			Pair<User, String> map = new Pair<>(user, role);
-			list.add(map);
+			if(filter == null
+					|| user.getUserAccount().getUsername().contains(filter)
+					|| user.getUserAccount().getFirstname().contains(filter)
+					|| user.getUserAccount().getLastname().contains(filter)
+					|| user.getUserAccount().getEmail().contains(filter)) {
+				Pair<User, String> map = new Pair<>(user, role);
+				list.add(map);
+			}
 		}
+		if(filter == null) {
+			filter = "";
+		}
+		model.addAttribute("filter", filter);
 		model.addAttribute("pairs", list);
 		return "users";
 	}

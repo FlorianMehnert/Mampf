@@ -15,10 +15,31 @@
         <h1>Kundenliste</h1>
       </header>
 
-      <table class="table table-hover">
+      <form method="get" th:action="@{/users}" class="mb-5 float-right">
+        <div class="input-group">
+          <input id="filter" class="form-inline" name="filter" th:value="${filter}" placeholder="Suchen...">
+          <a class="justify-content-center position-absolute" style="top: 20%; right: 35%;" th:href="@{/users}">
+            <i class="fas fa-times-circle"></i>
+          </a>
+          <div class="input-group-append">
+            <button type="submit" class="btn-outline-secondary btn">
+              <i class="fas fa-search"></i> Suchen
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div th:if="${pairs.size() == 0}" class="row pl-5 pt-5 ml-5 mt-5">
+        <p class="mt-auto mb-auto">Es wurden leider keine Ergebnisse gefunden<p>
+        <p class="mt-auto mb-auto"><i class="far fa-sad-tear fa-3x ml-4"></i></p>
+      </div>
+
+      <table class="table table-hover" th:if="${pairs.size() > 0}">
         <thead class="thead-light">
           <tr>
+            <th>Benutzername</th>
             <th>Name</th>
+            <th>E-Mail</th>
             <th>Rolle</th>
             <th>AccessCode</th>
           </tr>
@@ -28,19 +49,17 @@
             <td>
               <a class="nav-link form-inline" th:href="@{/userDetailsAsBoss/{id}(id=${pair.getFirst().id})}">
                 <button type="submit" class="btn btn-link">
-                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                      d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                  </svg>
+                  <i class="far fa-user"></i>
                   <span th:text="${pair.getFirst().getUserAccount().getUsername()}"></span>
                 </button>
               </a>
             </td>
-            <td th:text="${pair.getSecond()}">[EMPLOYEE]</td>
-            <td th:if="${pair.getFirst().getCompany().isPresent()}"
+            <td class="align-middle" th:text="${pair.getFirst().getUserAccount().getFirstname() + ' '+ pair.getFirst().getUserAccount().lastname }"></td>
+            <td class="align-middle" th:text="${pair.getFirst().getUserAccount().email }"></td>
+            <td class="align-middle" th:text="${pair.getSecond()}">[EMPLOYEE]</td>
+            <td class="align-middle" th:if="${pair.getFirst().getCompany().isPresent()}"
               th:text="${pair.getFirst().getCompany().get().accessCode}">aabbcc</td>
-            <td th:if="${pair.getFirst().company.isEmpty()}">--</td>
+            <td class="align-middle" th:if="${pair.getFirst().company.isEmpty()}">--</td>
           </tr>
         </tbody>
       </table>
