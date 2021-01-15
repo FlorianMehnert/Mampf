@@ -90,19 +90,19 @@
 
                         <button type="submit" name="negate" th:value="incr"
                                 class="btn btn-outline-primary float-right cont" th:method="delete"
-                                th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
+                                th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
                                 text="+">+
                         </button>
                         <button name="negate" th:value="decr" style="position:relative; left: -5px;" type="submit"
                                 class="btn btn-outline-primary float-right cont" th:method="delete"
-                                th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
+                                th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
                                 text="-">-
                         </button>
 
                         <div class="field">
                             <label for="number1"></label>
                             <input style="position:relative; left: -10px;" class="form-control w-25 float-right "
-                                   th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
+                                   th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
                                    id="number1" type="number"
                                    name="number" min="1" max="10000" value="1"/><br/>
                         </div>

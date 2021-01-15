@@ -37,7 +37,7 @@ public class InventoryController {
 		}
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
 		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
-		if (!Util.infinity.contains(currentItem.getCategory())) {
+		if (!Util.infinity.contains(currentItem.getCategory()) || currentItem.getCategory() != Item.Category.STAFF) {
 			inventory.delete(currentItem);
 			if(neg.equals("decr")){
 				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))) {

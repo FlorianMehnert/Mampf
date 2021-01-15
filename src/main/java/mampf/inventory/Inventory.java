@@ -68,6 +68,13 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		return sortableList;
 	}
 
+	/**
+	 *
+	 * @param filter String for which should be filtered for
+	 * @param type determines category in which the seach takes place
+	 * @param partially true enables partial search, false is regEx search
+	 * @return List which is sorted with filter, type and partially
+	 */
 	default List<UniqueMampfItem> findAllAndFilter(String filter, String type, boolean partially) {
 		List<UniqueMampfItem> list = this.findAll().toList();
 		List<UniqueMampfItem> sortableList = new ArrayList<>(list);
