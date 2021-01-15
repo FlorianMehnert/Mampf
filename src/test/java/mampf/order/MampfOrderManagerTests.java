@@ -1,6 +1,10 @@
 package mampf.order;
 
 import static org.mockito.Mockito.mock;
+import mampf.catalog.BreakfastItem;
+import mampf.catalog.Item;
+import mampf.catalog.Item.Category;
+import mampf.catalog.Item.Domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
