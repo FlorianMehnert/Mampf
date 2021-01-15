@@ -44,11 +44,7 @@ public class EmployeeManagement {
 		Optional<Employee> employee = employees.findById(id);
 		return employee.map(value -> value.setBooked(order)).orElse(false);
 	}
-
-
-	public ArrayList<Employee> filterByName(String filter) {
-		return employees.filterByNameForSearching(filter);
-	}
+	
 	
 	
 	public Streamable<Employee> findAll() {

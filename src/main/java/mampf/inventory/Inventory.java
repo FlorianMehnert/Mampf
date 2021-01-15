@@ -23,8 +23,7 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 	/**
 	 * reduces some {@link Item} by some Quantity
-	 *
-	 * @param item   which product should be reduced
+	 * @param item which product should be reduced
 	 * @param amount by what amount should the product be reduced
 	 */
 	default Optional<UniqueMampfItem> reduceAmount(Item item, Quantity amount) {
@@ -38,7 +37,6 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 	/**
 	 * finds some {@link UniqueMampfItem} with a given {@link Item}
-	 *
 	 * @param item which item should be looked for
 	 */
 	default Optional<UniqueMampfItem> findByProduct(Item item) {
@@ -47,8 +45,7 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 	/**
 	 * finds All {@link UniqueMampfItem}s in this Inventory and sorts them according type
-	 *
-	 * @param type what should be sorted for
+	 * @param  type  what should be sorted for
 	 */
 	default List<UniqueMampfItem> findAllAndSort(String type) {
 
@@ -68,105 +65,61 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		return sortableList;
 	}
 
-	default List<UniqueMampfItem> findAllAndFilter(String filter, String type, boolean partially) {
-		List<UniqueMampfItem> list = this.findAll().toList();
-		List<UniqueMampfItem> sortableList = new ArrayList<>(list);
-		sortableList.sort(new SortByCategory());
-		switch (type) {
-			case "category":
-				if (partially) {
-					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString()).matches("(?i)" + filter)));
-				} else {
-					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString())).contains(filter));
-				}
-				break;
-			case "amount":
-				if (partially) {
-					try {
-						sortableList.removeIf(umi -> {
-							if ((!(Util.infinity.contains(umi.getCategory()))
-									&& (Util.infinityStrings.contains(filter)))
-									|| (!(Util.infinityStrings.contains(filter))
-									&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter))))
-								return true;
-							if (!Util.infinityStrings.contains(filter)) {
-								Integer.valueOf(filter);
-							}
-							return false;
-						});
-					} catch (NumberFormatException e) {
-						return new ArrayList<>();
-					}
-				} else {
-					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getAmount().toString())).contains(filter));
-				}
-				break;
-			default: // case name
-				if (partially) {
-					sortableList.removeIf(uml -> !uml.getItem().getName().matches("(?i)" + filter));
-				} else {
-					sortableList.removeIf(umi -> !Util.renderDomainName(umi.getItem().getName()).contains(filter));
-				}
-				break;
+	class SortByName implements Comparator<UniqueMampfItem> {
+
+		/**
+		 * Sorts By Name, does explicitly not sort for Quantity
+		 */
+		@Override
+		public int compare(UniqueMampfItem a, UniqueMampfItem b) {
+			int comp = Util.compareCategories(a.getProduct().getName(), b.getProduct().getName());
+			if (comp == 0) {
+				comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+			}
+			return comp;
 		}
-		return sortableList;
 	}
-}
 
-class SortByName implements Comparator<UniqueMampfItem> {
+	class SortByCategory implements Comparator<UniqueMampfItem> {
 
-	/**
-	 * Sorts By Name, does explicitly not sort for Quantity
-	 */
-	@Override
-	public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-		int comp = Util.compareCategories(a.getProduct().getName(), b.getProduct().getName());
-		if (comp == 0) {
-			comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+		/**
+		 * Sorts By Category, does explicitly not sort for Quantity
+		 */
+		@Override
+		public int compare(UniqueMampfItem a, UniqueMampfItem b) {
+			int comp = Util.compareCategories(a.getCategory(), b.getCategory());
+			if (comp == 0) {
+				comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+			}
+			return comp;
 		}
-		return comp;
 	}
-}
 
-class SortByCategory implements Comparator<UniqueMampfItem> {
+	class SortByAmount implements Comparator<UniqueMampfItem> {
+		/**
+		 * Sorts By Amount, secondary sorts for Name
+		 */
+		@Override
+		public int compare(UniqueMampfItem a, UniqueMampfItem b) {
+			// compare Quantity
+			int comp = a.getQuantity().getAmount().compareTo(b.getQuantity().getAmount());
 
-	/**
-	 * Sorts By Category, does explicitly not sort for Quantity
-	 */
-	@Override
-	public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-		int comp = Util.compareCategories(a.getCategory(), b.getCategory());
-		if (comp == 0) {
-			comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+			// compare Name
+			int alternative = a.getProduct().getName().compareTo(b.getProduct().getName());
+
+			boolean infinitA = Util.infinity.contains(a.getCategory());
+			boolean infinitB = Util.infinity.contains(b.getCategory());
+
+			if (infinitA && infinitB) {
+				comp = alternative;
+			}else if(infinitA){
+				comp = 1;
+			}else if(infinitB){
+				comp =  -1;
+			}else if(comp == 0){
+				comp = a.getProduct().getName().compareTo(b.getProduct().getName());
+			}
+			return comp;
 		}
-		return comp;
-	}
-}
-
-class SortByAmount implements Comparator<UniqueMampfItem> {
-	/**
-	 * Sorts By Amount, secondary sorts for Name
-	 */
-	@Override
-	public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-		// compare Quantity
-		int comp = a.getQuantity().getAmount().compareTo(b.getQuantity().getAmount());
-
-		// compare Name
-		int alternative = a.getProduct().getName().compareTo(b.getProduct().getName());
-
-		boolean infinitA = Util.infinity.contains(a.getCategory());
-		boolean infinitB = Util.infinity.contains(b.getCategory());
-
-		if (infinitA && infinitB) {
-			comp = alternative;
-		} else if (infinitA) {
-			comp = 1;
-		} else if (infinitB) {
-			comp = -1;
-		} else if (comp == 0) {
-			comp = a.getProduct().getName().compareTo(b.getProduct().getName());
-		}
-		return comp;
 	}
 }

@@ -2,7 +2,6 @@ package mampf.employee;
 
 import javax.validation.Valid;
 
-import org.springframework.data.util.Streamable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +10,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class EmployeeController {
@@ -49,14 +47,8 @@ public class EmployeeController {
 
 	@PreAuthorize("hasRole('BOSS')")
 	@GetMapping("/intern/employees")
-	public String register(Model model, @RequestParam(required = false) String filter){
-		if(filter != null) {
-			model.addAttribute("employees", employeeManagement.filterByName(filter));
-			model.addAttribute("filter", filter);
-		}else{
-			model.addAttribute("employees", employeeManagement.findAll());
-			model.addAttribute("filter", "");
-		}
+	public String register(Model model){
+		model.addAttribute("employees", employeeManagement.findAll());
 		return "employees";
 	}
 }
