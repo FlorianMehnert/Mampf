@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -109,14 +110,11 @@ public class UserManagement {
 	 * @return User
 	 */
 	public Optional<User> findUserById(long userId) {
-		User user = null;
-		Iterator<User> userIterator = users.findAll().iterator();
-		do{
-			user = userIterator.next();
+		for(User user: users.findAll()) {
 			if(user.getId() == userId) {
 				return Optional.of(user);
 			}
-		}while (userIterator.hasNext());
+		}
 		return Optional.empty();
 	}
 
@@ -125,14 +123,11 @@ public class UserManagement {
 	 * @return User
 	 */
 	public Optional<User> findUserByUsername(String username) {
-		User user = null;
-		Iterator<User> userIterator = users.findAll().iterator();
-		do{
-			user = userIterator.next();
+		for(User user: users.findAll()) {
 			if(user.getUserAccount().getUsername().equals(username)) {
 				return Optional.of(user);
 			}
-		}while (userIterator.hasNext());
+		}
 		return Optional.empty();
 	}
 
@@ -140,14 +135,11 @@ public class UserManagement {
 	 * probably not needed when a username is unique
 	 */
 	public Optional<User> findUserByUserAccount(UserAccountIdentifier userAccountId){
-		User user = null;
-		Iterator<User> userIterator = users.findAll().iterator();
-		do{
-			user = userIterator.next();
-			if(user.getUserAccount().getId().equals(userAccountId)) {
+		for(User user: users.findAll()) {
+			if(Objects.equals(user.getUserAccount().getId(), userAccountId)) {
 				return Optional.of(user);
 			}
-		}while (userIterator.hasNext());
+		}
 		return Optional.empty();
 	} 
 	

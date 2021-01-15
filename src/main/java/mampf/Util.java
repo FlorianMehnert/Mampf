@@ -25,7 +25,9 @@ public class Util {
 	public static final String ANSI_WHITE = "\u001B[37m";
 
 	public static final List<Item.Category> infinity = List.of(Category.BUFFET, Category.DECORATION,
-			Category.DINNER_EVENT, Category.FOOD, Category.SPECIAL_OFFERS);
+			Category.DINNER_EVENT, Category.FOOD, Category.SPECIAL_OFFERS, Category.STAFF);
+
+	public static final List<String> infinityStrings = List.of("unendlich", "infinity", "-1", "unbegrenzt", "unlimited");
 
 	//private static final SecureRandom random = new SecureRandom();
 	public static <T> int compareCategories(T a, T b) {

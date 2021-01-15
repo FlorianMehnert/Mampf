@@ -3,6 +3,7 @@ package mampf.inventory;
 import com.mysema.commons.lang.Pair;
 import mampf.Util;
 import mampf.catalog.Item;
+import org.salespointframework.quantity.Quantity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class InventoryController {
@@ -23,16 +25,57 @@ public class InventoryController {
 	}
 
 	@PostMapping("/inventory/add")
+	@PreAuthorize("hasRole('BOSS')")
 	public String add(@RequestParam("item") Item item,
-					  @RequestParam("number") int number) {
+					  @RequestParam("number") String number,
+					  @RequestParam ("negate") String neg) {
+		int convNumber;
+		if(number.equals("")){
+			return "redirect:/inventory/add";
+		}else{
+			convNumber = Integer.parseInt(number);
+		}
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
 		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
 		if (!Util.infinity.contains(currentItem.getCategory())) {
 			inventory.delete(currentItem);
-			newItem.increaseMampfQuantity(number);
+			if(neg.equals("decr")){
+				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))) {
+					newItem.decreaseMampfQuantity(convNumber);
+				}
+			}else {
+				if(!(currentItem.getQuantity().add(Quantity.of(convNumber)).isGreaterThan(Quantity.of(2147000000)))) {
+					newItem.increaseMampfQuantity(convNumber);
+				}
+			}
 			inventory.save(newItem);
 		}
-		return "redirect:/inventory";
+		return "redirect:/inventory/amount";
+	}
+
+	@GetMapping("inventory/filter")
+	@PreAuthorize("hasRole('BOSS')")
+	public String look(Model model, @RequestParam(required = false) String word, @RequestParam("type") String type, @RequestParam(required = false) boolean part){
+		if(word.equals("") || model == null || type.equals("")){
+			model.addAttribute("names", new ArrayList<>());
+			model.addAttribute("filter", "");
+			model.addAttribute("type", type);
+			model.addAttribute("part", part);
+			return "inventory";
+		}
+
+		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>(); // <UniqueItem, Category as String>
+		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type, part);
+		for (UniqueMampfItem item : list) {
+			String name = nullCategory(item);
+			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
+			names.add(pair);
+		}
+		model.addAttribute("names", names);
+		model.addAttribute("filter", word);
+		model.addAttribute("type", type);
+		model.addAttribute("part", part);
+		return "inventory";
 	}
 
 	@GetMapping("inventory/{path}")
@@ -50,7 +93,7 @@ public class InventoryController {
 
 	/**
 	 * used to render Domain names
-	 * @param item {@link UniqueMampfItem} whose Categpry gets converted to String
+	 * @param item {@link UniqueMampfItem} whose Category gets converted to String
 	 */
 	public String nullCategory(UniqueMampfItem item) {
 		String name = "";
