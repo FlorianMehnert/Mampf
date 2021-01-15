@@ -3,45 +3,57 @@ package mampf.catalog;
 import mampf.Util;
 import mampf.catalog.Item.Domain;
 import mampf.inventory.Inventory;
+import mampf.inventory.UniqueMampfItem;
+
+import org.hibernate.exception.ConstraintViolationException;
+import org.javamoney.moneta.Money;
+import org.salespointframework.quantity.Quantity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.validation.Valid;
 
 @Controller
 public class CatalogController {
 
-	//! Quantity is not used so should be or deleted
+	// ! Quantity is not used so should be or deleted
 
+	@Autowired
 	private final MampfCatalog catalog;
 	private final Inventory inventory;
 
-	CatalogController(
-		MampfCatalog catalog,
-		Inventory inventory
-	) {
+	CatalogController(MampfCatalog catalog, Inventory inventory) {
 		this.catalog = catalog;
 		this.inventory = inventory;
 	}
 
-	//? Probably not needed because user can choose domain from homepage or navigation
+	// ? Probably not needed because user can choose domain from homepage or
+	// navigation
 	/**
-	 * Returns a site from which the user can choose one the domains,
-	 * currently (Eventcatering, Party-Service, Mobile-Breakfast and Rent-A-Cook)
+	 * Returns a site from which the user can choose one the domains, currently
+	 * (Eventcatering, Party-Service, Mobile-Breakfast and Rent-A-Cook)
+	 * 
 	 * @param model
 	 * @return html-template
 	 */
 	@GetMapping("/catalog")
-	public String itemsCatalog(Model model){
+	public String itemsCatalog(Model model) {
 
 		ArrayList<Map<String, String>> domains = new ArrayList<>();
 
-		for(Domain domain : Domain.values()) {
+		for (Domain domain : Domain.values()) {
 			Map<String, String> domainObj = new HashMap<>();
 			domainObj.put("title", Util.renderDomainName(domain.toString()));
 			domainObj.put("href", domain.toString().toLowerCase());
@@ -54,10 +66,77 @@ public class CatalogController {
 		return "catalogIndex";
 	}
 
+	// @GetMapping("/catalog/edit")
+	// public String catalogEdit(Model model) {
+	// 	model.addAttribute("items", this.catalog.findAll());
+	// 	return "catalog_itemList";
+	// }
+
+	@GetMapping("/catalog/create")
+	public String catalogCreate(Model model) {
+		model.addAttribute("domains", Item.Domain.values());
+		model.addAttribute("categories", Item.Category.values());
+		return "catalog_createItem";
+	}
+
+	@PostMapping("/catalog/create")
+	public String catalogCreateItemPost(@Valid @ModelAttribute("form") CatalogItemForm form) {
+		Item newItem = new Item(form.getName(), Money.of(new BigDecimal(form.getPrice().replace(",", ".")), "EUR"),
+				Item.Domain.valueOf(form.getDomain().toUpperCase()), Item.Category.valueOf(form.getCategory().toUpperCase()),
+				form.getDescription());
+		this.catalog.save(newItem);
+		this.inventory.save(new UniqueMampfItem(newItem, Quantity.of(1)));
+		return "redirect:/inventory/name";
+	}
+
+	@PostMapping("/catalog/edit/{itemId}")
+	public String catalogEditItemPost(@PathVariable String itemId, @Valid @ModelAttribute("form") CatalogItemForm form) {
+		Optional<Item> item = this.catalog.findById(itemId);
+		if (!item.isPresent()) {
+			return "catalog_editItem";
+		}
+		Item realItem = item.get();
+		Optional<UniqueMampfItem> inventoryItem = this.inventory.findByProduct(item.get());
+		if (!inventoryItem.isPresent()) {
+			return "catalog_editItem";
+		}
+		BigDecimal originalAmount = inventoryItem.get().getAmount();
+		this.inventory.deleteById(inventoryItem.get().getId());
+		try {
+			this.catalog.delete(realItem);
+		} catch (ConstraintViolationException e) {
+			System.out.println(e.getConstraintName());
+		}
+		Item newItem = new Item(form.getName(),
+				Money.of(new BigDecimal(form.getPrice().replaceAll("[^\\d,.]", "").replace(",", ".")), "EUR"),
+				Item.Domain.valueOf(form.getDomain().toUpperCase()), Item.Category.valueOf(form.getCategory().toUpperCase()),
+				form.getDescription());
+		this.catalog.save(newItem);
+		this.inventory.save(new UniqueMampfItem(newItem, Quantity.of(originalAmount.longValue())));
+		return "redirect:/inventory/name";
+	}
+
+	@GetMapping("/catalog/edit/{itemId}")
+	public String catalogEditItem(@PathVariable String itemId, Model model) {
+		Item item;
+		try {
+			item = this.catalog.findById(itemId).get();
+		} catch (IllegalArgumentException ex) {
+			System.out.println(ex.toString());
+			model.addAttribute("error", String.format("URI is invalid.%n\"%s\" is not a valid item.", itemId));
+			return "404";
+		}
+		model.addAttribute("item", item);
+		model.addAttribute("domains", Item.Domain.values());
+		model.addAttribute("categories", Item.Category.values());
+		return "catalog_editItem";
+	}
+
 	/**
 	 *
-	 * @param domain String which indicates which items from catalog have to be filtered
-	 * @param model for serving data to the template
+	 * @param domain String which indicates which items from catalog have to be
+	 *               filtered
+	 * @param model  for serving data to the template
 	 * @return a thymeleaf html-template
 	 */
 	@GetMapping("/catalog/{domain}")
@@ -74,27 +153,28 @@ public class CatalogController {
 			return "404";
 		}
 
-		if(catalogDomain.equals(Item.Domain.MOBILE_BREAKFAST)) {
+		if (catalogDomain.equals(Item.Domain.MOBILE_BREAKFAST)) {
 			return "redirect:/mobile-breakfast";
 		}
 
-		// reorganizing the items of the chosen domain to show them each under its category
+		// reorganizing the items of the chosen domain to show them each under its
+		// category
 		ArrayList<Item> filteredCatalog = catalog.findByDomain(catalogDomain);
 		Iterator<Item> iterator = filteredCatalog.iterator();
 		Map<String, ArrayList<Item>> categorizedItems = new HashMap<>();
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			Item currentItem = iterator.next();
 
 			// checking if the item is available for purchase in other words if is in stock
-			if(inventory.findByProduct(currentItem).isEmpty()){
+			if (inventory.findByProduct(currentItem).isEmpty()) {
 				continue;
 			}
 
-			// TODO: Add internationalization for the category in  the Util class
+			// TODO: Add internationalization for the category in the Util class
 			String currentCategory = Util.renderDomainName(currentItem.getCategory().toString());
-			if(categorizedItems.containsKey(currentCategory)){
+			if (categorizedItems.containsKey(currentCategory)) {
 				categorizedItems.get(currentCategory).add(currentItem);
-			}else{
+			} else {
 				ArrayList<Item> newArrayList = new ArrayList<>();
 				newArrayList.add(currentItem);
 				categorizedItems.put(currentCategory, newArrayList);
@@ -108,15 +188,15 @@ public class CatalogController {
 	}
 
 	@GetMapping("/mobile-breakfast")
-	public String mobileBreakfast(Model model){
+	public String mobileBreakfast(Model model) {
 		Map<String, ArrayList<Item>> reorganizedItems = new HashMap<>();
 		Iterator<Item> breakFastItems = this.catalog.findByDomain(Item.Domain.MOBILE_BREAKFAST).iterator();
-		while(breakFastItems.hasNext()){
-			BreakfastItem currentItem = (BreakfastItem)breakFastItems.next();
+		while (breakFastItems.hasNext()) {
+			BreakfastItem currentItem = (BreakfastItem) breakFastItems.next();
 			String category = Util.renderDomainName(currentItem.getType().toString());
-			if(reorganizedItems.containsKey(category)){
+			if (reorganizedItems.containsKey(category)) {
 				reorganizedItems.get(category).add(currentItem);
-			}else{
+			} else {
 				ArrayList<Item> itemList = new ArrayList<>();
 				itemList.add(currentItem);
 				reorganizedItems.put(category, itemList);
@@ -128,7 +208,7 @@ public class CatalogController {
 	}
 
 	@GetMapping("/catalog/item/detail/{item}")
-	public String detail(Model model, @PathVariable Item item){
+	public String detail(Model model, @PathVariable Item item) {
 		assert item != null;
 		model.addAttribute("title", item.getName());
 		model.addAttribute("category", Util.renderDomainName(item.getCategory().toString()));
@@ -137,5 +217,5 @@ public class CatalogController {
 		model.addAttribute("quantity", this.inventory.findByProduct(item).get().getQuantity());
 		return "detail.html";
 	}
-	
+
 }

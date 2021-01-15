@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Mampf</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/css/style.css}"/>
+    <link rel="icon" type="image/vnd.microsoft.icon" th:href="@{/resources/img/cook_icon.ico}">
+    <!-- Bootstrap -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <!-- Bootstrap -->
+    <!-- jQuery and JS bundle w/ Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<nav th:include="navigation :: navigation"></nav>
+<div class="container pb-5">
+    <form class="form" role="form" action="/catalog/create/" method="post" >
+
+        <div class="form-group">
+            <label for="name">Produktname</label>
+            <input class="form-control" type="text" id="name" name="name"/>
+        </div>
+
+        <div class="form-group">
+          <label for="domain">Domäne</label>
+          <select 
+          class="form-control" 
+          id="domain" 
+          name="domain">
+          <option th:each="domain : ${domains}" th:value="${domain}" th:text="${domain}"></option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Domäne</label>
+          <select 
+          class="form-control" 
+          id="category" 
+          name="category">
+          <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
+          </select>
+        </div>
+
+        <!-- window.location = window.location.pathname + '?selection=' + this.options[this.selectedIndex].value + '?selectionIndex=' + this.options.selectedIndex -->
+
+        <!-- <div class="form-group">
+          <label for="domain">Domäne</label>
+          <select class="form-control" id="domain" name="domain" th:field="*{domain}">
+              <option value="INDIVIDUAL" >Eventcatering</option>
+              <option value="PARTYSERVICE" >Party-Service</option>
+              <option value="MOBILE_BREAKFAST" >Mobile-Breakfast</option>
+              <option value="RENT_A_COOK" >Rent-A-Cook</option>
+          </select>
+        </div> -->
+
+        <div class="form-group">
+          <label for="price">Preis</label>
+          <input class="form-control" 
+                 type="text" id="price" name="price"/>
+          <small id="passwordHelpBlock" class="form-text text-muted">
+            Formatierung: dd.dd
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Preis</label>
+          <input class="form-control" 
+                 type="text" id="description" name="description"/>
+          <small id="passwordHelpBlock" class="form-text text-muted">
+
+          </small>
+        </div>
+
+        <button type="submit" class="btn btn-outline-primary float-right">Speichern</button>
+    </form>
+</div>
+
+</body>
+</html>
