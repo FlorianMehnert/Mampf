@@ -1,7 +1,9 @@
+
 = Cross-Testing Feedback
 
-__Durchführende Gruppe:__
-__Anwendung von Gruppe:__
+__Durchführende Gruppe:10__
+
+__Anwendung von Gruppe:11__
 
 == Getestetes System
 Welche Aufgabe/Problemstellung löst die Anwendung.
@@ -11,11 +13,17 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 [options="header"]
 |===
 |Pfad |Parameter |Beschreibung |Rückgabe
+| /registrieren | passwort=Testtest1234. | Es werden Sonderzeichen wie *.-, nicht als solche akzeptiert | Das Passwort erfüllt die Anforderungen nicht
+| /angebote/mobile-breakfast/buchung | type=Mobile+Breakfast&name=Muster&strasse=Muster+3&ort=klksdlk&start=Januar&ende=Verbuar
+&passwort=testtest&passwortBestaetigt=testtest | Buchung von MB als Firmenkunde führt zu Fehler| Error page erscheint
+| /verwaltung/katalogverwaltung | keine | Als Admin Zugriff auf Katalog | 500er Error
+| /konto/löschen | keine | Als Kunde (Michael) mit einer getätigten Bestellung | 500er Error
 | … | … | … | … |
 |===
 
 == Sonstiges
 * Optik der Anwendung
+** bei Radio-Buttons finde ich es persönlich ansprechender, wenn man auch beim Klick auf den jeweiligen Text das Feld auswählen kann. Im Warenkorb geht das aber nur bei "Auf Rechnung". Aber das ist natürlich Geschmackssache...
 * Fehlende Features
 * Interaktion mit der Anwendung (Usability)
 
