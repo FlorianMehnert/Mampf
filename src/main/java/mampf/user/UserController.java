@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -72,29 +71,15 @@ public class UserController {
 
 	@GetMapping("/users")
 	@PreAuthorize("hasRole('BOSS')")
-	public String users(Model model, @RequestParam(required = false) String filter) {
+	public String users(Model model) {
 
 		model.addAttribute("userList", userManagement.findAll());
 		ArrayList<Pair<User, String>> list = new ArrayList<>();
-		String filterString = "";
-		if(filter != null) {
-			filterString = filter.toLowerCase();
-		}
 		for (User user : userManagement.findAll()) {
 			String role = Util.renderDomainName(user.getUserAccount().getRoles().toList().get(0).toString());
-			if(filterString.length() == 0
-					|| user.getUserAccount().getUsername().toLowerCase().contains(filterString)
-					|| user.getUserAccount().getFirstname().toLowerCase().contains(filterString)
-					|| user.getUserAccount().getLastname().toLowerCase().contains(filterString)
-					|| user.getUserAccount().getEmail().toLowerCase().contains(filterString)) {
-				Pair<User, String> map = new Pair<>(user, role);
-				list.add(map);
-			}
+			Pair<User, String> map = new Pair<>(user, role);
+			list.add(map);
 		}
-		if(filter == null) {
-			filter = "";
-		}
-		model.addAttribute("filter", filter);
 		model.addAttribute("pairs", list);
 		return "users";
 	}
