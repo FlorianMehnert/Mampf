@@ -28,9 +28,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.inventory.LineItemFilter;
@@ -87,7 +90,9 @@ public class MampfOrderManager {
 
     /**
      * Checks if requested items (cart items)/personal are available for the given
-     * time (form) checks if MB is in-time returns list of validations
+     * time
+     *  checks if MB is in-time
+     *  returns list of validations
      * (domainspec.), never null
      * 
      * @param carts
@@ -97,6 +102,11 @@ public class MampfOrderManager {
     public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, DomainCart> carts) {
         // each domain can have mutliple errormessages:
         Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
+
+        // get base inventory of all finite items:
+        List<UniqueMampfItem> baseInv = new ArrayList<>(inventory.findAll().filter(i -> !Util.infinity.contains(i.getCategory())).toList());
+        // init base carts:
+        List<DomainCart> baseCarts = new ArrayList<>();
 
         for (Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
             Domain domain = entry.getKey();
@@ -115,25 +125,19 @@ public class MampfOrderManager {
                 continue;
             }
 
-            // get Items:
-            List<UniqueMampfItem> inventorySnapshot = getFreeItems(startDate, endDate);
-            Map<Employee.Role, Integer> personalLeft = new HashMap<>();
-            if (hasStaff(cart)) {
-                personalLeft = getPersonalAmount(startDate, endDate);
-            }
+            // get available Items:
+            List<UniqueMampfItem> inventorySnapshot = getFreeItems(baseInv, baseCarts, startDate, endDate);
 
             for (CartItem cartitem : cart) {
                 // de-map mapper-cartitems:
                 for (CartItem checkitem : createCheckItems(cartitem)) {
                     Optional<Item> catalogItem = catalog.findById(checkitem.getProduct().getId());
-
                     if (catalogItem.isEmpty()) {
                         updateValidations(validations, domain, "Item nicht vorhanden:" + cartitem.getProductName());
                         continue;
                     }
 
-                    Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, personalLeft,
-                            checkitem);
+                    Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, checkitem);
                     if (inventoryItem.isPresent()) {
                         String validationState = "Keine verfügbare Auswahl " + catalogItem.get().getCategory().name()
                                 .toLowerCase() + ": " + catalogItem.get().getName() + " verbleibende Anzahl:"
@@ -141,6 +145,7 @@ public class MampfOrderManager {
                         updateValidations(validations, domain, validationState);
                     }
                 }
+                baseCarts.add(cart);
             }
         }
         return validations;
@@ -200,54 +205,70 @@ public class MampfOrderManager {
      * represents the inventory for a given time span calculates the snapshot from
      * the actual inventory checks every order for ordered items/amount
      * 
+     * @param baseInv
+     * @param baseCarts
      * @param fromDate
      * @param toDate
      * @return
      */
-    public List<UniqueMampfItem> getFreeItems(LocalDateTime fromDate, LocalDateTime toDate) {
+    public List<UniqueMampfItem> getFreeItems(List<UniqueMampfItem> baseInv, List<DomainCart> baseCarts,
+            LocalDateTime fromDate, LocalDateTime toDate) {
+        // a "copy" of baseInv
+        List<UniqueMampfItem> res = new ArrayList<>();
+        // items which has to be returned needs to be the same structure like baseInv:
+        // also, the quantity will be modified during next steps
+        baseInv.forEach(i -> res.add(new UniqueMampfItem(i.getItem(), Quantity.of(i.getAmount().longValue()))));
+        
+        Optional<UniqueMampfItem> actionItem;
+        List<UniqueMampfItem> actionItems;
+        List<UniqueMampfItem> bookedItems = getBookedItems(fromDate, toDate);
+        List<UniqueMampfItem> cartItems = new ArrayList<>();
+        // each cart has a time span
+        //  when time span colliding with given time span
+        //   add all conrete items (f.e. BreakfastMappedItem is no conrete item, but the content) as
+        //   UniqueMampfItem to cartItems for polymorphic use with bookedItems
+        baseCarts.forEach(c -> {
+            if (MampfOrder.hasTimeOverlap(fromDate, toDate, c.getStartDate(), c.getEndDate()))
+                c.forEach(cI -> createCheckItems(cI).forEach(chI->cartItems.add(new UniqueMampfItem((Item) chI.getProduct(), chI.getQuantity()))));
+        });
+        
 
-        List<UniqueMampfItem> res = new ArrayList<>(inventory.findAll().toList());
-        for (UniqueMampfItem bookedItem : getBookedItems(fromDate, toDate)) {
-            int index = -1;
-            UniqueMampfItem inventoryItem = null;
-            for (int i = 0; i < res.size(); i++) {
-                inventoryItem = res.get(i);
+        for (UniqueMampfItem resItem : res) {for (int n = 0; n < 2; n++) {
+            if(n == 0) {
+                actionItems = bookedItems;
+            }else {
+                actionItems = cartItems;
+            }
+            
+            // just get the fitting action item:
+            // TODO: replace with fancy version...:
+            actionItem = Optional.empty();
+            for (UniqueMampfItem bI : actionItems)if (bI.getProduct().equals(resItem.getProduct())) {actionItem = Optional.of(bI);break;}
 
-                if (inventoryItem.getProduct().equals(bookedItem.getProduct())) {
-                    index = i;
-                    break;
-                }
+            // substract:
+            if (actionItem.isPresent() && !Util.infinity.contains(resItem.getCategory())) {
+                resItem.decreaseQuantity(actionItem.get().getQuantity());
             }
-            if (index < 0) {
-                continue;
-            }
+        }}
 
-            // for finite items: set which quantity is left in stock:
-            if (inventoryItem == null) {// sonarlint
-                continue;
-            }
-            if (!Util.infinity.contains(inventoryItem.getCategory())) {
-                res.set(index, new UniqueMampfItem((Item) inventoryItem.getProduct(), inventoryItem.getQuantity()
-                        .subtract(bookedItem.getQuantity())));
-            }
-        }
+       
         return res;
     }
 
     /**
-     * creates and returns a list of all ordered items for a time span
+     * creates and returns a totally new list of all ordered items for a time span
      * 
      * @param fromDate
      * @param toDate
      * @return
      */
-    // TODO: find smaller version of getBookedItems functions
     public List<UniqueMampfItem> getBookedItems(LocalDateTime fromDate, LocalDateTime toDate) {
         return convertToInventoryItems(getOrderItems(fromDate, toDate));
     }
 
     /**
      * converts productidentifiers and quantitys to a list of uniquemampfitems
+     * 
      * @param itemMap
      * @return
      */
@@ -360,28 +381,26 @@ public class MampfOrderManager {
     }
 
     // checkForAmount returns an empty Optional if the checked quantity is valid
-    private Optional<UniqueMampfItem> checkForAmount(List<UniqueMampfItem> inventorySnapshot,
-            Map<Employee.Role, Integer> personalLeft, CartItem checkitem) {
+    private Optional<UniqueMampfItem> checkForAmount(List<UniqueMampfItem> inventorySnapshot, CartItem checkitem) {
 
-        Optional<UniqueMampfItem> inventoryItem = inventorySnapshot.stream().filter(i -> i.getProduct().getId().equals(
-                checkitem.getProduct().getId())).findFirst();
+        Optional<UniqueMampfItem> inventoryItem = inventorySnapshot.stream().filter(i -> 
+                i.getProduct().equals(checkitem.getProduct())).findFirst();
         Item catalogItem = ((Item) checkitem.getProduct());
 
+        
         // finite (and existing)
         if (inventoryItem.isPresent() && !Util.infinity.contains(catalogItem.getCategory())) {
-
+            
             if (catalogItem.getCategory().equals(Category.STAFF)) {
-                // personal: there is one resource at all (therefore check and update
-                // personalLeft)
-
+                // calculate personalAmount:
                 Employee.Role staffType = ((StaffItem) catalogItem).getType();
-                Integer amountLeft = personalLeft.get(staffType);
-                // reduce till 0 if possible:
+                Integer amountLeft = 0;
+                Iterator<UniqueMampfItem> it = inventorySnapshot.stream().filter(i->i.getCategory().equals(Category.STAFF)&&
+                        ((StaffItem)i.getItem()).getType().equals(staffType)).iterator();
+                while(it.hasNext()) {amountLeft+=it.next().getAmount().intValue();}
+                
                 if (checkitem.getQuantity().isGreaterThan(Quantity.of(amountLeft))) {
                     return Optional.of(new UniqueMampfItem(catalogItem, Quantity.of(amountLeft)));
-                } else {
-                    amountLeft -= checkitem.getQuantity().getAmount().intValue();
-                    personalLeft.put(staffType, amountLeft);
                 }
 
             } else { // sonarcube logic: 'else if {}' is allowed...
@@ -446,7 +465,6 @@ public class MampfOrderManager {
             validations.put(domain, stateList);
         }
     }
-
 
     // all ordered items for a time span
     private Map<ProductIdentifier, Quantity> getOrderItems(LocalDateTime fromDate, LocalDateTime toDate) {
