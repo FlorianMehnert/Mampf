@@ -18,6 +18,9 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 &passwort=testtest&passwortBestaetigt=testtest | Buchung von MB als Firmenkunde führt zu Fehler| Error page erscheint
 | /verwaltung/katalogverwaltung | keine | Als Admin Zugriff auf Katalog | 500er Error
 | /konto/löschen | keine | Als Kunde (Michael) mit einer getätigten Bestellung | 500er Error
+| /inventar | Neue Köche/Service in der Mitarbeiter-Seite hinzufügen | Die Anzahl von Köchen/Service wird in der Inventar-Seite nicht erhöht | Selben Anzahl von Köchen/Service
+| /inventar | Eingeloggter Nutzer bucht und bezahlt ein Eventcatering mit Dekoration  | In dem Inventar sinkt die Anzahl von gebuchten Sachen nicht | Die Anzahl von Dekoration sinkt nicht, selben Anzahl als bevor die Buchung
+| /terminkalendar | Eingeloggter Nutzer bucht und bezahlt ein Rent-A-Cook | Der Admin drückt auf „Abrechnung“ von diesen Rent-A-Cook order | Status 500, die Abrechnung wird nicht gezeigt
 | … | … | … | … |
 |===
 
