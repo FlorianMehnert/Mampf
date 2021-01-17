@@ -283,7 +283,7 @@ image:images/diagrams/developer_doc_5_1_Mampf.svg[pkg mampf_building block diagr
 === Catalog
 
 [[pkg_catalog_building_block_diagram]]
-image:images/diagrams/developer_doc_5_2_Catalog.svg[pkg catalog building block diagram]
+image:images/diagrams/package_catalog.svg[pkg catalog building block diagram]
 
 [options="header"]
 |=== 
@@ -297,7 +297,7 @@ image:images/diagrams/developer_doc_5_2_Catalog.svg[pkg catalog building block d
 
 === User
 [[pkg_user_building_block_diagram]]
-image:images/diagrams/developer_doc_5_3_users.svg[pkg user building block diagram]
+image:images/diagrams/package_user.svg[pkg user building block diagram]
 [options="header"]
 |===
 |Klasse/Enumeration |Description
@@ -313,7 +313,7 @@ image:images/diagrams/developer_doc_5_3_users.svg[pkg user building block diagra
 
 === Inventory
 [[pkg_inventory_building_block_diagram]]
-image:images/diagrams/developer_doc_5_4_Inventory.svg[pkg inventory building block diagram]
+image:images/diagrams/package_inventory.svg[pkg inventory building block diagram]
 
 [options="header"]
 |===
@@ -329,7 +329,7 @@ und mehreren Regeln bezüglich der Quantitäten der einzelnen Gegenstände initi
 === Order
 
 [[pkg_order_building_block_diagram]]
-image:images/diagrams/developer_doc_5_5_Orders.svg[pkg order building block diagram]
+image:images/diagrams/package_order.svg[pkg order building block diagram]
 
 [options="header"]
 |===
@@ -347,7 +347,7 @@ image:images/diagrams/developer_doc_5_5_Orders.svg[pkg order building block diag
 
 === Employee
 [[pkg_employee_diagram]]
-image:images/diagrams/employee_package_new.svg[pkg employee diagram]
+image:images/diagrams/package_employee.svg[pkg employee diagram]
 
 [options="header"]
 |===
