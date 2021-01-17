@@ -270,7 +270,8 @@ public class MampfOrderManager {
         }}
         /*----------------------------*/
         //UPDATE STAFF:
-        res.stream().filter(i->i.getCategory().equals(Category.STAFF)).forEach(j->{
+        
+        res.stream().filter(i->i.getCategory().equals(Category.STAFF)).collect(Collectors.toList()).forEach(j->{
             j.setQuantity(personalLeft.get(((StaffItem)j.getProduct()).getType()));
         });
        
