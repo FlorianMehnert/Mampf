@@ -18,10 +18,11 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 &passwort=testtest&passwortBestaetigt=testtest | Buchung von MB als Firmenkunde führt zu Fehler| Error page erscheint
 | /verwaltung/katalogverwaltung | keine | Als Admin Zugriff auf Katalog | 500er Error
 | /konto/löschen | keine | Als Kunde (Michael) mit einer getätigten Bestellung | 500er Error
-| /inventar | Neue Köche/Service in der Mitarbeiter-Seite hinzufügen | Die Anzahl von Köchen/Service wird in der Inventar-Seite nicht erhöht | Selben Anzahl von Köchen/Service
-| /inventar | Eingeloggter Nutzer bucht und bezahlt ein Eventcatering mit Dekoration  | In dem Inventar sinkt die Anzahl von gebuchten Sachen nicht | Die Anzahl von Dekoration sinkt nicht, selben Anzahl als bevor die Buchung
+| /verwaltung/inventar | Neue Köche/Service in der Mitarbeiter-Seite hinzufügen | Die Anzahl von Köchen/Service wird in der Inventar-Seite nicht erhöht | Selben Anzahl von Köchen/Service
+| /verwaltung/inventar | Eingeloggter Nutzer bucht und bezahlt ein Eventcatering mit Dekoration  | In dem Inventar sinkt die Anzahl von gebuchten Sachen nicht | Die Anzahl von Dekoration sinkt nicht, selben Anzahl als bevor die Buchung
 | /terminkalendar | Eingeloggter Nutzer bucht und bezahlt ein Rent-A-Cook | Der Admin drückt auf „Abrechnung“ von diesen Rent-A-Cook order | Status 500, die Abrechnung wird nicht gezeigt
-| … | … | … | … |
+| /verwaltung/inventar | Eingeloggter Admin | Der Admin gibt eine Anzahl im Feld von "Anzahl erhöhen"/"Anzahl senken" an und drückt anschließend auf den button "Anzahl erhöhen"/"Anzahl senken" | Whitelabel Error page erscheint|
+
 |===
 
 == Sonstiges
@@ -29,6 +30,9 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 ** bei Radio-Buttons finde ich es persönlich ansprechender, wenn man auch beim Klick auf den jeweiligen Text das Feld auswählen kann. Im Warenkorb geht das aber nur bei "Auf Rechnung". Aber das ist natürlich Geschmackssache...
 * Fehlende Features
 * Interaktion mit der Anwendung (Usability)
+** Es ist sehr mühsam im Inventar die Anzahl von bestimmten Produkten mehrmals zu erhöhen: Bei jedem Erhöhen muss die entsprechende Radiobox ausgewählt werden + es muss auf den Anzahl erhöhen/Anzahl senken button gedrückt werden
+
 
 == Verbesserungsvorschläge
 * Was kann noch weiter verbessert werden?
+** Skalierbarkeit von der Inventaransicht: bei sehr vielen Gegenständen im Inventar kann man entweder die Anzahl der Items im Inventar anschauen, oder man erhöht/senkt die Anzahl eines Items welches man sich vorher gemerkt hat -> es ist sinnvoller die zwei Tabellen welche einerseits die Anzahl aller Items anzeigt und die Auswahl welches Item erhöht/absgesenkt werden soll zu vereinen
