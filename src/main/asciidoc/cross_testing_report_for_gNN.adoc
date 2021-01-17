@@ -29,6 +29,8 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 Das Gleiche gilt für den Partyservice und Rent-A-Cook | 200
 | /verwaltung/inventar | keine | Durch Entfernen der "min" und "max" Attribute in den Input-Tags können Bestände, die eine Anzahl besitzen negiert werden. | 200
 | /konto/löschen | - | Nicht möglich | 500
+| /angebote/partyservice/warenkorb | Käseplatte: _ (keine Zahl) | Man löscht den „0“, der in der z.B. Anzahl von Käseplatte steht und schreibt keine Zahl, es führt zu einem Fehler (für Partyservice und Eventcatering) | Status 500
+| /angebote/fruehstuecksvorbestellung/warenkorb | Eingeloggter Nutzer bucht sein Essen & Trinken für Mobile Breakfast | Der Nutzer schreibt keine Uhrzeiten | Status 400
 
 |path|param|desc|err
 
@@ -38,6 +40,8 @@ Das Gleiche gilt für den Partyservice und Rent-A-Cook | 200
 
 * Optik der Anwendung
 ** bei Radio-Buttons finde ich es persönlich ansprechender, wenn man auch beim Klick auf den jeweiligen Text das Feld auswählen kann. Im Warenkorb geht das aber nur bei "Auf Rechnung". Aber das ist natürlich Geschmackssache...
+** Ein eingeloggter Nutzer bezahlt sein Essen & Trinken für Mobile Breakfast. Der Nutzer sieht seine Buchungen und den Mobile Breakfast-Buchung zeigt als Adresse und Ort des Unternehmens „null null“. Dasselbe passiert, wenn der Admin die Abrechnung der Bestellung sieht.
+** Ein eingeloggter Nutzer kann in Rent-A-Cook 0 Köche/Service buchen, wenn er die Adresse und Ort hinzufügt. Man kann dieser Buchung nicht in den Warenkorb sehen, aber wenn der Nutzer eine weitere Order bucht und bezahlt, dann wird diese die Buchung von 0 Köche/Service in den Bestellungen gezeigt
 * Fehlende Features
 * Interaktion mit der Anwendung (Usability)
 ** Es ist sehr mühsam im Inventar die Anzahl von bestimmten Produkten mehrmals zu erhöhen: Bei jedem Erhöhen muss die entsprechende Radiobox ausgewählt werden + es muss auf den Anzahl erhöhen/Anzahl senken button gedrückt werden
