@@ -21,7 +21,10 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 | /verwaltung/inventar | Neue Köche/Service in der Mitarbeiter-Seite hinzufügen | Die Anzahl von Köchen/Service wird in der Inventar-Seite nicht erhöht | Selben Anzahl von Köchen/Service
 | /verwaltung/inventar | Eingeloggter Nutzer bucht und bezahlt ein Eventcatering mit Dekoration  | In dem Inventar sinkt die Anzahl von gebuchten Sachen nicht | Die Anzahl von Dekoration sinkt nicht, selben Anzahl als bevor die Buchung
 | /terminkalendar | Eingeloggter Nutzer bucht und bezahlt ein Rent-A-Cook | Der Admin drückt auf „Abrechnung“ von diesen Rent-A-Cook order | Status 500, die Abrechnung wird nicht gezeigt
-| /verwaltung/inventar | Eingeloggter Admin | Der Admin gibt eine Anzahl im Feld von "Anzahl erhöhen"/"Anzahl senken" an und drückt anschließend auf den button "Anzahl erhöhen"/"Anzahl senken" | Whitelabel Error page erscheint|
+| /verwaltung/inventar | Eingeloggter Admin | Der Admin gibt eine Anzahl im Feld von "Anzahl erhöhen"/"Anzahl senken" an und drückt anschließend auf den button "Anzahl erhöhen"/"Anzahl senken" | Whitelabel Error page erscheint
+|/angebote/rent-a-cook/warenkorb|formular| siehe Fälle Bestellungen
+|Whitelabel Error page erscheint, status: 500
+|path|param|desc|err
 
 |===
 
@@ -31,8 +34,21 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 * Fehlende Features
 * Interaktion mit der Anwendung (Usability)
 ** Es ist sehr mühsam im Inventar die Anzahl von bestimmten Produkten mehrmals zu erhöhen: Bei jedem Erhöhen muss die entsprechende Radiobox ausgewählt werden + es muss auf den Anzahl erhöhen/Anzahl senken button gedrückt werden
+* Bestellungen erstellen
+** (Der Admin kann Items zum Warenkorb hinzufügen, allerdings hat er nicht die Möglichkeit den Warenkorb auch zu kaufen)
+** (wenn man nur Dekoartikel (theoretisch aber auch personal, aber das könnte man auch als eine rent-a-cook bestellung interpretieren) bestellen möchte, ist man dazu gezwungen bei z.b. /eventcatering auch ein Buffet zu bestellen)
 
 
+.Fälle Bestellungen
+* getestet mit Nutzer: Nelli
+* fehlermeldung wie auch sonst bei /eventcatering oder /partyservice vergessen (formular mit zeit < 5:00 Uhr) 
+* trifft auch zu: (formular mit aktuellem/heutigem Datum)
+* oder auch bei: (bestellungen erstellen)
+["arabic"]
+.. 1xKoch,2xService, datum: <x>, zeitspanne <y>
+.. 2xKoch,datum: <x>,zeitspanne <y> (<x> ist dabei nicht das heutige datum)
+* weiterhin ist möglich (Bestellungen erstellen)(eher ein logikfehler, kein fehlerstatus): z.b. 3x Hinzufügen zu wk & Bestellung abschließen: 10xDeko(+1xBuffet) zeit/datum: <x>/<y> obwohl im Inventar nur x25 Deko insgesamt vorhanden sind
 == Verbesserungsvorschläge
 * Was kann noch weiter verbessert werden?
 ** Skalierbarkeit von der Inventaransicht: bei sehr vielen Gegenständen im Inventar kann man entweder die Anzahl der Items im Inventar anschauen, oder man erhöht/senkt die Anzahl eines Items welches man sich vorher gemerkt hat -> es ist sinnvoller die zwei Tabellen welche einerseits die Anzahl aller Items anzeigt und die Auswahl welches Item erhöht/absgesenkt werden soll zu vereinen
+** Inventar: Item reduzierung söllte erst dann auch möglich sein, wenn nicht bereits eine zukünftige Bestellung vorliegt welche den aktuellen Inventarbestand benötigt.
