@@ -34,6 +34,10 @@ public class UniqueMampfItem extends UniqueInventoryItem {
 		return getQuantity().getAmount();
 	}
 	
+	//(there is no visible setter)
+	public void setQuantity(Quantity quantity) {
+	   increaseQuantity(quantity.subtract(getQuantity())); 
+	}
 
 	public mampf.catalog.Item.Domain getDomain() {
 		return getItem().getDomain();

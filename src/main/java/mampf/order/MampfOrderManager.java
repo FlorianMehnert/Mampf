@@ -107,6 +107,10 @@ public class MampfOrderManager {
         List<UniqueMampfItem> baseInv = new ArrayList<>(inventory.findAll().filter(i -> !Util.infinity.contains(i.getCategory())).toList());
         // init base carts:
         List<DomainCart> baseCarts = new ArrayList<>();
+        // init employees:
+        Map<Employee.Role, Quantity> baseEmp = new EnumMap<>(Employee.Role.class);
+        for(Employee.Role role : Employee.Role.values()) 
+            baseEmp.put(role, employeeManagement.getEmployeeAmount(role));
 
         for (Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
             Domain domain = entry.getKey();
@@ -126,7 +130,7 @@ public class MampfOrderManager {
             }
 
             // get available Items:
-            List<UniqueMampfItem> inventorySnapshot = getFreeItems(baseInv, baseCarts, startDate, endDate);
+            List<UniqueMampfItem> inventorySnapshot = getFreeItems(baseInv, baseCarts, baseEmp, startDate, endDate);
 
             for (CartItem cartitem : cart) {
                 // de-map mapper-cartitems:
@@ -145,8 +149,8 @@ public class MampfOrderManager {
                         updateValidations(validations, domain, validationState);
                     }
                 }
-                baseCarts.add(cart);
             }
+            baseCarts.add(cart);
         }
         return validations;
     }
@@ -211,14 +215,23 @@ public class MampfOrderManager {
      * @param toDate
      * @return
      */
-    public List<UniqueMampfItem> getFreeItems(List<UniqueMampfItem> baseInv, List<DomainCart> baseCarts,
+    public List<UniqueMampfItem> getFreeItems(List<UniqueMampfItem> baseInv, List<DomainCart> baseCarts, Map<Employee.Role, Quantity> baseEmp,
             LocalDateTime fromDate, LocalDateTime toDate) {
+        //INIT:
         // a "copy" of baseInv
         List<UniqueMampfItem> res = new ArrayList<>();
         // items which has to be returned needs to be the same structure like baseInv:
         // also, the quantity will be modified during next steps
         baseInv.forEach(i -> res.add(new UniqueMampfItem(i.getItem(), Quantity.of(i.getAmount().longValue()))));
-        
+        // a "copy" of baseEmp
+        // issue: items("STAFF") are request which are not unique and refer to a specific resource type (employee), 
+        //        not a inventory resource
+        // idea: calculate over requests the lasting resource, 
+        //       but update requests(items) depending on lasting resource as inventory item 
+        Map<Employee.Role, Quantity> personalLeft = new EnumMap<>(Employee.Role.class);
+        baseEmp.forEach((role,q)->{personalLeft.put(role, Quantity.of(q.getAmount().longValue()));});
+        /*-----------------------------*/
+        //GET:
         Optional<UniqueMampfItem> actionItem;
         List<UniqueMampfItem> actionItems;
         List<UniqueMampfItem> bookedItems = getBookedItems(fromDate, toDate);
@@ -231,8 +244,8 @@ public class MampfOrderManager {
             if (MampfOrder.hasTimeOverlap(fromDate, toDate, c.getStartDate(), c.getEndDate()))
                 c.forEach(cI -> createCheckItems(cI).forEach(chI->cartItems.add(new UniqueMampfItem((Item) chI.getProduct(), chI.getQuantity()))));
         });
-        
-
+        /*----------------------------*/
+        //CALCULATE:
         for (UniqueMampfItem resItem : res) {for (int n = 0; n < 2; n++) {
             if(n == 0) {
                 actionItems = bookedItems;
@@ -246,11 +259,20 @@ public class MampfOrderManager {
             for (UniqueMampfItem bI : actionItems)if (bI.getProduct().equals(resItem.getProduct())) {actionItem = Optional.of(bI);break;}
 
             // substract:
-            if (actionItem.isPresent() && !Util.infinity.contains(resItem.getCategory())) {
-                resItem.decreaseQuantity(actionItem.get().getQuantity());
+            if(actionItem.isPresent()) {
+                if(actionItem.get().getCategory().equals(Category.STAFF)) {
+                    Employee.Role role = ((StaffItem)actionItem.get().getProduct()).getType();
+                    personalLeft.put(role,personalLeft.get(role).subtract(actionItem.get().getQuantity()));
+                }else if (!Util.infinity.contains(resItem.getCategory())) {
+                    resItem.decreaseQuantity(actionItem.get().getQuantity());
+                }
             }
         }}
-
+        /*----------------------------*/
+        //UPDATE STAFF:
+        res.stream().filter(i->i.getCategory().equals(Category.STAFF)).forEach(j->{
+            j.setQuantity(personalLeft.get(((StaffItem)j.getProduct()).getType()));
+        });
        
         return res;
     }
@@ -331,6 +353,7 @@ public class MampfOrderManager {
         return orderManagement;
     }
 
+    public MampfCatalog getCatalog() {return catalog;}
     // TODO: createPayMethod needs to be updated
     private PaymentMethod createPayMethod(String payMethod, UserAccount userAccount) {
         PaymentMethod method = Cash.CASH;
@@ -388,10 +411,12 @@ public class MampfOrderManager {
         Item catalogItem = ((Item) checkitem.getProduct());
 
         
-        // finite (and existing)
-        if (inventoryItem.isPresent() && !Util.infinity.contains(catalogItem.getCategory())) {
-            
-            if (catalogItem.getCategory().equals(Category.STAFF)) {
+        if (inventoryItem.isPresent() && 
+            (catalogItem.getCategory().equals(Category.STAFF) || !Util.infinity.contains(catalogItem.getCategory()))&&
+            (inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity()))){
+            return inventoryItem;
+        }
+            /*if (catalogItem.getCategory().equals(Category.STAFF)) {
                 // calculate personalAmount:
                 Employee.Role staffType = ((StaffItem) catalogItem).getType();
                 Integer amountLeft = 0;
@@ -403,12 +428,12 @@ public class MampfOrderManager {
                     return Optional.of(new UniqueMampfItem(catalogItem, Quantity.of(amountLeft)));
                 }
 
-            } else { // sonarcube logic: 'else if {}' is allowed...
+            } else if(!Util.infinity.contains(catalogItem.getCategory())){ // sonarcube logic: 'else if {}' is allowed...
                 if (inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity())) {
                     return inventoryItem;
                 }
-            }
-        }
+            }*/
+        //}
         return Optional.empty();
     }
 

@@ -1,5 +1,6 @@
 package mampf.employee;
 
+import org.salespointframework.quantity.Quantity;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,10 @@ public class EmployeeManagement {
 	
 	public Streamable<Employee> findAll() {
 		return employees.findAll();
+	}
+	
+	public Quantity getEmployeeAmount(Employee.Role role) {
+	  return Quantity.of(employees.findByRole(role).size());    
 	}
 	
 	public List<Employee> getFreeEmployees(LocalDateTime fromDate, LocalDateTime toDate,Employee.Role role){
