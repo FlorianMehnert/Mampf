@@ -167,6 +167,7 @@ public class MampfOrderManager {
     public List<MampfOrder> createOrders(Map<Item.Domain, DomainCart> carts, CheckoutForm form, User user) {
 
         List<MampfOrder> orders = new ArrayList<>();
+        List<MampfOrder> allOrder = findAll();
         for (Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
             Domain domain = entry.getKey();
             DomainCart cart = entry.getValue();

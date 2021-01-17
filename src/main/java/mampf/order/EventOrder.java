@@ -22,6 +22,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
@@ -54,7 +55,7 @@ public class EventOrder extends MampfOrder {
 	private List<Employee> employees = new ArrayList<>();
 	
 	@ElementCollection(fetch = FetchType.EAGER)
-	private List<ProductIdentifier> productsWithPrizePerHour = new ArrayList<>();
+	private List<String> productsWithPrizePerHour = new ArrayList<>();
 	
 	@SuppressWarnings("unused")
 	private EventOrder() {}
@@ -119,7 +120,7 @@ public class EventOrder extends MampfOrder {
 	public MonetaryAmount getTotal() {
 		Money total = Money.of(0, "EUR"); 
 		for(OrderLine orderLine: getOrderLines()) {
-			if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier())) {
+			if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier().getIdentifier())) {
 				total=total.add(
 				EventOrder.calcPrizePerHour(getStartDate(), getEndDate(),
 				orderLine.getPrice()	
@@ -139,7 +140,7 @@ public class EventOrder extends MampfOrder {
 		while(it.hasNext()) {
 			OrderLine orderLine = it.next();
 			Money price;
-			if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier())) {
+			if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier().getIdentifier())) {
 				price=(Money)EventOrder.calcPrizePerHour(getStartDate(), getEndDate(),orderLine.getPrice());
 			}
 			else{
@@ -152,16 +153,17 @@ public class EventOrder extends MampfOrder {
 	
 	@Override
 	public OrderLine addOrderLine(Product product, Quantity quantity) {
-		if(productHasPrizePerHour.test(product)) {
-			productsWithPrizePerHour.add(product.getId());
+		if(productHasPrizePerHour.test(product) &&
+		   !productsWithPrizePerHour.contains(product.getId().getIdentifier())) {    
+		    productsWithPrizePerHour.add(product.getId().getIdentifier());
 		}
 		return super.addOrderLine(product, quantity);
 	}
 	
 	@Override
 	public void remove(OrderLine orderLine) {
-		if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier())) {
-			productsWithPrizePerHour.remove(orderLine.getProductIdentifier());
+		if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier().getIdentifier())) {
+			productsWithPrizePerHour.remove(orderLine.getProductIdentifier().getIdentifier());
 		}
 		super.remove(orderLine);
 	}
