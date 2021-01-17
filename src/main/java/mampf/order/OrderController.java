@@ -140,13 +140,13 @@ public class OrderController {
     @ModelAttribute("mampfCart")
     MampfCart initializeCart() {
         MampfCart cart = new MampfCart();
-        MampfCatalog catalog = orderManager.getCatalog();
+        /*MampfCatalog catalog = orderManager.getCatalog();
         cart.addToCart(catalog.findByName("Dekoration").get().findFirst().get(), Quantity.of(10));
         cart.addToCart(catalog.findByName("Tischdecke").get().findFirst().get(), Quantity.of(10));
         catalog.findByName("Koch/Köchin pro 10 Personen").forEach(i->cart.addToCart(i, Quantity.of(3)));
         catalog.findByName("Service-Personal").forEach(i->cart.addToCart(i, Quantity.of(4)));
         cart.addToCart(catalog.findByName("Luxus").get().findFirst().get(), Quantity.of(2));
-        
+        */
         return cart;
         
     }

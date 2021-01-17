@@ -57,7 +57,7 @@ public class MampfOrderManager {
     private final MampfCatalog catalog;
     private final EmployeeManagement employeeManagement;
     private final UserManagement userManagement;
-
+    
     public MampfOrderManager(OrderManagement<MampfOrder> orderManagement, Inventory inventory,
             EmployeeManagement employeeManagement, UserManagement userManagement, MampfCatalog catalog) {
         this.orderManagement = orderManagement;
@@ -143,8 +143,8 @@ public class MampfOrderManager {
 
                     Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, checkitem);
                     if (inventoryItem.isPresent()) {
-                        String validationState = "Keine verfügbare Auswahl " + catalogItem.get().getCategory().name()
-                                .toLowerCase() + ": " + catalogItem.get().getName() + " verbleibende Anzahl:"
+                        String validationState = "Keine verfügbare Auswahl von '" + catalogItem.get().getName()+"' : " + 
+                                " verbleibende Anzahl: "
                                 + inventoryItem.get().getQuantity().getAmount();
                         updateValidations(validations, domain, validationState);
                     }
@@ -167,7 +167,6 @@ public class MampfOrderManager {
     public List<MampfOrder> createOrders(Map<Item.Domain, DomainCart> carts, CheckoutForm form, User user) {
 
         List<MampfOrder> orders = new ArrayList<>();
-        List<MampfOrder> allOrder = findAll();
         for (Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
             Domain domain = entry.getKey();
             DomainCart cart = entry.getValue();
@@ -263,9 +262,9 @@ public class MampfOrderManager {
             if(actionItem.isPresent()) {
                 if(actionItem.get().getCategory().equals(Category.STAFF)) {
                     Employee.Role role = ((StaffItem)actionItem.get().getProduct()).getType();
-                    personalLeft.put(role,personalLeft.get(role).subtract(actionItem.get().getQuantity()));
+                    personalLeft.put(role,reduceValidationQuantity(personalLeft.get(role),actionItem.get().getQuantity()));
                 }else if (!Util.infinity.contains(resItem.getCategory())) {
-                    resItem.decreaseQuantity(actionItem.get().getQuantity());
+                    resItem.setQuantity(reduceValidationQuantity(resItem.getQuantity(),actionItem.get().getQuantity()));
                 }
             }
         }}
@@ -278,6 +277,16 @@ public class MampfOrderManager {
         return res;
     }
 
+    public Quantity reduceValidationQuantity(Quantity origin, Quantity sub) {
+        if(origin.isEqualTo(Quantity.of(0))) {
+            return origin;
+        }
+        if(sub.isGreaterThan(origin)) {
+            return Quantity.of(0);
+        }
+        
+        return origin.subtract(sub);
+    }
     /**
      * creates and returns a totally new list of all ordered items for a time span
      * 

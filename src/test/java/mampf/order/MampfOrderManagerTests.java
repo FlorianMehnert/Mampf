@@ -3,6 +3,7 @@ package mampf.order;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +33,11 @@ import mampf.employee.EmployeeManagement;
 import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
 import mampf.catalog.Item.Category;
+import mampf.Util;
 import mampf.catalog.BreakfastItem;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
+import mampf.order.MampfCart.DomainCart;
 
 import org.salespointframework.order.OrderStatus;
 import org.salespointframework.quantity.Quantity;
@@ -223,20 +226,20 @@ class MampfOrderManagerTests {
         cart.updateCart(form);
         // every order:
         validations = orderManager.validateCarts(cart.getDomainItems(null));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("6") && s.contains("Koch"));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("10") && s.contains(
+        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch"));
+        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains(
                 "Tischdecke"));
         assert validations.get(Domain.EVENTCATERING).size() == 2;
 
-        assert validations.get(Domain.RENT_A_COOK).stream().anyMatch(s -> s.contains("6") && s.contains("Personal"));
-        assert validations.get(Domain.RENT_A_COOK).size() == 1;
+        assert validations.get(Domain.RENT_A_COOK).stream().anyMatch(s -> s.contains("Personal"));
+        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch"));
+        assert validations.get(Domain.RENT_A_COOK).size() == 2;
         assert validations.size() == 2;
 
         // only spec order:
         validations = orderManager.validateCarts(cart.getDomainItems(Domain.EVENTCATERING));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("6") && s.contains("Koch"));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("10") && s.contains(
-                "Tischdecke"));
+        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch"));
+        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Tischdecke"));
         assert validations.get(Domain.EVENTCATERING).size() == 2;
         assert validations.size() == 1;
 
@@ -324,8 +327,21 @@ class MampfOrderManagerTests {
     @Test 
     void getFreeItems() {
         initContext();
+        
+        // get base inventory of all finite items:
+        List<UniqueMampfItem> baseInv = new ArrayList<>(inventory.findAll().filter(i -> !Util.infinity.contains(i.getCategory())).toList());
+        // init base carts:
+        List<DomainCart> baseCarts = new ArrayList<>();
+        // init employees:
+        Map<Employee.Role, Quantity> baseEmp = new EnumMap<>(Employee.Role.class);
+        for(Employee.Role role : Employee.Role.values()) 
+            baseEmp.put(role, employeeManager.getEmployeeAmount(role));
 
-        assertEquals(orderManager.getFreeItems(LocalDateTime.now(),LocalDateTime.now().plus(Duration.ofHours(1))).size(),inventory.findAll().toList().size(),"getFreeItems does not return full inventory when no order done yet");
+        
+        
+        assertEquals(orderManager.getFreeItems(baseInv, baseCarts, baseEmp, LocalDateTime.now(),LocalDateTime.now().plus(Duration.ofHours(1))).size(),
+                baseInv.size(),
+                "getFreeItems should keep track of the given inventory base");
         initValidCart();
         CheckoutForm form = initForm();
         cart.updateCart(form);
@@ -335,10 +351,13 @@ class MampfOrderManagerTests {
          * [ ] (justadate)
          *   [ ] (last orders)
          */
-        List<UniqueMampfItem> inventorySnapshot = orderManager.getFreeItems(justadate.minus(Duration.ofDays(4)), justadate.plus(Duration.ofMinutes(1)));
+        List<UniqueMampfItem> inventorySnapshot = orderManager.getFreeItems(baseInv, baseCarts, baseEmp, justadate.minus(Duration.ofDays(4)), justadate.plus(Duration.ofMinutes(1)));
         
         assertTrue(inventorySnapshot.stream().anyMatch(i->i.getQuantity().equals(Quantity.of(0))&&i.getProduct().getName().contains("Tischdecke")),"getFreeItems snapshot,Tischdecke should be 0");
         assertTrue(inventorySnapshot.stream().anyMatch(i->i.getQuantity().equals(Quantity.of(10))&&i.getProduct().getName().contains("Deko")),"getFreeItems snapshot,deko should be 10");
+        assertTrue(inventorySnapshot.stream().anyMatch(i->i.getQuantity().equals(Quantity.of(2))&&i.getProduct().getName().contains("Personal")),"getFreeItems snapshot,Service should be 2");
+        assertTrue(inventorySnapshot.stream().anyMatch(i->i.getQuantity().equals(Quantity.of(0))&&i.getProduct().getName().contains("Koch")),"getFreeItems snapshot,there should be no Cook left!");
+        
     }
 }
 
