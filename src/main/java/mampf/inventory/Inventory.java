@@ -23,8 +23,7 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 	/**
 	 * reduces some {@link Item} by some Quantity
-	 *
-	 * @param item   which product should be reduced
+	 * @param item which product should be reduced
 	 * @param amount by what amount should the product be reduced
 	 */
 	default Optional<UniqueMampfItem> reduceAmount(Item item, Quantity amount) {
@@ -38,7 +37,6 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 	/**
 	 * finds some {@link UniqueMampfItem} with a given {@link Item}
-	 *
 	 * @param item which item should be looked for
 	 */
 	default Optional<UniqueMampfItem> findByProduct(Item item) {
@@ -47,8 +45,7 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 	/**
 	 * finds All {@link UniqueMampfItem}s in this Inventory and sorts them according type
-	 *
-	 * @param type what should be sorted for
+	 * @param  type  what should be sorted for
 	 */
 	default List<UniqueMampfItem> findAllAndSort(String type) {
 
@@ -122,58 +119,59 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 class SortByName implements Comparator<UniqueMampfItem> {
 
-	/**
-	 * Sorts By Name, does explicitly not sort for Quantity
-	 */
-	@Override
-	public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-		int comp = Util.compareCategories(a.getProduct().getName(), b.getProduct().getName());
-		if (comp == 0) {
-			comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+		/**
+		 * Sorts By Name, does explicitly not sort for Quantity
+		 */
+		@Override
+		public int compare(UniqueMampfItem a, UniqueMampfItem b) {
+			int comp = Util.compareCategories(a.getProduct().getName(), b.getProduct().getName());
+			if (comp == 0) {
+				comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+			}
+			return comp;
 		}
-		return comp;
 	}
-}
 
-class SortByCategory implements Comparator<UniqueMampfItem> {
+	class SortByCategory implements Comparator<UniqueMampfItem> {
 
-	/**
-	 * Sorts By Category, does explicitly not sort for Quantity
-	 */
-	@Override
-	public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-		int comp = Util.compareCategories(a.getCategory(), b.getCategory());
-		if (comp == 0) {
-			comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+		/**
+		 * Sorts By Category, does explicitly not sort for Quantity
+		 */
+		@Override
+		public int compare(UniqueMampfItem a, UniqueMampfItem b) {
+			int comp = Util.compareCategories(a.getCategory(), b.getCategory());
+			if (comp == 0) {
+				comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
+			}
+			return comp;
 		}
-		return comp;
 	}
-}
 
-class SortByAmount implements Comparator<UniqueMampfItem> {
-	/**
-	 * Sorts By Amount, secondary sorts for Name
-	 */
-	@Override
-	public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-		// compare Quantity
-		int comp = a.getQuantity().getAmount().compareTo(b.getQuantity().getAmount());
+	class SortByAmount implements Comparator<UniqueMampfItem> {
+		/**
+		 * Sorts By Amount, secondary sorts for Name
+		 */
+		@Override
+		public int compare(UniqueMampfItem a, UniqueMampfItem b) {
+			// compare Quantity
+			int comp = a.getQuantity().getAmount().compareTo(b.getQuantity().getAmount());
 
-		// compare Name
-		int alternative = a.getProduct().getName().compareTo(b.getProduct().getName());
+			// compare Name
+			int alternative = a.getProduct().getName().compareTo(b.getProduct().getName());
 
-		boolean infinitA = Util.infinity.contains(a.getCategory());
-		boolean infinitB = Util.infinity.contains(b.getCategory());
+			boolean infinitA = Util.infinity.contains(a.getCategory());
+			boolean infinitB = Util.infinity.contains(b.getCategory());
 
-		if (infinitA && infinitB) {
-			comp = alternative;
-		} else if (infinitA) {
-			comp = 1;
-		} else if (infinitB) {
-			comp = -1;
-		} else if (comp == 0) {
-			comp = a.getProduct().getName().compareTo(b.getProduct().getName());
+			if (infinitA && infinitB) {
+				comp = alternative;
+			}else if(infinitA){
+				comp = 1;
+			}else if(infinitB){
+				comp =  -1;
+			}else if(comp == 0){
+				comp = a.getProduct().getName().compareTo(b.getProduct().getName());
+			}
+			return comp;
 		}
-		return comp;
 	}
 }

@@ -31,7 +31,7 @@
       </div>
       
       <section>
-        <div class="m-padding-bottom m-card-section">
+        <div th:class="${canSubmit}?'m-padding-bottom m-card-section':'invisible'">
           <div class="m-container-small">
             <h2 class="m-padding-bottom">Zahlungsart wählen</h2>
             <div class="m-flex">

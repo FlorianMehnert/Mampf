@@ -23,14 +23,10 @@ public class UniqueMampfItem extends UniqueInventoryItem {
 	}
 	
 	public void increaseMampfQuantity(int increase) {
-		if (increase > 0) {
+		if(increase > 0) {
 			increaseQuantity(Quantity.of(increase));
-		}
-	}
-
-	public void decreaseMampfQuantity(int decrease) {
-		if(decrease > 0) {
-			decreaseQuantity(Quantity.of(decrease));
+		}else {
+			decreaseQuantity(Quantity.of(increase));
 		}
 	}
 	
@@ -38,6 +34,10 @@ public class UniqueMampfItem extends UniqueInventoryItem {
 		return getQuantity().getAmount();
 	}
 	
+	//(there is no visible setter)
+	public void setQuantity(Quantity quantity) {
+	   increaseQuantity(quantity.subtract(getQuantity())); 
+	}
 
 	public mampf.catalog.Item.Domain getDomain() {
 		return getItem().getDomain();
