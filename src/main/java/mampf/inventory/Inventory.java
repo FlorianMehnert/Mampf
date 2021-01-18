@@ -174,4 +174,3 @@ class SortByName implements Comparator<UniqueMampfItem> {
 			return comp;
 		}
 	}
-}
