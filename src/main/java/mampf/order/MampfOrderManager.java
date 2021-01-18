@@ -57,7 +57,7 @@ public class MampfOrderManager {
     private final MampfCatalog catalog;
     private final EmployeeManagement employeeManagement;
     private final UserManagement userManagement;
-    
+
     public MampfOrderManager(OrderManagement<MampfOrder> orderManagement, Inventory inventory,
             EmployeeManagement employeeManagement, UserManagement userManagement, MampfCatalog catalog) {
         this.orderManagement = orderManagement;
@@ -70,7 +70,7 @@ public class MampfOrderManager {
     /**
      * Check if the user-(employee)s company has booked Mobile Breakfast returns
      * false if not so
-     * 
+     *
      * @param userAccount
      * @return
      */
@@ -94,9 +94,8 @@ public class MampfOrderManager {
      *  checks if MB is in-time
      *  returns list of validations
      * (domainspec.), never null
-     * 
+     *
      * @param carts
-     * @param form
      * @return
      */
     public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, DomainCart> carts) {
@@ -109,7 +108,7 @@ public class MampfOrderManager {
         List<DomainCart> baseCarts = new ArrayList<>();
         // init employees:
         Map<Employee.Role, Quantity> baseEmp = new EnumMap<>(Employee.Role.class);
-        for(Employee.Role role : Employee.Role.values()) 
+        for(Employee.Role role : Employee.Role.values())
             baseEmp.put(role, employeeManagement.getEmployeeAmount(role));
 
         for (Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
@@ -143,7 +142,7 @@ public class MampfOrderManager {
 
                     Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, checkitem);
                     if (inventoryItem.isPresent()) {
-                        String validationState = "Keine verfügbare Auswahl von '" + catalogItem.get().getName()+"' : " + 
+                        String validationState = "Keine verfügbare Auswahl von '" + catalogItem.get().getName()+"' : " +
                                 " verbleibende Anzahl: "
                                 + inventoryItem.get().getQuantity().getAmount();
                         updateValidations(validations, domain, validationState);
@@ -158,7 +157,7 @@ public class MampfOrderManager {
     /**
      * creates orders for the given items (cart items) and saves them in the SP
      * orderManagement sets personal to the orders
-     * 
+     *
      * @param carts
      * @param form
      * @param user
@@ -208,9 +207,10 @@ public class MampfOrderManager {
      * creates and returns a "inventory snapshot" (a list of UniqueMampfItems) which
      * represents the inventory for a given time span calculates the snapshot from
      * the actual inventory checks every order for ordered items/amount
-     * 
+     *
      * @param baseInv
      * @param baseCarts
+     *
      * @param fromDate
      * @param toDate
      * @return
@@ -224,10 +224,10 @@ public class MampfOrderManager {
         // also, the quantity will be modified during next steps
         baseInv.forEach(i -> res.add(new UniqueMampfItem(i.getItem(), Quantity.of(i.getAmount().longValue()))));
         // a "copy" of baseEmp
-        // issue: items("STAFF") are request which are not unique and refer to a specific resource type (employee), 
+        // issue: items("STAFF") are request which are not unique and refer to a specific resource type (employee),
         //        not a inventory resource
-        // idea: calculate over requests the lasting resource, 
-        //       but update requests(items) depending on lasting resource as inventory item 
+        // idea: calculate over requests the lasting resource,
+        //       but update requests(items) depending on lasting resource as inventory item
         Map<Employee.Role, Quantity> personalLeft = new EnumMap<>(Employee.Role.class);
         baseEmp.forEach((role,q)->{personalLeft.put(role, Quantity.of(q.getAmount().longValue()));});
         /*-----------------------------*/
@@ -252,7 +252,7 @@ public class MampfOrderManager {
             }else {
                 actionItems = cartItems;
             }
-            
+
             // just get the fitting action item:
             // TODO: replace with fancy version...:
             actionItem = Optional.empty();
@@ -273,7 +273,7 @@ public class MampfOrderManager {
         res.stream().filter(i->i.getCategory().equals(Category.STAFF)).forEach(j->{
             j.setQuantity(personalLeft.get(((StaffItem)j.getProduct()).getType()));
         });
-       
+
         return res;
     }
 
@@ -284,11 +284,11 @@ public class MampfOrderManager {
         if(sub.isGreaterThan(origin)) {
             return Quantity.of(0);
         }
-        
+
         return origin.subtract(sub);
     }
     /**
-     * creates and returns a totally new list of all ordered items for a time span
+     * creates and returns a list of all ordered items for a time span
      * 
      * @param fromDate
      * @param toDate
@@ -300,7 +300,7 @@ public class MampfOrderManager {
 
     /**
      * converts productidentifiers and quantitys to a list of uniquemampfitems
-     * 
+     *
      * @param itemMap
      * @return
      */
@@ -317,7 +317,7 @@ public class MampfOrderManager {
 
     /**
      * creates and returns a list of every Order of a useraccount
-     * 
+     *
      * @param account
      * @return
      */
@@ -356,7 +356,7 @@ public class MampfOrderManager {
 
     /**
      * only unit testing purpose
-     * 
+     *
      * @return
      */
     public OrderManagement<MampfOrder> getOrderManagement() {
@@ -416,12 +416,12 @@ public class MampfOrderManager {
     // checkForAmount returns an empty Optional if the checked quantity is valid
     private Optional<UniqueMampfItem> checkForAmount(List<UniqueMampfItem> inventorySnapshot, CartItem checkitem) {
 
-        Optional<UniqueMampfItem> inventoryItem = inventorySnapshot.stream().filter(i -> 
+        Optional<UniqueMampfItem> inventoryItem = inventorySnapshot.stream().filter(i ->
                 i.getProduct().equals(checkitem.getProduct())).findFirst();
         Item catalogItem = ((Item) checkitem.getProduct());
 
-        
-        if (inventoryItem.isPresent() && 
+
+        if (inventoryItem.isPresent() &&
             (catalogItem.getCategory().equals(Category.STAFF) || !Util.infinity.contains(catalogItem.getCategory()))&&
             (inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity()))){
             return inventoryItem;
@@ -433,7 +433,7 @@ public class MampfOrderManager {
                 Iterator<UniqueMampfItem> it = inventorySnapshot.stream().filter(i->i.getCategory().equals(Category.STAFF)&&
                         ((StaffItem)i.getItem()).getType().equals(staffType)).iterator();
                 while(it.hasNext()) {amountLeft+=it.next().getAmount().intValue();}
-                
+
                 if (checkitem.getQuantity().isGreaterThan(Quantity.of(amountLeft))) {
                     return Optional.of(new UniqueMampfItem(catalogItem, Quantity.of(amountLeft)));
                 }

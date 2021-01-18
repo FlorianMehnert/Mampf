@@ -65,7 +65,59 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		return sortableList;
 	}
 
-	class SortByName implements Comparator<UniqueMampfItem> {
+	/**
+	 *
+	 * @param filter String for which should be filtered for
+	 * @param type determines category in which the seach takes place
+	 * @param partially true enables partial search, false is regEx search
+	 * @return List which is sorted with filter, type and partially
+	 */
+	default List<UniqueMampfItem> findAllAndFilter(String filter, String type, boolean partially) {
+		List<UniqueMampfItem> list = this.findAll().toList();
+		List<UniqueMampfItem> sortableList = new ArrayList<>(list);
+		sortableList.sort(new SortByCategory());
+		switch (type) {
+			case "category":
+				if (partially) {
+					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString()).matches("(?i)" + filter)));
+				} else {
+					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString())).contains(filter));
+				}
+				break;
+			case "amount":
+				if (partially) {
+					try {
+						sortableList.removeIf(umi -> {
+							if ((!(Util.infinity.contains(umi.getCategory()))
+									&& (Util.infinityStrings.contains(filter)))
+									|| (!(Util.infinityStrings.contains(filter))
+									&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter))))
+								return true;
+							if (!Util.infinityStrings.contains(filter)) {
+								Integer.valueOf(filter);
+							}
+							return false;
+						});
+					} catch (NumberFormatException e) {
+						return new ArrayList<>();
+					}
+				} else {
+					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getAmount().toString())).contains(filter));
+				}
+				break;
+			default: // case name
+				if (partially) {
+					sortableList.removeIf(uml -> !uml.getItem().getName().matches("(?i)" + filter));
+				} else {
+					sortableList.removeIf(umi -> !Util.renderDomainName(umi.getItem().getName()).contains(filter));
+				}
+				break;
+		}
+		return sortableList;
+	}
+}
+
+class SortByName implements Comparator<UniqueMampfItem> {
 
 		/**
 		 * Sorts By Name, does explicitly not sort for Quantity
@@ -122,4 +174,3 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 			return comp;
 		}
 	}
-}
