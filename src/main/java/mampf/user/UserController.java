@@ -34,14 +34,11 @@ public class UserController {
 				result.rejectValue("username", "RegistrationForm.username.exists", "This Username is already taken!");
 			}
 			if ((form.getEmail().equals(user.getUserAccount().getEmail()))) {
-				result.rejectValue("email", "RegistrationForm.email.exists", "This E-Mail does exists already!");
+				result.rejectValue("email", "RegistrationForm.email.exists", "This E-Mail is already taken!");
 			}
 		}
-		if(form.getRole().equals("EMPLOYEE") && form.getAccessCode().length() != 6 ) {
-			result.rejectValue("accessCode", "RegistrationForm.accessCode.NotEmpty","You've entered an incorrect access code!");
-		}
-		if (form.getRole().equals("EMPLOYEE") && userManagement.findCompany(form.getAccessCode()).isEmpty()) {
-			result.rejectValue("accessCode", "RegistrationForm.accessCode.notExists","You've entered a wrong access code!");
+		if(form.getRole().equals("EMPLOYEE") && (form.getAccessCode().length() != 6 || userManagement.findCompany(form.getAccessCode()).isEmpty()) ) {
+			result.rejectValue("accessCode", "RegistrationForm.accessCode.wrong","You've entered an incorrect access code!");
 		}
 		if (form.getRole().equals("COMPANY") && form.getCompanyName().length() == 0) {
 			result.rejectValue("companyName", "RegistrationForm.companyName.NotEmpty","The company name can not be empty!");

@@ -15,7 +15,7 @@ class RegistrationForm {
 	private final String lastname;
 
 	@NotEmpty(message = "{RegistrationForm.password.NotEmpty}") //
-	@Size(min = 5, max = 20, message = "{RegistrationForm.password.minMessage}")
+	@Size(min = 5, message = "{RegistrationForm.password.minMessage}")
 	private final String password;
 
 	@NotEmpty(message = "{RegistrationForm.address.NotEmpty}") //
