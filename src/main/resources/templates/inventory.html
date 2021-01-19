@@ -19,6 +19,7 @@
             </style>
             <h1 th:text="#{inventory.title}">Bestand</h1>
         </header>
+        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
         <form class="mb-3 float-right" method="get" th:action="@{/inventory/filter}">
             <div class="input-group">
                 <label for="type"></label>
@@ -95,7 +96,7 @@
                             <input style="position:relative; left: -10px;" class="form-control w-25 float-right "
                                    th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
                                    id="number1" type="number"
-                                   name="number" min="1" max="10000" value="1"/><br/>
+                                   name="number" min="1" max="9999" value="1"/><br/>
                         </div>
                     </form>
                 </td>
@@ -105,5 +106,4 @@
     </div>
 </div>
 </body>
-
 </html>

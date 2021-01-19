@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +25,26 @@ public class InventoryController {
 		this.inventory = inventory;
 	}
 
+
 	@PostMapping("/inventory/add")
 	@PreAuthorize("hasRole('BOSS')")
 	public String add(@RequestParam("item") Item item,
 					  @RequestParam("number") String number,
-					  @RequestParam ("negate") String neg) {
+					  @RequestParam ("negate") String neg,
+					  RedirectAttributes redirectAttributes){
 		int convNumber;
+		String error = "error";
 		if(number.equals("")){
+			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht leer sein!");
 			return "redirect:/inventory/add";
-		}else{
+		} else if (Integer.parseInt(number) < 0){
+			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht negativ sein!");
+			return "redirect:/inventory/add";
+		} else if (number.length() > 4){
+			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht größer als 9999 sein!");
+			return "redirect:/inventory/add";
+		}
+		else{
 			convNumber = Integer.parseInt(number);
 		}
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
