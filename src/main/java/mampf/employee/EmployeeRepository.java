@@ -4,7 +4,9 @@ import mampf.employee.Employee.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Streamable;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 interface EmployeeRepository extends CrudRepository<Employee, Long>{
 
@@ -19,6 +21,22 @@ interface EmployeeRepository extends CrudRepository<Employee, Long>{
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Filter the employees for substrings of the given filter
+	 * The filter is case insensitive
+	 * @param filter the filter to apply
+	 * @return
+	 */
+	default ArrayList<Employee> filterByNameForSearching(String filter) {
+		ArrayList<Employee> employees = new ArrayList<>();
+		for (Employee currentEmployee : this.findAll()) {
+			if (currentEmployee.getName().toLowerCase().contains(filter.toLowerCase())) {
+				employees.add(currentEmployee);
+			}
+		}
+		return employees;
 	}
 
 	default ArrayList<Employee> findByRole(Role role){

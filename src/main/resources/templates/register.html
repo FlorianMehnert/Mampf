@@ -20,6 +20,15 @@
         </div>
 
         <div class="form-group">
+            <label for="email" th:text="#{register.email}">E-Mail-Adresse</label>
+            <input class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                   type="text" id="email" name="email" th:field="*{email}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+
+            </div>
+        </div>
+
+        <div class="form-group">
             <label for="firstname" th:text="#{register.firstname}">Firstname</label>
             <input class="form-control" th:classappend="${#fields.hasErrors('firstname')} ? 'is-invalid' : ''"
                    type="text" id="firstname" name="firstname" autofocus="autofocus" th:field="*{firstname}"/>
@@ -47,7 +56,7 @@
             <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
 
             </div>
-            <small id="passwordHelpBlock" class="form-text text-muted">
+            <small id="passwordHelpBlock" class="form-text text-muted" th:text="#{register.password.hint}">
                 Your password must be 5-20 characters long.
             </small>
         </div>
@@ -68,11 +77,6 @@
                 <option value="EMPLOYEE" th:text="#{register.employee}">EMPLOYEE</option>
                 <option value="COMPANY" th:text="#{register.company}">COMPANY</option>
             </select>
-        </div>
-
-        <div class="form-group">
-            <label for="email">E-Mail</label>
-            <input class="form-control" type="email" id="email" name="email" th:field="*{email}"/>
         </div>
 
         <div id="companyNameGroup" class="form-group">

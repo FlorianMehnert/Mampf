@@ -11,6 +11,7 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 == Fehler-Report
 // See http://asciidoctor.org/docs/user-manual/#tables
 [options="header"]
+[cols="20%, 20%, 50%, 10%"]
 |===
 |Pfad |Parameter |Beschreibung |Rückgabe
 | /registrieren | passwort=Testtest1234. | Es werden Sonderzeichen wie *.-, nicht als solche akzeptiert | Das Passwort erfüllt die Anforderungen nicht
@@ -24,13 +25,23 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 | /verwaltung/inventar | Eingeloggter Admin | Der Admin gibt eine Anzahl im Feld von "Anzahl erhöhen"/"Anzahl senken" an und drückt anschließend auf den button "Anzahl erhöhen"/"Anzahl senken" | Whitelabel Error page erscheint
 |/angebote/rent-a-cook/warenkorb|formular| siehe Fälle Bestellungen
 |Whitelabel Error page erscheint, status: 500
+| /angebote/eventcatering | - | Durch Entfernen der "min" und "max" Attribute kann man negative Summen an Bestellungen auslösen und abschließen, dabei kommen auch negative Beträge heraus. Bsp.: Es ist möglich 3 Käseplatten und -2 Schinkenplatten zu bestellen.
+Das Gleiche gilt für den Partyservice und Rent-A-Cook | 200
+| /verwaltung/inventar | keine | Durch Entfernen der "min" und "max" Attribute in den Input-Tags können Bestände, die eine Anzahl besitzen negiert werden. | 200
+| /konto/löschen | - | Nicht möglich | 500
+| /angebote/partyservice/warenkorb | Käseplatte: _ (keine Zahl) | Man löscht den „0“, der in der z.B. Anzahl von Käseplatte steht und schreibt keine Zahl, es führt zu einem Fehler (für Partyservice und Eventcatering) | Status 500
+| /angebote/fruehstuecksvorbestellung/warenkorb | Eingeloggter Nutzer bucht sein Essen & Trinken für Mobile Breakfast | Der Nutzer schreibt keine Uhrzeiten | Status 400
+
 |path|param|desc|err
 
 |===
 
 == Sonstiges
+
 * Optik der Anwendung
 ** bei Radio-Buttons finde ich es persönlich ansprechender, wenn man auch beim Klick auf den jeweiligen Text das Feld auswählen kann. Im Warenkorb geht das aber nur bei "Auf Rechnung". Aber das ist natürlich Geschmackssache...
+** Ein eingeloggter Nutzer bezahlt sein Essen & Trinken für Mobile Breakfast. Der Nutzer sieht seine Buchungen und den Mobile Breakfast-Buchung zeigt als Adresse und Ort des Unternehmens „null null“. Dasselbe passiert, wenn der Admin die Abrechnung der Bestellung sieht.
+** Ein eingeloggter Nutzer kann in Rent-A-Cook 0 Köche/Service buchen, wenn er die Adresse und Ort hinzufügt. Man kann dieser Buchung nicht in den Warenkorb sehen, aber wenn der Nutzer eine weitere Order bucht und bezahlt, dann wird diese die Buchung von 0 Köche/Service in den Bestellungen gezeigt
 * Fehlende Features
 * Interaktion mit der Anwendung (Usability)
 ** Es ist sehr mühsam im Inventar die Anzahl von bestimmten Produkten mehrmals zu erhöhen: Bei jedem Erhöhen muss die entsprechende Radiobox ausgewählt werden + es muss auf den Anzahl erhöhen/Anzahl senken button gedrückt werden
@@ -38,17 +49,25 @@ Welche Aufgabe/Problemstellung löst die Anwendung.
 ** (Der Admin kann Items zum Warenkorb hinzufügen, allerdings hat er nicht die Möglichkeit den Warenkorb auch zu kaufen)
 ** (wenn man nur Dekoartikel (theoretisch aber auch personal, aber das könnte man auch als eine rent-a-cook bestellung interpretieren) bestellen möchte, ist man dazu gezwungen bei z.b. /eventcatering auch ein Buffet zu bestellen)
 
+=== Bestellung von Köchen und Service-Personal
 
-.Fälle Bestellungen
+Bei der Bestellung von Personal im Eventcatering wird die Anzahl an bestelltem Personal multipliziert mit der Dauer des Events. Dem Nutzer wird dann dieses Produkt als Anzahl des bestellten Personals angezeigt. Dadurch entsteht beim Nutzer der Eindruck man habe (maximal bei zwei möglichen Köchen) 20 Köche bei einer Dauer von 10 Stunden bestellt. 
+
+
+=== Fälle Bestellungen
 * getestet mit Nutzer: Nelli
-* fehlermeldung wie auch sonst bei /eventcatering oder /partyservice vergessen (formular mit zeit < 5:00 Uhr) 
-* trifft auch zu: (formular mit aktuellem/heutigem Datum)
-* oder auch bei: (bestellungen erstellen)
+* Fehlermeldung wie auch sonst bei /eventcatering oder /partyservice vergessen (Formular mit zeit < 5:00 Uhr) 
+* trifft auch zu: (Formular mit aktuellem/heutigem Datum)
+* oder auch bei: (Bestellungen erstellen)
 ["arabic"]
-.. 1xKoch,2xService, datum: <x>, zeitspanne <y>
-.. 2xKoch,datum: <x>,zeitspanne <y> (<x> ist dabei nicht das heutige datum)
-* weiterhin ist möglich (Bestellungen erstellen)(eher ein logikfehler, kein fehlerstatus): z.b. 3x Hinzufügen zu wk & Bestellung abschließen: 10xDeko(+1xBuffet) zeit/datum: <x>/<y> obwohl im Inventar nur x25 Deko insgesamt vorhanden sind
+** 1x Koch, 2x Service, Datum: <x>, Zeitspanne <y>
+** 2x Koch, Datum: <x>, Zeitspanne <y> (<x> ist dabei nicht das heutige Datum)
+* Weiterhin ist es möglich eine Bestellungen zu erstellen (eher ein logikfehler, kein fehlerstatus): z.B. 3x Hinzufügen zu Warenkorb & Bestellung abschließen: 10x Deko (+1x Buffet) Zeit/Datum: <x>/<y> obwohl im Inventar nur x25 Deko insgesamt vorhanden sind
+
 == Verbesserungsvorschläge
+
 * Was kann noch weiter verbessert werden?
 ** Skalierbarkeit von der Inventaransicht: bei sehr vielen Gegenständen im Inventar kann man entweder die Anzahl der Items im Inventar anschauen, oder man erhöht/senkt die Anzahl eines Items welches man sich vorher gemerkt hat -> es ist sinnvoller die zwei Tabellen welche einerseits die Anzahl aller Items anzeigt und die Auswahl welches Item erhöht/absgesenkt werden soll zu vereinen
 ** Inventar: Item reduzierung söllte erst dann auch möglich sein, wenn nicht bereits eine zukünftige Bestellung vorliegt welche den aktuellen Inventarbestand benötigt.
+** Preise sollten beim Bestelltvorgang immer ersichtlich sein.
+** Das Angebot sollte auch einsehbar sein, wenn man sich nocht nicht registriert hat. Ein potentieller Kunde möchte sich doch vorher auch über das Angebot informieren, bevor er seine Daten preisgibt.

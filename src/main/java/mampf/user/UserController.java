@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -33,14 +34,11 @@ public class UserController {
 				result.rejectValue("username", "RegistrationForm.username.exists", "This Username is already taken!");
 			}
 			if ((form.getEmail().equals(user.getUserAccount().getEmail()))) {
-				result.rejectValue("email", "RegistrationForm.email.exists", "This E-Mail does exists already!");
+				result.rejectValue("email", "RegistrationForm.email.exists", "This E-Mail is already taken!");
 			}
 		}
-		if(form.getRole().equals("EMPLOYEE") && form.getAccessCode().length() != 6 ) {
-			result.rejectValue("accessCode", "RegistrationForm.accessCode.NotEmpty","You've entered an incorrect access code!");
-		}
-		if (form.getRole().equals("EMPLOYEE") && userManagement.findCompany(form.getAccessCode()).isEmpty()) {
-			result.rejectValue("accessCode", "RegistrationForm.accessCode.notExists","You've entered a wrong access code!");
+		if(form.getRole().equals("EMPLOYEE") && (form.getAccessCode().length() != 6 || userManagement.findCompany(form.getAccessCode()).isEmpty()) ) {
+			result.rejectValue("accessCode", "RegistrationForm.accessCode.wrong","You've entered an incorrect access code!");
 		}
 		if (form.getRole().equals("COMPANY") && form.getCompanyName().length() == 0) {
 			result.rejectValue("companyName", "RegistrationForm.companyName.NotEmpty","The company name can not be empty!");
@@ -71,15 +69,29 @@ public class UserController {
 
 	@GetMapping("/users")
 	@PreAuthorize("hasRole('BOSS')")
-	public String users(Model model) {
+	public String users(Model model, @RequestParam(required = false) String filter) {
 
 		model.addAttribute("userList", userManagement.findAll());
 		ArrayList<Pair<User, String>> list = new ArrayList<>();
+		String filterString = "";
+		if(filter != null) {
+			filterString = filter.toLowerCase();
+		}
 		for (User user : userManagement.findAll()) {
 			String role = Util.renderDomainName(user.getUserAccount().getRoles().toList().get(0).toString());
-			Pair<User, String> map = new Pair<>(user, role);
-			list.add(map);
+			if(filterString.length() == 0
+					|| user.getUserAccount().getUsername().toLowerCase().contains(filterString)
+					|| user.getUserAccount().getFirstname().toLowerCase().contains(filterString)
+					|| user.getUserAccount().getLastname().toLowerCase().contains(filterString)
+					|| user.getUserAccount().getEmail().toLowerCase().contains(filterString)) {
+				Pair<User, String> map = new Pair<>(user, role);
+				list.add(map);
+			}
 		}
+		if(filter == null) {
+			filter = "";
+		}
+		model.addAttribute("filter", filter);
 		model.addAttribute("pairs", list);
 		return "users";
 	}

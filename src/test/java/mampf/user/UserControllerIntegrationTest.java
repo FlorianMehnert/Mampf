@@ -72,7 +72,7 @@ class UserControllerIntegrationTest {
 		mvc.perform(post("/register")
 				.params(map))
 				.andExpect(view().name("register"))
-				.andExpect(model().attributeHasFieldErrorCode("form", "accessCode", "RegistrationForm.accessCode.NotEmpty"));
+				.andExpect(model().attributeHasFieldErrorCode("form", "accessCode", "RegistrationForm.accessCode.wrong"));
 
 	}
 
