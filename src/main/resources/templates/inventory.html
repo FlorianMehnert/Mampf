@@ -21,15 +21,6 @@
         </header>
         <form class="mb-3 float-right" method="get" th:action="@{/inventory/filter}">
             <div class="input-group">
-                <label for="part"></label>
-                <select class="form-control float-right" style="position:relative; left: -7px; width: 90px" id="part"
-                        th:value="${part}" name="part">
-                    <option value=off th:if="!${part}">partiell</option>
-                    <option value=on th:if="${part}">regEx</option>
-                    <option value=on th:if="!${part}">regEx</option>
-                    <option value=off th:if="${part}">partiell</option>
-                </select>
-
                 <label for="type"></label>
                 <select class="form-control float-right" style="position:relative; left: -3px; width: 110px" id="type"
                         th:value="${type}" name="type">
@@ -39,7 +30,7 @@
                 </select>
                 <label for="word"></label><input id="word" class="form-inline" name="word" th:value="${filter}"
                                                  placeholder="Suchen...">
-                <a class="justify-content-center position-absolute" style="top: 20%; right: 21.5%;"
+                <a class="justify-content-center position-absolute" style="top: 20%; right: 25%;"
                    th:href="@{inventory}">
                     <i class="fas fa-times-circle"></i>
                 </a>

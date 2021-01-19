@@ -55,17 +55,16 @@ public class InventoryController {
 
 	@GetMapping("inventory/filter")
 	@PreAuthorize("hasRole('BOSS')")
-	public String look(Model model, @RequestParam(required = false) String word, @RequestParam("type") String type, @RequestParam(required = false) boolean part){
+	public String look(Model model, @RequestParam(required = false) String word, @RequestParam("type") String type){
 		if(word.equals("") || model == null || type.equals("")){
 			model.addAttribute("names", new ArrayList<>());
 			model.addAttribute("filter", "");
 			model.addAttribute("type", type);
-			model.addAttribute("part", part);
 			return "inventory";
 		}
 
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>(); // <UniqueItem, Category as String>
-		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type, part);
+		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type);
 		for (UniqueMampfItem item : list) {
 			String name = nullCategory(item);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
@@ -74,7 +73,6 @@ public class InventoryController {
 		model.addAttribute("names", names);
 		model.addAttribute("filter", word);
 		model.addAttribute("type", type);
-		model.addAttribute("part", part);
 		return "inventory";
 	}
 
