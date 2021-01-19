@@ -11,11 +11,11 @@
   <nav th:include="navigation-new :: navigation"></nav>
   <div class="m-content">
     <section class="m-section-padding m-colored-primary m-centered">
-      <div th:text="${domainTitle}" class="m-heading-huge m-font-aquiline">Domain</div>
+      <div th:text="${domainTitle}" class="m-heading-huge m-font-aquiline">Domäne</div>
     </section>
     <div class="m-container-small">
       <div class="mmpf-category-wrapper" th:each="category : ${catalog}">
-        <div class="m-heading m-heading-big m-centered m-no-border m-padding-bottom  m-font-aquiline" th:text="${category.key}">Category</div>
+        <div class="m-heading m-heading-big m-centered m-no-border m-padding-bottom  m-font-aquiline" th:text="${category.key}">Kategorie</div>
 
         <!-- For each item render an ordering card -->
         <th:block th:each="item : ${category.value}">

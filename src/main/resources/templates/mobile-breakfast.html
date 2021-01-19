@@ -23,14 +23,14 @@
             integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
             crossorigin="anonymous"></script>
 
-    <title th:text="'MAMPF: ' + ${domainTitle}">Catalog</title>
+    <title th:text="'MAMPF: ' + ${domainTitle}">Katalog</title>
 </head>
 
 <body>
 <nav th:include="navigation :: navigation"></nav>
 <div class="root">
     <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
-    <h1 th:text="${domainTitle}">Domain</h1>
+    <h1 th:text="${domainTitle}">Domäne</h1>
     <div class="content">
         <form th:action="@{/cart/add/mobile-breakfast}" method="post">
             <div class="mmpf-chooseables">

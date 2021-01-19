@@ -2,68 +2,70 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <div th:replace="fragments/head :: styles"></div>
-  <div th:replace="fragments/head :: scripts"></div>
-  <div th:replace="fragments/head :: meta('Mitarbeiter hinzufügen')"></div>
+    <div th:replace="fragments/head :: styles"></div>
+    <div th:replace="fragments/head :: scripts"></div>
+    <div th:replace="fragments/head :: meta('Mitarbeiter hinzufügen')"></div>
 </head>
 
 <body>
-  <nav th:include="navigation-new :: navigation"></nav>
-  <div class="m-content">
+<nav th:include="navigation-new :: navigation"></nav>
+<div class="m-content">
     <div class="ui container">
-      <header>
-        <h1>Mitarbeiter hinzufügen</h1>
-      </header>
-      <form class="ui form" th:action="@{/intern/employees/add}" method="post" th:object="${form}">
-        <div>
-          <p class="ui negative message" th:if="${#fields.hasErrors('*')}">
-            Einige Angaben sind nicht korrekt.
-          </p>
-  
-          <div class="form-group">
-            <label for="username" th:text="#{employee.username}">Username</label>
-            <input class="form-control" th:errorclass="fieldError" required="required" type="text" id="username"
-              name="username" autofocus="autofocus" th:field="*{username}" />
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
-              <br />
-              <p>Username muss nicht null sein</p>
+        <header>
+            <h1>Mitarbeiter hinzufügen</h1>
+        </header>
+        <form class="ui form" th:action="@{/intern/employees/add}" method="post" th:object="${form}">
+            <div>
+                <p class="ui negative message" th:if="${#fields.hasErrors('*')}">
+                    Einige Angaben sind nicht korrekt.
+                </p>
+
+                <div class="form-group">
+                    <label for="username" th:text="#{employee.username}">Username</label>
+                    <input class="form-control" th:errorclass="fieldError" required="required" type="text" id="username"
+                           name="username" autofocus="autofocus" th:field="*{username}"/>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                        <br/>
+                        <p>Username darf nicht null sein</p>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <br>
-        <div class="form-group">
-          <label for="firstName" th:text="#{employee.first_name}">Vorname</label>
-          <input class="form-control" th:errorclass="fieldError" required="required"
-                 type="text" id="firstName" name="firstName" autofocus="autofocus" th:field="*{firstName}"/>
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
-            <br/>
-            <p>Vorname muss nicht null sein</p>
-          </div>
-        </div>
-        <br>
-        <div class="form-group">
-          <label for="lastName" th:text="#{employee.last_name}">Nachname</label>
-          <input class="form-control" th:errorclass="fieldError" required="required"
-                 type="text" id="lastName" name="lastName" autofocus="autofocus" th:field="*{lastName}"/>
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
-            <br/>
-            <p>Nachname muss nicht null sein</p>
-          </div>
-          <br>
-        </div>
-        <div class="form-group">
-          <label for="role" th:text="#{employee.role}">Role</label>
-          <select class="form-control" id="role" name="role">
-            <option th:text="#{employee.role.select}">Select...</option>
-            <option value="COOK">COOK</option>
-            <option value="SERVICE">SERVICE</option>
-          </select>
-        </div>
-        <br>
-        <button class="btn btn-outline-primary cont" type="submit" th:text="#{employee.add}"> Mitarbeiter hinzufügen</button>
-      </div>
-    </form>
-  </div>
+            <br>
+            <div class="form-group">
+                <label for="firstName" th:text="#{employee.first_name}">Vorname</label>
+                <input class="form-control" th:errorclass="fieldError" required="required"
+                       type="text" id="firstName" name="firstName" autofocus="autofocus" th:field="*{firstName}"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
+                    <br/>
+                    <p>Vorname darf nicht leer sein</p>
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="lastName" th:text="#{employee.last_name}">Nachname</label>
+                <input class="form-control" th:errorclass="fieldError" required="required"
+                       type="text" id="lastName" name="lastName" autofocus="autofocus" th:field="*{lastName}"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+                    <br/>
+                    <p>Nachname darf nicht leer sein</p>
+                </div>
+                <br>
+            </div>
+            <div class="form-group">
+                <label for="role" th:text="#{employee.role}">Rolle</label>
+                <select class="form-control" id="role" name="role">
+                    <option th:text="#{employee.role.select}">Auswählen...</option>
+                    <option value="COOK">Koch</option>
+                    <option value="SERVICE">Service</option>
+                </select>
+            </div>
+            <br>
+            <button class="btn btn-outline-primary cont" type="submit" th:text="#{employee.add}"> Mitarbeiter
+                hinzufügen
+            </button>
+        </form>
+    </div>
+</div>
 </body>
 
 </html>

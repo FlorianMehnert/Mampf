@@ -37,7 +37,7 @@
                 </a>
                 <div class="input-group-append">
                     <button type="submit" class="btn-outline-secondary btn">
-                        <i class="fas fa-search"></i> Suchen
+                        <i class="fas fa-search"></i>Suchen
                     </button>
                 </div>
             </div>
@@ -63,16 +63,16 @@
             </thead>
             <tbody th:remove="all-but-first">
             <tr th:each="pair : ${names}">
-                <td th:text="${pair.getFirst().getProduct().getName()}" class="text-left">name</td>
-                <td th:text="${pair.getSecond()}" class="text-left">category</td>
+                <td th:text="${pair.getFirst().getProduct().getName()}" class="text-left">Name</td>
+                <td th:text="${pair.getSecond()}" class="text-left">Kategorie</td>
                 <td th:text="#{inventory.infinity}"
                     th:if="${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
-                    class="text-left">quantity
+                    class="text-left">Anzahl
                 </td>
 
                 <td th:text="${{pair.getFirst().getQuantity()}}"
                     th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
-                    class="text-left">quantity
+                    class="text-left">Anzahl
                 </td>
 
 
