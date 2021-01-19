@@ -20,6 +20,7 @@
             <h1 th:text="#{inventory.title}">Bestand</h1>
         </header>
         <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+
         <form class="mb-3 float-right" method="get" th:action="@{/inventory/filter}">
             <div class="input-group">
                 <label for="type"></label>
@@ -43,6 +44,10 @@
             </div>
         </form>
 
+        <div class="m-container-small m-align-left m-padding-bottom">
+            <a class="btn btn-primary" href="/catalog/create">Neues Produkt hinzufügen</a>
+        </div>
+
         <div th:if="${names.isEmpty()}" class="row pl-5 pt-5 ml-5 mt-5">
             <p class="mt-auto mb-auto">Es wurden leider keine Ergebnisse gefunden
             <p>
@@ -58,7 +63,8 @@
                        style="width: 20%">Category</a></th>
                 <th><a th:text="#{inventory.count.now}" th:href="@{/inventory/amount}" class="text-left col-6"
                        style="width: 20%">aktueller Stand</a></th>
-                <th th:text="#{inventory.add}" class="text-right col-6" style="width: 30%">Aktionen</th>
+                <th th:text="#{inventory.add}" class="text-md-center col-6" style="width: 25%">Aktionen</th>
+                <th th:text="#{inventory.edit}" class="text-md-center col-6" style="width: 5%">Ändern</th>
             </tr>
             </thead>
             <tbody th:remove="all-but-first">
@@ -93,11 +99,20 @@
 
                         <div class="field">
                             <label for="number1"></label>
-                            <input style="position:relative; left: -10px;" class="form-control w-25 float-right "
+                            <input style="position:relative; left: -10px;" class="form-control w-50 float-right "
                                    th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
                                    id="number1" type="number"
                                    name="number" min="1" max="9999" value="1"/><br/>
                         </div>
+                    </form>
+                </td>
+                <td>
+                    <form class="form reorder" method="get" th:action="'/catalog/edit/' + ${pair.getFirst().getProduct().getId()}">
+
+                        <button type="submit" class="btn btn-outline-primary float-right cont"
+                                th:text="#{inventory.edit}">Ändern
+                            hinzufügen
+                        </button>
                     </form>
                 </td>
             </tr>
