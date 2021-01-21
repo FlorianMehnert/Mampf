@@ -49,7 +49,7 @@ public class InventoryController {
 		}
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
 		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
-		if (!Util.infinity.contains(currentItem.getCategory()) || currentItem.getCategory() != Item.Category.STAFF) {
+		if (!Inventory.infinity.contains(currentItem.getCategory()) || currentItem.getCategory() != Item.Category.STAFF) {
 			inventory.delete(currentItem);
 			if(neg.equals("decr")){
 				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))) {
@@ -68,7 +68,7 @@ public class InventoryController {
 	@GetMapping("inventory/filter")
 	@PreAuthorize("hasRole('BOSS')")
 	public String look(Model model, @RequestParam(required = false) String word, @RequestParam("type") String type){
-		if(word.equals("") || model == null || type.equals("")){
+		if(word.equals("") || type.equals("")){
 			model.addAttribute("names", new ArrayList<>());
 			model.addAttribute("filter", "");
 			model.addAttribute("type", type);
@@ -78,7 +78,8 @@ public class InventoryController {
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>(); // <UniqueItem, Category as String>
 		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type);
 		for (UniqueMampfItem item : list) {
-			String name = nullCategory(item);
+			String name = Item.categoryTranslations.get(item.getCategory().toString());
+			System.out.println(name);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
@@ -93,7 +94,7 @@ public class InventoryController {
 	public String sortByPath(Model model, @PathVariable String path) {
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
 		for (UniqueMampfItem item : inventory.findAllAndSort(path)) {
-			String name = nullCategory(item);
+			String name = Item.categoryTranslations.get(item.getCategory().toString());
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
@@ -118,7 +119,8 @@ public class InventoryController {
 	public String inventory(Model model) {
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
 		for (UniqueMampfItem item : inventory.findAllAndSort("")) {
-			String name = nullCategory(item);
+			String name = Item.categoryTranslations.get(item.getCategory().toString());
+			System.out.println(name);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}

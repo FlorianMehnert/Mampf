@@ -28,7 +28,7 @@
         <tbody>
           <tr th:each="employee: ${employees}">
             <td th:text="${employee.name}">Elisa Schloss</td>
-            <td th:text="${T(mampf.Util).renderDomainName(employee.role.toString())}">Rolle</td>
+            <td th:text="${T(mampf.employee.Employee).roleTranslations.get(employee.role.toString())}">Rolle</td>
             <td>
               <ul>
                 <li th:each="date : ${employee.booked}"><a th:href="'/orders/detail/' + ${date.id}" th:text="${date.id}">Bestellung</a></li>

@@ -103,7 +103,7 @@ public class MampfOrderManager {
         Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
 
         // get base inventory of all finite items:
-        List<UniqueMampfItem> baseInv = new ArrayList<>(inventory.findAll().filter(i -> !Util.infinity.contains(i.getCategory())).toList());
+        List<UniqueMampfItem> baseInv = new ArrayList<>(inventory.findAll().filter(i -> !Inventory.infinity.contains(i.getCategory())).toList());
         // init base carts:
         List<DomainCart> baseCarts = new ArrayList<>();
         // init employees:
@@ -263,7 +263,7 @@ public class MampfOrderManager {
                 if(actionItem.get().getCategory().equals(Category.STAFF)) {
                     Employee.Role role = ((StaffItem)actionItem.get().getProduct()).getType();
                     personalLeft.put(role,reduceValidationQuantity(personalLeft.get(role),actionItem.get().getQuantity()));
-                }else if (!Util.infinity.contains(resItem.getCategory())) {
+                }else if (!Inventory.infinity.contains(resItem.getCategory())) {
                     resItem.setQuantity(reduceValidationQuantity(resItem.getQuantity(),actionItem.get().getQuantity()));
                 }
             }
@@ -422,7 +422,7 @@ public class MampfOrderManager {
 
 
         if (inventoryItem.isPresent() &&
-            (catalogItem.getCategory().equals(Category.STAFF) || !Util.infinity.contains(catalogItem.getCategory()))&&
+            (catalogItem.getCategory().equals(Category.STAFF) || !Inventory.infinity.contains(catalogItem.getCategory()))&&
             (inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity()))){
             return inventoryItem;
         }
@@ -438,7 +438,7 @@ public class MampfOrderManager {
                     return Optional.of(new UniqueMampfItem(catalogItem, Quantity.of(amountLeft)));
                 }
 
-            } else if(!Util.infinity.contains(catalogItem.getCategory())){ // sonarcube logic: 'else if {}' is allowed...
+            } else if(!Inventory.infinity.contains(catalogItem.getCategory())){ // sonarcube logic: 'else if {}' is allowed...
                 if (inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity())) {
                     return inventoryItem;
                 }

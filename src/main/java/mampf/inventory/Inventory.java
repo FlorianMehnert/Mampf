@@ -9,6 +9,10 @@ import java.util.*;
 
 public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
+	List<Item.Category> infinity = List.of(Item.Category.BUFFET, Item.Category.DECORATION,
+			Item.Category.DINNER_EVENT, Item.Category.FOOD, Item.Category.SPECIAL_OFFERS);
+
+	List<String> infinityStrings = List.of("unendlich", "infinity", "-1", "unbegrenzt", "unlimited");
 
 	default Optional<UniqueMampfItem> findByName(String name) {
 		if (name != null) {
@@ -85,12 +89,12 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 			case "amount":
 					try {
 						sortableList.removeIf(umi -> {
-							if ((!(Util.infinity.contains(umi.getCategory()))
-									&& (Util.infinityStrings.contains(filter)))
-									|| (!(Util.infinityStrings.contains(filter))
+							if ((!(Inventory.infinity.contains(umi.getCategory()))
+									&& (Inventory.infinityStrings.contains(filter)))
+									|| (!(Inventory.infinityStrings.contains(filter))
 									&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter))))
 								return true;
-							if (!Util.infinityStrings.contains(filter)) {
+							if (!Inventory.infinityStrings.contains(filter)) {
 								Integer.valueOf(filter);
 							}
 							return false;
@@ -149,8 +153,8 @@ class SortByAmount implements Comparator<UniqueMampfItem> {
 		// compare Name
 		int alternative = a.getProduct().getName().compareTo(b.getProduct().getName());
 
-		boolean infinitA = Util.infinity.contains(a.getCategory());
-		boolean infinitB = Util.infinity.contains(b.getCategory());
+		boolean infinitA = Inventory.infinity.contains(a.getCategory());
+		boolean infinitB = Inventory.infinity.contains(b.getCategory());
 
 		if (infinitA && infinitB) {
 			comp = alternative;

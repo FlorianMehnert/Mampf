@@ -1,9 +1,9 @@
 package mampf;
 
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import mampf.catalog.Item;
 import mampf.catalog.Item.Category;
@@ -24,12 +24,7 @@ public class Util {
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 
-	public static final List<Item.Category> infinity = List.of(Category.BUFFET, Category.DECORATION,
-			Category.DINNER_EVENT, Category.FOOD, Category.SPECIAL_OFFERS);
 
-	public static final List<String> infinityStrings = List.of("unendlich", "infinity", "-1", "unbegrenzt", "unlimited");
-
-	//private static final SecureRandom random = new SecureRandom();
 	public static <T> int compareCategories(T a, T b) {
 		for (int i = 0; i < (java.lang.Math.max(a.toString().length(), b.toString().length())); i++) {
 			int dif = a.toString().getBytes()[i] - b.toString().getBytes()[i];
@@ -59,10 +54,6 @@ public class Util {
 				.map(e -> e.substring(0, 1).toUpperCase() + e.substring(1))
 				.collect(Collectors.joining(" "));
 	}
-	//public static <T extends Enum<?>> T randomEnum(Class<T> _class){
-	//	int enumIdentifier = random.nextInt(_class.getEnumConstants().length);
-	//	return _class.getEnumConstants()[enumIdentifier];
-	//}
 
 	public static <T> String listToString(List<T> list) {
 		StringBuilder output = new StringBuilder();

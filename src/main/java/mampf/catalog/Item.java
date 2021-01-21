@@ -4,6 +4,7 @@ import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
 
 import javax.persistence.Entity;
+import java.util.Map;
 
 @Entity
 public class Item extends Product {
@@ -28,6 +29,16 @@ public class Item extends Product {
 		DINNER_EVENT,
 		SPECIAL_OFFERS
 	}
+
+	public static final Map<String, String> categoryTranslations = Map.of(
+			Category.BUFFET.toString(), "Buffet",
+			Category.STAFF.toString(), "Mitarbeiter",
+			Category.DECORATION.toString(), "Dekoration",
+			Category.DINNER_EVENT.toString(), "Abendveranstaltung",
+			Category.SPECIAL_OFFERS.toString(), "Sonderangebot",
+			Category.FOOD.toString(), "Lebensmittel",
+			Category.EQUIPMENT.toString(), "Ausrüstung");
+
 
 	@SuppressWarnings({"unused", "deprecation"})
 	public Item(){}

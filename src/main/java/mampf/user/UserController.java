@@ -78,7 +78,7 @@ public class UserController {
 			filterString = filter.toLowerCase();
 		}
 		for (User user : userManagement.findAll()) {
-			String role = Util.renderDomainName(user.getUserAccount().getRoles().toList().get(0).toString());
+			String role = User.roleTranslations.get(user.getUserAccount().getRoles().toList().get(0).toString());
 			if(filterString.length() == 0
 					|| user.getUserAccount().getUsername().toLowerCase().contains(filterString)
 					|| user.getUserAccount().getFirstname().toLowerCase().contains(filterString)
@@ -120,7 +120,7 @@ public class UserController {
 
 	@PostMapping("/deleteUser")
 	@PreAuthorize("hasRole('BOSS')")
-	public String denyAuthentication(@RequestParam("userId") long userId, Model model) {
+	public String denyAuthentication(@RequestParam("userId") long userId) {
 		userManagement.denyAuthenticationById(userId);
 		return "redirect:/users";
 	}

@@ -100,7 +100,6 @@ class InventoryTest {
 
 				Money money = Money.of(5, "EUR");
 				Item item1 = new Item("NullItem", money, null, null, "");
-				System.out.println(inventoryController.nullCategory(new UniqueMampfItem(item1, Quantity.of(1))));
 				assertTrue("nullCategory does not return \"\" for a Quantity of -1",
 						inventoryController.nullCategory(new UniqueMampfItem(item1, Quantity.of(1))).equals(""));
 			}

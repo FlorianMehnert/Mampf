@@ -1,9 +1,12 @@
 package mampf.user;
 
+import mampf.Util;
+import mampf.catalog.Item;
 import org.salespointframework.useraccount.Role;
 import org.salespointframework.useraccount.UserAccount;
 
 import javax.persistence.*;
+import java.util.Map;
 import java.util.Optional;
 
 @Entity
@@ -24,6 +27,12 @@ public class User {
 	}
 
 	public User() {	}
+
+	static Map<String, String> roleTranslations = Map.of(
+			UserRole.BOSS.toString(), "Mampf-Chef",
+			UserRole.EMPLOYEE.toString(), "Mitarbeiter",
+			UserRole.COMPANY.toString(), "Firma",
+			UserRole.INDIVIDUAL.toString(), "Einzelperson");
 
 	public long getId() {
 		return id;
