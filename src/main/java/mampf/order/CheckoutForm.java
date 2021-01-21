@@ -17,13 +17,10 @@ import javax.validation.constraints.NotEmpty;
 
 public class CheckoutForm {
 
-	@NotEmpty()
 	private Map<String, @Valid String> allStartDates;
 
-	@NotEmpty()
 	private Map<String, @Valid String> allStartTimes;
 
-	@NotEmpty()
 	private Map<String, @Valid String> allEndTimes;
 
 	private ArrayList<String> domainsForCheckout;

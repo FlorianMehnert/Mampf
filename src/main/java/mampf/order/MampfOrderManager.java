@@ -25,6 +25,7 @@ import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import org.salespointframework.order.CartItem;
 import org.salespointframework.order.OrderLine;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -68,7 +70,8 @@ public class MampfOrderManager {
     }
 
     /**
-     * Check if the user-(employee)s company has booked Mobile Breakfast returns
+     * returns if the given userAccount can book mobile breakfast:
+     * Check if the user-(employee)s company has booked Mobile Breakfast
      * false if not so
      *
      * @param userAccount
@@ -76,15 +79,28 @@ public class MampfOrderManager {
      */
     public boolean hasBookedMB(UserAccount userAccount) {
 
+        //the user is no valid user:
         Optional<User> user = userManagement.findUserByUserAccount(userAccount.getId());
         if (user.isEmpty()) {
             return false;
         }
+        //the user is no employee:
         Optional<Company> company = userManagement.findCompany(user.get().getId());
         if (company.isEmpty()) {
             return false;
         }
-        return company.get().hasBreakfastDate();
+        Optional<User> boss = userManagement.findUserById(company.get().getBossId());
+        //the company of the user has not booked mb:
+        if(!company.get().hasBreakfastDate() || company.get().getBreakfastDate().isEmpty() || boss.isEmpty()) {
+            return false;
+        }
+        //the user already has ordered their choice:
+        /*return !getBookedItems(LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.MIN), 
+                LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.MIN)).
+            stream().anyMatch(o->o.);*/
+        return !findByTimeSpan(Optional.of(userAccount), LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.MIN), 
+                LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.MIN)).stream().
+                anyMatch(order->order.getAdress().equals(boss.get().getAddress()));
 
     }
 
@@ -218,13 +234,13 @@ public class MampfOrderManager {
     public List<UniqueMampfItem> getFreeItems(List<UniqueMampfItem> baseInv, List<DomainCart> baseCarts, Map<Employee.Role, Quantity> baseEmp,
             LocalDateTime fromDate, LocalDateTime toDate) {
         //INIT:
-        // a "copy" of baseInv
         List<UniqueMampfItem> res = new ArrayList<>();
+        // a "copy" of baseInv
         // items which has to be returned needs to be the same structure like baseInv:
         // also, the quantity will be modified during next steps
         baseInv.forEach(i -> res.add(new UniqueMampfItem(i.getItem(), Quantity.of(i.getAmount().longValue()))));
         // a "copy" of baseEmp
-        // issue: items("STAFF") are request which are not unique and refer to a specific resource type (employee),
+        // issue: items("STAFF") are requests which are not unique and refer to a specific resource type (employee),
         //        not a inventory resource
         // idea: calculate over requests the lasting resource,
         //       but update requests(items) depending on lasting resource as inventory item
@@ -232,20 +248,12 @@ public class MampfOrderManager {
         baseEmp.forEach((role,q)->{personalLeft.put(role, Quantity.of(q.getAmount().longValue()));});
         /*-----------------------------*/
         //GET:
-        Optional<UniqueMampfItem> actionItem;
-        List<UniqueMampfItem> actionItems;
         List<UniqueMampfItem> bookedItems = getBookedItems(fromDate, toDate);
-        List<UniqueMampfItem> cartItems = new ArrayList<>();
-        // each cart has a time span
-        //  when time span colliding with given time span
-        //   add all conrete items (f.e. BreakfastMappedItem is no conrete item, but the content) as
-        //   UniqueMampfItem to cartItems for polymorphic use with bookedItems
-        baseCarts.forEach(c -> {
-            if (MampfOrder.hasTimeOverlap(fromDate, toDate, c.getStartDate(), c.getEndDate()))
-                c.forEach(cI -> createCheckItems(cI).forEach(chI->cartItems.add(new UniqueMampfItem((Item) chI.getProduct(), chI.getQuantity()))));
-        });
+        List<UniqueMampfItem> cartItems = getBookedItemsFromCart(baseCarts,fromDate,toDate);
         /*----------------------------*/
         //CALCULATE:
+        Optional<UniqueMampfItem> actionItem;
+        List<UniqueMampfItem> actionItems;
         for (UniqueMampfItem resItem : res) {for (int n = 0; n < 2; n++) {
             if(n == 0) {
                 actionItems = bookedItems;
@@ -253,20 +261,20 @@ public class MampfOrderManager {
                 actionItems = cartItems;
             }
 
-            // just get the fitting action item:
-            // TODO: replace with fancy version...:
             actionItem = Optional.empty();
             for (UniqueMampfItem bI : actionItems)if (bI.getProduct().equals(resItem.getProduct())) {actionItem = Optional.of(bI);break;}
-
-            // substract:
-            if(actionItem.isPresent()) {
-                if(actionItem.get().getCategory().equals(Category.STAFF)) {
-                    Employee.Role role = ((StaffItem)actionItem.get().getProduct()).getType();
-                    personalLeft.put(role,reduceValidationQuantity(personalLeft.get(role),actionItem.get().getQuantity()));
-                }else if (!Util.infinity.contains(resItem.getCategory())) {
-                    resItem.setQuantity(reduceValidationQuantity(resItem.getQuantity(),actionItem.get().getQuantity()));
-                }
+            
+            if(actionItem.isEmpty()) {
+                continue;
             }
+            // substract:
+            if(actionItem.get().getCategory().equals(Category.STAFF)) {
+                Employee.Role role = ((StaffItem)actionItem.get().getProduct()).getType();
+                personalLeft.put(role,reduceValidationQuantity(personalLeft.get(role),actionItem.get().getQuantity()));
+            }else if (!Util.infinity.contains(resItem.getCategory())) {
+                resItem.setQuantity(reduceValidationQuantity(resItem.getQuantity(),actionItem.get().getQuantity()));
+            }
+        
         }}
         /*----------------------------*/
         //UPDATE STAFF:
@@ -277,8 +285,35 @@ public class MampfOrderManager {
 
         return res;
     }
-
-    public Quantity reduceValidationQuantity(Quantity origin, Quantity sub) {
+    
+    private List<UniqueMampfItem> getBookedItemsFromCart(List<DomainCart> baseCarts, 
+            LocalDateTime fromDate, 
+            LocalDateTime toDate){
+     // each cart has a time span
+        //  when time span colliding with given time span
+        //   add all conrete items (f.e. BreakfastMappedItem is no conrete item, but the content)
+        List<UniqueMampfItem> cartItems = new ArrayList<>();
+        for(DomainCart cart: baseCarts) {
+            if(!MampfOrder.hasTimeOverlap(fromDate, toDate, cart.getStartDate(), cart.getEndDate())) {
+                continue;
+            }
+            CartItem firstItem = cart.iterator().next(); //there are no empty carts
+            if(((Item)firstItem.getProduct()).getDomain().equals(Domain.MOBILE_BREAKFAST)) {
+                BreakfastMappedItems bfItem = (BreakfastMappedItems)firstItem.getProduct();
+                Quantity mBquantity = Quantity.of(MBOrder.getAmount(fromDate, toDate, cart.getStartDate(), cart.getEndDate(), bfItem.getWeekDays(), bfItem.getBreakfastTime()));
+                
+                cartItems.add(new UniqueMampfItem(bfItem.getBeverage(), mBquantity));
+                cartItems.add(new UniqueMampfItem(bfItem.getDish(), mBquantity));
+            }else {
+                cart.forEach(cartItem -> 
+                cartItems.add(new UniqueMampfItem((Item) cartItem.getProduct(), cartItem.getQuantity())));
+            }
+            
+        }
+        return cartItems;
+    }
+    
+    private Quantity reduceValidationQuantity(Quantity origin, Quantity sub) {
         if(origin.isEqualTo(Quantity.of(0))) {
             return origin;
         }
@@ -350,11 +385,20 @@ public class MampfOrderManager {
         return orderManagement.findAll(Pageable.unpaged()).filter(order -> order.getId().getIdentifier().equals(
                 orderId)).get().findFirst();
     }
-
+    
+    public Streamable<MampfOrder> findByTimeSpan(Optional<UserAccount> userAccount, LocalDateTime fromDate, LocalDateTime toDate){
+        Streamable<MampfOrder> orders;
+        if(userAccount.isEmpty()) {
+            orders = orderManagement.findAll(Pageable.unpaged());
+        }else {
+            orders = orderManagement.findBy(userAccount.get());
+        }
+        return orders.filter(order->order.hasTimeOverlap(fromDate, toDate));
+    }
     public List<MampfOrder> findAll() {
         return orderManagement.findBy(OrderStatus.COMPLETED).toList();
     }
-
+    
     /**
      * only unit testing purpose
      *

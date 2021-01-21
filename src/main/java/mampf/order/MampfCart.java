@@ -107,6 +107,7 @@ public class MampfCart{
 	}
 	/**
 	 * adds new Item to MampfCart
+	 * 
 	 * @param item
 	 * @param itemQuantity
 	 * @return CartItem
@@ -114,7 +115,11 @@ public class MampfCart{
 	public CartItem addToCart(Item item, Quantity itemQuantity) {
 		DomainCart domainCart = getDomainCart(item.getDomain());
 		CartItem cartitem = null;
+		
 		if(domainCart != null) {
+		    if(item.getDomain().equals(Domain.MOBILE_BREAKFAST)) {
+		       domainCart.clear(); 
+		    }
 			cartitem = domainCart.addOrUpdateItem(item, itemQuantity);
 		}else {
 			domainCart = new DomainCart();
