@@ -48,7 +48,32 @@ public class CheckoutForm {
 		this.generalError = generalError;
 		this.domainsForCheckout = domainsForCheckout;
 	}
-
+	
+	public boolean hasValidDates() {
+	    
+	    if(domainChoosen == null) {
+	        for(Item.Domain domain: getDomains()) {
+	            if(!validateDomain(domain))return false;
+	        }
+	    }else {
+	        return validateDomain(domainChoosen);
+	    }
+	    return true;
+	    
+	}
+	private boolean validateDomain(Item.Domain domain) {
+	    if(domainsWithoutForm.contains(domain.name())) {
+	        return true;
+	    }
+	    try {
+          getStartDateTime(domain);
+          getEndDateTime(domain);
+      }catch (Exception e) {
+          return false;
+      }
+	    return true;
+	}
+	
 	public LocalDateTime getStartDateTime(Item.Domain domain) {
 		if(allStartDates == null || !allStartDates.containsKey(domain.name())) {
 			return null;

@@ -77,8 +77,7 @@ public class OrderController {
                 }
             }
             breakfastTime = form.getTime();
-            setDescription("vom " + startDate.toLocalDate() + " bis " + endDate.toLocalDate() + "je: " + weekDays
-                    + " um " + breakfastTime);
+            setDescription("vom " + startDate.toLocalDate() + " bis " + endDate.toLocalDate());
             
             beverage = form.getBeverage();
             dish = form.getDish();
@@ -132,13 +131,13 @@ public class OrderController {
     @ModelAttribute("mampfCart")
     MampfCart initializeCart() {
         MampfCart cart = new MampfCart();
-        MampfCatalog catalog = orderManager.getCatalog();
+        /*MampfCatalog catalog = orderManager.getCatalog();
         cart.addToCart(catalog.findByName("Dekoration").get().findFirst().get(), Quantity.of(10));
         cart.addToCart(catalog.findByName("Tischdecke").get().findFirst().get(), Quantity.of(10));
         catalog.findByName("Koch/Köchin pro 10 Personen").forEach(i->cart.addToCart(i, Quantity.of(3)));
         catalog.findByName("Service-Personal").forEach(i->cart.addToCart(i, Quantity.of(4)));
         cart.addToCart(catalog.findByName("Luxus").get().findFirst().get(), Quantity.of(2));
-        
+        */
         return cart;
         
     }
@@ -273,39 +272,25 @@ public class OrderController {
             @Valid @ModelAttribute("form") CheckoutForm form, Errors result, Authentication authentication,
             @ModelAttribute("mampfCart") MampfCart mampfCart) {
 
-        mampfCart.updateCart(form);
+        if(form.hasValidDates()) {
+            mampfCart.updateCart(form);
+        }else {
+            result.rejectValue("generalError", "CheckoutForm.generalError.missingData", 
+                    "die Felder müssen ausgefüllt sein");
+        }
+        
         Map<String, List<String>> validationsStr = new HashMap<>();
 
         if (reload.isPresent()) {
             model.addAttribute("validations", validationsStr);
             return buyCart(form.getDomainChoosen(), model, mampfCart, form);
         }
-
-        for (Item.Domain domain : form.getDomains()) {
-            if (!CheckoutForm.domainsWithoutForm.contains(domain.name())) {
-                LocalDateTime startDate = form.getStartDateTime(domain);
-                LocalDateTime endDate = form.getEndDateTime(domain);
-                String errVar = "allStartDates[" + domain.name() + "]";
-                String errDomain = "CheckoutForm.startDate";
-
-                if (startDate == null || endDate == null) {
-                    result.rejectValue(errVar, errDomain + ".Invalid", "Bitte Datum eingeben!");
-                    continue;
-                }
-                if (startDate.isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
-                    result.rejectValue(errVar, errDomain + ".NotFuture", "Das Datum muss in der Zukunft liegen!");
-                }
-                if(startDate.toLocalTime().isBefore(timeForEarliestPossibleBookingDate)) {
-                    result.rejectValue(errVar, errDomain + ".TimeMin", "Zu früh!");
-                }
-                if (startDate.isAfter(endDate)) {
-                    result.rejectValue(errVar, errDomain + ".NegativeDate", "keine negativen Bestellungen erlaubt!");
-                }
-                if(Duration.between(startDate, endDate).compareTo((Duration)durationForEarliestBookingDate) == -1) {
-                    result.rejectValue(errVar, errDomain + ".DurationMin", "Zu kurz!");
-                }
-            }
+        Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+        if (user.isEmpty()) {
+            result.rejectValue("generalError", "CheckoutForm.generalError.NoLogin",
+                    "Bitte melden sie sich erneut an");
         }
+        validateCheckoutForm(form,result);
         
         if (result.hasErrors()) {
             model.addAttribute("validations", validationsStr);
@@ -313,21 +298,12 @@ public class OrderController {
         }
 
         Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
-        Map<Item.Domain, List<String>> validations = new HashMap<>();
-        if (!result.hasErrors()) {
-            validations = orderManager.validateCarts(carts);
-        }
-
+        Map<Item.Domain, List<String>> validations = orderManager.validateCarts(user.get().getUserAccount(),carts);
+        
         if (!validations.isEmpty()) {
             result.rejectValue("generalError", "CheckoutForm.generalError.NoStuffLeft",
                     "Items konnten nicht validiert werden");
             validations.forEach((domain, list) -> validationsStr.put(domain.name(), list));
-        }
-
-        Optional<User> user = userManagement.findUserByUsername(authentication.getName());
-        if (user.isEmpty()) {
-            result.rejectValue("generalError", "CheckoutForm.generalError.NoLogin",
-                    "Bitte melden sie sich erneut an");
         }
 
         if (result.hasErrors()) {
@@ -337,18 +313,45 @@ public class OrderController {
 
         orderManager.createOrders(carts, form, user.get());
 
-        List<Item.Domain> domains = new ArrayList<>();
-        for (Item.Domain domain : carts.keySet()) {
-            domains.add(domain);
-        }
-        for (Item.Domain domain : domains) {
-            mampfCart.removeCart(domain);
-        }
-        // TODO: success handling (some fancy stuff)
-
+        List<Item.Domain> domainsToRemove = new ArrayList<>(carts.keySet());
+        domainsToRemove.forEach(domain->mampfCart.removeCart(domain));
+        
         return "redirect:/userOrders";
     }
 
+    private void validateCheckoutForm(CheckoutForm form, Errors result) {
+        if(result.hasErrors())return;
+        for (Item.Domain domain : form.getDomains()) {
+            if (CheckoutForm.domainsWithoutForm.contains(domain.name())) {
+                continue;
+            }
+            
+            LocalDateTime startDate = form.getStartDateTime(domain);
+            LocalDateTime endDate = form.getEndDateTime(domain);
+            String errVar = "allStartDates[" + domain.name() + "]";
+            String errDomain = "CheckoutForm.startDate";
+
+            if (startDate == null || endDate == null) {
+                result.rejectValue(errVar, errDomain + ".Invalid", "Bitte Datum eingeben!");
+                continue;
+            }
+            if (startDate.isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
+                result.rejectValue(errVar, errDomain + ".NotFuture", "Das Datum muss in der Zukunft liegen!");
+            }
+            if(startDate.toLocalTime().isBefore(timeForEarliestPossibleBookingDate)) {
+                result.rejectValue(errVar, errDomain + ".TimeMin", "Zu früh!");
+            }
+            if (startDate.isAfter(endDate)) {
+                result.rejectValue(errVar, errDomain + ".NegativeDate", "keine negativen Bestellungen erlaubt!");
+            }
+            if(Duration.between(startDate, endDate).compareTo((Duration)durationForEarliestBookingDate) == -1) {
+                result.rejectValue(errVar, errDomain + ".DurationMin", "Zu kurz!");
+            }
+            
+        }
+    }
+    
+    
     private String buyCart(Item.Domain domain, Model model, MampfCart mampfCart, CheckoutForm form) {
         form.setDomainChoosen(domain);
         Map<Item.Domain, DomainCart> domains = mampfCart.getDomainItems(domain);
@@ -359,7 +362,7 @@ public class OrderController {
         model.addAttribute("form", form);
         return "buy_cart";
     }
-
+    
     /* ORDERS */
 
     /**

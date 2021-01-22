@@ -1,8 +1,12 @@
 package mampf;
 
 
+import java.time.DayOfWeek;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import mampf.catalog.Item;
@@ -64,6 +68,12 @@ public class Util {
 	//	return _class.getEnumConstants()[enumIdentifier];
 	//}
 
+	public static String renderWeekDays(List<DayOfWeek> weekDays) {
+	    List<String> res = new ArrayList<>();
+	    weekDays.forEach(d->res.add(d.getDisplayName(TextStyle.FULL,Locale.GERMAN)));
+	    return listToString(res);
+	    
+	}
 	public static <T> String listToString(List<T> list) {
 		StringBuilder output = new StringBuilder();
 		for (T item : list) {

@@ -95,12 +95,9 @@ public class MampfOrderManager {
             return false;
         }
         //the user already has ordered their choice:
-        /*return !getBookedItems(LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.MIN), 
-                LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.MIN)).
-            stream().anyMatch(o->o.);*/
-        return !findByTimeSpan(Optional.of(userAccount), LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.MIN), 
+        return findByTimeSpan(Optional.of(userAccount), LocalDateTime.of(company.get().getBreakfastDate().get(),LocalTime.MIN), 
                 LocalDateTime.of(company.get().getBreakfastEndDate().get(),LocalTime.MIN)).stream().
-                anyMatch(order->order.getAdress().equals(boss.get().getAddress()));
+                noneMatch(order->order instanceof MBOrder&&order.getAdress().equals(boss.get().getAddress()));
 
     }
 
@@ -114,7 +111,7 @@ public class MampfOrderManager {
      * @param carts
      * @return
      */
-    public Map<Item.Domain, List<String>> validateCarts(Map<Item.Domain, DomainCart> carts) {
+    public Map<Item.Domain, List<String>> validateCarts(UserAccount userAccount, Map<Item.Domain, DomainCart> carts) {
         // each domain can have mutliple errormessages:
         Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
 
@@ -139,8 +136,8 @@ public class MampfOrderManager {
             }
 
             // check for MB 'you are too late'-error:
-            if (domain.equals(Domain.MOBILE_BREAKFAST) && startDate.isBefore(LocalDateTime.now())) {
-                updateValidations(validations, domain, "Zu späte MB Auswahl");
+            if (domain.equals(Domain.MOBILE_BREAKFAST) && !hasBookedMB(userAccount)) {
+                updateValidations(validations, domain, "");
                 continue;
             }
 
@@ -204,7 +201,6 @@ public class MampfOrderManager {
                 }
             }
 
-            // TODO: orderManagement.payOrder(order) how to manage errors??
             if (!orderManagement.payOrder(order)) {
                 return orders;
             }
@@ -414,7 +410,7 @@ public class MampfOrderManager {
         PaymentMethod method = Cash.CASH;
         if (payMethod.equals("Check")) {
             method = new Cheque(userAccount.getUsername(), userAccount.getId().getIdentifier(), "checknummer 1",
-                    userAccount.getFirstname(), LocalDateTime.now(), "a bank", "a banks address", "a banks data");
+                    userAccount.getFirstname(), LocalDateTime.now(), "MampfBank", "Lindenallee 12", "1223423478");
         }
         return method;
     }

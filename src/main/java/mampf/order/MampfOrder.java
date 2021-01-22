@@ -3,6 +3,7 @@ package mampf.order;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,18 +85,20 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	}
 	
 	
-	public String getPayMethod() {
+	public Map<String,String> getPayMethod() {
 		PaymentMethod paymentMethod = getPaymentMethod();
-		String res = "-";
+		Map<String, String> allData = new HashMap<>();
+		allData.put("Zahlende*r", getUserAccount().getUsername());
 		if (paymentMethod instanceof Cheque) {
-			Cheque cheque = ((Cheque) paymentMethod);
-			res = "Überweisung: Nutzer:" + cheque.getAccountName() + ", an: " + cheque.getBankName() + ","
-					+ cheque.getBankAddress() + " ," + cheque.getBankIdentificationNumber();
-		}
+			Cheque cheque = (Cheque) paymentMethod;
+			allData.put("Zahlungsempfänger",cheque.getBankName());
+			allData.put("Anschrift",cheque.getBankAddress());
+			allData.put("IBAN",cheque.getBankIdentificationNumber());
+    }
 		if (paymentMethod instanceof Cash) {
-			res = "Bezahlung vor Ort";
+		  allData.put("Bezahlung","vor Ort");
 		}
-		return res;
+		return allData;
 	}
 	
 	@Override 

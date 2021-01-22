@@ -211,21 +211,21 @@ class MampfOrderManagerTests {
     @Test
     void validateCarts() {
         initContext();
-
+        User user = userManager.findUserByUsername("hans").get();
         CheckoutForm form = initForm();
         Map<Domain, List<String>> validations;
 
         // valid carts:
         initValidCart();
         cart.updateCart(form);
-        validations = orderManager.validateCarts(cart.getDomainItems(null));
+        validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(null));
         assert validations.isEmpty();
 
         // invalid carts:
         initInvalidCart();
         cart.updateCart(form);
         // every order:
-        validations = orderManager.validateCarts(cart.getDomainItems(null));
+        validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(null));
         assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch"));
         assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains(
                 "Tischdecke"));
@@ -237,7 +237,7 @@ class MampfOrderManagerTests {
         assert validations.size() == 2;
 
         // only spec order:
-        validations = orderManager.validateCarts(cart.getDomainItems(Domain.EVENTCATERING));
+        validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(Domain.EVENTCATERING));
         assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch"));
         assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Tischdecke"));
         assert validations.get(Domain.EVENTCATERING).size() == 2;

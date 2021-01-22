@@ -42,7 +42,7 @@
           <div>
             <th:block th:each="item : ${domain.value}">
               <div th:unless="${hideForm}" 
-              th:replace="fragments/cards::cart(${item.productName}, ${item.quantity.getAmount()}, ${item.price}, ${T(mampf.order.CheckoutForm).domainsWithoutForm.contains('__${domain.key}__')})">
+              th:replace="fragments/cards::cart(${item},${T(mampf.order.CheckoutForm).domainsWithoutForm.contains('__${domain.key}__')})">
               </div>
             </th:block>
           </div>
@@ -52,7 +52,7 @@
             <div class="m-cart__sum" th:text="${domain.value.price}"></div>
           </div>
           <div sec:authorize="!hasRole('BOSS')" class="m-cart__row m-flex-flex-end m-cart__action-section">
-            <form method="get" th:action="@{/pay/{domain}(domain=${domain.key})}">
+            <form method="get" th:action="@{/pay/{domain}(domain=${T(mampf.Util).renderDomainName('__${domain.key}__')})}">
               <button class="btn btn-primary" type="submit">Zur Kasse</button>
             </form>
           </div>

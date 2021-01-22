@@ -47,8 +47,9 @@ public class MBOrder extends MampfOrder {
         super(account, paymentMethod, Item.Domain.MOBILE_BREAKFAST, startDate, endDate, bfItem.getAdress());
         this.time = bfItem.getBreakfastTime();
         this.weekDays = bfItem.getWeekDays().stream().collect(Collectors.toSet());
+      
     }
-
+    
     public static long getAmount(LocalDateTime fromDate, LocalDateTime toDate, LocalDateTime startDate,
             LocalDateTime endDate, Collection<DayOfWeek> weekDays, LocalTime time) {
 
@@ -95,7 +96,7 @@ public class MBOrder extends MampfOrder {
     }
 
     // impl.:
-    Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
+    public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
     
         Map<ProductIdentifier,Quantity> res = new HashMap<>();
         Quantity mBquantiy = Quantity.of(getAmount(fromDate, toDate, getStartDate(), getEndDate(), weekDays, time));
@@ -108,11 +109,11 @@ public class MBOrder extends MampfOrder {
         return "Bestellung für Mobile Breakfast: je" + weekDays.toString() + " gegen " + time.toString() + " Uhr";
     }
 
-    LocalTime getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    Set<DayOfWeek> getWeekDays() {
+    public Set<DayOfWeek> getWeekDays() {
         return weekDays;
     }
 

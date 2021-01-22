@@ -126,7 +126,7 @@
             <div>
               <th:block th:each="item : ${domain.value}">
                 <div
-                  th:replace="fragments/cards::pay(${item.productName}, ${item.quantity.getAmount()}, ${item.price},${T(mampf.order.CheckoutForm).domainsWithoutForm.contains('__${domain.key}__')}?${item.product.description}:'')">
+                  th:replace="fragments/cards::pay(${item})">
                 </div>
               </th:block>
             </div>
