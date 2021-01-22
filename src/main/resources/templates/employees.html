@@ -21,17 +21,17 @@
         <thead class="thead-light">
           <tr>
             <th>Name</th>
-            <th>Role</th>
+            <th>Rolle</th>
             <th>Gebucht</th>
           </tr>
         </thead>
         <tbody>
           <tr th:each="employee: ${employees}">
             <td th:text="${employee.name}">Elisa Schloss</td>
-            <td th:text="${T(mampf.Util).renderDomainName(employee.role.toString())}">Role</td>
+            <td th:text="${T(mampf.employee.Employee).roleTranslations.get(employee.role.toString())}">Rolle</td>
             <td>
               <ul>
-                <li th:each="date : ${employee.booked}"><a th:href="'/orders/detail/' + ${date.id}" th:text="${date.id}">order</a></li>
+                <li th:each="date : ${employee.booked}"><a th:href="'/orders/detail/' + ${date.id}" th:text="${date.id}">Bestellung</a></li>
               </ul>
             </td>
           </tr>

@@ -9,6 +9,10 @@ import java.util.*;
 
 public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
+	List<Item.Category> infinity = List.of(Item.Category.BUFFET, Item.Category.DECORATION,
+			Item.Category.DINNER_EVENT, Item.Category.FOOD, Item.Category.SPECIAL_OFFERS);
+
+	List<String> infinityStrings = List.of("unendlich", "infinity", "-1", "unbegrenzt", "unlimited");
 
 	default Optional<UniqueMampfItem> findByName(String name) {
 		if (name != null) {
@@ -72,31 +76,25 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 	 *
 	 * @param filter String for which should be filtered for
 	 * @param type determines category in which the seach takes place
-	 * @param partially true enables partial search, false is regEx search
 	 * @return List which is sorted with filter, type and partially
 	 */
-	default List<UniqueMampfItem> findAllAndFilter(String filter, String type, boolean partially) {
+	default List<UniqueMampfItem> findAllAndFilter(String filter, String type) {
 		List<UniqueMampfItem> list = this.findAll().toList();
 		List<UniqueMampfItem> sortableList = new ArrayList<>(list);
 		sortableList.sort(new SortByCategory());
 		switch (type) {
 			case "category":
-				if (partially) {
-					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString()).matches("(?i)" + filter)));
-				} else {
 					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString())).contains(filter));
-				}
 				break;
 			case "amount":
-				if (partially) {
 					try {
 						sortableList.removeIf(umi -> {
-							if ((!(Util.infinity.contains(umi.getCategory()))
-									&& (Util.infinityStrings.contains(filter)))
-									|| (!(Util.infinityStrings.contains(filter))
+							if ((!(Inventory.infinity.contains(umi.getCategory()))
+									&& (Inventory.infinityStrings.contains(filter)))
+									|| (!(Inventory.infinityStrings.contains(filter))
 									&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter))))
 								return true;
-							if (!Util.infinityStrings.contains(filter)) {
+							if (!Inventory.infinityStrings.contains(filter)) {
 								Integer.valueOf(filter);
 							}
 							return false;
@@ -104,16 +102,9 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 					} catch (NumberFormatException e) {
 						return new ArrayList<>();
 					}
-				} else {
-					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getAmount().toString())).contains(filter));
-				}
 				break;
 			default: // case name
-				if (partially) {
-					sortableList.removeIf(uml -> !uml.getItem().getName().matches("(?i)" + filter));
-				} else {
 					sortableList.removeIf(umi -> !Util.renderDomainName(umi.getItem().getName()).contains(filter));
-				}
 				break;
 		}
 		return sortableList;
@@ -162,8 +153,8 @@ class SortByAmount implements Comparator<UniqueMampfItem> {
 		// compare Name
 		int alternative = a.getProduct().getName().compareTo(b.getProduct().getName());
 
-		boolean infinitA = Util.infinity.contains(a.getCategory());
-		boolean infinitB = Util.infinity.contains(b.getCategory());
+		boolean infinitA = Inventory.infinity.contains(a.getCategory());
+		boolean infinitB = Inventory.infinity.contains(b.getCategory());
 
 		if (infinitA && infinitB) {
 			comp = alternative;

@@ -329,7 +329,7 @@ class MampfOrderManagerTests {
         initContext();
         
         // get base inventory of all finite items:
-        List<UniqueMampfItem> baseInv = new ArrayList<>(inventory.findAll().filter(i -> !Util.infinity.contains(i.getCategory())).toList());
+        List<UniqueMampfItem> baseInv = new ArrayList<>(inventory.findAll().filter(i -> !Inventory.infinity.contains(i.getCategory())).toList());
         // init base carts:
         List<DomainCart> baseCarts = new ArrayList<>();
         // init employees:

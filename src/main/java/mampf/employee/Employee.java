@@ -2,23 +2,27 @@ package mampf.employee;
 
 import mampf.order.EventOrder;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
+import java.util.Map;
 
 @Entity
 public class Employee {
 
-	public static enum Role {
+	public enum Role {
 		COOK,
 		SERVICE
   }
+
+  public static  final Map<String, String> roleTranslations = Map.of(
+		  Role.COOK.toString(), "Koch",
+		  Role.SERVICE.toString(), "Servicepersonal");
+
+
   private String name;
   
   @ManyToMany(mappedBy = "employees")

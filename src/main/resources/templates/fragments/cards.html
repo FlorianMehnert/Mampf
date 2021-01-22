@@ -3,9 +3,9 @@
 
 <div th:fragment="ordering(item)" class="m-card shadow">
   <div class="m-card__section m-card__data m-flex-column">
-    <div class="m-card__title" th:text="${item.name}">ItemName</div>
-    <div class="m-card__desc m-text" th:text="${item.description}">ItemPrice</div>
-    <div class="m-card__price m-text m-font-color-primary" th:text="${item.price}">ItemPrice</div>
+    <div class="m-card__title" th:text="${item.name}">Artikelname</div>
+    <div class="m-card__desc m-text" th:text="${item.description}">Artikelpreis</div>
+    <div class="m-card__price m-text m-font-color-primary" th:text="${item.price}">Artikelpreis</div>
   </div>
   <div class="m-card__section">
     <form th:action="'/catalog/item/detail/' + ${item.id}" method="get">
@@ -59,10 +59,10 @@
 
 <div th:fragment="pay(item)" class="m-card shadow">
   <div class="m-card__section m-card__data m-card__cata-spaced-between">
-    <div class="m-card__title" th:text="${item.productName}">ItemName</div>
-    <div class="m-card__price m-text m-font-color-primary" th:text="${item.price}"></div>
+    <div class="m-card__title" th:text="${itemName}">Artikelname</div>
+    <div class="m-card__price m-text m-font-color-primary" th:text="${price}"></div>
   </div>
-  <div th:if="${item.product instanceof T(mampf.order.OrderController.BreakfastMappedItems)}" class="m-card__section">
+   <div th:if="${item.product instanceof T(mampf.order.OrderController.BreakfastMappedItems)}" class="m-card__section">
   <div th:replace="fragments/cards::itemDesc(${item.product})">item.productName</div >
   </div>
    
@@ -76,7 +76,7 @@
 <div th:fragment="orderItem(itemName, amount, id)" class="m-card m-bordered">
   <div class="m-card__section m-card__data m-card__cata-spaced-between">
     <a class="m-font-color-primary" th:href="'/catalog/item/detail/' + ${id}">
-      <div class="m-card__title" th:text="${itemName}">ItemName</div>
+      <div class="m-card__title" th:text="${itemName}">Artikelname</div>
     </a>
   </div>
   <div class="m-card__section m-card__actions">
@@ -88,8 +88,9 @@
 
 <div th:fragment="orders(_order, status, id)" class="m-card shadow">
   <div class="m-card__section m-flex m-card__cata-spaced-between m-colored-primary">
-    
-    <div class="m-text-small" th:text="${_order.dateCreated}">OrderName</div>
+
+    <div class="m-text-small" th:text="${_order.dateCreated}">Auftragsname</div>
+
     <div class="m-text-small" th:text="'Bestellnr.: ' + ${_order.id}"></div>
     <div class="m-text-small" th:text="'Status: ' + ${status}"></div>
   </div>
@@ -121,8 +122,10 @@
     </a>
   </div>
   <div class="m-card__section m-colored-gray m-color-white m-flex m-flex-space-between m-width-100">
+
     <div class="m-text-small" th:text="'Eventbeginn: ' + ${_order.startDate}">OrderName</div>
     <div class="m-text-small" th:text="'Eventende: ' + ${_order.endDate}">OrderName</div>
     <div class="m-text-small" th:text="'Addresse: ' + ${_order.adress}">OrderName</div>
+
   </div>
 </div>

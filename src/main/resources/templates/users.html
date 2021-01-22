@@ -40,7 +40,7 @@
                 <td class="align-middle"
                     th:text="${pair.getFirst().getUserAccount().getFirstname() + ' '+ pair.getFirst().getUserAccount().lastname }"></td>
                 <td class="align-middle" th:text="${pair.getFirst().getUserAccount().email }"></td>
-                <td class="align-middle" th:text="${pair.getSecond()}">[EMPLOYEE]</td>
+                <td class="align-middle" th:text="${pair.getSecond()}">[Mitarbeiter]</td>
                 <td class="align-middle" th:if="${pair.getFirst().getCompany().isPresent()}"
                     th:text="${pair.getFirst().getCompany().get().accessCode}">aabbcc
                 </td>

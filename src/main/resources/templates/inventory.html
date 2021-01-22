@@ -12,24 +12,12 @@
 <div class="m-content">
     <div class="container pb-5">
         <header>
-            <style>
-                a {
-                    color: #495057;
-                }
-            </style>
             <h1 th:text="#{inventory.title}">Bestand</h1>
         </header>
+        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+
         <form class="mb-3 float-right" method="get" th:action="@{/inventory/filter}">
             <div class="input-group">
-                <label for="part"></label>
-                <select class="form-control float-right" style="position:relative; left: -7px; width: 90px" id="part"
-                        th:value="${part}" name="part">
-                    <option value=off th:if="!${part}">partiell</option>
-                    <option value=on th:if="${part}">regEx</option>
-                    <option value=on th:if="!${part}">regEx</option>
-                    <option value=off th:if="${part}">partiell</option>
-                </select>
-
                 <label for="type"></label>
                 <select class="form-control float-right" style="position:relative; left: -3px; width: 110px" id="type"
                         th:value="${type}" name="type">
@@ -39,17 +27,21 @@
                 </select>
                 <label for="word"></label><input id="word" class="form-inline" name="word" th:value="${filter}"
                                                  placeholder="Suchen...">
-                <a class="justify-content-center position-absolute" style="top: 20%; right: 21.5%;"
+                <a class="justify-content-center position-absolute" style="top: 20%; right: 25%;"
                    th:href="@{inventory}">
                     <i class="fas fa-times-circle"></i>
                 </a>
                 <div class="input-group-append">
                     <button type="submit" class="btn-outline-secondary btn">
-                        <i class="fas fa-search"></i> Suchen
+                        <i class="fas fa-search"></i>Suchen
                     </button>
                 </div>
             </div>
         </form>
+
+        <div class="m-container-small m-align-left m-padding-bottom">
+            <a class="btn btn-primary" href="/catalog/create">Neues Produkt hinzufügen</a>
+        </div>
 
         <div th:if="${names.isEmpty()}" class="row pl-5 pt-5 ml-5 mt-5">
             <p class="mt-auto mb-auto">Es wurden leider keine Ergebnisse gefunden
@@ -60,27 +52,25 @@
         <table class="table table-hover" th:if="!${names.isEmpty()}">
             <thead class="thead-light">
             <tr>
-                <th><a th:text="#{inventory.name}" th:href="@{/inventory/name}" class="text-left col-6"
-                       style="width: 30%">Bestand</a></th>
-                <th><a th:text="#{inventory.category}" th:href="@{/inventory/category}" class="text-left col-6"
-                       style="width: 20%">Category</a></th>
-                <th><a th:text="#{inventory.count.now}" th:href="@{/inventory/amount}" class="text-left col-6"
-                       style="width: 20%">aktueller Stand</a></th>
-                <th th:text="#{inventory.add}" class="text-right col-6" style="width: 30%">Aktionen</th>
+                <th><a style="color: #495057; width: 30%" th:text="#{inventory.name}" th:href="@{/inventory/name}" class="text-left col-6">Bestand</a></th>
+                <th><a style="color: #495057; width: 20%"th:text="#{inventory.category}" th:href="@{/inventory/category}" class="text-left col-6">Category</a></th>
+                <th><a style="color: #495057; width: 20%" th:text="#{inventory.count.now}" th:href="@{/inventory/amount}" class="text-left col-6">aktueller Stand</a></th>
+                <th th:text="#{inventory.add}" class="text-md-center col-6" style="width: 25%">Aktionen</th>
+                <th th:text="#{inventory.edit}" class="text-md-center col-6" style="width: 5%">Ändern</th>
             </tr>
             </thead>
             <tbody th:remove="all-but-first">
             <tr th:each="pair : ${names}">
-                <td th:text="${pair.getFirst().getProduct().getName()}" class="text-left">name</td>
-                <td th:text="${pair.getSecond()}" class="text-left">category</td>
+                <td th:text="${pair.getFirst().getProduct().getName()}" class="text-left">Name</td>
+                <td th:text="${pair.getSecond()}" class="text-left">Kategorie</td>
                 <td th:text="#{inventory.infinity}"
-                    th:if="${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
-                    class="text-left">quantity
+                    th:if="${T(mampf.inventory.Inventory).infinity.contains(pair.getFirst().getCategory())}"
+                    class="text-left">Anzahl
                 </td>
 
                 <td th:text="${{pair.getFirst().getQuantity()}}"
-                    th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory())}"
-                    class="text-left">quantity
+                    th:if="!${T(mampf.inventory.Inventory).infinity.contains(pair.getFirst().getCategory())}"
+                    class="text-left">Anzahl
                 </td>
 
 
@@ -90,22 +80,32 @@
 
                         <button type="submit" name="negate" th:value="incr"
                                 class="btn btn-outline-primary float-right cont" th:method="delete"
-                                th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
+                                th:if="!${T(mampf.inventory.Inventory).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
                                 text="+">+
                         </button>
                         <button name="negate" th:value="decr" style="position:relative; left: -5px;" type="submit"
                                 class="btn btn-outline-primary float-right cont" th:method="delete"
-                                th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
+                                th:if="!${T(mampf.inventory.Inventory).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
                                 text="-">-
                         </button>
 
                         <div class="field">
                             <label for="number1"></label>
-                            <input style="position:relative; left: -10px;" class="form-control w-25 float-right "
-                                   th:if="!${T(mampf.Util).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
+                            <input style="position:relative; left: -10px;" class="form-control w-50 float-right "
+                                   th:if="!${T(mampf.inventory.Inventory).infinity.contains(pair.getFirst().getCategory()) || (pair.getFirst().getCategory() == (T(mampf.catalog.Item.Category).STAFF))}"
                                    id="number1" type="number"
-                                   name="number" min="1" max="10000" value="1"/><br/>
+                                   name="number" min="1" max="9999" value="1"/><br/>
                         </div>
+                    </form>
+                </td>
+                <td>
+                    <form class="form reorder" method="get"
+                          th:action="'/catalog/edit/' + ${pair.getFirst().getProduct().getId()}">
+
+                        <button type="submit" class="btn btn-outline-primary float-right cont"
+                                th:text="#{inventory.edit}">Ändern
+                            hinzufügen
+                        </button>
                     </form>
                 </td>
             </tr>
@@ -114,5 +114,4 @@
     </div>
 </div>
 </body>
-
 </html>
