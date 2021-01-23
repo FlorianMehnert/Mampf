@@ -193,7 +193,11 @@ public class MampfOrderManager {
 
             // get Dates:
             LocalDateTime startDate = cart.getStartDate(), endDate = cart.getEndDate();
-
+            String address = form.getAddress(domain);
+            if(address == null || address.isEmpty()) {
+                address = user.getAddress();
+            }
+            
             MampfOrder order;
             if (domain.equals(Domain.MOBILE_BREAKFAST)) {
                 order = createOrderMB(cart.iterator().next(), startDate, endDate, form, user.getUserAccount());
@@ -201,7 +205,7 @@ public class MampfOrderManager {
             } else {
                 // create usual order:
                 order = new EventOrder(user.getUserAccount(), createPayMethod(form.getPayMethod(), user
-                        .getUserAccount()), domain, startDate, endDate, user.getAddress());
+                        .getUserAccount()), domain, startDate, endDate, address);
 
                 cart.addItemsTo(order);
                 if (hasStaff(cart)) {

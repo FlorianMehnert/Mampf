@@ -274,8 +274,13 @@ public class OrderController {
      */
     @GetMapping("/pay/{domain}")
     public String chooseToBuy(Model model, @PathVariable String domain, @ModelAttribute("form") CheckoutForm form,
-            @ModelAttribute("mampfCart") MampfCart mampfCart) {
-
+            @ModelAttribute("mampfCart") MampfCart mampfCart, Authentication authentication) {
+        
+        Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+        if (user.isEmpty()) {
+            return "redirect:/login";
+        }
+        
         if (mampfCart.isEmpty()) {
             return "redirect:/cart";
         }
@@ -290,7 +295,7 @@ public class OrderController {
         }
         mampfCart.resetCartDate();
         model.addAttribute("validations", new HashMap<String, List<String>>());
-        return buyCart(domainChoosen, model, mampfCart, form);
+        return buyCart(domainChoosen, model, mampfCart, form,user.get());
     }
 
     /**
@@ -318,8 +323,14 @@ public class OrderController {
     public String buy(Model model, @RequestParam(name = "reload") Optional<Boolean> reload,
             @Valid @ModelAttribute("form") CheckoutForm form, Errors result, Authentication authentication,
             @ModelAttribute("mampfCart") MampfCart mampfCart) {
-
-        if(form.hasValidDates()) {
+        
+        Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+        if (user.isEmpty()) {
+            result.rejectValue("generalError", "CheckoutForm.generalError.NoLogin",
+                    "Bitte melden sie sich erneut an");
+            return "redirect:/login";
+        }
+        if(form.hasValidData()) {
             mampfCart.updateCart(form);
         }else {
             result.rejectValue("generalError", "CheckoutForm.generalError.missingData", 
@@ -330,18 +341,14 @@ public class OrderController {
 
         if (reload.isPresent()) {
             model.addAttribute("validations", validationsStr);
-            return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+            return buyCart(form.getDomainChoosen(), model, mampfCart, form,user.get());
         }
-        Optional<User> user = userManagement.findUserByUsername(authentication.getName());
-        if (user.isEmpty()) {
-            result.rejectValue("generalError", "CheckoutForm.generalError.NoLogin",
-                    "Bitte melden sie sich erneut an");
-        }
+        
         validateCheckoutForm(form,result);
         
         if (result.hasErrors()) {
             model.addAttribute("validations", validationsStr);
-            return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+            return buyCart(form.getDomainChoosen(), model, mampfCart, form,user.get());
         }
 
         Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
@@ -355,7 +362,7 @@ public class OrderController {
 
         if (result.hasErrors()) {
             model.addAttribute("validations", validationsStr);
-            return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+            return buyCart(form.getDomainChoosen(), model, mampfCart, form,user.get());
         }
 
         orderManager.createOrders(carts, form, user.get());
@@ -413,13 +420,14 @@ public class OrderController {
      * @param form
      * @return buy_cart template
      */
-    private String buyCart(Item.Domain domain, Model model, MampfCart mampfCart, CheckoutForm form) {
+    private String buyCart(Item.Domain domain, Model model, MampfCart mampfCart, CheckoutForm form, User user) {
         form.setDomainChoosen(domain);
         Map<Item.Domain, DomainCart> domains = mampfCart.getDomainItems(domain);
         model.addAttribute("canSubmit", domains.values().stream().allMatch(
                 cart -> (cart.getStartDate() != null && cart.getEndDate() != null)));
         model.addAttribute("domains", domains);
         model.addAttribute("total", mampfCart.getTotal(domain));
+        model.addAttribute("userAddress",user.getAddress());
         model.addAttribute("form", form);
         return "buy_cart";
     }

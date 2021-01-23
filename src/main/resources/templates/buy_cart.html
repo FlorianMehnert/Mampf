@@ -81,30 +81,39 @@
             <div class="m-inline-flex m-flex-column">
               <div>
                 <div class="form-group mt-2">
-          <input type="hidden" th:name="${domain.key}" th:value="${domain.key}">
-          <label for="startDate1">Datum:</label>
-          <input id="startDate1" class="form-control"
-            th:classappend="${#fields.hasErrors('allStartDates['+domain.key+']')} ? 'is-invalid' : ''"
-            type="date" th:name="${'allStartDates['+domain.key+']'}"
-            th:value="${form.getStartDate(domain.key)?.toString()}" />
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('allStartDates['+domain.key+']')}"
-            th:errors="*{allStartDates[__${domain.key}__]}">
-
-          </div>
-          <label for="startTime">von</label>
-          <input id="startTime" class="form-control" th:name="${'allStartTimes['+domain.key+']'}"
-            th:classappend="${#fields.hasErrors('allStartTimes['+domain.key+']')} ? 'is-invalid' : ''"
-            type="time" th:value="${form.getStartTime(domain.key)}" />
-
-          <label for="endTime" >bis</label>
-          <input id="endTime" class="form-control" th:name="${'allEndTimes['+domain.key+']'}"
-            th:classappend="${#fields.hasErrors('allEndTimes['+domain.key+']')} ? 'is-invalid' : ''"
-            th:type="${hideForm}? 'hidden' : 'time'" th:value="${form.getEndTime(domain.key)}" />
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('allEndTimes['+domain.key+']')}"
-            th:errors="*{allEndTimes[__${domain.key}__]}">
-
-          </div>
-        </div>
+					<input type="hidden" th:name="${domain.key}" th:value="${domain.key}">
+					<label for="startDate1">Datum:</label>
+					<input id="startDate1" class="form-control"
+					  th:classappend="${#fields.hasErrors('allStartDates['+domain.key+']')} ? 'is-invalid' : ''"
+					  type="date" th:name="${'allStartDates['+domain.key+']'}"
+					  th:value="${form.getStartDate(domain.key)?.toString()}" />
+					<div class="invalid-feedback" th:if="${#fields.hasErrors('allStartDates['+domain.key+']')}"
+					  th:errors="*{allStartDates[__${domain.key}__]}">
+					
+					</div>
+					<label for="startTime">von</label>
+					<input id="startTime" class="form-control" th:name="${'allStartTimes['+domain.key+']'}"
+					  th:classappend="${#fields.hasErrors('allStartTimes['+domain.key+']')} ? 'is-invalid' : ''"
+					  type="time" th:value="${form.getStartTime(domain.key)}" />
+					
+					<label for="endTime" >bis</label>
+					<input id="endTime" class="form-control" th:name="${'allEndTimes['+domain.key+']'}"
+					  th:classappend="${#fields.hasErrors('allEndTimes['+domain.key+']')} ? 'is-invalid' : ''"
+					  th:type="${hideForm}? 'hidden' : 'time'" th:value="${form.getEndTime(domain.key)}" />
+					<div class="invalid-feedback" th:if="${#fields.hasErrors('allEndTimes['+domain.key+']')}"
+					  th:errors="*{allEndTimes[__${domain.key}__]}">
+					
+					</div>
+					
+					<label for="address">Adresse:</label>
+					<input id="address" class="form-control"
+					th:classappend="${#fields.hasErrors('allAddresses['+domain.key+']')} ? 'is-invalid' : ''"
+					type="text" th:name="${'allAddresses['+domain.key+']'}"
+					th:value="${form.getAddress(domain.key)?.toString()}" th:placeholder="${userAddress}" />
+					<div class="invalid-feedback" th:if="${#fields.hasErrors('allAddresses['+domain.key+']')}"
+					th:errors="*{allAddresses[__${domain.key}__]}">
+					</div>
+        		</div>
               </div>
               
             </div>

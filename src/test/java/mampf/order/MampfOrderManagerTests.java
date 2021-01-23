@@ -125,7 +125,7 @@ class MampfOrderManagerTests {
             allStartTimes.put(d, justadate.format(CheckoutForm.timeFormatter));
             allEndTimes.put(d, justadate.plus(Duration.ofHours(2)).format(CheckoutForm.timeFormatter));
         });
-        return new CheckoutForm(allStartDates, "Check", allStartTimes, allEndTimes, "", null);
+        return new CheckoutForm(allStartDates, "Check", allStartTimes, allEndTimes, null,null);
     }
 
     User initMB() {
@@ -209,7 +209,7 @@ class MampfOrderManagerTests {
         cart.updateCart(form);
         validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(null));
         assertTrue(validations.isEmpty(),"validCart should return empty validations");
-
+        
         // invalid carts:
         user = userManager.findUserByUsername("hans").get();
         initInvalidCart();
@@ -223,9 +223,7 @@ class MampfOrderManagerTests {
         assertTrue(validations.get(Domain.RENT_A_COOK).stream().anyMatch(s -> s.contains("Personal")));
         assertTrue(validations.get(Domain.RENT_A_COOK).stream().anyMatch(s -> s.contains("Koch")));
         assertEquals(validations.get(Domain.RENT_A_COOK).size(),2,"Rentacook should not be bookale");
-        
-        assertTrue(validations.containsKey(Item.Domain.MOBILE_BREAKFAST),"MB should not be bookable for a non employye user");
-        assertEquals(3,validations.size());
+        assertEquals(2,validations.size());
         
         // only spec order:
         validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(Domain.EVENTCATERING));

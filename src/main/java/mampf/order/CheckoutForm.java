@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +26,7 @@ public class CheckoutForm {
 
 	private Map<String, @Valid String> allEndTimes;
 
-	private ArrayList<String> domainsForCheckout;
-
-	private List<Item.Domain> domains;
+	private Map<String, @Valid String> allAddresses;
 
 
 	@NotEmpty()
@@ -44,20 +41,20 @@ public class CheckoutForm {
 	
 	public static final List<String> domainsWithoutForm = List.of(Item.Domain.MOBILE_BREAKFAST.name());
 	
-	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, Map<String, String> endTimes, String generalError,ArrayList<String> domainsForCheckout) {
+	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, Map<String, String> endTimes, Map<String, String> allAddresses,String generalError) {
 		this.allStartDates = startDates;
 		this.allStartTimes = startTimes;
 		this.allEndTimes = endTimes;
+		this.allAddresses = allAddresses;
 		this.payMethod = payMethod;
 		this.generalError = generalError;
-		this.domainsForCheckout = domainsForCheckout;
 	}
 	
 	/**
 	 * checks if there are empty fields left, depending on the chosen {@link Domain}
 	 * @return {@code true} if valid
 	 */
-	public boolean hasValidDates() {
+	public boolean hasValidData() {
 	    
 	    if(domainChoosen == null) {
 	        for(Item.Domain domain: getDomains()) {
@@ -85,6 +82,7 @@ public class CheckoutForm {
       }catch (Exception e) {
           return false;
       }
+	    
 	    return true;
 	}
 	
@@ -101,7 +99,14 @@ public class CheckoutForm {
 		}
 		return LocalDate.parse(allStartDates.get(domain.name()), dateFormatter).atTime(LocalTime.parse(allEndTimes.get(domain.name()), timeFormatter));
 	}
-
+	
+	public String getAddress(Item.Domain domain) {
+	    if(allAddresses == null || !allAddresses.containsKey(domain.name())) {
+	      return null;
+	    }
+	    return allAddresses.get(domain.name());
+	}
+	
 	public String getPayMethod() {
 		return payMethod;
 	}
@@ -132,7 +137,7 @@ public class CheckoutForm {
 	}
 
 	public int getDurationOfDomain(String domain) {
-		LocalTime startTime = LocalTime.parse(getStartTime(domain), timeFormatter);;
+		LocalTime startTime = LocalTime.parse(getStartTime(domain), timeFormatter);
 		LocalTime endTime = LocalTime.parse(getEndTime(domain), timeFormatter);
 
 		return endTime.minusHours(startTime.getHour()).getHour();
@@ -143,7 +148,7 @@ public class CheckoutForm {
 	}
 	
 	public List<Item.Domain> getDomains() {
-		domains = new ArrayList<>();
+		List<Item.Domain> domains = new ArrayList<>();
 		for (Item.Domain domain: Item.Domain.values()){
 			if(allStartDates.containsKey(domain.name())) {
 				domains.add(domain);
@@ -172,7 +177,14 @@ public class CheckoutForm {
 		}
 		return allEndTimes;
 	}
-
+	
+	public Map<String, String> getAllAddresses() {
+    if(allAddresses == null) {
+      allAddresses = new HashMap<>();
+    }
+    return allAddresses;
+  }
+	
 	public Item.Domain getDomainChoosen() {
 		return domainChoosen;
 	}
