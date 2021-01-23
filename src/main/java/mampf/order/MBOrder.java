@@ -1,34 +1,19 @@
 package mampf.order;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-
-import org.hibernate.FetchMode;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import mampf.catalog.Item;
+import mampf.order.OrderController.BreakfastMappedItems;
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
 
-import mampf.catalog.Item;
-import mampf.order.OrderController.BreakfastMappedItems;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import java.time.*;
+import java.time.temporal.TemporalAmount;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class MBOrder extends MampfOrder {
@@ -44,7 +29,7 @@ public class MBOrder extends MampfOrder {
 
     public MBOrder(UserAccount account, PaymentMethod paymentMethod, LocalDateTime startDate, LocalDateTime endDate,
             BreakfastMappedItems bfItem) {
-        super(account, paymentMethod, Item.Domain.MOBILE_BREAKFAST, startDate, endDate, bfItem.getAdress());
+        super(account, paymentMethod, Item.Domain.MOBILE_BREAKFAST, startDate, endDate, bfItem.getAddress());
         this.time = bfItem.getBreakfastTime();
         this.weekDays = bfItem.getWeekDays().stream().collect(Collectors.toSet());
       

@@ -9,17 +9,12 @@ import java.time.temporal.TemporalAmount;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.money.MonetaryAmount;
-import javax.persistence.criteria.Order;
 import javax.validation.Valid;
 
-import mampf.inventory.Inventory;
-import mampf.inventory.UniqueMampfItem;
 import mampf.order.MampfCart.DomainCart;
 import mampf.user.Company;
 import mampf.user.User;
 import mampf.user.UserManagement;
-import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 
 import org.salespointframework.quantity.Quantity;
@@ -35,8 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import mampf.Util;
 import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
-import mampf.catalog.Item.Domain;
-import mampf.catalog.MampfCatalog;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -56,12 +49,12 @@ public class OrderController {
 
         private final LocalTime breakfastTime;
         private List<DayOfWeek> weekDays = new ArrayList<>();
-        private final String adress;
+        private final String address;
         private final BreakfastItem beverage, dish;
         private final long amount;
 
         public BreakfastMappedItems(LocalDateTime startDate, LocalDateTime endDate,
-                String adress,
+                String address,
                 MobileBreakfastForm form) {
 
             super("Mobile Breakfast für " + form.getBeverage().getName() + " und " + form.getDish().getName(),
@@ -76,12 +69,12 @@ public class OrderController {
                     weekDays.add(weekDay);
                 }
             }
+
             breakfastTime = form.getTime();
             setDescription("vom " + startDate.toLocalDate() + " bis " + endDate.toLocalDate());
-            
             beverage = form.getBeverage();
             dish = form.getDish();
-            this.adress = adress;
+            this.address = address;
             amount = MBOrder.getAmount(startDate, endDate, startDate, endDate, weekDays, breakfastTime);
             // set amount:
             //amount = MBOrder.getQuantity(fromDate, toDate, startDate, endDate, weekDays, time)
@@ -104,8 +97,8 @@ public class OrderController {
             return dish;
         }
 
-        public String getAdress() {
-            return adress;
+        public String getAddress() {
+            return address;
         }
 
         public BreakfastItem getBeverage() {
@@ -314,7 +307,7 @@ public class OrderController {
         orderManager.createOrders(carts, form, user.get());
 
         List<Item.Domain> domainsToRemove = new ArrayList<>(carts.keySet());
-        domainsToRemove.forEach(domain->mampfCart.removeCart(domain));
+        domainsToRemove.forEach(mampfCart::removeCart);
         
         return "redirect:/userOrders";
     }
@@ -344,7 +337,7 @@ public class OrderController {
             if (startDate.isAfter(endDate)) {
                 result.rejectValue(errVar, errDomain + ".NegativeDate", "keine negativen Bestellungen erlaubt!");
             }
-            if(Duration.between(startDate, endDate).compareTo((Duration)durationForEarliestBookingDate) == -1) {
+            if(Duration.between(startDate, endDate).compareTo((Duration) durationForEarliestBookingDate) < 0) {
                 result.rejectValue(errVar, errDomain + ".DurationMin", "Zu kurz!");
             }
             
@@ -427,7 +420,7 @@ public class OrderController {
             Optional<UserAccount> userAccount) {
 
         Map<String, List<MampfOrder>> stuff = new LinkedHashMap<>();
-        List<MampfOrder> orders = new ArrayList<>();
+        List<MampfOrder> orders;
         if (userAccount.isPresent()) {
             orders = orderManager.findByUserAcc(userAccount.get());
         } else {

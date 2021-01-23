@@ -6,7 +6,7 @@ import org.javamoney.moneta.Money;
 
 @Entity
 public class BreakfastItem extends Item {
-	public static enum Type {
+	public enum Type {
 		DISH, BEVERAGE
 	}
 

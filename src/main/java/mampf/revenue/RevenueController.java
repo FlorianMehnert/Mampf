@@ -50,11 +50,9 @@ public class RevenueController {
 		/*
 		 * we calculate the sum of each Product that we sold in the given time
 		 */
-		for (MampfOrder mampfOrder :ordersPerItem) {
+		for (MampfOrder mampfOrder : ordersPerItem) {
 			LocalDate dateOfCreationTheBooking = mampfOrder.getDateCreated().toLocalDate();
-
 			if(dateIsInBorders(dateOfCreationTheBooking, startDate, endDate)) {
-
 				for(OrderLine orderLine: mampfOrder.getOrderLines()) {
 					calculateSumPerOrderLine(orderLine, gains);
 				}
@@ -82,7 +80,7 @@ public class RevenueController {
 				gains.put(product.get(), Pair.of(newQuantity, gains.get(product.get()).getSecond()));
 			}else {
 				if(product.get().getDomain() == Item.Domain.MOBILE_BREAKFAST) {
-					gains.put(product.get(), Pair.of(orderLine.getQuantity(), BreakfastItem.BREAKFAST_PRICE));
+					gains.put(product.get(), Pair.of(orderLine.getQuantity(), BreakfastItem.BREAKFAST_PRICE.divide(2)));
 				}else{
 					gains.put(product.get(), Pair.of(orderLine.getQuantity(), product.get().getPrice()));
 				}
