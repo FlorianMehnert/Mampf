@@ -1,48 +1,37 @@
 package mampf.order;
 
-import static org.mockito.Mockito.mock;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAmount;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mampf.user.Company;
 import mampf.user.User;
 import mampf.user.UserManagement;
 import mampf.user.UserController;
-
 import mampf.catalog.MampfCatalog;
 import mampf.employee.Employee;
 import mampf.employee.EmployeeManagement;
 import mampf.catalog.Item;
 import mampf.catalog.Item.Domain;
 import mampf.catalog.Item.Category;
-import mampf.Util;
 import mampf.catalog.BreakfastItem;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
 import mampf.order.MampfCart.DomainCart;
 
-import org.salespointframework.order.OrderStatus;
 import org.salespointframework.quantity.Quantity;
-import org.salespointframework.time.BusinessTime;
-import org.salespointframework.useraccount.UserAccount;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -211,7 +200,7 @@ class MampfOrderManagerTests {
     @Test
     void validateCarts() {
         initContext();
-        User user = userManager.findUserByUsername("hans").get();
+        User user = userManager.findUserByUsername("tripster").get();
         CheckoutForm form = initForm();
         Map<Domain, List<String>> validations;
 
@@ -219,29 +208,31 @@ class MampfOrderManagerTests {
         initValidCart();
         cart.updateCart(form);
         validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(null));
-        assert validations.isEmpty();
+        assertTrue(validations.isEmpty(),"validCart should return empty validations");
 
         // invalid carts:
+        user = userManager.findUserByUsername("hans").get();
         initInvalidCart();
         cart.updateCart(form);
         // every order:
         validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(null));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch"));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains(
-                "Tischdecke"));
-        assert validations.get(Domain.EVENTCATERING).size() == 2;
+        assertTrue(validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch")));
+        assertTrue(validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Tischdecke")));
+        assertEquals(validations.get(Domain.EVENTCATERING).size(),2,"Eventcatering should not be bookable");
 
-        assert validations.get(Domain.RENT_A_COOK).stream().anyMatch(s -> s.contains("Personal"));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch"));
-        assert validations.get(Domain.RENT_A_COOK).size() == 2;
-        assert validations.size() == 2;
-
+        assertTrue(validations.get(Domain.RENT_A_COOK).stream().anyMatch(s -> s.contains("Personal")));
+        assertTrue(validations.get(Domain.RENT_A_COOK).stream().anyMatch(s -> s.contains("Koch")));
+        assertEquals(validations.get(Domain.RENT_A_COOK).size(),2,"Rentacook should not be bookale");
+        
+        assertTrue(validations.containsKey(Item.Domain.MOBILE_BREAKFAST),"MB should not be bookable for a non employye user");
+        assertEquals(3,validations.size());
+        
         // only spec order:
         validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(Domain.EVENTCATERING));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch"));
-        assert validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Tischdecke"));
-        assert validations.get(Domain.EVENTCATERING).size() == 2;
-        assert validations.size() == 1;
+        assertTrue(validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Koch")));
+        assertTrue(validations.get(Domain.EVENTCATERING).stream().anyMatch(s -> s.contains("Tischdecke")));
+        assertEquals(validations.get(Domain.EVENTCATERING).size(),2,"Eventcatering should not be bookable (domainCHoosen)");
+        assertEquals(1,validations.size(),"only one not bookable when domainChoosen");
 
     }
 
@@ -260,57 +251,47 @@ class MampfOrderManagerTests {
         cart.updateCart(form);
         orders = orderManager.createOrders(cart.getDomainItems(null), form, user);
 
-        assert orders.size() == 4;
-        assert orders.stream().allMatch(o -> o.isCompleted());
+        assertEquals(orders.size(),4);
+        assertTrue(orders.stream().allMatch(o -> o.isCompleted()));
         order = orders.stream().filter(o -> o.getDomain().equals(Item.Domain.EVENTCATERING)).findFirst().get();
         // eventorder:
-        assert order.getOrderLines().toList().size() == 3;
-        assert order.getEmployees().size() == 4;
-        assert order.getEmployees().get(0).getBooked().contains(order);
-        assert order.getStartDate().equals(form.getStartDateTime(Item.Domain.EVENTCATERING));
-        // assert
-        // order.getEndDate().equals(form.getStartDateTime(Item.Domain.EVENTCATERING))
-        assert order.getAdress().equals(user.getAddress());
-        assert order instanceof EventOrder;
+        assertTrue( order instanceof EventOrder);
+        assertEquals(order.getOrderLines().toList().size(),3,"orderlines should be assigned");
+        assertEquals(order.getEmployees().size(),4,"employees should be assigned");
+        assertTrue(order.getEmployees().get(0).getBooked().contains(order));
+        assertEquals(order.getStartDate(),form.getStartDateTime(Item.Domain.EVENTCATERING));
+        assertEquals(order.getAdress(),user.getAddress());
 
         // party:
         order = orders.stream().filter(o -> o.getDomain().equals(Item.Domain.PARTYSERVICE)).findFirst().get();
-        assert order.getOrderLines().toList().size() == 2;
-        assert order instanceof EventOrder;
+        assertTrue( order instanceof EventOrder);
+        assertEquals(order.getOrderLines().toList().size(),2);
+        
 
         // mb:
-        // Item.Domain d= Item.Domain.MOBILE_BREAKFAST;
-        // User boss = userManager.findUserByUsername("dextermorgan").get();
         order = orders.stream().filter(o -> o.getDomain().equals(Item.Domain.MOBILE_BREAKFAST)).findFirst().get();
-        assert order.getAdress().equals(userManager.findUserByUsername("dextermorgan").get().getAddress());
-        assert order.getEmployees().isEmpty();
-        assert order.getOrderLines().get().anyMatch(ol -> ol.getProductName().equals("Kuchen"));
-        assert order.getOrderLines().get().anyMatch(ol -> ol.getProductName().equals("Tee"));
-        assert order.getOrderLines().toList().size() == 2;
-        assert order instanceof MBOrder;
-
+        assertTrue(order instanceof MBOrder,"mb orders should be a instance of mborder");
+        assertEquals(order.getAdress(),userManager.findUserByUsername("dextermorgan").get().getAddress());
+        assertTrue(order.getOrderLines().get().anyMatch(ol -> ol.getProductName().equals("Kuchen")));
+        assertTrue(order.getOrderLines().get().anyMatch(ol -> ol.getProductName().equals("Tee")));
+        assertEquals(order.getOrderLines().toList().size(),2,"mb orders should have the breakfastitems as orderlines");
+        
         // still available:
         List<Employee> cooks = employeeManager.getFreeEmployees(justadate, justadate.plusHours(1), Employee.Role.COOK);
         List<Employee> others = employeeManager.getFreeEmployees(justadate, justadate.plusHours(2),
                 Employee.Role.SERVICE);
 
-        assert cooks.size() == 0;
-        assert others.size() == 2;
-        // employees assigned:
-        assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.EVENTCATERING) && o.getEmployees()
-                .size() == 4);
-        assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getEmployees()
-                .size() == 6);
-
+        assertEquals(0,cooks.size(),"there should no free cook left for the given time");
+        assertEquals(2,others.size(),"there should be two service left for the given time");
+        
         initContext();
         initValidCart();
         cart.updateCart(form);
         // buy spec:
         orders = orderManager.createOrders(cart.getDomainItems(Domain.RENT_A_COOK), form, user);
-        assert orders.size() == 1;
-        assert orders.stream().allMatch(o -> o.isCompleted());
-        assert orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getOrderLines().toList()
-                .size() == 1);
+        assertEquals(1,orders.size());
+        assertTrue(orders.stream().allMatch(o -> o.isCompleted()));
+        assertTrue(orders.stream().anyMatch(o -> o.getDomain().equals(Item.Domain.RENT_A_COOK) && o.getOrderLines().toList().size() == 1));
 
     }
 
@@ -322,6 +303,12 @@ class MampfOrderManagerTests {
         assertFalse(orderManager.hasBookedMB(emp.get().getUserAccount()), "mb was not booked for employee");
         initMB();
         assertTrue(orderManager.hasBookedMB(emp.get().getUserAccount()), "mb was booked for employee");
+        initValidCart();
+        CheckoutForm form = initForm();
+        cart.updateCart(form);
+        orderManager.createOrders(cart.getDomainItems(Item.Domain.MOBILE_BREAKFAST), form, emp.get());
+        assertFalse(orderManager.hasBookedMB(emp.get().getUserAccount()), "the emp should not buy another mb order");
+        
     }
     
     @Test 
@@ -334,9 +321,9 @@ class MampfOrderManagerTests {
         List<DomainCart> baseCarts = new ArrayList<>();
         // init employees:
         Map<Employee.Role, Quantity> baseEmp = new EnumMap<>(Employee.Role.class);
-        for(Employee.Role role : Employee.Role.values()) 
+        for(Employee.Role role : Employee.Role.values()) { 
             baseEmp.put(role, employeeManager.getEmployeeAmount(role));
-
+        }
         
         
         assertEquals(orderManager.getFreeItems(baseInv, baseCarts, baseEmp, LocalDateTime.now(),LocalDateTime.now().plus(Duration.ofHours(1))).size(),

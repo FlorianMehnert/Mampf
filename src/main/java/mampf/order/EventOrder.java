@@ -20,26 +20,36 @@ import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 import org.javamoney.moneta.Money;
 import org.salespointframework.catalog.Product;
 import org.salespointframework.catalog.ProductIdentifier;
-import org.salespointframework.order.CartItem;
 import org.salespointframework.order.OrderLine;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.useraccount.UserAccount;
 import org.salespointframework.quantity.Quantity;
-import org.springframework.lang.NonNullApi;
-
+/**
+ * a {@link MampfOrder} class, which represents every order which can have:
+ * assigned {@link Employee}
+ * 
+ * @author Konstii
+ *
+ */
 @Entity
 public class EventOrder extends MampfOrder {
 
 	
 	public static final Predicate<Product> productHasPrizePerHour = p->p instanceof StaffItem;
 	
+	/**
+	 * calculates the prize for the given timespan for a given prizePerHour. </br>
+	 * the timespan (minute differenc) will always be rounded up to the next hour.
+	 * @param fromDate timespan start
+	 * @param toDate timespan end
+	 * @param prizePerHour a {@link MonetaryAmount} for each hour
+	 * @return the total prize, {@link Money} of {@literal zero} will be returned when the timespan is negativ.
+	 */
 	public static MonetaryAmount calcPrizePerHour(LocalDateTime fromDate,
 												  LocalDateTime toDate, 
 												  MonetaryAmount prizePerHour) {
@@ -69,9 +79,11 @@ public class EventOrder extends MampfOrder {
 
 	}
 	
-	//impl.:
-	Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
-		//if colliding return everything:
+	/**
+	 * returns every {@link OrderLine} when the given timespan is overlapping with the timespan of this order.
+	 */
+	public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
+		
 		Map<ProductIdentifier,Quantity> res = new HashMap<>();
 		if(hasTimeOverlap(fromDate, toDate)) {
 			for(OrderLine orderLine: getOrderLines()) {
@@ -80,7 +92,6 @@ public class EventOrder extends MampfOrder {
 		}
 		return res;
 	}
-	//impl.:
 	public String getDescription() {
 		return "Bestellung für ein Event";
 	}
@@ -90,32 +101,16 @@ public class EventOrder extends MampfOrder {
 		employees.add(employee);
 	}
 
-	@Override
+	
 	@ManyToMany(cascade = CascadeType.MERGE)
 	public List<Employee> getEmployees() {
 		return employees;
 	}
 
-	/*@Override
-	public MonetaryAmount getTotal() {
-		MonetaryAmount total = Money.of(0, "EUR");
-		for(OrderLine orderLine: getOrderLines()) {
-			if(catalog.findById(orderLine.getProductIdentifier()).isPresent()) {
-				Item item = catalog.findById(orderLine.getProductIdentifier()).get();
-				if(item.getCategory().equals(Item.Category.STAFF)) {
-					total = total.add(item.getPrice().multiply(eventDuration()).multiply(orderLine.getQuantity().getAmount()));
-				}else{
-					total = total.add(item.getPrice()).multiply(orderLine.getQuantity().getAmount());
-				}
-			}
-		}
-		return total.add(getAllChargeLines().getTotal());
-	}
-
-	private int eventDuration() {
-		return endDateTime.toLocalTime().minusHours(getStartDate().getHour()).getHour();
-	}*/
-
+	/**
+	 * {@link OrderLine} items can have a prize per hour.</br>
+	 * calculates and returns the sum of each total prize of each {@link OrderLine} for the timespan of this order.
+	 */
 	@Override 
 	public MonetaryAmount getTotal() {
 		Money total = Money.of(0, "EUR"); 
@@ -133,7 +128,10 @@ public class EventOrder extends MampfOrder {
 		
 		return total;
 	}
-	
+	/**
+	 * creates and returns every {@link OrderLine} of this order mapped to its total prize of this order.
+	 * @return a new instance of {@link Map} of {@link OrderLine} and {@link MonetaryAmount}
+	 */
 	public Map<OrderLine, MonetaryAmount> getItems(){
 		Map<OrderLine, MonetaryAmount> stuff = new HashMap<>();
 		Iterator<OrderLine> it = getOrderLines().iterator();
@@ -167,16 +165,6 @@ public class EventOrder extends MampfOrder {
 		}
 		super.remove(orderLine);
 	}
-	
-	/*@Override
-	public String toString() {
-		
-		
-		
-		
-		return ""+super.toString()
-		return "Order: " + this.getDomain().toString();
-	}*/
 	
 }
 

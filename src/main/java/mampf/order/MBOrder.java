@@ -18,10 +18,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 
-import org.hibernate.FetchMode;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
@@ -34,7 +30,6 @@ import mampf.order.OrderController.BreakfastMappedItems;
 public class MBOrder extends MampfOrder {
 
     @ElementCollection(fetch = FetchType.EAGER)
-    // @LazyCollection(LazyCollectionOption.FALSE)
     private Set<DayOfWeek> weekDays;
     private LocalTime time;
 
@@ -49,7 +44,19 @@ public class MBOrder extends MampfOrder {
         this.weekDays = bfItem.getWeekDays().stream().collect(Collectors.toSet());
       
     }
-    
+    /**
+     * calculates the amount of breakfastdates for the given timespans and breakfast days.</br>
+     * one breakfast Date is a {@link DayOfWeek} of weekDays with the given time.</br>
+     * the amount of breakfast dates corresponds to the amount of overlapping breakfast Dates with the needed-timespan.</br>
+     * 
+     * @param fromDate needed-timespan start
+     * @param toDate needed-timespan end
+     * @param startDate duration-timespan start, the start Date of the mobile breakfast order
+     * @param endDate duration-timespan end, the end Date of the mobile breakfast order
+     * @param weekDays a {@link List} of {@link DayOfWeek} represents weekdays where the user wants to have a breakfast meal
+     * @param time a {@link LocalDateTime} breakfast time
+     * @return long
+     */
     public static long getAmount(LocalDateTime fromDate, LocalDateTime toDate, LocalDateTime startDate,
             LocalDateTime endDate, Collection<DayOfWeek> weekDays, LocalTime time) {
 
@@ -95,7 +102,9 @@ public class MBOrder extends MampfOrder {
         return bfAmount;
     }
 
-    // impl.:
+    /**
+     * needed Items will be calculated with the amount of needed breakfastDates.
+     */
     public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
     
         Map<ProductIdentifier,Quantity> res = new HashMap<>();

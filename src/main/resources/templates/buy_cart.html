@@ -123,6 +123,8 @@
         <div class="m-padding-bottom m-card-section">
           <div class="m-container-small">
             <h2 class="m-padding-bottom" th:text="${T(mampf.Util).renderDomainName('__${domain.key}__')}"></h2>
+            <h4 th:if="${domain.value.getStartDate()!=null && domain.value.getEndDate()!=null}" th:text="${domain.value.getStartDate().toLocalDate()}+' von '+${domain.value.getStartDate().toLocalTime()}+' bis '+${domain.value.getEndDate().toLocalTime()}">
+            </h4>
             <div>
               <th:block th:each="item : ${domain.value}">
                 <div

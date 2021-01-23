@@ -20,16 +20,20 @@ import org.salespointframework.quantity.Quantity;
 import mampf.Util;
 import mampf.catalog.Item;
 import mampf.employee.Employee;
-
+/**
+ * base class for orders </br>
+ * is a {@link Order}
+ * 
+ * @author Konstii
+ */
 @MappedSuperclass
 public abstract class MampfOrder extends Order implements Comparable<MampfOrder>{
 	
 	//basic components of a order:
 	private Item.Domain domain;
-	private LocalDateTime startDate,endDate;
+	private LocalDateTime startDate;
+	private LocalDateTime endDate;
 	private String adress;
-	
-	@SuppressWarnings("unused")
 	public MampfOrder() {}
 	public MampfOrder(UserAccount account, 
 					  PaymentMethod paymentMethod,
@@ -45,13 +49,29 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	}
 	
 	public static final Comparator<MampfOrder> comparatorSortByCreation = (o1,o2)->o2.getDateCreated().compareTo(o1.getDateCreated());
-	
+	/**
+	 * returns if the given timespans overlap:
+	 * startDate > otherStartDate,...
+	 * 
+	 * @param startDate timespan1 start
+	 * @param endDate timespan1 end
+	 * @param orderStartDate timespan2 start
+	 * @param orderEndDate timespan2 end
+	 * @return
+	 */
 	public static boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate,
 										 LocalDateTime orderStartDate, LocalDateTime orderEndDate) {
 		return endDate.isAfter(orderStartDate)&& (orderEndDate.isAfter(startDate));
 	}
 	
-	//needed items for time span
+	/**
+	 * returns actually needed and existing catalog-items of a order for a given timespan.</br>
+	 * <li>can return a {@code empty} {@link Map} if the given timespan does not overlap with the timespan of this order.</li>
+	 * <li>can return every {@link OrderLine} of this order if the given timespan totally overlaps with the timespan of this order.</li>
+	 * @param fromDate timespan start
+	 * @param toDate timespan end
+	 * @return a new instance of {@link Map} of {@link ProductIdentifier} and {@link Quantity}
+	 */
 	abstract Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate);
 	
 	abstract String getDescription();
@@ -60,13 +80,6 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 		return hasTimeOverlap(startDate,endDate,getStartDate(),getEndDate());
 	}
 	
-	/*@Override
-	public boolean equals(MampfOrder d) {
-		return d.getAdress().equals(adress) && 
-			   d.getDomain().equals(domain) &&
-			   d.getStartDate().equals(startDate); 
-	}
-	*/
 	public LocalDateTime getStartDate(){
 		return startDate;
 	}
@@ -84,7 +97,10 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 		return new ArrayList<>();
 	}
 	
-	
+	/**
+	 * creates a {@link Map} with added data about the orders {@link PaymentMethod}
+	 * @return a new instance of {@link Map} of {@link String} and {@link String}
+	 */
 	public Map<String,String> getPayMethod() {
 		PaymentMethod paymentMethod = getPaymentMethod();
 		Map<String, String> allData = new HashMap<>();

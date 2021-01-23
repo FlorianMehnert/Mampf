@@ -15,6 +15,10 @@ import java.util.Map;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * Formular class to bind and store checkout fields when buying carts
+ *
+ */
 public class CheckoutForm {
 
 	private Map<String, @Valid String> allStartDates;
@@ -49,6 +53,10 @@ public class CheckoutForm {
 		this.domainsForCheckout = domainsForCheckout;
 	}
 	
+	/**
+	 * checks if there are empty fields left, depending on the chosen {@link Domain}
+	 * @return {@code true} if valid
+	 */
 	public boolean hasValidDates() {
 	    
 	    if(domainChoosen == null) {
@@ -61,6 +69,12 @@ public class CheckoutForm {
 	    return true;
 	    
 	}
+	/**
+	 * checks if the fields of the domain are filled
+	 * <li> there are no fields for {@link Domain.MOBILE_BREAKFAST} required</li> 
+	 * @param domain
+	 * @return {@code true} if valid
+	 */
 	private boolean validateDomain(Item.Domain domain) {
 	    if(domainsWithoutForm.contains(domain.name())) {
 	        return true;
@@ -127,7 +141,7 @@ public class CheckoutForm {
 	public String getGeneralError() {
 		return generalError;
 	}
-
+	
 	public List<Item.Domain> getDomains() {
 		domains = new ArrayList<>();
 		for (Item.Domain domain: Item.Domain.values()){

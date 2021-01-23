@@ -1,7 +1,6 @@
 package mampf.order;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,12 +15,21 @@ import org.salespointframework.order.CartItem;
 import org.salespointframework.quantity.Quantity;
 
 import mampf.catalog.Item;
-import mampf.catalog.StaffItem;
 import mampf.catalog.Item.Domain;
-
+/**
+ * a shopping-cart to store and manage {@link CartItem}. <br/>
+ * 
+ * @author Konstii
+ *
+ */
 public class MampfCart{
 	private Map<Item.Domain, DomainCart> stuff = new TreeMap<>();
-	
+	/**
+	 * a {@link Cart}, which can also have a start and end-date ({@link LocalDateTime}).</br>
+	 * also manages {@link CartItem} which have a prize for each hour.
+	 * @author Konstii
+	 *
+	 */
 	public class DomainCart extends Cart{
 		
 		private LocalDateTime startDate = null;
@@ -45,9 +53,13 @@ public class MampfCart{
 		public LocalDateTime getEndDate() {
 			return endDate;
 		}
-		
+		/**
+		 * returns all {@link CartItem} mapped to its total prize of this cart.</br> 
+		 * when the cart has a start and end Date, the total prizes can vary.
+		 * @return a new instance of {@link Map} of {@link CartItem} and {@link MonetaryAmount}
+		 */
 		public Map<CartItem, MonetaryAmount> getItems(){
-			Map<CartItem, MonetaryAmount> stuff = new HashMap<>();
+			Map<CartItem, MonetaryAmount> items = new HashMap<>();
 			Iterator<CartItem> it = get().iterator();
 			while(it.hasNext()) {
 				CartItem cartitem = it.next();
@@ -57,11 +69,10 @@ public class MampfCart{
 				}else {
 					price = (Money)getPriceOfCartItem(cartitem);
 				}
-				stuff.put(cartitem,price);
+				items.put(cartitem,price);
 			}	
-			return stuff;
+			return items;
 		}
-		
 		@Override
 		public MonetaryAmount getPrice() {
 			if(startDate == null || endDate == null) {
@@ -72,10 +83,13 @@ public class MampfCart{
 			while(it.hasNext()) {	
 				price = price.add(getPriceOfCartItem(it.next()));
 			}	
-			
 			return price;
 		}
-		
+		/**
+		 * returns updated total prize of a cartItem
+		 * @param cartItem a {@link CartItem}
+		 * @return a {@link MonetaryAmount} 
+		 */
 		private MonetaryAmount getPriceOfCartItem(CartItem cartItem) {
 			if(EventOrder.productHasPrizePerHour.test(cartItem.getProduct())) {
 				return
@@ -92,9 +106,9 @@ public class MampfCart{
 	
 	MampfCart(){}
 	/**
-	 * get cart of domain
+	 * get the mapped {@link DomainCart} of domain
 	 * @param domain
-	 * @return Cart or null
+	 * @return a instance of {@link DomainCart} or {@literal null}
 	 */
 	public DomainCart getDomainCart(Item.Domain domain) {
 		if(domain == null){
@@ -106,11 +120,13 @@ public class MampfCart{
 		return null;
 	}
 	/**
-	 * adds new Item to MampfCart
+	 * adds a new or updated {@link CartItem} of item and added itemQuantity to MampfCart.</br>
+	 * puts {@link CartItem} into {@link DomainCart} depending on the item's {@link Item.Domain}.</br>
+	 * <li>there can only be one {@link CartItem} in the {@link DomainCart} mapped to {@link Item.Domain.MOBILE_BREAKFAST}</li>
 	 * 
-	 * @param item
-	 * @param itemQuantity
-	 * @return CartItem
+	 * @param item a {@link Item}, does not have to be a existing catalog-item
+	 * @param itemQuantity a {@link Quantity} of the amount of item 
+	 * @return a instance of the updated or new {@link CartItem}
 	 */
 	public CartItem addToCart(Item item, Quantity itemQuantity) {
 		DomainCart domainCart = getDomainCart(item.getDomain());
@@ -129,9 +145,11 @@ public class MampfCart{
 		return cartitem;
 	}
 	/**
-	 * sets new amount of cartitem, also removes the item
-	 * @param cartItem
-	 * @param itemAmount
+	 * handles updating the {@link Quantity} of a {@link CartItem} or removing the {@link CartItem} in a {@link DomainCart}.</br>
+	 * when the given itemAmount is less than {@literal 1}, the {@link CartItem} will be removed from the {@link DomainCart}.</br>
+	 * - items with domain names of {@link CheckoutForm.domainsWithoutForm} cannot be updated.
+	 * @param cartItem  
+	 * @param itemAmount new {@link Quantity} amount
 	 */
 	public void updateCart(CartItem cartItem, int itemAmount) {
 		
@@ -149,6 +167,11 @@ public class MampfCart{
 		}
 	
 	}
+	/**
+	 * sets start and end dates ({@link LocalDateTime}) from the form to the fitting {@link DomainCart}.</br>
+	 * - ignores dates with domains of {@link CheckoutForm.domainsWithoutForm}
+	 * @param form a {@link CheckoutForm} which should have valid Dates
+	 */
 	public void updateCart(CheckoutForm form) {
 		//update all but no Mobile Breakfast
 		Map<String, String> allStartDates = form.getAllStartDates();
@@ -163,14 +186,21 @@ public class MampfCart{
 			}
 		}
 	}
+	/**
+	 * sets startDate and endDate to the {@link Item.Domain.MOBILE_BREAKFAST} mapped {@link DomainCart}
+	 * @param startDate 
+	 * @param endDate
+	 */
 	public void updateMBCart(LocalDateTime startDate, LocalDateTime endDate){
-		//only update Mobile Breakfast
 		DomainCart cart = getDomainCart(Item.Domain.MOBILE_BREAKFAST);
 		if(cart != null) {
 			cart.setDate(startDate, endDate);
 		}
 	}
-	
+	/**
+	 * resets every {@link DomainCart} start and end Dates to {@code null} </br>
+	 * - does not reset {@link DomainCart} with domains of {@link CheckoutForm.domainsWithoutForm}
+	 */
 	public void resetCartDate() {
 		stuff.entrySet().forEach(entry->{
 			if(!CheckoutForm.domainsWithoutForm.contains(entry.getKey().name()))
@@ -178,8 +208,9 @@ public class MampfCart{
 		});
 	}
 	/**
-	 * removes cartitem
-	 * @param cartItem
+	 * handles removing {@link CartItem} of a {@link DomainCart}.</br>
+	 * also removes the fitting {@link DomainCart} when there are no {@link CartItem} left. 
+	 * @param cartItem 
 	 */
 	public void removeFromCart(CartItem cartItem) {
 		Cart cartDomain = getDomainCart(((Item)cartItem.getProduct()).getDomain());
@@ -191,19 +222,15 @@ public class MampfCart{
 			}
 		}
 	}
-	/**
-	 * removes cart
-	 * @param domain
-	 */
 	public void removeCart(Item.Domain domain) {
 		if(stuff.containsKey(domain)) {
 			stuff.remove(domain);
 		}
 	}
 	/**
-	 * get cartitem by cartItemId
+	 * get {@link CartItem} by cartItemId
 	 * @param cartItemId
-	 * @return CartItem or null
+	 * @return CartItem a found {@link CartiItem} or {@code null}
 	 */
 	public CartItem getCartItem(String cartItemId) {
 		for(Map.Entry<Item.Domain, DomainCart> entry : stuff.entrySet()) {
@@ -217,10 +244,11 @@ public class MampfCart{
 		return null;
 	}
 	/**
-	 * get mapped carts to domain
-	 * domain
-	 * @param domain, nullable
-	 * @return Map<Item.Domain, Cart>, never null
+	 * creates and returns mapped {@link DomainCart} to the given domain.</br>
+	 * will return every {@link Item.Domain} mapped to {@link DomainCart} when domain is {@code null}.
+	 * 
+	 * @param domain a {@link Item.Domain} which can be {@code null}
+	 * @return a new instance of {@link Map} of {@link Item.Domain} and {@link DomainCart}
 	 */
 	public Map<Item.Domain, DomainCart> getDomainItems(Item.Domain domain){
 		Map<Item.Domain, DomainCart> map = new TreeMap<>();
@@ -235,9 +263,9 @@ public class MampfCart{
 		return stuff;
 	}
 	/**
-	 * get total prize of all carts of domain
-	 * @param domain
-	 * @return Money
+	 * get total prize of all {@link DomainCart} of {@link MampfCart.getDomainItems(domain)}
+	 * @param domain a {@link Item.Domain} can be {@code null}
+	 * @return {@link Money} of the total prize of the {@link DomainCart} of {@link MampfCart.getDomainItems(domain)}
 	 */
 	public Money getTotal(Item.Domain domain) {
 		Money res = Money.of(0, "EUR");
