@@ -209,7 +209,7 @@ class MampfOrderManagerTests {
         cart.updateCart(form);
         validations = orderManager.validateCarts(user.getUserAccount(),cart.getDomainItems(null));
         assertTrue(validations.isEmpty(),"validCart should return empty validations");
-        
+
         // invalid carts:
         user = userManager.findUserByUsername("hans").get();
         initInvalidCart();

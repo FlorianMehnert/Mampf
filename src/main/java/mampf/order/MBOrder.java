@@ -18,13 +18,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 
+import mampf.catalog.Item;
+import mampf.order.OrderController.BreakfastMappedItems;
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
-
-import mampf.catalog.Item;
-import mampf.order.OrderController.BreakfastMappedItems;
 
 @Entity
 public class MBOrder extends MampfOrder {
@@ -39,7 +38,7 @@ public class MBOrder extends MampfOrder {
 
     public MBOrder(UserAccount account, PaymentMethod paymentMethod, LocalDateTime startDate, LocalDateTime endDate,
             BreakfastMappedItems bfItem) {
-        super(account, paymentMethod, Item.Domain.MOBILE_BREAKFAST, startDate, endDate, bfItem.getAdress());
+        super(account, paymentMethod, Item.Domain.MOBILE_BREAKFAST, startDate, endDate, bfItem.getAddress());
         this.time = bfItem.getBreakfastTime();
         this.weekDays = bfItem.getWeekDays().stream().collect(Collectors.toSet());
       

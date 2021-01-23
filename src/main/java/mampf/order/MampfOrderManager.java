@@ -107,6 +107,7 @@ public class MampfOrderManager {
     }
 
     /**
+<<<<<<< HEAD
      * creates Validations for a {@link Map} of {@link Domain} and {@link DomainCart} for a user with {@link userAccount}. </br>
      * a {@link DomainCart} is valid when:</br>
      * <ul>
@@ -118,6 +119,15 @@ public class MampfOrderManager {
      * @param carts the chosen {@link DomainCart} mapped to its {@link Domain}
      * @param userAccount user which requests to buy the chosen carts
      * @return validations a new instance of {@link Map} which maps the created errormessages to the fitting {@link DomainCart}
+=======
+     * Checks if requested items (cart items)/personal are available for the given
+     * time
+     * checks if MB is in-time
+     * (domainspec.), never null
+     *
+     * @param carts
+     * @return list of validations
+>>>>>>> 3b4b1d24aaad7307921d374aff31282db1dcdff6
      */
     public Map<Item.Domain, List<String>> validateCarts(UserAccount userAccount, Map<Item.Domain, DomainCart> carts) {
         // each domain can have mutliple errormessages:

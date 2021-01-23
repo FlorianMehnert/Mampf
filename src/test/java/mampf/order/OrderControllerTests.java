@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import mampf.catalog.MampfCatalog;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class OrderControllerTests {
+class OrderControllerTests {
 	
 	@Autowired MockMvc mvc;
 	@Autowired OrderController controller;
@@ -43,7 +42,6 @@ public class OrderControllerTests {
 		map.add("number", "2");
 		mvc.perform(post("/cart")
 						.params(map))
-						.andDo(print())
 						.andExpect(header().string("Location", endsWith("/catalog/"+addItem.getDomain().toString().toLowerCase())));
 	}
 	
@@ -59,7 +57,6 @@ public class OrderControllerTests {
 		map.add("number", "2");
 		mvc.perform(post("/cart")
 						.params(map))
-						//.andDo(print())
 						.andExpect(header().string("Location", endsWith("/login")));
 		
 		mvc.perform(get("/cart"))

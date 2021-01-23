@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import mampf.Util;
 import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
-import mampf.catalog.Item.Domain;
+
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -55,7 +55,7 @@ public class OrderController {
 
         private final LocalTime breakfastTime;
         private List<DayOfWeek> weekDays = new ArrayList<>();
-        private final String adress;
+        private final String address;
         private final BreakfastItem beverage, dish;
         private final long amount;
         /**
@@ -69,7 +69,7 @@ public class OrderController {
          * @param form contains information about the chosen mobile breakfast informations
          */
         public BreakfastMappedItems(LocalDateTime startDate, LocalDateTime endDate,
-                String adress,
+                String address,
                 MobileBreakfastForm form) {
 
             super("Mobile Breakfast für " + form.getBeverage().getName() + " und " + form.getDish().getName(),
@@ -84,12 +84,12 @@ public class OrderController {
                     weekDays.add(weekDay);
                 }
             }
+
             breakfastTime = form.getTime();
             setDescription("vom " + startDate.toLocalDate() + " bis " + endDate.toLocalDate());
-            
             beverage = form.getBeverage();
             dish = form.getDish();
-            this.adress = adress;
+            this.address = address;
             amount = MBOrder.getAmount(startDate, endDate, startDate, endDate, weekDays, breakfastTime);
             
 
@@ -103,8 +103,8 @@ public class OrderController {
             return dish;
         }
 
-        public String getAdress() {
-            return adress;
+        public String getAddress() {
+            return address;
         }
 
         public BreakfastItem getBeverage() {
@@ -368,7 +368,7 @@ public class OrderController {
         orderManager.createOrders(carts, form, user.get());
 
         List<Item.Domain> domainsToRemove = new ArrayList<>(carts.keySet());
-        domainsToRemove.forEach(domain->mampfCart.removeCart(domain));
+        domainsToRemove.forEach(mampfCart::removeCart);
         
         return "redirect:/userOrders";
     }
@@ -404,7 +404,7 @@ public class OrderController {
             if (startDate.isAfter(endDate)) {
                 result.rejectValue(errVar, errDomain + ".NegativeDate", "keine negativen Bestellungen erlaubt!");
             }
-            if(Duration.between(startDate, endDate).compareTo((Duration)durationForEarliestBookingDate) == -1) {
+            if(Duration.between(startDate, endDate).compareTo((Duration) durationForEarliestBookingDate) < 0) {
                 result.rejectValue(errVar, errDomain + ".DurationMin", "Zu kurz!");
             }
             
