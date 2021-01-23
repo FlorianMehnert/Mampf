@@ -101,12 +101,11 @@ public class MampfOrderManager {
     /**
      * Checks if requested items (cart items)/personal are available for the given
      * time
-     *  checks if MB is in-time
-     *  returns list of validations
+     * checks if MB is in-time
      * (domainspec.), never null
      *
      * @param carts
-     * @return
+     * @return list of validations
      */
     public Map<Item.Domain, List<String>> validateCarts(UserAccount userAccount, Map<Item.Domain, DomainCart> carts) {
         // each domain can have mutliple errormessages:
