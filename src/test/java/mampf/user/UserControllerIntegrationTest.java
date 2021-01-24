@@ -200,12 +200,12 @@ class UserControllerIntegrationTest {
 	@Test
 	void testDenyAuthenticationAndFurtherLogin() throws Exception {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("username", "hans");
+		params.add("username", "klabrovsky");
 		params.add("password", "123");
 		mvc.perform(post("/login").params(params))
 				.andExpect(redirectedUrl("/"));
 
-		Optional<User> user = userManagement.findUserByUsername("hans");
+		Optional<User> user = userManagement.findUserByUsername("klabrovsky");
 
 		assertThat(user).isPresent();
 
