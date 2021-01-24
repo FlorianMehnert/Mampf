@@ -202,7 +202,6 @@ class UserControllerIntegrationTest {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add("username", "hans");
 		params.add("password", "123");
-		params.add("confirmPassword", "123");
 		mvc.perform(post("/login").params(params))
 				.andExpect(redirectedUrl("/"));
 
