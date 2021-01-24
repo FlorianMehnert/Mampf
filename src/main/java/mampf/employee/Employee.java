@@ -52,7 +52,12 @@ public class Employee {
     return this.role;
   }
 
-  @ManyToMany
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	@ManyToMany
   public List<EventOrder> getBooked() {
     return this.booked;
   }

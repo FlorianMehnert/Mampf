@@ -50,7 +50,7 @@ public class EmployeeManagement {
 	public ArrayList<Employee> filterByName(String filter) {
 		return employees.filterByNameForSearching(filter);
 	}
-	
+
 	
 	public Streamable<Employee> findAll() {
 		return employees.findAll();
@@ -79,5 +79,21 @@ public class EmployeeManagement {
 		return freeEmployees;
 		
 	}
-		
+
+	public void editEmployee(Employee employee, RegistrationForm form){
+		employee.setName(form.getFirstName() + " " + form.getLastName());
+	}
+
+	public Employee searchById(long id){
+		for(Employee currentEmployee : employees.findAll()){
+			if(currentEmployee.getId() == id){
+				return currentEmployee;
+			}
+		}
+		return null;
+	}
+
+	public void deleteEmployee(long id){
+		employees.deleteById(id);
+	}
 }

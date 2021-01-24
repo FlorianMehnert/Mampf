@@ -25,19 +25,27 @@ public class EmployeeControllerTest {
 
 	private MultiValueMap<String, String> createAllRequestParamsForRegisterNewEmployee(
 			String username,
-			String firstname,
-			String lastname,
-			String password,
+			String firstName,
+			String lastName,
 			Employee.Role role
 	) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.add("username", username);
-		map.add("firstname", firstname);
-		map.add("lastname", lastname);
-		map.add("password", password);
+		map.add("firstName", firstName);
+		map.add("lastName", lastName);
 		map.add("role", role.name());
 
 		return map;
+	}
+
+	private MultiValueMap<String, String> createAllRequestParamsForEditNewEmployee(
+			String firstName,
+			String lastName) {
+		MultiValueMap<String, String> map_edit = new LinkedMultiValueMap<>();
+		map_edit.add("firstName", firstName);
+		map_edit.add("lastName", lastName);
+
+		return map_edit;
 	}
 
 	@Test
@@ -56,20 +64,58 @@ public class EmployeeControllerTest {
 				.andExpect(status().isOk());
 	}
 
-	/*@Test
+	@Test
 	@WithMockUser(roles = "BOSS")
-	void test_registerNew() throws Exception {
+	void test_registerNew() throws Exception{
 		MultiValueMap<String, String> map = createAllRequestParamsForRegisterNewEmployee(
 				"test_username",
-				"test_firstname",
-				"test_lastname",
-				"123",
+				"test1",
+				"test2",
 				Employee.Role.COOK
 		);
-		mvc.perform(post("/intern/employees/add"))
-				//.params(map)
+		mvc.perform(post("/intern/employees/add")
+				.params(map))
 				.andExpect(model().hasNoErrors())
-				.andExpect(status().is3xxRedirection());
-		//TODO create employee to test the form -> find out how to connect to Controller
+				.andExpect(view().name("redirect:/intern/employees"));
+	}
+
+	@Test
+	@WithMockUser(roles = "BOSS")
+	void test_edit() throws Exception{
+		mvc.perform(get("/intern/employees/{id}", "11"))
+				.andExpect(model().attributeExists("employee"))
+				.andExpect(model().attributeExists("form"))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithMockUser(roles = "BOSS")
+	void test_editEmployee() throws Exception{
+		MultiValueMap<String, String> map_edit = createAllRequestParamsForEditNewEmployee(
+				"Elsa",
+				"Pato"
+		);
+		mvc.perform(post("/intern/employees/{id}", "11")
+				.params(map_edit))
+				.andExpect(model().hasNoErrors())
+				.andExpect(view().name("redirect:/intern/employees"));
+	}
+
+	/*@Test
+	@WithMockUser(roles = "BOSS")
+	void test_filter() throws Exception{
+		String filter = "Anna";
+		mvc.perform(get("/intern/employees", filter))
+				.andExpect(model().attributeExists("filter"))
+				.andExpect(model().attributeExists("employees"))
+				.andExpect(status().isOk());
 	}*/
+
+	@Test
+	@WithMockUser(roles = "BOSS")
+	void test_delete() throws Exception{
+		mvc.perform(get("/intern/employees/deleteEmployee/{id}", "11"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/intern/employees"));
+	}
 }
