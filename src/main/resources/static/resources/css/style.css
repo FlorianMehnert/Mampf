@@ -210,9 +210,10 @@ div#mmpf-sidebar {
   padding: 2rem 0;
 }
 
-.mmpf-choosables-wrapper{
-  display: flex;
-  justify-content: center;
+.mmpf-choosable-wrapper{
+  /* display: flex;
+  justify-content: center; */
+  position: relative;
 }
 
 .mmpf-choosables-title {
@@ -224,13 +225,14 @@ div#mmpf-sidebar {
 
 .mmpf-choosable {
   border: 3px solid #ccc;
-  padding: 2rem 0;
+  padding: 2rem;
   margin: 10px;
-  min-width: 12rem;
+  min-width: 3rem;
+  min-height: 3rem;
   border-radius: 12px;
   text-align: center;
   cursor: pointer;
-  transition: all ease-in-out 100ms;
+  transition: all ease-in-out 200ms;
 }
 
 label.mmpf-choosable:hover {
@@ -240,9 +242,9 @@ label.mmpf-choosable:hover {
 }
 
 .mmpf-choosable-input:checked + label.mmpf-choosable {
-  border: 3px solid #007bff;
+  border: 3px solid var(--m-primary-hover);
   color: #fff;
-  background-color: #007bff;
+  background-color: var(--m-primary);
 }
 
 .mmpf-choosable-input {
@@ -256,6 +258,23 @@ label.mmpf-choosable:hover {
 .mmpf-choosable-title {
   margin-left: 20px;
   font-size: 1.3rem;
+}
+
+.mmpf-choosable-checkmark {
+  position: absolute;
+  display: none;
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: #fff;
+  pointer-events: none;
+  transition: all ease-in-out 200ms;
+}
+.mmpf-choosable-input:checked ~ .mmpf-choosable-checkmark {
+  display: block;
+  opacity: 1;
 }
 
 .mmpf-btn-center {
