@@ -1,0 +1,36 @@
+= Protokoll Gruppe 10
+
+Treffen am 11.01.2020
+
+Ort:      Online BigBlueButton +
+Beginn:   16:40 Uhr +
+Ende:     17:30 Uhr
+
+__Schriftführer:__ Florian Hauptmann
+
+*Nächstes Treffen:* +
+18.01.2021, 16:40 Uhr, BigBlueButton
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig
+- Florian Hauptmann (Protokollant)
+- Florian Mehnert (Scrum Master)
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+* Kundenwunsch wurde geäußert: Implementieren der Suche nach Inventareinträgen, Usern und Mitarbeitern
+* Es wurde auf die Vollständigkeit des Timerecordings hingewiesen
+* Florian Hauptmann formell verwarnt für die nicht erreichung des Ziel: Catalogeinträge hinzufügen
+* Aufgabe Patricia: Überprüfen ob Employee von einer Firma schon bestellt hat
+* Florian Mehnert: Mengen von Sonderaktionen und Platten als unbegrenzt markieren
+* Es wurde darauf hingewiesen, zu große UML Diagramme in kleinere Pakete einzuteilen
+* Es wurde auf die Einschreibung der Prüfung hingewiesen
+* Crosstesting soll bis So den 17.01.21 um 23.59 Uhr abgegeben werden
+
+
+
+
