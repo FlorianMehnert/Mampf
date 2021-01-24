@@ -9,17 +9,12 @@ import java.time.temporal.TemporalAmount;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.money.MonetaryAmount;
-import javax.persistence.criteria.Order;
 import javax.validation.Valid;
 
-import mampf.inventory.Inventory;
-import mampf.inventory.UniqueMampfItem;
 import mampf.order.MampfCart.DomainCart;
 import mampf.user.Company;
 import mampf.user.User;
 import mampf.user.UserManagement;
-import org.salespointframework.order.Cart;
 import org.salespointframework.order.CartItem;
 
 import org.salespointframework.quantity.Quantity;
@@ -35,8 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import mampf.Util;
 import mampf.catalog.BreakfastItem;
 import mampf.catalog.Item;
-import mampf.catalog.Item.Domain;
-import mampf.catalog.MampfCatalog;
+
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -51,17 +45,31 @@ public class OrderController {
     public static final TemporalAmount durationForEarliestBookingDate = Duration.ofHours(1);
     public static final LocalTime timeForEarliestPossibleBookingDate = LocalTime.of(5, 0);
     
-    
+    /**
+     * represents a Mobile Breakfast cart item.</br> 
+     * - contains the chosen {@link BreakfastItem} dish and beverage, and other information about the breakfast</br>
+     * @author Konstii
+     *
+     */
     public class BreakfastMappedItems extends Item {
 
         private final LocalTime breakfastTime;
         private List<DayOfWeek> weekDays = new ArrayList<>();
-        private final String adress;
+        private final String address;
         private final BreakfastItem beverage, dish;
         private final long amount;
-
+        /**
+         * setup Mobile Breakfast item with:</br>
+         * <li> formated weekDays of {@link DayOfWeek} from form </li>
+         * <li> a unchangable calculated amount of breakfast Dates for the given start and end Date</li>
+         * 
+         * @param startDate a {@link LocalDateTime}, a breakfast date of a {@link Company}
+         * @param endDate a {@link LocalDateTime}, a breakfastEnd date of a {@link Company}
+         * @param adress a {@link String}, a adress of a {@link Company}
+         * @param form contains information about the chosen mobile breakfast informations
+         */
         public BreakfastMappedItems(LocalDateTime startDate, LocalDateTime endDate,
-                String adress,
+                String address,
                 MobileBreakfastForm form) {
 
             super("Mobile Breakfast für " + form.getBeverage().getName() + " und " + form.getDish().getName(),
@@ -76,23 +84,14 @@ public class OrderController {
                     weekDays.add(weekDay);
                 }
             }
+
             breakfastTime = form.getTime();
             setDescription("vom " + startDate.toLocalDate() + " bis " + endDate.toLocalDate());
-            
             beverage = form.getBeverage();
             dish = form.getDish();
-            this.adress = adress;
+            this.address = address;
             amount = MBOrder.getAmount(startDate, endDate, startDate, endDate, weekDays, breakfastTime);
-            // set amount:
-            //amount = MBOrder.getQuantity(fromDate, toDate, startDate, endDate, weekDays, time)
-            /*List<UniqueMampfItem> totalItems = orderManager.convertToInventoryItems(MBOrder.getItems(startDate, endDate,
-                    startDate, endDate, new HashSet<>(weekDays), breakfastTime, List.of(beverage.getId(), dish
-                            .getId())));
-            if (totalItems.isEmpty()) {
-                amount = 0;
-            } else {
-                amount = totalItems.get(0).getAmount().longValue();
-            }*/
+            
 
         }
 
@@ -104,8 +103,8 @@ public class OrderController {
             return dish;
         }
 
-        public String getAdress() {
-            return adress;
+        public String getAddress() {
+            return address;
         }
 
         public BreakfastItem getBeverage() {
@@ -130,20 +129,15 @@ public class OrderController {
 
     @ModelAttribute("mampfCart")
     MampfCart initializeCart() {
-        MampfCart cart = new MampfCart();
-        /*MampfCatalog catalog = orderManager.getCatalog();
-        cart.addToCart(catalog.findByName("Dekoration").get().findFirst().get(), Quantity.of(10));
-        cart.addToCart(catalog.findByName("Tischdecke").get().findFirst().get(), Quantity.of(10));
-        catalog.findByName("Koch/Köchin pro 10 Personen").forEach(i->cart.addToCart(i, Quantity.of(3)));
-        catalog.findByName("Service-Personal").forEach(i->cart.addToCart(i, Quantity.of(4)));
-        cart.addToCart(catalog.findByName("Luxus").get().findFirst().get(), Quantity.of(2));
-        */
-        return cart;
-        
+        return new MampfCart();
     }
 
     /**
-     * adds item to cart
+     * adds item with {@link Quantity} of number to mampfCart
+     * @param item the item which will be added to the {@link MampfCart} 
+     * @param number the amount which will be added to the {@link MampfCart} 
+     * @param mampfCart 
+     * @return
      */
     @PostMapping("/cart")
     public String addItem(@RequestParam("pid") Item item, @RequestParam("number") int number,
@@ -155,7 +149,11 @@ public class OrderController {
     }
 
     /**
-     * view cart
+     * view items of mampfcart.</br>
+     * - resets mampfcart Dates. 
+     * @param model 
+     * @param mampfCart
+     * @return cart template
      */
     @GetMapping("/cart")
     public String basket(Model model, @ModelAttribute("mampfCart") MampfCart mampfCart) {
@@ -175,9 +173,14 @@ public class OrderController {
         mampfCart.clear();
         return "redirect:/cart";
     }
-
     /**
-     * handles adding and removing the amount of a cartitem
+     * 
+     * handles adding and removing the amount of a {@link CartItem}.</br>
+     * - when newAmount less than 1, the {@link CartItem} will be removed.
+     * @param cartItemId Id of the {@link CartItem} 
+     * @param newAmount new Amount of the {@link CartItem}
+     * @param mampfCart
+     * @return cart template redirect
      */
     @PostMapping("cart/setNewAmount")
     public String addCartItem(@RequestParam String cartItemId, @RequestParam int newAmount,
@@ -191,7 +194,23 @@ public class OrderController {
     }
 
     /**
-     * adds breakfast choice to cart as one cartitem
+     * handles ordering mobile breakfast.</br>
+     * when ordering mobile breakfast, a new instance of {@link BreakfastMappedItems} can be added to the mampfCart.</br>
+     * {@link BreakfastMappedItems} contains (nearly)all informations about the ordered mobile breakfast, which is needed when creating the actual order from the cart items.</br>
+     * when trying to order a new mobile breakfast, there are many errors which can occur:
+     * <ul>
+     * <li>invalid form</li> 
+     * <li>the {@link User} of the userAccount is no employee</li>
+     * <li>the {@link Company} of the employee has not booked Mobile Breakfast</li>
+     * <li>the {@link Company} of the employee has booked Mobile Breakfast, but the booking date is no longer available</li>
+     * <li>the {@link Company} of the employee has booked Mobile Breakfast, but the employee has already ordered a mobile breakfast</li>
+     * </ul>
+     * 
+     * @param userAccount of the {@link User} who wants to order mb 
+     * @param form 
+     * @param mampfCart
+     * @param redirectAttributes holds errormessage
+     * @return cart/mobile-breakfast template redirect
      */
     @PostMapping("/cart/add/mobile-breakfast")
     public String orderMobileBreakfast(@LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form,
@@ -241,12 +260,27 @@ public class OrderController {
     }
 
     /**
-     * view buying site
+     * view buying site.</br>
+     * 
+     * checks domain for possible {@link Domain} matches. </br>
+     * If there was a match, return the buying site for the matching {@link Domain}. Otherwise return the buying site for every {@link Domain}.</br>
+     * - resets mampfCart dates.
+     * 
+     * @param model
+     * @param domain requested paying domain, can be a {@link Domain} name
+     * @param form
+     * @param mampfCart
+     * @return cart template redirect or buy_cart template
      */
     @GetMapping("/pay/{domain}")
     public String chooseToBuy(Model model, @PathVariable String domain, @ModelAttribute("form") CheckoutForm form,
-            @ModelAttribute("mampfCart") MampfCart mampfCart) {
-
+            @ModelAttribute("mampfCart") MampfCart mampfCart, Authentication authentication) {
+        
+        Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+        if (user.isEmpty()) {
+            return "redirect:/login";
+        }
+        
         if (mampfCart.isEmpty()) {
             return "redirect:/cart";
         }
@@ -261,18 +295,42 @@ public class OrderController {
         }
         mampfCart.resetCartDate();
         model.addAttribute("validations", new HashMap<String, List<String>>());
-        return buyCart(domainChoosen, model, mampfCart, form);
+        return buyCart(domainChoosen, model, mampfCart, form,user.get());
     }
 
     /**
-     * buy cart(s)
+     * checkout request to reload the site with updated carts or buy carts.</br>
+     * there are two differnt use cases: </br>
+     * 1) the user can reload the site with updated cart prizes. </br>
+     * 2) the user can buy the carts:</br>
+     * <ol>
+     * <li>the form will be validated (there should be no empty field)</li>
+     * <li>the form's data will be validated</li>
+     * <li>the carts will be validated</li>
+     * <li> when there is any error message in the validations, the buying process will stop and the modified buying site with the errors will show up</li> 
+     * <li> otherwise the orders will be created and the selected {@link DomainCart} will be deleted from mampfCart, and the user will be redirected to their orders</li>
+     * </ol>
+     * 
+     * @param model
+     * @param reload a {@link Optional} of {@link Boolean}, reloads the buying site if present 
+     * @param form a {@link CheckoutForm} which contains the chosen dates of the orders
+     * @param result a {@link Result} for validating the form
+     * @param authentication a {@link Authentication} which represents a user
+     * @param mampfCart
+     * @return buy_cart template or userOrders template redirect 
      */
     @PostMapping("/checkout")
     public String buy(Model model, @RequestParam(name = "reload") Optional<Boolean> reload,
             @Valid @ModelAttribute("form") CheckoutForm form, Errors result, Authentication authentication,
             @ModelAttribute("mampfCart") MampfCart mampfCart) {
-
-        if(form.hasValidDates()) {
+        
+        Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+        if (user.isEmpty()) {
+            result.rejectValue("generalError", "CheckoutForm.generalError.NoLogin",
+                    "Bitte melden sie sich erneut an");
+            return "redirect:/login";
+        }
+        if(form.hasValidData()) {
             mampfCart.updateCart(form);
         }else {
             result.rejectValue("generalError", "CheckoutForm.generalError.missingData", 
@@ -283,18 +341,14 @@ public class OrderController {
 
         if (reload.isPresent()) {
             model.addAttribute("validations", validationsStr);
-            return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+            return buyCart(form.getDomainChoosen(), model, mampfCart, form,user.get());
         }
-        Optional<User> user = userManagement.findUserByUsername(authentication.getName());
-        if (user.isEmpty()) {
-            result.rejectValue("generalError", "CheckoutForm.generalError.NoLogin",
-                    "Bitte melden sie sich erneut an");
-        }
+        
         validateCheckoutForm(form,result);
         
         if (result.hasErrors()) {
             model.addAttribute("validations", validationsStr);
-            return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+            return buyCart(form.getDomainChoosen(), model, mampfCart, form,user.get());
         }
 
         Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
@@ -308,17 +362,23 @@ public class OrderController {
 
         if (result.hasErrors()) {
             model.addAttribute("validations", validationsStr);
-            return buyCart(form.getDomainChoosen(), model, mampfCart, form);
+            return buyCart(form.getDomainChoosen(), model, mampfCart, form,user.get());
         }
 
         orderManager.createOrders(carts, form, user.get());
 
         List<Item.Domain> domainsToRemove = new ArrayList<>(carts.keySet());
-        domainsToRemove.forEach(domain->mampfCart.removeCart(domain));
+        domainsToRemove.forEach(mampfCart::removeCart);
         
         return "redirect:/userOrders";
     }
-
+    /**
+     * validates a valid form.</br>
+     * will create Errors by rejecting when there are problems using the given form dates for creating orders. </br>
+     * (when the endDate is before  the start Date/...)
+     * @param form
+     * @param result 
+     */
     private void validateCheckoutForm(CheckoutForm form, Errors result) {
         if(result.hasErrors())return;
         for (Item.Domain domain : form.getDomains()) {
@@ -331,10 +391,10 @@ public class OrderController {
             String errVar = "allStartDates[" + domain.name() + "]";
             String errDomain = "CheckoutForm.startDate";
 
-            if (startDate == null || endDate == null) {
+            /*if (startDate == null || endDate == null) {
                 result.rejectValue(errVar, errDomain + ".Invalid", "Bitte Datum eingeben!");
                 continue;
-            }
+            }*/
             if (startDate.isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
                 result.rejectValue(errVar, errDomain + ".NotFuture", "Das Datum muss in der Zukunft liegen!");
             }
@@ -344,40 +404,50 @@ public class OrderController {
             if (startDate.isAfter(endDate)) {
                 result.rejectValue(errVar, errDomain + ".NegativeDate", "keine negativen Bestellungen erlaubt!");
             }
-            if(Duration.between(startDate, endDate).compareTo((Duration)durationForEarliestBookingDate) == -1) {
+            if(Duration.between(startDate, endDate).compareTo((Duration) durationForEarliestBookingDate) < 0) {
                 result.rejectValue(errVar, errDomain + ".DurationMin", "Zu kurz!");
             }
             
         }
     }
     
-    
-    private String buyCart(Item.Domain domain, Model model, MampfCart mampfCart, CheckoutForm form) {
+    /**
+     * views the buying site for a given domain.</br>
+     * sets the model and form for the template.
+     * @param domain a {@link DomainCart}, can be {@code null}
+     * @param model
+     * @param mampfCart
+     * @param form
+     * @return buy_cart template
+     */
+    private String buyCart(Item.Domain domain, Model model, MampfCart mampfCart, CheckoutForm form, User user) {
         form.setDomainChoosen(domain);
         Map<Item.Domain, DomainCart> domains = mampfCart.getDomainItems(domain);
         model.addAttribute("canSubmit", domains.values().stream().allMatch(
                 cart -> (cart.getStartDate() != null && cart.getEndDate() != null)));
         model.addAttribute("domains", domains);
         model.addAttribute("total", mampfCart.getTotal(domain));
+        model.addAttribute("userAddress",user.getAddress());
         model.addAttribute("form", form);
         return "buy_cart";
     }
     
     /* ORDERS */
 
-    /**
-     * lists every orders ever made for adminuser
-     */
+    
     @GetMapping("/orders")
     @PreAuthorize("hasRole('BOSS')")
     public String orders(Model model) {
-
         model.addAttribute("stuff", getSortedOrders(Optional.empty(), Optional.empty()));
         return "orders";
     }
 
     /**
-     * shows Order
+     * shows details of an {@link MampfOrder}.
+     * 
+     * @param orderId
+     * @param model
+     * @return ordersDetail template
      */
     @GetMapping("/orders/detail/{orderId}")
     public String editOrder(@PathVariable String orderId, Model model) {
@@ -399,16 +469,17 @@ public class OrderController {
         if (userAccount.isEmpty()) {
             return "redirect:/login";
         }
-
         model.addAttribute("stuff", getSortedOrders(Optional.of(MampfOrder.comparatorSortByCreation), userAccount));
         return "orders";
     }
-
     /**
-     * boss: delete a order
+     * deletes a {@link MampfOrder}.</br>
+     * the boss only can delete orders.</br>
+     * redirects to the starting page if there was no {@link MampfOrder} found.
+     * @param orderId Id of an @
+     * @return orders template redirect or index template redirect
      */
     @PreAuthorize("hasRole('BOSS')")
-    // @DeleteMapping(value = "/orders/delete?id={orderId}")
     @GetMapping("/orders/delete/{orderId}")
     public String deleteOrder(@PathVariable Optional<String> orderId) {
         String redirect = "redirect:/";
@@ -422,12 +493,22 @@ public class OrderController {
         orderManager.deleteOrder(order.get());
         return "redirect:/orders";
     }
-
+    /**
+     * sorts every/only user {@link MampfOrder} by given comp and saves them into a {@link Map}.</br>
+     * - orders will be categorized by a {@link LocalDate} which will be converted into a {@link String}. </br>
+     * 
+     * when the orders are sorted by their creation Date, there is another category beside {@link LocalDate} which is called "soeben erstellt".</br>
+     * "soeben erstellt" contains every {@link MampfOrder} which was created in the last hour.</br>
+     * 
+     * @param comp a {@link Optional} of {@link Predicate}, uses the natural ordering of {@link MampfOrder} when the {@link Optional} is {@code empty}
+     * @param userAccount
+     * @return a new instance of {@link Map} which contains sorted {@link MampfOrder} by {@link LocalDate}  
+     */
     private Map<String, List<MampfOrder>> getSortedOrders(Optional<Comparator<MampfOrder>> comp,
             Optional<UserAccount> userAccount) {
 
         Map<String, List<MampfOrder>> stuff = new LinkedHashMap<>();
-        List<MampfOrder> orders = new ArrayList<>();
+        List<MampfOrder> orders;
         if (userAccount.isPresent()) {
             orders = orderManager.findByUserAcc(userAccount.get());
         } else {

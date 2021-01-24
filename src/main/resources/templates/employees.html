@@ -34,6 +34,20 @@
                 <li th:each="date : ${employee.booked}"><a th:href="'/orders/detail/' + ${date.id}" th:text="${date.id}">Bestellung</a></li>
               </ul>
             </td>
+            <td>
+              <button class="btn btn-outline-primary cont" >
+                <a th:href="'/intern/employees/' + ${employee.id}">
+                  Bearbeiten
+                </a>
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-outline-primary cont" >
+                <a th:href="'/intern/employees/deleteEmployee/' + ${employee.id}">
+                  Entfernen
+                </a>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>

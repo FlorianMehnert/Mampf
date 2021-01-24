@@ -22,8 +22,7 @@ public class Company {
 
     private String name;
     private long bossId;
-    // time between booked MB and first possible MB Order(employees can now
-    // choose...)
+    
     public static final Duration awaitBreakFastChoiceDuration = Duration.ofDays(3);
 
     @OneToMany
@@ -51,7 +50,14 @@ public class Company {
     public void removeEmployee(User employee) {
         employees.remove(employee);
     }
-
+    /**
+     * books mobile breakfast.</br>
+     * when booking mobile breakfast, this company will set a fixed {@link LocalDate} which is also called breakfastDate.</br>
+     * employees can then order their mobile breakfast - choice till the breakfastDate is no longer available.</br>
+     * booking mobile breakfast will fail, when there is already a available breakfastDate.
+     * 
+     * @return {@code true} if booking of mobile breakfast was successful
+     */
     public boolean setBreakfastDate() {
         if (canBookNewBreakfast()) {
             this.breakfastDate = getNextBreakfastDate();
@@ -61,10 +67,9 @@ public class Company {
     }
 
     /**
-     * estimates if a new BreakfastDate is possible - if a boss-user can set a new
-     * date returns if bookable for the next month
-     * 
-     * @return
+     * estimates if the boss of this company can book a new mobile breakfast.</br>
+     * the boss can book mobile breakfast, when there is no current breakfast Date.
+     * @return {@code true} if the boss could book mobile breakfast
      */
     public boolean canBookNewBreakfast() {
 
@@ -75,9 +80,9 @@ public class Company {
     }
 
     /**
-     * estimates if there is a current breakfastDate
-     * returns true if there is a current breakfastDate
-     * @return
+     * estimates if a employee of this company could order mobile breakfast.</br>
+     * a employee could book mb, when there is a current breakfast Date.
+     * @return {@code true} if the employee could order mobile breakfast.
      */
     public boolean hasBreakfastDate() {
         return (breakfastDate != null) && 
@@ -85,26 +90,23 @@ public class Company {
     }
 
     /**
-     * calculates the next possible breakfastDate return value is: now +
-     * choiceDuration
-     * 
-     * @return
+     * calculates the next possible breakfast Date as {@link LocalDate} and returns it. </br>
+     * <b>return time.now + awaitBreakFastChoiceDuration</b>
+     * @return 
      */
     public LocalDate getNextBreakfastDate() {
         return LocalDateTime.now().plus(awaitBreakFastChoiceDuration).toLocalDate();
     }
 
     /**
-     * estimates the end Date for the current breakfastDate. 
-     * returns empty optional if no breakfastDate is currently available.
-     * or returns optional of a localdate with the first day of the next month.
-     * 
-     * @return
+     * estimates the end Date for the current booked mobile breakfast (breakfastDate).</br> 
+     * returns {@code empty} {@link Optional} if no breakfastDate is currently available. </br>
+     * or returns {@link Optional} of a {@link LocalDate} with the first day of the next month.
+     * @return 
      */
     public Optional<LocalDate> getBreakfastEndDate() {
         // MB will only be booked till the month is over
         if (hasBreakfastDate()) {
-            // always the first day of the next month
             return Optional.of(breakfastDate.withDayOfMonth(breakfastDate.lengthOfMonth()).plusDays(1));
         }
         return Optional.empty();

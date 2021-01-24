@@ -88,8 +88,10 @@ public class UserManagement {
 		}
 		return Optional.empty();
 	}
-	/*
-	 * better save companys instead of looping through user to get the company the user is in
+	/**
+	 * returns a {@link Company} of the given employee userId
+	 * @param userId
+	 * @return {@code empty} {@link Optional} if the user is no employee
 	 */
 	public Optional<Company> findCompany(long userId) {
 		for (User user : users.findAll()) {
@@ -100,7 +102,6 @@ public class UserManagement {
 			if (company.get().getEmployees().stream().anyMatch(e -> e.getId() == userId)) {
 				return company;
 			}
-
 		}
 		return Optional.empty();
 	}
@@ -128,8 +129,9 @@ public class UserManagement {
 	}
 
 	/**
-	 * Returns a {@link User} that matches the id
-	 * @return User
+	 * Returns a {@link User} that matches the username
+	 * @param username 
+	 * @return 
 	 */
 	public Optional<User> findUserByUsername(String username) {
 		for(User user: users.findAll()) {
@@ -140,9 +142,6 @@ public class UserManagement {
 		return Optional.empty();
 	}
 
-	/*
-	 * probably not needed when a username is unique
-	 */
 	public Optional<User> findUserByUserAccount(UserAccountIdentifier userAccountId){
 		for(User user: users.findAll()) {
 			if(Objects.equals(user.getUserAccount().getId(), userAccountId)) {
@@ -152,13 +151,6 @@ public class UserManagement {
 		return Optional.empty();
 	} 
 	
-	/*
-	 * shouldnt be in the final version
-	 */
-	public UserRepository getUserRepos() {
-		return users;
-	}
-
 	public void denyAuthenticationById(long userId) {
 		Optional<User> optionalUser= this.findUserById(userId);
 		if(optionalUser.isPresent()) {
@@ -170,9 +162,9 @@ public class UserManagement {
 		}
 	}
 	/**
-	 * books mobile Breakfast for a company
+	 * a {@link User} tries to book mobile Breakfast for a company.
 	 * @param username
-	 * @return
+	 * @return {code true} if the booking was successful
 	 */
 	public boolean bookMobileBreakfast(String username) {
 		Optional<User> user = findUserByUsername(username);

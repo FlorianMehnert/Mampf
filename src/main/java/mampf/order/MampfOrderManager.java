@@ -43,6 +43,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Component;
 
+/**
+ * class to manage {@link MampfOrder}:
+ * 
+ * @author Konstii
+ *
+ */
 @Component
 public class MampfOrderManager {
 
@@ -67,12 +73,14 @@ public class MampfOrderManager {
     }
 
     /**
-     * returns if the given userAccount can book mobile breakfast:
-     * Check if the user-(employee)s company has booked Mobile Breakfast
-     * false if not so
-     *
+     * returns if the user for the given {@link UserAccount} can book mobile breakfast:</br>
+     * <ul>
+     * <li> the user needs to be a employee</li>
+     * <li> the company of the employee should have a available/current breakfast Date</li>
+     * <li> the user should not already have booked mobile breakfast for the available breakfast Date</li>
+     * </ul>
      * @param userAccount
-     * @return
+     * @return {@code true} if the user is able to buy the ordered mobile breakfast, otherwise {@code false}
      */
     public boolean hasBookedMB(UserAccount userAccount) {
 
@@ -99,14 +107,27 @@ public class MampfOrderManager {
     }
 
     /**
+<<<<<<< HEAD
+     * creates Validations for a {@link Map} of {@link Domain} and {@link DomainCart} for a user with {@link userAccount}. </br>
+     * a {@link DomainCart} is valid when:</br>
+     * <ul>
+     * <li>the requested items/employees are available </li>
+     * <li>the cart has a valid start and end-date </li>
+     * </ul>
+     * when a {@link DomainCart} is invalid, the validations will be filled with the fitting {@link String} errormessage
+     *
+     * @param carts the chosen {@link DomainCart} mapped to its {@link Domain}
+     * @param userAccount user which requests to buy the chosen carts
+     * @return validations a new instance of {@link Map} which maps the created errormessages to the fitting {@link DomainCart}
+=======
      * Checks if requested items (cart items)/personal are available for the given
      * time
-     *  checks if MB is in-time
-     *  returns list of validations
+     * checks if MB is in-time
      * (domainspec.), never null
      *
      * @param carts
-     * @return
+     * @return list of validations
+>>>>>>> 3b4b1d24aaad7307921d374aff31282db1dcdff6
      */
     public Map<Item.Domain, List<String>> validateCarts(UserAccount userAccount, Map<Item.Domain, DomainCart> carts) {
         // each domain can have mutliple errormessages:
@@ -118,23 +139,22 @@ public class MampfOrderManager {
         List<DomainCart> baseCarts = new ArrayList<>();
         // init employees:
         Map<Employee.Role, Quantity> baseEmp = new EnumMap<>(Employee.Role.class);
-        for(Employee.Role role : Employee.Role.values())
+        for(Employee.Role role : Employee.Role.values()) {
             baseEmp.put(role, employeeManagement.getEmployeeAmount(role));
-
+        }
         for (Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
             Domain domain = entry.getKey();
             DomainCart cart = entry.getValue();
-            LocalDateTime startDate = cart.getStartDate(), endDate = cart.getEndDate();
-
+            LocalDateTime startDate = cart.getStartDate();
+            LocalDateTime endDate = cart.getEndDate();
             // cart should be updated correctly
             if (startDate == null || endDate == null) {
-                updateValidations(validations, domain, "fehlende zeitangabe");
+                updateValidations(validations, domain, "fehlende zeitangaben");
                 continue;
             }
 
-            // check for MB 'you are too late'-error:
             if (domain.equals(Domain.MOBILE_BREAKFAST) && !hasBookedMB(userAccount)) {
-                updateValidations(validations, domain, "");
+                updateValidations(validations, domain, "nicht mehr aktuell, oder bereits bestellt");
                 continue;
             }
 
@@ -165,13 +185,14 @@ public class MampfOrderManager {
     }
 
     /**
-     * creates orders for the given items (cart items) and saves them in the SP
-     * orderManagement sets personal to the orders
+     * 
+     * creates {@link MampfOrder} for the given carts and saves them in the {@link OrderManagement}</br>
+     * - sets staff to the orders (personal)
      *
-     * @param carts
-     * @param form
+     * @param carts chosen {@link DomainCart} mapped to {@link Domain}
+     * @param form 
      * @param user
-     * @return
+     * @return a new instance of {@link List} of {@link MampfOrder}
      */
     public List<MampfOrder> createOrders(Map<Item.Domain, DomainCart> carts, CheckoutForm form, User user) {
 
@@ -182,7 +203,11 @@ public class MampfOrderManager {
 
             // get Dates:
             LocalDateTime startDate = cart.getStartDate(), endDate = cart.getEndDate();
-
+            String address = form.getAddress(domain);
+            if(address == null || address.isEmpty()) {
+                address = user.getAddress();
+            }
+            
             MampfOrder order;
             if (domain.equals(Domain.MOBILE_BREAKFAST)) {
                 order = createOrderMB(cart.iterator().next(), startDate, endDate, form, user.getUserAccount());
@@ -190,7 +215,7 @@ public class MampfOrderManager {
             } else {
                 // create usual order:
                 order = new EventOrder(user.getUserAccount(), createPayMethod(form.getPayMethod(), user
-                        .getUserAccount()), domain, startDate, endDate, user.getAddress());
+                        .getUserAccount()), domain, startDate, endDate, address);
 
                 cart.addItemsTo(order);
                 if (hasStaff(cart)) {
@@ -213,16 +238,22 @@ public class MampfOrderManager {
     }
 
     /**
-     * creates and returns a "inventory snapshot" (a list of UniqueMampfItems) which
-     * represents the inventory for a given time span calculates the snapshot from
-     * the actual inventory checks every order for ordered items/amount
+     * creates and returns a "inventory snapshot" (a {@link List} of {@link UniqueMampfItems}) 
+     * for a given timespan fromDate - toDate, 'tracking-items' baseInv and baseCarts
+     * 
+     * calculates for every baseInv {@link UniqueMampfItems} item the lasting amount: </br>
+     * <b>return baseInv - bookedItems(timespan) - bookedItems(timespan, baseCarts)</b></br>
+     * <ul>
+     * <li>does not modify any given paramter</li>
+     * <li>there is no amount left when the {@link Quantity} of the {@link UniqueMampfItem} has a value of {@link zero} </li>
+     * <li>items of {@link Inventory} infinity will be ignored</li>
+     * </ul>
+     * @param baseInv a {@link List} of {@link UniqueMampfItems}, the base Inventory
+     * @param baseCarts a {@link List} of {@link DomainCart}, a collection of {@link Item} and {@link Quantity} which will reduce the base Inventory 
      *
-     * @param baseInv
-     * @param baseCarts
-     *
-     * @param fromDate
-     * @param toDate
-     * @return
+     * @param fromDate timespan start
+     * @param toDate timespan end
+     * @return a new instance of {@link List} of {@link UniqueMampfItems}, amount left of baseInv items
      */
     public List<UniqueMampfItem> getFreeItems(List<UniqueMampfItem> baseInv, List<DomainCart> baseCarts, Map<Employee.Role, Quantity> baseEmp,
             LocalDateTime fromDate, LocalDateTime toDate) {
@@ -279,7 +310,14 @@ public class MampfOrderManager {
 
         return res;
     }
-    
+    /**
+     * checks the baseCarts for time-overlapping carts and returns their items </br>
+     * - handling carts as if they were already orders
+     * @param baseCarts already validated {@link DomainCart}
+     * @param fromDate timespan start
+     * @param toDate timespan end
+     * @return a new instance of {@link List} of {@link UniqueMampfItem} every needed items with amount in the given timespan
+     */
     private List<UniqueMampfItem> getBookedItemsFromCart(List<DomainCart> baseCarts, 
             LocalDateTime fromDate, 
             LocalDateTime toDate){
@@ -306,7 +344,12 @@ public class MampfOrderManager {
         }
         return cartItems;
     }
-    
+    /**
+     * subtracts sub from origin according to {@link Quantity} minima ({@code zero})
+     * @param origin 
+     * @param sub
+     * @return origin - sub or {@link Quantity} of {@code zero}
+     */
     private Quantity reduceValidationQuantity(Quantity origin, Quantity sub) {
         if(origin.isEqualTo(Quantity.of(0))) {
             return origin;
@@ -318,21 +361,21 @@ public class MampfOrderManager {
         return origin.subtract(sub);
     }
     /**
-     * creates and returns a list of all ordered items for a time span
+     * creates and returns a list of all ordered items as {@link UniqueMampfItem} for a given timespan
      * 
-     * @param fromDate
-     * @param toDate
-     * @return
+     * @param fromDate timespan start
+     * @param toDate timespan end
+     * @return a new instance of {@link List} of {@link UniqueMampfItem}
      */
     public List<UniqueMampfItem> getBookedItems(LocalDateTime fromDate, LocalDateTime toDate) {
         return convertToInventoryItems(getOrderItems(fromDate, toDate));
     }
 
     /**
-     * converts productidentifiers and quantitys to a list of uniquemampfitems
+     * converts {@link ProductIdentifier} and {@link Quantity} to a list of items
      *
-     * @param itemMap
-     * @return
+     * @param itemMap 
+     * @return a new instance of {@link List} of {@link UniqueMampfItem}
      */
     public List<UniqueMampfItem> convertToInventoryItems(Map<ProductIdentifier, Quantity> itemMap) {
         List<UniqueMampfItem> res = new ArrayList<>();
@@ -346,10 +389,10 @@ public class MampfOrderManager {
     }
 
     /**
-     * creates and returns a list of every Order of a useraccount
+     * creates and returns a list of every {@link MampfOrder} of a {@link UserAccount}
      *
      * @param account
-     * @return
+     * @return a new instance of {@link List} of {@link MampfOrder}
      */
     public List<MampfOrder> findByUserAcc(UserAccount account) {
         List<MampfOrder> res = new ArrayList<>();
@@ -360,7 +403,9 @@ public class MampfOrderManager {
     }
 
     /**
-     * deletes order
+     * deletes a given {@link MampfOrder} from the {@link org.salespointframework.order.OrderManagement}
+     * when order is a {@link EventOrder}, removes {@link Employee} assignments to the given order
+     * @param order 
      */
     public void deleteOrder(MampfOrder order) {
         for (MampfOrder order_ : findAll()) {
@@ -379,7 +424,15 @@ public class MampfOrderManager {
         return orderManagement.findAll(Pageable.unpaged()).filter(order -> order.getId().getIdentifier().equals(
                 orderId)).get().findFirst();
     }
-    
+    /**
+     * returns every order for a given userAccount and timespan</br>
+     * - if the userAccount is {@code empty} every order of every user will be chosen
+     * 
+     * @param userAccount 
+     * @param fromDate timespan start
+     * @param toDate timespan end
+     * @return a {@link Streamable} of {@link MampfOrder}
+     */
     public Streamable<MampfOrder> findByTimeSpan(Optional<UserAccount> userAccount, LocalDateTime fromDate, LocalDateTime toDate){
         Streamable<MampfOrder> orders;
         if(userAccount.isEmpty()) {
@@ -394,18 +447,28 @@ public class MampfOrderManager {
     }
     
     /**
-     * only unit testing purpose
+     * (junit) testing purpose
      *
-     * @return
      */
     public OrderManagement<MampfOrder> getOrderManagement() {
         return orderManagement;
     }
     /**
-     * only (unit) testing purpose
+     * testing purpose
+     */
+    public MampfCatalog getCatalog() {
+        return catalog;
+    }
+    /**
+     * creates, depending on payMethod the correct {@link PaymentMethod}:
+     * <ul>
+     * <li>"{@code Check}" will return a new {@link Cheque} with the Mampf-banking informations</li>
+     * <li>otherwise, returns a new {@link Cash}</li>
+     * </ul> 
+     * @param payMethod a {@link CheckoutForm} attribute
+     * @param userAccount purchaser
      * @return
      */
-    public MampfCatalog getCatalog() {return catalog;}
     private PaymentMethod createPayMethod(String payMethod, UserAccount userAccount) {
         PaymentMethod method = Cash.CASH;
         if (payMethod.equals("Check")) {
@@ -414,15 +477,25 @@ public class MampfOrderManager {
         }
         return method;
     }
-
+    /**
+     * returns if the cart has a {@link CartItem} which has a {@link Item} with category {@link Category.STAFF}
+     * @param cart
+     * @return {@code true} if so, else {@code false}
+     */
     private boolean hasStaff(Cart cart) {
         return (cart.get().anyMatch(cartitem -> ((Item) cartitem.getProduct()).getCategory().equals(
                 Item.Category.STAFF)));
 
     }
-
+    /**
+     * returns every available {@link Employee} for a given timespan, sorted by its {@link Employee.Role}
+     * 
+     * @param startDate timespan start
+     * @param endDate timespan  end
+     * @return a new instace of {@link map} which maps a {@link List} of {@link Employee} to its {@link Employee.Role}
+     */
     private Map<Employee.Role, List<Employee>> getPersonal(LocalDateTime startDate, LocalDateTime endDate) {
-        Map<Employee.Role, List<Employee>> personalLeft = new HashMap<>();
+        Map<Employee.Role, List<Employee>> personalLeft = new EnumMap<>(Employee.Role.class);
 
         for (Employee.Role role : Employee.Role.values()) {
             List<Employee> xcy = employeeManagement.getFreeEmployees(startDate, endDate, role);
@@ -431,7 +504,15 @@ public class MampfOrderManager {
         }
         return personalLeft;
     }
-
+    /**
+     * given a {@link CartItem}, creates a list of {@link CartItem} which have existing catalog-{@link Item}
+     * <li>when the cartitem has a {@link BreakfastMappedItems} as product, the returned 
+     * items will contain {@link BreakfastItem} as product
+     * ({@link BreakfastMappedItems} is not a catalog-{@link Item})</li>
+     * 
+     * @param cartitem to check
+     * @return a new instance of {@link List} of {@link CartItem}
+     */
     private List<CartItem> createCheckItems(CartItem cartitem) {
 
         Item item = ((Item) cartitem.getProduct());
@@ -445,10 +526,15 @@ public class MampfOrderManager {
         }
         return checkitems;
     }
-
-    // checkForAmount returns an empty Optional if the checked quantity is valid
+    /**
+     * checks if the given inventorySnapshot has enough amount left for the requested amount of the requested item
+     * <li>only checks amount if the requested amount is finite</li>
+     * <li>otherwise (the inventorySnapshot has no item of this type, or the amount of the requested amount is infinite) will accept the request</li>
+     * @param inventorySnapshot the calucated available items
+     * @param checkitem requested item and amount 
+     * @return accepts the amount by returning a {@code empty} {@link Optional}, otherwise returns a {@link Optional} of the inventorySnapshot {@link UniqueMampfitem} 
+     */
     private Optional<UniqueMampfItem> checkForAmount(List<UniqueMampfItem> inventorySnapshot, CartItem checkitem) {
-
         Optional<UniqueMampfItem> inventoryItem = inventorySnapshot.stream().filter(i ->
                 i.getProduct().equals(checkitem.getProduct())).findFirst();
         Item catalogItem = ((Item) checkitem.getProduct());
@@ -459,26 +545,14 @@ public class MampfOrderManager {
             (inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity()))){
             return inventoryItem;
         }
-            /*if (catalogItem.getCategory().equals(Category.STAFF)) {
-                // calculate personalAmount:
-                Employee.Role staffType = ((StaffItem) catalogItem).getType();
-                Integer amountLeft = 0;
-                Iterator<UniqueMampfItem> it = inventorySnapshot.stream().filter(i->i.getCategory().equals(Category.STAFF)&&
-                        ((StaffItem)i.getItem()).getType().equals(staffType)).iterator();
-                while(it.hasNext()) {amountLeft+=it.next().getAmount().intValue();}
-
-                if (checkitem.getQuantity().isGreaterThan(Quantity.of(amountLeft))) {
-                    return Optional.of(new UniqueMampfItem(catalogItem, Quantity.of(amountLeft)));
-                }
-
-            } else if(!Inventory.infinity.contains(catalogItem.getCategory())){ // sonarcube logic: 'else if {}' is allowed...
-                if (inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity())) {
-                    return inventoryItem;
-                }
-            }*/
-        //}
         return Optional.empty();
     }
+    /**
+     * sums up every needed items of every (completed) {@link MampfOrder} for a given timespan 
+     * @param fromDate timespan start
+     * @param toDate timespan end
+     * @return a new instance of {@link Map} which maps all needed items as {@link ProductIdentifier} and {@link Quantity}
+     */
 
     private void setPersonalBooked(EventOrder order, Map<Employee.Role, List<Employee>> personalLeft) {
         Item item;

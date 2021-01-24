@@ -59,8 +59,8 @@
 
 <div th:fragment="pay(item)" class="m-card shadow">
   <div class="m-card__section m-card__data m-card__cata-spaced-between">
-    <div class="m-card__title" th:text="${itemName}">Artikelname</div>
-    <div class="m-card__price m-text m-font-color-primary" th:text="${price}"></div>
+    <div class="m-card__title" th:text="${item.product.name}">Artikelname</div>
+    <div class="m-card__price m-text m-font-color-primary" th:text="${item.price}"></div>
   </div>
    <div th:if="${item.product instanceof T(mampf.order.OrderController.BreakfastMappedItems)}" class="m-card__section">
   <div th:replace="fragments/cards::itemDesc(${item.product})">item.productName</div >

@@ -64,11 +64,6 @@ public class UserController {
 		return "register";
 	}
 
-	@GetMapping("/")
-	public String index(Model model) {
-		return "index";
-	}
-
 	@GetMapping("/users")
 	@PreAuthorize("hasRole('BOSS')")
 	public String users(Model model, @RequestParam(required = false) String filter) {

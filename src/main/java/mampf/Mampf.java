@@ -28,7 +28,7 @@ public class Mampf {
 		@Override
 		public void addViewControllers(ViewControllerRegistry registry) {
 			registry.addViewController(LOGIN_ROUTE).setViewName("login");
-			registry.addViewController("/").setViewName("index");
+			registry.addViewController("/").setViewName("catalogIndex");
 		}
 	}
 

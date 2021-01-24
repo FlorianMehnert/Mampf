@@ -8,10 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 public class EmployeeController {
@@ -58,5 +57,25 @@ public class EmployeeController {
 			model.addAttribute("filter", "");
 		}
 		return "employees";
+	}
+
+	@GetMapping("/intern/employees/{id}")
+	public String editEmployee(Model model, @PathVariable long id, RegistrationForm form){
+		model.addAttribute("employee", employeeManagement.searchById(id));
+		model.addAttribute("form", form);
+		return "employee_edit";
+	}
+
+	@PostMapping("/intern/employees/{id}")
+	public String edit(Model model, @PathVariable long id, @ModelAttribute("form") RegistrationForm form){
+		Employee employee = employeeManagement.searchById(id);
+		employeeManagement.editEmployee(employee, form);
+		return "redirect:/intern/employees";
+	}
+
+	@GetMapping("/intern/employees/deleteEmployee/{id}")
+	public String deleteEmployee(@PathVariable long id){
+		employeeManagement.deleteEmployee(id);
+		return "redirect:/intern/employees";
 	}
 }
