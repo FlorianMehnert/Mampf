@@ -1,7 +1,5 @@
 package mampf.user;
 
-import mampf.Util;
-import mampf.catalog.Item;
 import org.salespointframework.useraccount.Role;
 import org.salespointframework.useraccount.UserAccount;
 

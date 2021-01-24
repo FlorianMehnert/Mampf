@@ -1,8 +1,9 @@
 package mampf.user;
 
 import com.mysema.commons.lang.Pair;
-import mampf.Util;
+import org.salespointframework.useraccount.Password;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +11,10 @@ import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -98,11 +100,32 @@ public class UserController {
 
 	@GetMapping("/userDetails/")
 	@PreAuthorize("isAuthenticated()")
-	public String userDetails(Model model, Authentication authentication) {
+	public String userDetails(Model model, Authentication authentication, ChangePasswordForm form) {
 		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
 		if (user.isPresent()) {
 			model.addAttribute("user", user.get());
+			model.addAttribute("form", form);
 			return "userDetails";
+		}
+		return "redirect:/";
+	}
+
+	@PostMapping("/change_password/")
+	@PreAuthorize("isAuthenticated()")
+	public String changePassword(Model model, @Valid @ModelAttribute("form") ChangePasswordForm passwordForm, Errors result, Authentication authentication,
+								 HttpServletRequest httpServletRequest) throws ServletException {
+		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
+		if (!passwordForm.getPassword().equals(passwordForm.getConfirmPassword())) {
+			result.rejectValue("password", "RegistrationForm.password.MotEqual", "Your Passwords don't match!");
+		}
+		if (result.hasErrors()) {
+			model.addAttribute("user", user.get());
+			return "userDetails";
+		}
+		if (user.isPresent()) {
+			userManagement.changePassword(user.get(), Password.UnencryptedPassword.of(passwordForm.getPassword()));
+			httpServletRequest.logout();
+			return "/login";
 		}
 		return "redirect:/";
 	}

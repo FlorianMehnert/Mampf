@@ -21,6 +21,7 @@
     <section>
       <div class="m-padding-bottom m-card-section">
         <div class="m-container-small">
+          <h2 class="m-padding-bottom">Personliche Informationen</h2>
           <div>
             <div class="m-card shadow p-3">
               <table class="table">
@@ -104,6 +105,35 @@
                 </tr>
               </table>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="m-card-section" sec:authorize="!hasRole('BOSS')">
+        <div class="m-container-small">
+          <h2 class="m-padding-bottom">Passwort ändern</h2>
+          <div>
+            <div class="m-card shadow p-3">
+              <form method="post" th:action="@{/change_password/}" role="form" th:object="${form}">
+                <div class="form-group">
+                  <label for="password" th:text="#{register.password}">Password</label>
+                  <input class="form-control" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                         type="text" id="password" name="password" autofocus="autofocus" th:field="*{password}"/>
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="confirmPassword" th:text="#{register.confirmPassword}">confirm Password</label>
+                  <input class="form-control" th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                         type="text" id="confirmPassword" name="confirmPassword" autofocus="autofocus" th:field="*{confirmPassword}"/>
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
+
+                  </div>
+                </div>
+                <input type="submit" class="btn btn-primary float-right">
+              </form>
+            </div>
+
           </div>
 
         </div>

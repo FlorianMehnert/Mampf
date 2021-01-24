@@ -119,6 +119,15 @@ public class UserManagement {
 	}
 
 	/**
+	 *
+	 * @param user 		user to change the password
+	 * @param password  the new password
+	 */
+	public void changePassword(User user, Password.UnencryptedPassword password) {
+		userAccounts.changePassword(user.getUserAccount(), password);
+	}
+
+	/**
 	 * Returns a {@link User} that matches the id
 	 * @return User
 	 */

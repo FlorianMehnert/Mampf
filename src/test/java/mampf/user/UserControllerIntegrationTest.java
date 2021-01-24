@@ -46,6 +46,7 @@ class UserControllerIntegrationTest {
 		map.add("firstname", firstname);
 		map.add("lastname", lastname);
 		map.add("password", password);
+		map.add("confirmPassword", password);
 		map.add("address", address);
 		map.add("email", email);
 		map.add("role", role.name());
@@ -161,6 +162,26 @@ class UserControllerIntegrationTest {
 
 		assertThat(result.getModelAndView().getModel().get("user").toString()).hasToString(user.get().toString());
 	}
+
+	@Test
+	void testChangePassword() throws Exception{
+		Optional<User> user = userManagement.findUserByUsername("hans");
+
+		assertThat(user).isPresent();
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("password","hallo1234");
+		map.add("confirmPassword","hallo1234");
+
+		mvc.perform(get("/userDetails/").with(user("hans"))
+				.params(map))
+				.andExpect(view().name("userDetails"));
+
+		mvc.perform(post("/change_password/").with(user("hans"))
+				.params(map))
+				.andExpect(view().name("/login"));
+	}
+
 
 	@Test
 	void testGetProfileAsBoss() throws Exception{
