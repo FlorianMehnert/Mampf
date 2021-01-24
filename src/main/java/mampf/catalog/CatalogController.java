@@ -4,6 +4,7 @@ import mampf.Util;
 import mampf.catalog.Item.Domain;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
+import mampf.lib.Days;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.javamoney.moneta.Money;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -204,6 +206,7 @@ public class CatalogController {
 		}
 		model.addAttribute("categories", reorganizedItems);
 		model.addAttribute("domainTitle", "Mobile Breakfast");
+		model.addAttribute("days", Days.values());
 		return "mobile-breakfast";
 	}
 

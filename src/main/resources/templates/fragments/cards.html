@@ -18,19 +18,19 @@
 
 <!-- showing BreakfastMappedItems descriptions-->
 <div th:fragment="itemDesc(product)" th:remove="tag">
-<div class="m-card__desc m-text" th:text="${product.description}">ItemDesc</div>
-<div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.Util).renderWeekDays(product.weekDays)}">
-</div>
-<div class="m-card__desc m-text" th:text="'Uhrzeit:  '+${product.breakfastTime}">ItemDesc</div>
+  <div class="m-card__desc m-text" th:text="${product.description}">ItemDesc</div>
+  <div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.Util).renderWeekDays(product.weekDays)}">
+  </div>
+  <div class="m-card__desc m-text" th:text="'Uhrzeit:  '+${product.breakfastTime}">ItemDesc</div>
 </div>
 
 <div th:fragment="cart(item, hideForm)" class="m-card shadow">
   <div class="m-card__section m-card__data m-card__cata-spaced-between">
     <div class="m-card__title" th:text="${item.productName}">item.productName</div>
-	<div class="m-card__item.price m-text m-font-color-primary" th:text="${item.price}">Itemitem.price</div>
+    <div class="m-card__item.price m-text m-font-color-primary" th:text="${item.price}">Itemitem.price</div>
   </div>
   <div th:if="${item.product instanceof T(mampf.order.OrderController.BreakfastMappedItems)}" class="m-card__section">
-  <div th:replace="fragments/cards::itemDesc(${item.product})">item.productName</div >
+    <div th:replace="fragments/cards::itemDesc(${item.product})">item.productName</div>
   </div>
   <div class="m-card__section m-card__actions">
     <form th:unless="${hideForm}" method="post" th:action="@{/cart/setNewAmount}">
@@ -62,10 +62,10 @@
     <div class="m-card__title" th:text="${item.product.name}">Artikelname</div>
     <div class="m-card__price m-text m-font-color-primary" th:text="${item.price}"></div>
   </div>
-   <div th:if="${item.product instanceof T(mampf.order.OrderController.BreakfastMappedItems)}" class="m-card__section">
-  <div th:replace="fragments/cards::itemDesc(${item.product})">item.productName</div >
+  <div th:if="${item.product instanceof T(mampf.order.OrderController.BreakfastMappedItems)}" class="m-card__section">
+    <div th:replace="fragments/cards::itemDesc(${item.product})">item.productName</div>
   </div>
-   
+
   <div class="m-card__section m-card__actions">
     <div class="input-group">
       <h4 th:text="'Anzahl: ' + ${item.quantity.amount}"></h4>
@@ -99,22 +99,24 @@
   </div>
   <div class="m-card__section m-flex-wrap m-flex-basis">
     <div class="m-margin-right m-flex-item-40" th:each="orderLine : ${_order.getOrderLines()}">
-      <div th:replace="fragments/cards::orderItem(${orderLine.productName}, ${orderLine.quantity}, ${orderLine.productIdentifier})"></div>
+      <div
+        th:replace="fragments/cards::orderItem(${orderLine.productName}, ${orderLine.quantity}, ${orderLine.productIdentifier})">
+      </div>
     </div>
   </div>
   <div class="m-card__section">
-  <div class="container-fluid">
-  <div th:if="${_order instanceof T(mampf.order.MBOrder)}" class="m-card__section" th:remove="tag">
- 	<div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.Util).renderWeekDays(_order.weekDays)}">
-	</div>
-	<div class="m-card__desc m-text" th:text="'Uhrzeit:  '+${_order.time}">ItemDesc</div>
-	  
-  </div>
-	  <h4 th:text="'Summe: '+${_order.getTotal()}"></h4>
-	  <th:block th:each=" payData : ${_order.getPayMethod()}">
-	  	<div class="m-text-small" th:text="${payData.key}+' : '+${payData.value}">OrderName</div>
-	   </th:block>
-  </div>
+    <div class="container-fluid">
+      <div th:if="${_order instanceof T(mampf.order.MBOrder)}" class="m-card__section" th:remove="tag">
+        <div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.Util).renderWeekDays(_order.weekDays)}">
+        </div>
+        <div class="m-card__desc m-text" th:text="'Uhrzeit:  '+${_order.time}">ItemDesc</div>
+
+      </div>
+      <h4 th:text="'Summe: '+${_order.getTotal()}"></h4>
+      <th:block th:each=" payData : ${_order.getPayMethod()}">
+        <div class="m-text-small" th:text="${payData.key}+' : '+${payData.value}">OrderName</div>
+      </th:block>
+    </div>
   </div>
   <div sec:authorize="hasRole('BOSS')" class="m-card__section m-card__actions m-flex-flex-end">
     <a th:href="'/orders/detail/'+${order.id}" class="btn btn-primary m-card__add">
@@ -129,3 +131,36 @@
 
   </div>
 </div>
+
+
+<div th:fragment="breakfast(item)" class="m-card shadow">
+  <div class="m-card__section m-card__data m-flex-column">
+    <div class="m-card__title" th:text="${item.name}">Artikelname</div>
+  </div>
+  <div class="m-card__section">
+    <div class="mmpf-choosable-wrapper">
+      <input class="mmpf-choosable-input" type="radio" th:name="${category.key.toLowerCase()}" th:id="${item.name}"
+        th:value="${item.id}">
+      <label class="mmpf-choosable" th:for="${item.name}">
+      </label>
+      <div class="mmpf-choosable-checkmark"><i class="fas fa-check"></i></div>
+    </div>
+  </div>
+</div>
+
+
+<div th:fragment="checkbox(id, name, label, value)" class="m-card shadow">
+  <div class="m-card__section m-card__data m-flex-column">
+    <div class="m-card__title" th:text="${label}">Artikelname</div>
+  </div>
+  <div class="m-card__section">
+    <div class="mmpf-choosable-wrapper">
+      <input class="mmpf-choosable-input" type="checkbox" th:name="${name}" th:id="${id}"
+        th:value="${value}">
+      <label class="mmpf-choosable" th:for="${name}">
+      </label>
+      <div class="mmpf-choosable-checkmark"><i class="fas fa-check"></i></div>
+    </div>
+  </div>
+</div>
+
