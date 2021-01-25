@@ -18,7 +18,7 @@ Die individuell erfasste Zeit beinhaltet auch das Lesen von Dokumentationen, Bes
 |9  |15 Stunden   |12 Stunden    |8 Stunden    |10 Stunden    |…    |0,75 Stunden
 |10  |…   |10 Stunden    |8 Stunden    |10 Stunden    |…    |1,25 Stunden
 |11  |…   |13 Stunden    |10 Stunden    |12 Stunden    |…    |1 Stunden
-|12  |…   |…    |…    |…    |…    |…
+|12  |…   |…    |…    |…    |…    |0,5 Stunden
 |===
 
 Bitte tragen Sie am Ende des Praktikums noch folgende weitere Werte ein:

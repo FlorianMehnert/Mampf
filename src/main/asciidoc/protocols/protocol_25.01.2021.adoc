@@ -1,0 +1,44 @@
+= Protokoll Gruppe 10
+
+Treffen am 25.01.2020
+
+Ort:      Online BigBlueButton +
+Beginn:   16:40 Uhr +
+Ende:     17:10 Uhr
+
+__Schriftführer:__ Florian Hauptmann
+
+__Teilnehmer:__
+//Tabellarisch oder Aufzählung, Kennzeichnung von Teilnehmern mit besonderer Rolle (z.B. Kunde)
+
+- Leonard Herbst (Product Owner)
+- Konstantin Holzweißig
+- Florian Hauptmann (Protokollant)
+- Florian Mehnert (Scrum Master)
+- Patricia Crespo
+- Yannik Weber
+
+== Bemerkungen
+* Programm sollte noch stabilisieren
+* Entwicklerdoku vervollständigen, Texte auch
+* JavaDoc vervollständigen
+* Abgabe der Dokumentationen am 31.01. 23.59 Uhr
+* Bis 03.02. kann aber noch gearbeitet werden (Codeänderung)
+
+* Sonarcube muss noch verbessert werdeb
+* Zeiterfassung noch nachholen
+
+* Umfrage 1 ausfüllen bis zum Beginn der Präsentation (wird heute Abend geschickt)
+* Umfrage 2 Do 28.01. 16.40 Uhr - Verbesserungsvorschläge
+
+== Aktueller Stand
+- Florian Hauptmann: CodeSmells beseitigen, Template in Bestellungen für MB anpassen
+- Florian Mehnert: UML anpassen, Issues fixen die noch da sind
+- Patricia Crespo: Employees die gelöscht werden sollen prüfen ob in der Zukunft gebucht, Employees filten, JavaDoc
+- Konstantin Holzweißig: UML updaten
+- Yannik Weber: Issues noch bearbeiten
+
+
+
+
+
