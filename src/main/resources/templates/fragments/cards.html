@@ -36,7 +36,7 @@
     <form th:unless="${hideForm}" method="post" th:action="@{/cart/setNewAmount}">
       <div class="input-group">
         <input type="hidden" name="cartItemId" th:value="${item.id}" />
-        <input class="form-control" type="number" name="newAmount" th:value="${item.quantity.amount}">
+        <input class="form-control" min=1 type="number" name="newAmount" th:value="${item.quantity.amount}">
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="submit">
             <i class="fas fa-redo"></i> Aktualisieren
