@@ -16,8 +16,8 @@ Die individuell erfasste Zeit beinhaltet auch das Lesen von Dokumentationen, Bes
 |7  |12 Stunden   |12 Stunden   |8 Stunden    |25 Stunden    |9 Stunden   |0,75 Stunden
 |8  |10 Stunden   |3 Stunden    |7 Stunden    |25 Stunden    |...    |1 Stunden
 |9  |15 Stunden   |12 Stunden    |8 Stunden    |10 Stunden    |…    |0,75 Stunden
-|10  |…   |10 Stunden    |8 Stunden    |10 Stunden    |…    |1,25 Stunden
-|11  |…   |13 Stunden    |10 Stunden    |12 Stunden    |…    |1 Stunden
+|10  |9 Stunden   |10 Stunden    |8 Stunden    |10 Stunden    |…    |1,25 Stunden
+|11  |10 Stunden   |13 Stunden    |10 Stunden    |12 Stunden    |…    |1 Stunden
 |12  |…   |…    |…    |…    |…    |0,5 Stunden
 |===
 
