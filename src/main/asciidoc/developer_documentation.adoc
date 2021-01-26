@@ -195,7 +195,10 @@ image:images/diagrams/ui-diagram.png[ui diagram]
 |salespointframework.catalog
 a| * catalog.Item
 * catalog.Catalog
-* order.OrderController
+* order.MampfOrderManager
+* order.EventOrder
+* order.MampfOrder
+* order.MBOrder
 
 | salespointframework.core
 a| * catalog.CatalogInitializer
@@ -207,19 +210,34 @@ a| * catalog.CatalogInitializer
 a| * catalog.CatalogController
 * inventory.InventoryController
 * inventory.InventoryInitializer
+* order.MampfOrderManager
 
 | salespointframework.order
 a| * order.OrderController
+* order.MampfOrderManager
+* order.MampfOrder
+* order.MampfCart
+* order.EventOrder
 * catalog.Item
 * mampf.employee.EmployeeManager
 
 | salespointframework.payment
-a| * order.OrderController
+a| * order.MampfOrderManager
+* order.EventOrder
+* order.MampfOrder
+* order.MBOrder
+* order.MampfOrderManager
 
 | salespointframework.quantity
 a| * catalog.CatalogController
 * inventory.InventoryInitializer
 * order.OrderController
+* order.EventOrder
+* order.MampfOrderManager
+* order.MampfCart
+* order.MampfOrder
+* order.MBOrder
+
 
 | salespointframework.SalespointSecurityConfiguration
 a| * mampf.WebSecurityConfiguration
@@ -232,7 +250,12 @@ a| * user.User
 * user.UserDataInitializer
 * user.UserManagement
 * order.OrderController
+* order.EventOrder
+* order.MampfOrderManager
+* order.MampfOrder
+* order.MBOrder
 
+//------------
 | springframework.boot
 a| * mampf.Mampf
 
@@ -240,9 +263,16 @@ a| * mampf.Mampf
 a| * catalog.Catalog
 * user.UserManagement
 * user.UserRepository
+* order.MampfOrderManager
+
+| springframework.stereotype
+a| * order.MampfOrderManager
+* order.OrderController
+
 
 | springframework.security
 a| * mampf.WebSecurityConfiguration
+* order.OrderController
 
 | springframework.ui
 a| * catalog.CatalogController
@@ -258,9 +288,11 @@ a| * user.UserController
 
 | springframework.validation
 a| * user.UserController
+* order.OrderController
 
 | springframework.web
 a| * mampf.MampfWebConfiguration
+* order.OrderController
 
 |===
 
@@ -334,12 +366,14 @@ image:images/diagrams/package_order.svg[pkg order building block diagram]
 [options="header"]
 |===
 |Klasse/Enumeration |Description
-| OrderController | Ein Spring MVC Controller.
-| MampfOrderManager | Eine Komponente zum managen (z.b. erstellen und validieren)von Bestellungen `MampfOrder`
-| MampfOrder | Eine Erweiterung von der Salespoint `Order`, um einzelne Mampf Bestellungen zu verwalten.
-| ValitationState | Enumeration welche eine fehlerhafte validieren von Bestellungen repräsentieren kann.
-| MampfCart | Eine Sessionkomponente des `OrderController` um einzelne `Item` zu verwalten.
-| MampfDate | repräsentiert zeitliche Komponente einer `MampfOrder`.
+| OrderController | Ein Spring MVC Controller. Ermöglicht das managen eines Warenkorbs (`MampfCart`) und managet den Kaufprozess eines Warenkorbs. Außerdem managet dieser das Anzeigen von Bestellungen.
+| MampfOrderManager | Eine Komponente zum managen (z.b. erstellen und validieren)von Bestellungen `MampfOrder` .
+| MampfOrder | Eine Erweiterung von der Salespoint `Order` , welche eine Basisklasse für Bestellungen  von Mampf repräsentiert. Mampf-Bestellungen besitzen außerdem eine start und end Zeit.
+| MBOrder | Eine `MampfOrder` Erweiterung welche eine Bestellung für ein Mobile Breakfast repräsentiert. Eine Mobile Breakfast Bestellung hat mehrere einzelne Frühstückstermine welche sich aus den gegeben Informationen über `getItems` berechenen lassen.
+| EventOrder | Eine `MampfOrder` Erweiterung welche eine Bestellung für die Eventcategorien PartyService, Eventcatering und Rent-a-Cook repräsentiert. `EventOrder` können `Employee` zugewiesen werden. Der Preis einer solchen Bestellung ist dabei abhängige von der gegebenen start und end Zeit der Bestellung.
+| MampfCart | Eine Sessionkomponente des `OrderController` um warenkorbitems zu verwalten. 
+verwaltet `DomainCart` s.
+|DomainCart| Eine Erweiterung von Salepoint `Cart` . `CartItem` s können einen fixen, aber auch einen stundenpreis besitzen, deswegen besitzt jede `DomainCart` eine start und end Zeit, um den Preis abhängig von einer eventuell gegebenen Zeitspanne berechnen zu können.
 | BreakfastMappedItems | stellt eine Mobile Breakfast - Itemauswahl im Warenkorb `MampfCart` dar.
 | CheckoutForm | Spring Komponente, Formular für auswahl Zahlmethode,Datum,Uhrzeit.
 | MobileBreakfastForm | Spring Komponente, Formular für auswahl des Mobile Breakfast Angebotes im Katalog.

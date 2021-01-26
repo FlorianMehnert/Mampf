@@ -19,7 +19,7 @@
 <!-- showing BreakfastMappedItems descriptions-->
 <div th:fragment="itemDesc(product)" th:remove="tag">
   <div class="m-card__desc m-text" th:text="${product.description}">ItemDesc</div>
-  <div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.Util).renderWeekDays(product.weekDays)}">
+  <div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.lib.Days).getFullNames(product.weekDays)}">
   </div>
   <div class="m-card__desc m-text" th:text="'Uhrzeit:  '+${product.breakfastTime}">ItemDesc</div>
 </div>
@@ -107,7 +107,7 @@
   <div class="m-card__section">
     <div class="container-fluid">
       <div th:if="${_order instanceof T(mampf.order.MBOrder)}" class="m-card__section" th:remove="tag">
-        <div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.Util).renderWeekDays(_order.weekDays)}">
+        <div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.lib.Days).getFullNames(_order.weekDays)}">
         </div>
         <div class="m-card__desc m-text" th:text="'Uhrzeit:  '+${_order.time}">ItemDesc</div>
 

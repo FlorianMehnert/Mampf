@@ -149,11 +149,12 @@ public class CheckoutForm {
 	
 	public List<Item.Domain> getDomains() {
 		List<Item.Domain> domains = new ArrayList<>();
+		if(allStartDates != null) {
 		for (Item.Domain domain: Item.Domain.values()){
 			if(allStartDates.containsKey(domain.name())) {
 				domains.add(domain);
 			}
-		}
+		}}
 		return domains;
 	}
 
