@@ -45,7 +45,7 @@ public class RevenueController {
 
 		List<MampfOrder> ordersPerItem = mampfOrderManager.findAll();
 
-		Map<Product, Pair<Quantity, MonetaryAmount>> gains = new HashMap<>();
+		Map<Item, Pair<Quantity, MonetaryAmount>> gains = new HashMap<>();
 
 		/*
 		 * we calculate the sum of each Product that we sold in the given time
@@ -72,7 +72,7 @@ public class RevenueController {
 		return "revenue";
 	}
 
-	private void calculateSumPerOrderLine(OrderLine orderLine, Map<Product, Pair<Quantity, MonetaryAmount>> gains) {
+	private void calculateSumPerOrderLine(OrderLine orderLine, Map<Item, Pair<Quantity, MonetaryAmount>> gains) {
 		Optional<Item> product = catalog.findById(orderLine.getProductIdentifier());
 		if(product.isPresent()) {
 			if(gains.containsKey(product.get())) {

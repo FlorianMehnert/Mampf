@@ -42,8 +42,8 @@
         <tr th:each="gain : ${gains}">
 
             <td th:text="${gain.key.getName()}"></td>
-            <td th:text="${gain.key.getCategories().toList()}"></td>
-            <td th:text="${gain.key.price}" class="text-left">name</td>
+            <td th:text="${T(mampf.catalog.Item).categoryTranslations.get(gain.key.getCategory().toString())}"></td>
+            <td th:text="${gain.key.getPrice()}" class="text-left">name</td>
             <td th:text="${{gain.value.first}}" class="text-left">quantity</td>
             <td th:text="${{gain.value.second.multiply(gain.value.first.getAmount())}}" class="text-left">quantity</td>
         </tr>
