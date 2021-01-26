@@ -67,7 +67,7 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/intern/employees/{id}")
-	public String edit(Model model, @PathVariable long id, @ModelAttribute("form") RegistrationForm form){
+	public String edit(@PathVariable long id, @ModelAttribute("form") RegistrationForm form){
 		Employee employee = employeeManagement.searchById(id);
 		employeeManagement.editEmployee(employee, form);
 		return "redirect:/intern/employees";

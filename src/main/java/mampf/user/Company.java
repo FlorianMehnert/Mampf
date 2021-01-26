@@ -3,11 +3,6 @@ package mampf.user;
 import net.bytebuddy.utility.RandomString;
 
 import javax.persistence.*;
-
-import com.google.common.annotations.VisibleForTesting;
-
-import mampf.order.EventOrder;
-
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

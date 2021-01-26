@@ -358,6 +358,17 @@ und mehreren Regeln bezüglich der Quantitäten der einzelnen Gegenstände initi
 
 |===
 
+=== Revenue
+[[pkg_revenue_building_block_diagram]]
+image:images/diagrams/package_revenue.svg[pkg revenue building block diagram]
+
+[options="header"]
+|===
+|Klasse/Enumeration |Description
+| InventoryController | Diese Klasse ist ein Spring-Controller, der die Requests zum filtern und anzeigen der Umsätze in einer bestimmten Zeitspanne bearbeitet.
+
+|===
+
 === Order
 
 [[pkg_order_building_block_diagram]]
@@ -372,7 +383,7 @@ image:images/diagrams/package_order.svg[pkg order building block diagram]
 | MBOrder | Eine `MampfOrder` Erweiterung welche eine Bestellung für ein Mobile Breakfast repräsentiert. Eine Mobile Breakfast Bestellung hat mehrere einzelne Frühstückstermine welche sich aus den gegeben Informationen über `getItems` berechenen lassen.
 | EventOrder | Eine `MampfOrder` Erweiterung welche eine Bestellung für die Eventcategorien PartyService, Eventcatering und Rent-a-Cook repräsentiert. `EventOrder` können `Employee` zugewiesen werden. Der Preis einer solchen Bestellung ist dabei abhängige von der gegebenen start und end Zeit der Bestellung.
 | MampfCart | Eine Sessionkomponente des `OrderController` um warenkorbitems zu verwalten. 
-verwaltet `DomainCart` s.
+verwaltet `DomainCart` s.s
 |DomainCart| Eine Erweiterung von Salepoint `Cart` . `CartItem` s können einen fixen, aber auch einen stundenpreis besitzen, deswegen besitzt jede `DomainCart` eine start und end Zeit, um den Preis abhängig von einer eventuell gegebenen Zeitspanne berechnen zu können.
 | BreakfastMappedItems | stellt eine Mobile Breakfast - Itemauswahl im Warenkorb `MampfCart` dar.
 | CheckoutForm | Spring Komponente, Formular für auswahl Zahlmethode,Datum,Uhrzeit.
