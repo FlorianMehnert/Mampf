@@ -6,7 +6,6 @@ import mampf.catalog.MampfCatalog;
 import mampf.order.MampfOrder;
 import mampf.order.MampfOrderManager;
 import org.javamoney.moneta.Money;
-import org.salespointframework.catalog.Product;
 import org.salespointframework.order.OrderLine;
 import org.salespointframework.quantity.Quantity;
 import org.springframework.data.util.Pair;
@@ -33,6 +32,16 @@ public class RevenueController {
 		this.mampfOrderManager = mampfOrderManager;
 		this.catalog = catalog;
 	}
+
+
+	/**
+	 * Calculates the sum of each Product that got sold in the given time and hands over a list with all Products
+	 * and their corresponding Quantity + Monetary Amount. The Start- and EndDateString are also transmitted.
+	 * @param model used to transmit
+	 * @param startDateString StartDate for the filter function
+	 * @param endDateString EndDate for the filter function
+	 * @return /revenue
+	 */
 
 	@GetMapping("/revenue")
 	@PreAuthorize("hasRole('BOSS')")
@@ -72,6 +81,12 @@ public class RevenueController {
 		return "revenue";
 	}
 
+	/**
+	 * used in showRevenue to calculate a list of products and their corresponding Quantity + MonetaryAmounts
+	 * @param orderLine required to extract orderLine information from
+	 * @param gains puts extracted information in gains
+	 */
+
 	private void calculateSumPerOrderLine(OrderLine orderLine, Map<Item, Pair<Quantity, MonetaryAmount>> gains) {
 		Optional<Item> product = catalog.findById(orderLine.getProductIdentifier());
 		if(product.isPresent()) {
@@ -88,10 +103,26 @@ public class RevenueController {
 		}
 	}
 
+	/**
+	 * checks wheater a given LocalDate {@param dateToCheck} is between {@param startDate} and {@param endDate}
+	 * @param dateToCheck date which should be checked for
+	 * @param startDate the date which lies furthest in the past
+	 * @param endDate the date which lies furthest in the future
+	 * @return true when {@param dateToCheck} is between {@param startDate} and {@param endDate}
+	 */
+
 	private static boolean dateIsInBorders(LocalDate dateToCheck, LocalDate startDate, LocalDate endDate) {
 		return (startDate.isBefore(dateToCheck) || startDate.isEqual(dateToCheck))
 				&& (endDate.isEqual(dateToCheck) || endDate.isAfter(dateToCheck));
 	}
+
+	/**
+	 * takes String and converts it to a LocalDate
+	 * @param dateString input String
+	 * @param isStartDate determins weather the output for a wrong dateString parsing is the momentary time or
+	 *                    now plus one month
+	 * @return parsed LocalDate
+	 */
 
 	private LocalDate parseDateStringIntoLocalDate(String dateString, boolean isStartDate) {
 		if(dateString == null) {

@@ -14,6 +14,12 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 	List<String> infinityStrings = List.of("unendlich", "infinity", "-1", "unbegrenzt", "unlimited");
 
+
+	/**
+	 * iterates through all Items in Inventory and returns matches by name
+	 * @param name String which is the matching parameter
+	 * @return UniqueMampfItem when there is a match or Optional.empty() for no match
+	 */
 	default Optional<UniqueMampfItem> findByName(String name) {
 		if (name != null) {
 			for (UniqueMampfItem item : this.findAll()) {

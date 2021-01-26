@@ -26,6 +26,14 @@ public class InventoryController {
 	}
 
 
+	/**
+	 * changes the Quantity of already existing UniqueMampfItems in the inventory
+	 * @param item the items which amount should be altered
+	 * @param number always positive
+	 * @param neg used to determine between negative and positive inputs
+	 * @param redirectAttributes used to store ErrorMessages
+	 * @return inventory/amount
+	 */
 	@PostMapping("/inventory/add")
 	@PreAuthorize("hasRole('BOSS')")
 	public String add(@RequestParam("item") Item item,
@@ -65,6 +73,13 @@ public class InventoryController {
 		return "redirect:/inventory/amount";
 	}
 
+	/**
+	 * used to filter for specific Items based on {@param type} and {@param word}
+	 * @param model
+	 * @param word String which will be filtered for
+	 * @param type category of the inventory in which to filter
+	 * @return /inventory with a filtered item list
+	 */
 	@GetMapping("inventory/filter")
 	@PreAuthorize("hasRole('BOSS')")
 	public String look(Model model, @RequestParam(required = false) String word, @RequestParam("type") String type){
@@ -89,6 +104,12 @@ public class InventoryController {
 		return "inventory";
 	}
 
+	/**
+	 * reorders elements in inventory view
+	 * @param model
+	 * @param path type of reordering
+	 * @return /inventory
+	 */
 	@GetMapping("inventory/{path}")
 	@PreAuthorize("hasRole('BOSS')")
 	public String sortByPath(Model model, @PathVariable String path) {
@@ -114,6 +135,11 @@ public class InventoryController {
 		return name;
 	}
 
+	/**
+	 * defaulting for inventory
+	 * @param model
+	 * @return /inventory sorted by name
+	 */
 	@GetMapping("/inventory")
 	@PreAuthorize("hasRole('BOSS')")
 	public String inventory(Model model) {
