@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import mampf.user.Company;
 import mampf.user.User;
 import mampf.user.UserManagement;
 import mampf.user.UserController;
@@ -30,6 +31,7 @@ import mampf.catalog.BreakfastItem;
 import mampf.inventory.Inventory;
 import mampf.inventory.UniqueMampfItem;
 import mampf.order.MampfCart.DomainCart;
+import mampf.order.OrderController.BreakfastMappedItems;
 
 import org.salespointframework.quantity.Quantity;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -153,10 +155,22 @@ class MampfOrderManagerTests {
 
         d = catalog.findByDomain(Domain.MOBILE_BREAKFAST);
 
-        orderController.orderMobileBreakfast(Optional.of(initMB().getUserAccount()), new MobileBreakfastForm(
-                (BreakfastItem) d.stream().filter(p -> p.getName().equals("Kuchen")).findFirst().get(),
-                (BreakfastItem) d.stream().filter(p -> p.getName().equals("Tee")).findFirst().get(), "true", "true",
-                "false", "true", "true", LocalTime.of(7, 30).format(DateTimeFormatter.ISO_LOCAL_TIME)), cart, null);
+        //orderController.orderMobileBreakfast can only add valid mobilebreakfast orders
+        //but for making sure that there can be a breakfastmappeditems instance, the object needs to be added manuell to the cart
+        User user = initMB();
+        Optional<Company> company = userManager.findCompany(user.getId());
+        LocalDateTime startDate = LocalDateTime.of(company.get().getBreakfastDate().get(), LocalTime.of(0, 0));
+        LocalDateTime endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(), LocalTime.of(0, 0));
+        
+        BreakfastMappedItems mbItem = orderController.new BreakfastMappedItems(startDate, endDate, 
+                userManager.findUserById(company.get().getBossId()).get().getAddress(),
+                new MobileBreakfastForm(
+                        (BreakfastItem) d.stream().filter(p -> p.getName().equals("Kuchen")).findFirst().get(),
+                        (BreakfastItem) d.stream().filter(p -> p.getName().equals("Tee")).findFirst().get(), "true", "true",
+                        "false", "true", "true", LocalTime.of(7, 30).format(DateTimeFormatter.ISO_LOCAL_TIME)));
+        
+        cart.addToCart(mbItem, Quantity.of(mbItem.getAmount()));
+        cart.updateMBCart(startDate, endDate);
 
         d = catalog.findByDomain(Domain.PARTYSERVICE);
         orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.SPECIAL_OFFERS) && p.getName()
