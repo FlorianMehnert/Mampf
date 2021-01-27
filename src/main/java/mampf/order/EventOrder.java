@@ -8,6 +8,7 @@ import mampf.employee.Employee;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -77,6 +78,10 @@ public class EventOrder extends MampfOrder {
 					  String adress) {
 		super(account, paymentMethod,domain,startDate,endDate,adress);
 
+	}
+
+	public int durationOfEvent() {
+		return this.getEndDate().minusHours(this.getStartDate().toLocalTime().getHour()).getHour();
 	}
 	
 	/**

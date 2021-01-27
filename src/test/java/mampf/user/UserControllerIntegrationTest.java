@@ -151,6 +151,15 @@ class UserControllerIntegrationTest {
 	}
 
 	@Test
+	void testFilterUsers() throws Exception{
+		mvc.perform(get("/users?filter=hans").with(user("hansWurst").roles("BOSS")))
+				.andExpect(view().name("users"))
+				.andExpect(model().attribute("pairs", Matchers.hasSize(2)));
+
+	}
+
+
+	@Test
 	void testGetProfile() throws Exception{
 		Optional<User> user = userManagement.findUserByUsername("hans");
 

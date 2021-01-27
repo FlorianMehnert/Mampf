@@ -3,7 +3,6 @@ package mampf.user;
 import com.mysema.commons.lang.Pair;
 import org.salespointframework.useraccount.Password;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +38,9 @@ public class UserController {
 				result.rejectValue("email", "RegistrationForm.email.exists", "This E-Mail is already taken!");
 			}
 		}
-		if(form.getRole().equals("EMPLOYEE") && (form.getAccessCode().length() != 6 || userManagement.findCompany(form.getAccessCode()).isEmpty()) ) {
+		if(form.getRole().equals("EMPLOYEE")
+				&& (form.getAccessCode().length() != 6 || userManagement.findCompany(form.getAccessCode()).isEmpty())
+		) {
 			result.rejectValue("accessCode", "RegistrationForm.accessCode.wrong","You've entered an incorrect access code!");
 		}
 		if (form.getRole().equals("COMPANY") && form.getCompanyName().length() == 0) {
