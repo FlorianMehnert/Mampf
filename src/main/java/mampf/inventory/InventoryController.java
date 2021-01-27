@@ -40,21 +40,26 @@ public class InventoryController {
 					  @RequestParam("number") String number,
 					  @RequestParam ("negate") String neg,
 					  RedirectAttributes redirectAttributes){
-		int convNumber;
+		int convNumber = 0;
 		String error = "error";
+		boolean inputError = false;
 		if(number.equals("")){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht leer sein!");
-			return "redirect:/inventory/add";
+			inputError = true;
 		} else if (Integer.parseInt(number) < 0){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht negativ sein!");
-			return "redirect:/inventory/add";
+			inputError = true;
 		} else if (number.length() > 4){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht größer als 9999 sein!");
-			return "redirect:/inventory/add";
-		}
-		else{
+			inputError = true;
+		} else{
 			convNumber = Integer.parseInt(number);
 		}
+
+		if(inputError){
+			return "redirect:/inventory/add";
+		}
+
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
 		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
 		if (!Inventory.infinity.contains(currentItem.getCategory()) || currentItem.getCategory() != Item.Category.STAFF) {

@@ -65,7 +65,7 @@ public class OrderController {
          * 
          * @param startDate a {@link LocalDateTime}, a breakfast date of a {@link Company}
          * @param endDate a {@link LocalDateTime}, a breakfastEnd date of a {@link Company}
-         * @param adress a {@link String}, a adress of a {@link Company}
+         * @param address a {@link String}, a adress of a {@link Company}
          * @param form contains information about the chosen mobile breakfast informations
          */
         public BreakfastMappedItems(LocalDateTime startDate, LocalDateTime endDate,
@@ -138,7 +138,7 @@ public class OrderController {
      * @param item the item which will be added to the {@link MampfCart} 
      * @param number the amount which will be added to the {@link MampfCart} 
      * @param mampfCart 
-     * @return
+     * @return /catalog
      */
     @PostMapping("/cart")
     public String addItem(@RequestParam("pid") Item item, @RequestParam("number") int number,
@@ -197,14 +197,17 @@ public class OrderController {
     /**
      * handles ordering mobile breakfast.</br>
      * when ordering mobile breakfast, a new instance of {@link BreakfastMappedItems} can be added to the mampfCart.</br>
-     * {@link BreakfastMappedItems} contains (nearly)all informations about the ordered mobile breakfast, which is needed when creating the actual order from the cart items.</br>
+     * {@link BreakfastMappedItems} contains (nearly)all informations about the ordered mobile breakfast,
+	 * which is needed when creating the actual order from the cart items.</br>
      * when trying to order a new mobile breakfast, there are many errors which can occur:
      * <ul>
      * <li>invalid form</li> 
      * <li>the {@link User} of the userAccount is no employee</li>
      * <li>the {@link Company} of the employee has not booked Mobile Breakfast</li>
-     * <li>the {@link Company} of the employee has booked Mobile Breakfast, but the booking date is no longer available</li>
-     * <li>the {@link Company} of the employee has booked Mobile Breakfast, but the employee has already ordered a mobile breakfast</li>
+     * <li>the {@link Company} of the employee has booked Mobile Breakfast,
+	 * but the booking date is no longer available</li>
+     * <li>the {@link Company} of the employee has booked Mobile Breakfast,
+	 * but the employee has already ordered a mobile breakfast</li>
      * </ul>
      * 
      * @param userAccount of the {@link User} who wants to order mb 
@@ -263,12 +266,13 @@ public class OrderController {
     /**
      * view buying site.</br>
      * 
-     * checks domain for possible {@link Domain} matches. </br>
-     * If there was a match, return the buying site for the matching {@link Domain}. Otherwise return the buying site for every {@link Domain}.</br>
+     * checks domain for possible {@link Item.Domain} matches. </br>
+     * If there was a match, return the buying site for the matching {@link Item.Domain}.
+	 * Otherwise return the buying site for every {@link Item.Domain}.</br>
      * - resets mampfCart dates.
      * 
      * @param model
-     * @param domain requested paying domain, can be a {@link Domain} name
+     * @param domain requested paying domain, can be a {@link Item.Domain} name
      * @param form
      * @param mampfCart
      * @return cart template redirect or buy_cart template
@@ -308,14 +312,16 @@ public class OrderController {
      * <li>the form will be validated (there should be no empty field)</li>
      * <li>the form's data will be validated</li>
      * <li>the carts will be validated</li>
-     * <li> when there is any error message in the validations, the buying process will stop and the modified buying site with the errors will show up</li> 
-     * <li> otherwise the orders will be created and the selected {@link DomainCart} will be deleted from mampfCart, and the user will be redirected to their orders</li>
+     * <li> when there is any error message in the validations,
+	 * the buying process will stop and the modified buying site with the errors will show up</li>
+     * <li> otherwise the orders will be created and the selected {@link DomainCart} will be deleted from mampfCart,
+	 * and the user will be redirected to their orders</li>
      * </ol>
      * 
      * @param model
      * @param reload a {@link Optional} of {@link Boolean}, reloads the buying site if present 
      * @param form a {@link CheckoutForm} which contains the chosen dates of the orders
-     * @param result a {@link Result} for validating the form
+     * @param result {@link Errors} for validating the form
      * @param authentication a {@link Authentication} which represents a user
      * @param mampfCart
      * @return buy_cart template or userOrders template redirect 
@@ -392,18 +398,16 @@ public class OrderController {
             String errVar = "allStartDates[" + domain.name() + "]";
             String errDomain = "CheckoutForm.startDate";
 
-            /*if (startDate == null || endDate == null) {
-                result.rejectValue(errVar, errDomain + ".Invalid", "Bitte Datum eingeben!");
-                continue;
-            }*/
             if (startDate.isBefore(LocalDateTime.now().plus(delayForEarliestPossibleBookingDate))) {
-                result.rejectValue(errVar, errDomain + ".NotFuture", "Das Datum muss in der Zukunft liegen!");
+                result.rejectValue(errVar, errDomain + ".NotFuture",
+						"Das Datum muss in der Zukunft liegen!");
             }
             if(startDate.toLocalTime().isBefore(timeForEarliestPossibleBookingDate)) {
                 result.rejectValue(errVar, errDomain + ".TimeMin", "Zu früh!");
             }
             if (startDate.isAfter(endDate)) {
-                result.rejectValue(errVar, errDomain + ".NegativeDate", "keine negativen Bestellungen erlaubt!");
+                result.rejectValue(errVar, errDomain + ".NegativeDate",
+						"keine negativen Bestellungen erlaubt!");
             }
             if(Duration.between(startDate, endDate).compareTo((Duration) durationForEarliestBookingDate) < 0) {
                 result.rejectValue(errVar, errDomain + ".DurationMin", "Zu kurz!");
@@ -496,14 +500,16 @@ public class OrderController {
     }
     /**
      * sorts every/only user {@link MampfOrder} by given comp and saves them into a {@link Map}.</br>
-     * - orders will be categorized by a {@link LocalDate} which will be converted into a {@link String}. </br>
+     * - orders will be categorized by a {@link java.time.LocalDate} which will be converted into a {@link String}. </br>
      * 
-     * when the orders are sorted by their creation Date, there is another category beside {@link LocalDate} which is called "soeben erstellt".</br>
+     * when the orders are sorted by their creation Date, there is another category beside {@link java.time.LocalDate}
+	 * which is called "soeben erstellt".</br>
      * "soeben erstellt" contains every {@link MampfOrder} which was created in the last hour.</br>
      * 
-     * @param comp a {@link Optional} of {@link Predicate}, uses the natural ordering of {@link MampfOrder} when the {@link Optional} is {@code empty}
+     * @param comp a {@link Optional} of {@link java.util.function.Predicate}, uses the natural ordering of
+	 * {@link MampfOrder} when the {@link Optional} is {@code empty}
      * @param userAccount
-     * @return a new instance of {@link Map} which contains sorted {@link MampfOrder} by {@link LocalDate}  
+     * @return a new instance of {@link Map} which contains sorted {@link MampfOrder} by {@link java.time.LocalDate}
      */
     private Map<String, List<MampfOrder>> getSortedOrders(Optional<Comparator<MampfOrder>> comp,
             Optional<UserAccount> userAccount) {
@@ -540,12 +546,6 @@ public class OrderController {
                 stuff.put(insertTo, newList);
             }
         }
-        //check
-        /*if (comp.isPresent()) {
-            stuff.forEach((k, list) -> list.stream().sorted(comp.get()));
-        } else {
-            stuff.forEach((k, list) -> list.stream().sorted());
-        }*/
         return stuff;
     }
 }

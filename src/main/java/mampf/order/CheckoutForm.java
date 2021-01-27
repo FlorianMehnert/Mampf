@@ -41,7 +41,8 @@ public class CheckoutForm {
 	
 	public static final List<String> domainsWithoutForm = List.of(Item.Domain.MOBILE_BREAKFAST.name());
 	
-	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes, Map<String, String> endTimes, Map<String, String> allAddresses,String generalError) {
+	public CheckoutForm(Map<String, String> startDates, String payMethod, Map<String, String> startTimes,
+						Map<String, String> endTimes, Map<String, String> allAddresses,String generalError) {
 		this.allStartDates = startDates;
 		this.allStartTimes = startTimes;
 		this.allEndTimes = endTimes;
@@ -51,7 +52,7 @@ public class CheckoutForm {
 	}
 	
 	/**
-	 * checks if there are empty fields left, depending on the chosen {@link Domain}
+	 * checks if there are empty fields left, depending on the chosen {@link Item.Domain}
 	 * @return {@code true} if valid
 	 */
 	public boolean hasValidData() {
@@ -68,7 +69,7 @@ public class CheckoutForm {
 	}
 	/**
 	 * checks if the fields of the domain are filled
-	 * <li> there are no fields for {@link Domain.MOBILE_BREAKFAST} required</li> 
+	 * <li> there are no fields for {@link Item.Domain#MOBILE_BREAKFAST} required</li>
 	 * @param domain
 	 * @return {@code true} if valid
 	 */
@@ -90,14 +91,16 @@ public class CheckoutForm {
 		if(allStartDates == null || !allStartDates.containsKey(domain.name())) {
 			return null;
 		}
-		return LocalDate.parse(allStartDates.get(domain.name()), dateFormatter).atTime(LocalTime.parse(allStartTimes.get(domain.name()), timeFormatter));
+		return LocalDate.parse(allStartDates.get(domain.name()), dateFormatter).
+				atTime(LocalTime.parse(allStartTimes.get(domain.name()), timeFormatter));
 	}
 
 	public LocalDateTime getEndDateTime(Item.Domain domain) {
 		if(allStartDates == null || !allStartDates.containsKey(domain.name())) {
 			return null;
 		}
-		return LocalDate.parse(allStartDates.get(domain.name()), dateFormatter).atTime(LocalTime.parse(allEndTimes.get(domain.name()), timeFormatter));
+		return LocalDate.parse(allStartDates.get(domain.name()), dateFormatter).
+				atTime(LocalTime.parse(allEndTimes.get(domain.name()), timeFormatter));
 	}
 	
 	public String getAddress(Item.Domain domain) {

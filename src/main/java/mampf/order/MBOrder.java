@@ -1,29 +1,18 @@
 package mampf.order;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-
 import mampf.catalog.Item;
 import mampf.order.OrderController.BreakfastMappedItems;
 import org.salespointframework.catalog.ProductIdentifier;
 import org.salespointframework.payment.PaymentMethod;
 import org.salespointframework.quantity.Quantity;
 import org.salespointframework.useraccount.UserAccount;
+
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import java.time.*;
+import java.time.temporal.TemporalAmount;
+import java.util.*;
 
 @Entity
 public class MBOrder extends MampfOrder {
@@ -40,19 +29,21 @@ public class MBOrder extends MampfOrder {
             BreakfastMappedItems bfItem) {
         super(account, paymentMethod, Item.Domain.MOBILE_BREAKFAST, startDate, endDate, bfItem.getAddress());
         this.time = bfItem.getBreakfastTime();
-        this.weekDays = bfItem.getWeekDays().stream().collect(Collectors.toSet());
-      
+        this.weekDays = new HashSet<>(bfItem.getWeekDays());
+
     }
     /**
      * calculates the amount of breakfastdates for the given timespans and breakfast days.</br>
      * one breakfast Date is a {@link DayOfWeek} of weekDays with the given time.</br>
-     * the amount of breakfast dates corresponds to the amount of overlapping breakfast Dates with the needed-timespan.</br>
-     * 
+     * the amount of breakfast dates corresponds to the amount of overlapping breakfast
+	 * Dates with the needed-timespan.</br>
+     *
      * @param fromDate needed-timespan start
      * @param toDate needed-timespan end
      * @param startDate duration-timespan start, the start Date of the mobile breakfast order
      * @param endDate duration-timespan end, the end Date of the mobile breakfast order
-     * @param weekDays a {@link List} of {@link DayOfWeek} represents weekdays where the user wants to have a breakfast meal
+     * @param weekDays a {@link List} of {@link DayOfWeek} represents weekdays
+	 *                 where the user wants to have a breakfast meal
      * @param time a {@link LocalDateTime} breakfast time
      * @return long
      */

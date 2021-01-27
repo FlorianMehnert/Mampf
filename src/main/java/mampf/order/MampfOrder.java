@@ -48,7 +48,8 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 		this.adress = adress;
 	}
 	
-	public static final Comparator<MampfOrder> comparatorSortByCreation = (o1,o2)->o2.getDateCreated().compareTo(o1.getDateCreated());
+	public static final Comparator<MampfOrder> comparatorSortByCreation
+			= (o1,o2)->o2.getDateCreated().compareTo(o1.getDateCreated());
 	/**
 	 * returns if the given timespans overlap:
 	 * startDate > otherStartDate,...
@@ -66,8 +67,10 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	
 	/**
 	 * returns actually needed and existing catalog-items of a order for a given timespan.</br>
-	 * <li>can return a {@code empty} {@link Map} if the given timespan does not overlap with the timespan of this order.</li>
-	 * <li>can return every {@link OrderLine} of this order if the given timespan totally overlaps with the timespan of this order.</li>
+	 * <li>can return a {@code empty} {@link Map} if the given timespan does not overlap with the timespan
+	 * of this order.</li>
+	 * <li>can return every {@link org.salespointframework.order.OrderLine}
+	 * of this order if the given timespan totally overlaps with the timespan of this order.</li>
 	 * @param fromDate timespan start
 	 * @param toDate timespan end
 	 * @return a new instance of {@link Map} of {@link ProductIdentifier} and {@link Quantity}

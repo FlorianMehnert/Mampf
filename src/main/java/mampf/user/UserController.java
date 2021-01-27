@@ -32,10 +32,12 @@ public class UserController {
 	public String registerNew(@Valid @ModelAttribute("form") RegistrationForm form, Errors result) {
 		for (User user : userManagement.findAll()) {
 			if ((form.getUsername().equals(user.getUserAccount().getUsername()))) {
-				result.rejectValue("username", "RegistrationForm.username.exists", "This Username is already taken!");
+				result.rejectValue("username", "RegistrationForm.username.exists",
+						"This Username is already taken!");
 			}
 			if ((form.getEmail().equals(user.getUserAccount().getEmail()))) {
-				result.rejectValue("email", "RegistrationForm.email.exists", "This E-Mail is already taken!");
+				result.rejectValue("email", "RegistrationForm.email.exists",
+						"This E-Mail is already taken!");
 			}
 		}
 		if(form.getRole().equals("EMPLOYEE")
@@ -44,11 +46,13 @@ public class UserController {
 			result.rejectValue("accessCode", "RegistrationForm.accessCode.wrong","You've entered an incorrect access code!");
 		}
 		if (form.getRole().equals("COMPANY") && form.getCompanyName().length() == 0) {
-			result.rejectValue("companyName", "RegistrationForm.companyName.NotEmpty","The company name can not be empty!");
+			result.rejectValue("companyName", "RegistrationForm.companyName.NotEmpty",
+					"The company name can not be empty!");
 		}
 		if (form.getRole().equals("INDIVIDUAL") &&
 				(form.getCompanyName().length() > 0 || form.getAccessCode().length() > 0)) {
-			result.reject("wrongInput", "Bad inputs were used!");
+			result.reject("wrongInput",
+					"Bad inputs were used!");
 		}
 		if (result.hasErrors()) {
 			return "register";
@@ -72,26 +76,29 @@ public class UserController {
 		model.addAttribute("userList", userManagement.findAll());
 		ArrayList<Pair<User, String>> list = new ArrayList<>();
 		String filterString = "";
-		if(filter != null) {
+		if (filter != null) {
 			filterString = filter.toLowerCase();
 		}
 		for (User user : userManagement.findAll()) {
 			String role = User.roleTranslations.get(user.getUserAccount().getRoles().toList().get(0).toString());
-			if(filterString.length() == 0
-					|| user.getUserAccount().getUsername().toLowerCase().contains(filterString)
-					|| user.getUserAccount().getFirstname().toLowerCase().contains(filterString)
-					|| user.getUserAccount().getLastname().toLowerCase().contains(filterString)
-					|| user.getUserAccount().getEmail().toLowerCase().contains(filterString)) {
+			if (filterString.length() == 0 || userContainsFilterString(user, filter)) {
 				Pair<User, String> map = new Pair<>(user, role);
 				list.add(map);
 			}
 		}
-		if(filter == null) {
+		if (filter == null) {
 			filter = "";
 		}
 		model.addAttribute("filter", filter);
 		model.addAttribute("pairs", list);
 		return "users";
+	}
+
+	private boolean userContainsFilterString(User user, String filter) {
+		return user.getUserAccount().getUsername().toLowerCase().contains(filter)
+				|| user.getUserAccount().getFirstname().toLowerCase().contains(filter)
+				|| user.getUserAccount().getLastname().toLowerCase().contains(filter)
+				|| user.getUserAccount().getEmail().toLowerCase().contains(filter);
 	}
 
 	@GetMapping("/userDetails/")
@@ -108,11 +115,13 @@ public class UserController {
 
 	@PostMapping("/change_password/")
 	@PreAuthorize("isAuthenticated()")
-	public String changePassword(Model model, @Valid @ModelAttribute("form") ChangePasswordForm passwordForm, Errors result, Authentication authentication,
+	public String changePassword(Model model, @Valid @ModelAttribute("form") ChangePasswordForm passwordForm,
+								 Errors result, Authentication authentication,
 								 HttpServletRequest httpServletRequest) throws ServletException {
 		Optional<User> user = userManagement.findUserByUsername(authentication.getName());
 		if (!passwordForm.getPassword().equals(passwordForm.getConfirmPassword())) {
-			result.rejectValue("password", "RegistrationForm.password.MotEqual", "Your Passwords don't match!");
+			result.rejectValue("password", "RegistrationForm.password.MotEqual",
+					"Your Passwords don't match!");
 		}
 		if (result.hasErrors()) {
 			model.addAttribute("user", user.get());
@@ -144,15 +153,15 @@ public class UserController {
 		return "redirect:/users";
 	}
 
-	
+
 	@GetMapping("/bookBreakfast")
 	@PreAuthorize("isAuthenticated()")
 	public String bookBreakfast(Authentication authentication) {
-		
-		if(userManagement.bookMobileBreakfast(authentication.getName())) {
+
+		if (userManagement.bookMobileBreakfast(authentication.getName())) {
 			return "redirect:/userDetails/";
 		}
 		return "redirect:/";
 	}
-	
+
 }
