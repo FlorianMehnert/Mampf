@@ -19,7 +19,6 @@ import mampf.catalog.Item.Domain;
 /**
  * a shopping-cart to store and manage {@link CartItem}. <br/>
  * 
- * @author Konstii
  *
  */
 public class MampfCart{
@@ -27,7 +26,6 @@ public class MampfCart{
 	/**
 	 * a {@link Cart}, which can also have a start and end-date ({@link LocalDateTime}).</br>
 	 * also manages {@link CartItem} which have a prize for each hour.
-	 * @author Konstii
 	 *
 	 */
 	public class DomainCart extends Cart{

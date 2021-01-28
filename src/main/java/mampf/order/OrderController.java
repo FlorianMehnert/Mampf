@@ -48,7 +48,6 @@ public class OrderController {
     /**
      * represents a Mobile Breakfast cart item.</br> 
      * - contains the chosen {@link BreakfastItem} dish and beverage, and other information about the breakfast</br>
-     * @author Konstii
      *
      */
     public class BreakfastMappedItems extends Item {

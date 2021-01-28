@@ -44,9 +44,8 @@ import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Component;
 
 /**
- * class to manage {@link MampfOrder}:
+ * class to manage {@link MampfOrder}
  *
- * @author Konstii
  */
 @Component
 public class MampfOrderManager {
@@ -571,13 +570,14 @@ public class MampfOrderManager {
         }
         return Optional.empty();
     }
-    /**
-     * sums up every needed items of every (completed) {@link MampfOrder} for a given timespan 
-     * @param fromDate timespan start
-     * @param toDate timespan end
-     * @return a new instance of {@link Map} which maps all needed items as {@link ProductIdentifier} and {@link Quantity}
-     */
-
+    
+	/**
+	 * assignes {@link Employee} to order when orderlines contain STAFF-categorized-items:</br>
+	 * adds order to booked orders of {@link Employee}.</br>
+	 * adds {@link Employee} to order employees.
+	 * @param order 
+	 * @param personalLeft
+	 */
 	private void setPersonalBooked(EventOrder order, Map<Employee.Role, List<Employee>> personalLeft) {
 		Item item;
 		Quantity itemQuantity;
@@ -603,7 +603,19 @@ public class MampfOrderManager {
 			}
 		}
 	}
-
+	/**
+	 * creates a mobile breakfast order.</br>
+	 * <ul>
+	 * <li> adds chosen breakfast items as {@link OrderLine} to a {@link MBOrder}</li>
+	 * <li> adds mobile breakfast total prize as {@link ChargeLine} to a {@link MBOrder}</li>
+	 * </ul>
+	 * @param bfCartItem a @{@link CartItem} which contains a {@link BreakfastMappedItems}
+	 * @param startDate start date of mobile breakfast
+	 * @param endDate end date of mobile breakfast
+	 * @param form 
+	 * @param account
+	 * @return
+	 */
 	private MBOrder createOrderMB(CartItem bfCartItem, LocalDateTime startDate, LocalDateTime endDate,
 								  CheckoutForm form, UserAccount account) {
 
@@ -621,7 +633,6 @@ public class MampfOrderManager {
 		return order;
 
 	}
-
 	private void updateValidations(Map<Item.Domain, List<String>> validations, Item.Domain domain, String state) {
 		if (validations.containsKey(domain)) {
 			validations.get(domain).add(state);
@@ -632,7 +643,12 @@ public class MampfOrderManager {
 		}
 	}
 
-	// all ordered items for a time span
+	/**
+   * sums up every needed items of every (completed) {@link MampfOrder} for a given timespan 
+   * @param fromDate timespan start
+   * @param toDate timespan end
+   * @return a new instance of {@link Map} which maps all needed items as {@link ProductIdentifier} and {@link Quantity}
+   */
 	private Map<ProductIdentifier, Quantity> getOrderItems(LocalDateTime fromDate, LocalDateTime toDate) {
 
 		Map<ProductIdentifier, Quantity> res = new HashMap<>();

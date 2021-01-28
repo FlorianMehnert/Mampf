@@ -8,7 +8,6 @@ import mampf.employee.Employee;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +33,6 @@ import org.salespointframework.quantity.Quantity;
  * a {@link MampfOrder} class, which represents every order which can have:
  * assigned {@link Employee}
  * 
- * @author Konstii
  *
  */
 @Entity

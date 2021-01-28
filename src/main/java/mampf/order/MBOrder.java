@@ -13,7 +13,9 @@ import javax.persistence.FetchType;
 import java.time.*;
 import java.time.temporal.TemporalAmount;
 import java.util.*;
-
+/**
+ *  a {@link MampfOrder} class, which represents a mobile breakfast order.
+ */
 @Entity
 public class MBOrder extends MampfOrder {
 

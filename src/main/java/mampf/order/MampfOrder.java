@@ -24,7 +24,6 @@ import mampf.employee.Employee;
  * base class for orders </br>
  * is a {@link Order}
  * 
- * @author Konstii
  */
 @MappedSuperclass
 public abstract class MampfOrder extends Order implements Comparable<MampfOrder>{
