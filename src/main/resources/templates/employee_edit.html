@@ -12,7 +12,7 @@
         <header>
             <h1>Mitarbeiter - Bearbeiten</h1>
         </header>
-        <form class="ui form" th:action="'/intern/employees/' + ${employee.id}" method="post" th:object="${form}">
+        <form class="ui form" th:action="'/intern/employees/edit/' + ${employee.id}" method="post" th:object="${form}">
 
           <div class="form-group">
               <label for="firstName" th:text="#{employee.first_name}">Vorname</label>

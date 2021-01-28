@@ -9,14 +9,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+/**
+ * Initializes default {@link Employee}s. The following are created:
+ * <ul>
+ *     <li>The cooks "Elisa Schloss", "Monica Geller", "Peter Parker", "Chandler Bing",
+ *     "Phoebe Buffay" and "Heinz Solo".</li>
+ *     <li>The service personnel "Anna Lopez", "Maria Leon", "Rachel Green", "Scott Lang",
+ *     "Joey Tribbiani", "Ross Geller"</li>
+ * </ul>
+ */
 @Component
 public class EmployeeDataInitializer implements DataInitializer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeDataInitializer.class);
 
-
 	private final EmployeeManagement employeeManagement;
 
+	/**
+	 * Creates a new {@link EmployeeDataInitializer} with the given {@link EmployeeManagement}
+	 *
+	 * @param employeeManagement must not be {@literal null}
+	 */
 	EmployeeDataInitializer(EmployeeManagement employeeManagement){
 
 		Assert.notNull(employeeManagement, "EmployeeManagement should not be null");
@@ -33,15 +46,15 @@ public class EmployeeDataInitializer implements DataInitializer {
 		String cookRole = "COOK";
 		List.of(new RegistrationForm("anna89", "Anna", "Lopez", serviceRole),
 				new RegistrationForm("marivi38", "Maria", "Leon", serviceRole),
-				new RegistrationForm("x", "Maria1", "Leon1", serviceRole),
-				new RegistrationForm("y", "Maria2", "Leon2", serviceRole),
-				new RegistrationForm("z", "Maria3", "Leon3", serviceRole),
-				new RegistrationForm("123", "Maria4", "Leon4", serviceRole),
-				new RegistrationForm("elisas", "Elisa1", "Schloss1", cookRole),
-				new RegistrationForm("a", "Elisa2", "Schloss2", cookRole),
-				new RegistrationForm("b", "Elisa3", "Schloss3", cookRole),
-				new RegistrationForm("c", "Elisa4", "Schloss5", cookRole),
-				new RegistrationForm("d", "Elisa6", "Schloss6", cookRole),
+				new RegistrationForm("fashion", "Rachel", "Green", serviceRole),
+				new RegistrationForm("antman", "Scott", "Lang", serviceRole),
+				new RegistrationForm("food", "Joey", "Tribbiani", serviceRole),
+				new RegistrationForm("dinosaur", "Ross", "Geller", serviceRole),
+				new RegistrationForm("mcdreamy", "Meredith", "Grey", cookRole),
+				new RegistrationForm("chef", "Monica", "Geller", cookRole),
+				new RegistrationForm("notspiderman", "Peter", "Parker", cookRole),
+				new RegistrationForm("chickduck", "Chandler", "Bing", cookRole),
+				new RegistrationForm("smellycat", "Phoebe", "Buffay", cookRole),
 				new RegistrationForm("heinz55", "Heinz", "Solo", cookRole))
 				.forEach(employeeManagement::createEmployee);
 

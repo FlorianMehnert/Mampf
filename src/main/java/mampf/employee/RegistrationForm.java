@@ -2,6 +2,9 @@ package mampf.employee;
 
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * To create/add a new {@link Employee}
+ */
 public class RegistrationForm {
 	@NotEmpty(message = "Username should not be empty")//
 	private final String username;

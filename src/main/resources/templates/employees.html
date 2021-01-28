@@ -15,6 +15,15 @@
         <!-- <h3 th:text="#{${employees}}">Employee</h3> -->
       </header>
 
+      <div class="m-container-small">
+        <p>Wähle eins...</p>
+        <div class="m-flex">
+          <a class="btn btn-primary" href="/intern/employees">Alle</a>
+          <a class="btn btn-primary" href="/intern/employees/filter/cook">Köche</a>
+          <a class="btn btn-primary" href="/intern/employees/filter/service">Servicepersonal</a>
+        </div>
+      </div>
+
       <div th:replace="fragments/search::search(@{/intern/employees}, @{/intern/employees}, ${filter})"></div>
 
       <table class="table table-hover">
@@ -36,7 +45,7 @@
             </td>
             <td>
               <button class="btn btn-outline-primary cont" >
-                <a th:href="'/intern/employees/' + ${employee.id}">
+                <a th:href="'/intern/employees/edit/' + ${employee.id}">
                   Bearbeiten
                 </a>
               </button>
@@ -78,7 +87,7 @@
       </table>
       <button class="btn btn-outline-primary cont" >
         <a th:href="'/intern/employees/add'" th:text="#{employee.add}">
-          Köche/Service hinzufügen
+          Koch/Service hinzufügen
         </a>
       </button>
     </div>
