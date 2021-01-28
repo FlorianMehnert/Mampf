@@ -42,11 +42,36 @@
               </button>
             </td>
             <td>
-              <button class="btn btn-outline-primary cont" >
-                <a th:href="'/intern/employees/deleteEmployee/' + ${employee.id}">
+              <button class="btn btn-outline-primary cont" title="Fire" data-toggle="modal" th:data-target="'#exampleModalCenter' + ${employee.id}">
                   Entfernen
-                </a>
               </button>
+
+              <div class="modal fade" th:id="'exampleModalCenter' + ${employee.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Mitarbeiter Kündigen</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Sind Sie sicher, dass Sie den Mitarbeiter entfernen wollen?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        <i class="fas fa-arrow-left"></i> Schließen
+                      </button>
+                      <a th:href="'/intern/employees/deleteEmployee/' + ${employee.id}">
+                        <button type="button" class="btn btn-danger">
+                          <i class="fas fa-exclamation"></i> Entfernen
+                        </button>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </td>
           </tr>
         </tbody>
