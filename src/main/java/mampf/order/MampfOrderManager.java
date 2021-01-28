@@ -282,11 +282,12 @@ public class MampfOrderManager {
 				}
 
 				actionItem = Optional.empty();
-				for (UniqueMampfItem bI : actionItems)
+				for (UniqueMampfItem bI : actionItems) {
 					if (bI.getProduct().equals(resItem.getProduct())) {
 						actionItem = Optional.of(bI);
 						break;
 					}
+				}
 
 				if (actionItem.isEmpty()) {
 					continue;
