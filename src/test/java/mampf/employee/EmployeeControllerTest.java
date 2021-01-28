@@ -82,7 +82,7 @@ public class EmployeeControllerTest {
 	@Test
 	@WithMockUser(roles = "BOSS")
 	void test_edit() throws Exception{
-		mvc.perform(get("/intern/employees/{id}", "11"))
+		mvc.perform(get("/intern/employees/edit/{id}", "11"))
 				.andExpect(model().attributeExists("employee"))
 				.andExpect(model().attributeExists("form"))
 				.andExpect(status().isOk());
@@ -95,7 +95,7 @@ public class EmployeeControllerTest {
 				"Elsa",
 				"Pato"
 		);
-		mvc.perform(post("/intern/employees/{id}", "11")
+		mvc.perform(post("/intern/employees/edit/{id}", "11")
 				.params(map_edit))
 				.andExpect(model().hasNoErrors())
 				.andExpect(view().name("redirect:/intern/employees"));
