@@ -224,8 +224,9 @@ public class MampfCart {
 	 */
 	public void resetCartDate() {
 		stuff.forEach((key, value) -> {
-			if (!CheckoutForm.domainsWithoutForm.contains(key.name()))
+			if (!CheckoutForm.domainsWithoutForm.contains(key.name())) {
 				value.resetDate();
+			}
 		});
 	}
 

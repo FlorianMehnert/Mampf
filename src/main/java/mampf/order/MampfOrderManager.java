@@ -421,8 +421,9 @@ public class MampfOrderManager {
 	}
 
 	public Optional<MampfOrder> findById(String orderId) {
-		return orderManagement.findAll(Pageable.unpaged()).filter(order -> Objects.requireNonNull(order.getId()).getIdentifier().equals(
-				orderId)).get().findFirst();
+		return orderManagement.findAll(Pageable.unpaged()).
+				filter(order -> Objects.requireNonNull(order.getId()).getIdentifier().equals(
+						orderId)).get().findFirst();
 	}
 
 	/**
@@ -631,10 +632,11 @@ public class MampfOrderManager {
 		orderManagement.findBy(OrderStatus.COMPLETED).forEach(order -> order.getItems(fromDate, toDate).
 				// some typical map updating:
 						forEach((id, q) -> {
-					if (res.containsKey(id))
+					if (res.containsKey(id)) {
 						res.get(id).add(q);
-					else
+					} else {
 						res.put(id, q);
+					}
 				}));
 		return res;
 	}
