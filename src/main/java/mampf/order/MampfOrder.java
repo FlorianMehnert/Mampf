@@ -32,32 +32,34 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	private Item.Domain domain;
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
-	private String adress;
-	public MampfOrder() {}
-	public MampfOrder(UserAccount account, 
+	private String address;
+
+	@SuppressWarnings({"unused", "deprecation"})
+	protected MampfOrder() {}
+	protected MampfOrder(UserAccount account,
 					  PaymentMethod paymentMethod,
 					  Item.Domain domain, 
 					  LocalDateTime startDate, 
 					  LocalDateTime endDate, 
-					  String adress) {
+					  String address) {
 		super(account, paymentMethod);
 		this.domain = domain;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.adress = adress;
+		this.address = address;
 	}
 	
 	public static final Comparator<MampfOrder> comparatorSortByCreation
 			= (o1,o2)->o2.getDateCreated().compareTo(o1.getDateCreated());
 	/**
-	 * returns if the given timespans overlap:
+	 * returns if the given time spans overlap:
 	 * startDate > otherStartDate,...
 	 * 
 	 * @param startDate timespan1 start
 	 * @param endDate timespan1 end
 	 * @param orderStartDate timespan2 start
 	 * @param orderEndDate timespan2 end
-	 * @return
+	 * @return boolean weather the given time spans overlap
 	 */
 	public static boolean hasTimeOverlap(LocalDateTime startDate, LocalDateTime endDate,
 										 LocalDateTime orderStartDate, LocalDateTime orderEndDate) {
@@ -88,8 +90,8 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	public LocalDateTime getEndDate() {
 		return endDate;
 	}
-	public String getAdress() {
-		return adress;
+	public String getAddress() {
+		return address;
 	}
 	public Item.Domain getDomain(){
 		return domain;
@@ -123,6 +125,7 @@ public abstract class MampfOrder extends Order implements Comparable<MampfOrder>
 	public String toString() {
 		return "Bestellung: " + Util.renderDomainName(this.getDomain().name());
 	}
+
 	@Override
 	public int compareTo(MampfOrder order) {
 		assert order != null;

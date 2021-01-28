@@ -1,5 +1,6 @@
 package mampf.employee;
 
+import mampf.order.MampfOrder;
 import org.salespointframework.quantity.Quantity;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
@@ -94,6 +95,13 @@ public class EmployeeManagement {
 	}
 
 	public void deleteEmployee(long id){
+		Employee employee = searchById(id);
+		List<EventOrder> orders = employee.getBooked();
+		for(EventOrder order : orders){
+			if(setEmployeeBooked(id, order)) {
+				return;
+			}
+		}
 		employees.deleteById(id);
 	}
 }

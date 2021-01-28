@@ -2,15 +2,14 @@ package mampf.user;
 
 import org.salespointframework.useraccount.Password;
 import org.salespointframework.useraccount.Role;
-import org.salespointframework.useraccount.UserAccountManagement;
 import org.salespointframework.useraccount.UserAccountIdentifier;
+import org.salespointframework.useraccount.UserAccountManagement;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 

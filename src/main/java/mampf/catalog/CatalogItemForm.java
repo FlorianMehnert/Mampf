@@ -1,17 +1,16 @@
 package mampf.catalog;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 class CatalogItemForm {
 
-	@NotEmpty(message = "Itemname cannot be null") //
+	@NotEmpty(message = "Item name cannot be null") //
 	private final String name;
 
 	@NotEmpty(message = "Domain cannot be null") //
 	private final String domain;
 
-	@NotEmpty(message = "Catgory cannot be null") //
+	@NotEmpty(message = "Category cannot be null") //
 	private final String category;
 
 	@NotEmpty(message = "Price cannot be null") //
@@ -31,19 +30,19 @@ class CatalogItemForm {
 		return name;
 	}
 
-	public String getDomain(){
+	public String getDomain() {
 		return domain;
 	}
 
-	public String getCategory(){
+	public String getCategory() {
 		return category;
 	}
 
-	public String getPrice(){
+	public String getPrice() {
 		return price;
 	}
 
-	public String getDescription(){
+	public String getDescription() {
 		return description;
 	}
 }

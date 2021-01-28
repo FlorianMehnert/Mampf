@@ -12,35 +12,37 @@ public enum Days {
 
 	private final String fullname;
 	private final String abbriviation;
-	// TODO: value should be removed, once order logic is changed to accept integer instead of strings
 	private final String value;
+
 	//maybe use a better solution to compare DayOfWeek with Days
-	public static String getFullNames(Collection<DayOfWeek> days){
-	    StringBuilder res = new StringBuilder();
-	    for(Days day: Days.values()) {for(DayOfWeek weekDay: days) {
-          if(day.getValue().equalsIgnoreCase(weekDay.name())) {
-              res.append(day.getFullName()).append(" ");
-              break;
-          }
-	    }}
-	    return res.toString();
-  }
-	
-	private Days(String fullname, String abbriviation, String value){
+	public static String getFullNames(Collection<DayOfWeek> days) {
+		StringBuilder res = new StringBuilder();
+		for (Days day : Days.values()) {
+			for (DayOfWeek weekDay : days) {
+				if (day.getValue().equalsIgnoreCase(weekDay.name())) {
+					res.append(day.getFullName()).append(" ");
+					break;
+				}
+			}
+		}
+		return res.toString();
+	}
+
+	Days(String fullname, String abbriviation, String value) {
 		this.fullname = fullname;
 		this.abbriviation = abbriviation;
 		this.value = value;
 	}
 
-	public String getFullName(){
+	public String getFullName() {
 		return this.fullname;
 	}
 
-	public String getAbbriviation(){
+	public String getAbbriviation() {
 		return this.abbriviation;
 	}
 
-	public String getValue(){
+	public String getValue() {
 		return this.value;
 	}
 }

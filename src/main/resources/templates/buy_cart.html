@@ -157,7 +157,7 @@
               <div class="m-cart__overview-total-label">Der Gesamtwert ihres Warenkorbs beträgt:</div>
               <div class="m-cart__overview-total m-cart__sum" th:text="${total}"></div>
             </div>
-            <input type="hidden" name="domainChoosen" th:field="*{domainChoosen}" th:value="*{domainChoosen}"/>
+            <input type="hidden" name="domainChosen" th:field="*{domainChosen}" th:value="*{domainChosen}"/>
 			
             <div sec:authorize="!hasRole('BOSS')" class="m-cart__row m-flex-flex-end m-children-padding-left">
               

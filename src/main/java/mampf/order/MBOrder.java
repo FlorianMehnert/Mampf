@@ -35,7 +35,7 @@ public class MBOrder extends MampfOrder {
 
     }
     /**
-     * calculates the amount of breakfastdates for the given timespans and breakfast days.</br>
+     * calculates the amount of breakfast dates for the given time spans and breakfast days.</br>
      * one breakfast Date is a {@link DayOfWeek} of weekDays with the given time.</br>
      * the amount of breakfast dates corresponds to the amount of overlapping breakfast
 	 * Dates with the needed-timespan.</br>
@@ -100,8 +100,8 @@ public class MBOrder extends MampfOrder {
     public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
     
         Map<ProductIdentifier,Quantity> res = new HashMap<>();
-        Quantity mBquantiy = Quantity.of(getAmount(fromDate, toDate, getStartDate(), getEndDate(), weekDays, time));
-        getOrderLines().forEach(oL->res.put(oL.getProductIdentifier(), mBquantiy));
+        Quantity mbQuantity = Quantity.of(getAmount(fromDate, toDate, getStartDate(), getEndDate(), weekDays, time));
+        getOrderLines().forEach(oL->res.put(oL.getProductIdentifier(), mbQuantity));
         return res;
     }
 

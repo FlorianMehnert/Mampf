@@ -40,26 +40,24 @@ public class InventoryController {
 					  @RequestParam("number") String number,
 					  @RequestParam ("negate") String neg,
 					  RedirectAttributes redirectAttributes){
-		int convNumber = 0;
 		String error = "error";
-		boolean inputError = false;
+		String add = "redirect:/inventory/add";
 		if(number.equals("")){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht leer sein!");
-			inputError = true;
+			return add;
 		} else if (Integer.parseInt(number) < 0){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht negativ sein!");
-			inputError = true;
+			return add;
 		} else if (number.length() > 4){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht größer als 9999 sein!");
-			inputError = true;
-		} else{
-			convNumber = Integer.parseInt(number);
+			return add;
 		}
+		infinity(number, item, neg);
+		return "redirect:/inventory/amount";
+	}
 
-		if(inputError){
-			return "redirect:/inventory/add";
-		}
-
+	private void infinity(String number, Item item, String neg){
+		int convNumber = Integer.parseInt(number);
 		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
 		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
 		if (!Inventory.infinity.contains(currentItem.getCategory()) || currentItem.getCategory() != Item.Category.STAFF) {
@@ -75,7 +73,6 @@ public class InventoryController {
 			}
 			inventory.save(newItem);
 		}
-		return "redirect:/inventory/amount";
 	}
 
 	/**
@@ -99,7 +96,6 @@ public class InventoryController {
 		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type);
 		for (UniqueMampfItem item : list) {
 			String name = Item.categoryTranslations.get(item.getCategory().toString());
-			System.out.println(name);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
@@ -151,7 +147,6 @@ public class InventoryController {
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
 		for (UniqueMampfItem item : inventory.findAllAndSort("")) {
 			String name = Item.categoryTranslations.get(item.getCategory().toString());
-			System.out.println(name);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
