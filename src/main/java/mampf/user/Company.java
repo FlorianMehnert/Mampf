@@ -24,7 +24,7 @@ public class Company {
     private List<User> employees = new ArrayList<>();
 
     private LocalDate breakfastDate = null; // use of optional gives hibernate error...
-    private String accessCode;
+    private final String accessCode;
 
     private @Id @GeneratedValue long id;
 

@@ -42,10 +42,11 @@ public class CatalogController {
 
 	// ? Probably not needed because user can choose domain from homepage or
 	// navigation
+
 	/**
 	 * Returns a site from which the user can choose one the domains, currently
 	 * (Eventcatering, Party-Service, Mobile-Breakfast and Rent-A-Cook)
-	 * 
+	 *
 	 * @param model
 	 * @return html-template
 	 */
@@ -134,7 +135,6 @@ public class CatalogController {
 	}
 
 	/**
-	 *
 	 * @param domain String which indicates which items from catalog have to be
 	 *               filtered
 	 * @param model  for serving data to the template
@@ -190,9 +190,8 @@ public class CatalogController {
 	@GetMapping("/mobile-breakfast")
 	public String mobileBreakfast(Model model) {
 		Map<String, ArrayList<Item>> reorganizedItems = new HashMap<>();
-		Iterator<Item> breakFastItems = this.catalog.findByDomain(Item.Domain.MOBILE_BREAKFAST).iterator();
-		while (breakFastItems.hasNext()) {
-			BreakfastItem currentItem = (BreakfastItem) breakFastItems.next();
+		for (Item item : this.catalog.findByDomain(Domain.MOBILE_BREAKFAST)) {
+			BreakfastItem currentItem = (BreakfastItem) item;
 			String category = Util.renderDomainName(currentItem.getType().toString());
 			if (reorganizedItems.containsKey(category)) {
 				reorganizedItems.get(category).add(currentItem);

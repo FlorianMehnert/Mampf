@@ -98,7 +98,7 @@ public class MampfOrderManager {
 		return findByTimeSpan(Optional.of(userAccount), LocalDateTime.of(company.get().getBreakfastDate().get(),
 				LocalTime.MIN),
 				LocalDateTime.of(company.get().getBreakfastEndDate().get(), LocalTime.MIN)).stream().
-				noneMatch(order -> order instanceof MBOrder && order.getAdress().equals(boss.get().getAddress()));
+				noneMatch(order -> order instanceof MBOrder && order.getAddress().equals(boss.get().getAddress()));
 
 	}
 
@@ -114,11 +114,11 @@ public class MampfOrderManager {
 	 *
 	 * @param carts       the chosen {@link DomainCart} mapped to its {@link Domain}
 	 * @param userAccount user which requests to buy the chosen carts
-	 * @return validations a new instance of {@link Map} which maps the created errormessages
+	 * @return validations a new instance of {@link Map} which maps the created error messages
 	 * to the fitting {@link DomainCart}
 	 */
 	public Map<Item.Domain, List<String>> validateCarts(UserAccount userAccount, Map<Item.Domain, DomainCart> carts) {
-		// each domain can have mutliple errormessages:
+		// each domain can have multiple error messages:
 		Map<Item.Domain, List<String>> validations = new EnumMap<>(Item.Domain.class);
 
 		// get base inventory of all finite items:
@@ -146,16 +146,16 @@ public class MampfOrderManager {
 			}
 			List<UniqueMampfItem> inventorySnapshot = getFreeItems(baseInv, baseCarts, baseEmp, startDate, endDate);
 			for (CartItem cartitem : cart) {
-				// de-map mapper-cartitems:
-				for (CartItem checkitem : createCheckItems(cartitem)) {
-					Optional<Item> catalogItem = catalog.findById(checkitem.getProduct().getId());
+				// de-map mapper-cart items:
+				for (CartItem cartItem : createCheckItems(cartitem)) {
+					Optional<Item> catalogItem = catalog.findById(cartItem.getProduct().getId());
 					if (catalogItem.isEmpty()) {
 						updateValidations(validations, domain, "Item nicht vorhanden:"
 								+ cartitem.getProductName());
 						continue;
 					}
 
-					Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, checkitem);
+					Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, cartItem);
 					if (inventoryItem.isPresent()) {
 						String validationState = "Keine verfügbare Auswahl von '" + catalogItem.get().getName() + "' : " +
 								" verbleibende Anzahl: "
@@ -228,7 +228,7 @@ public class MampfOrderManager {
 	 * calculates for every baseInv {@link UniqueMampfItem} item the lasting amount: </br>
 	 * <b>return baseInv - bookedItems(timespan) - bookedItems(timespan, baseCarts)</b></br>
 	 * <ul>
-	 * <li>does not modify any given paramter</li>
+	 * <li>does not modify any given parameter</li>
 	 * <li>there is no amount left when the {@link Quantity} of the {@link UniqueMampfItem} has a value of zero </li>
 	 * <li>items of {@link Inventory} infinity will be ignored</li>
 	 * </ul>
@@ -283,7 +283,7 @@ public class MampfOrderManager {
 				if (actionItem.isEmpty()) {
 					continue;
 				}
-				// substract:
+				// subtract:
 
 				if (actionItem.get().getCategory().equals(Category.STAFF)) {
 					Employee.Role role = ((StaffItem) actionItem.get().getProduct()).getType();
@@ -319,8 +319,8 @@ public class MampfOrderManager {
 														 LocalDateTime fromDate,
 														 LocalDateTime toDate) {
 		// each cart has a time span
-		//  when time span colliding with given time span
-		//   add all conrete items (f.e. BreakfastMappedItem is no conrete item, but the content)
+		// when time span colliding with given time span
+		// add all concrete items (f.e. BreakfastMappedItem is no concrete item, but the content)
 		List<UniqueMampfItem> cartItems = new ArrayList<>();
 		for (DomainCart cart : baseCarts) {
 			if (!MampfOrder.hasTimeOverlap(fromDate, toDate, cart.getStartDate(), cart.getEndDate())) {
@@ -329,11 +329,11 @@ public class MampfOrderManager {
 			CartItem firstItem = cart.iterator().next(); //there are no empty carts
 			if (((Item) firstItem.getProduct()).getDomain().equals(Domain.MOBILE_BREAKFAST)) {
 				BreakfastMappedItems bfItem = (BreakfastMappedItems) firstItem.getProduct();
-				Quantity mBquantity = Quantity.of(MBOrder.getAmount(fromDate, toDate, cart.getStartDate(),
+				Quantity mbQuantity = Quantity.of(MBOrder.getAmount(fromDate, toDate, cart.getStartDate(),
 						cart.getEndDate(), bfItem.getWeekDays(), bfItem.getBreakfastTime()));
 
-				cartItems.add(new UniqueMampfItem(bfItem.getBeverage(), mBquantity));
-				cartItems.add(new UniqueMampfItem(bfItem.getDish(), mBquantity));
+				cartItems.add(new UniqueMampfItem(bfItem.getBeverage(), mbQuantity));
+				cartItems.add(new UniqueMampfItem(bfItem.getDish(), mbQuantity));
 			} else {
 				cart.forEach(cartItem ->
 						cartItems.add(new UniqueMampfItem((Item) cartItem.getProduct(), cartItem.getQuantity())));
@@ -491,7 +491,7 @@ public class MampfOrderManager {
 	 * @return {@code true} if so, else {@code false}
 	 */
 	private boolean hasStaff(Cart cart) {
-		return (cart.get().anyMatch(cartitem -> ((Item) cartitem.getProduct()).getCategory().equals(
+		return (cart.get().anyMatch(cartItem -> ((Item) cartItem.getProduct()).getCategory().equals(
 				Item.Category.STAFF)));
 
 	}
@@ -501,7 +501,7 @@ public class MampfOrderManager {
 	 *
 	 * @param startDate timespan start
 	 * @param endDate   timespan  end
-	 * @return a new instace of {@link Map} which maps a {@link List} of {@link Employee} to its {@link Employee.Role}
+	 * @return a new instance of {@link Map} which maps a {@link List} of {@link Employee} to its {@link Employee.Role}
 	 */
 	private Map<Employee.Role, List<Employee>> getPersonal(LocalDateTime startDate, LocalDateTime endDate) {
 		Map<Employee.Role, List<Employee>> personalLeft = new EnumMap<>(Employee.Role.class);
@@ -516,25 +516,25 @@ public class MampfOrderManager {
 
 	/**
 	 * given a {@link CartItem}, creates a list of {@link CartItem} which have existing catalog-{@link Item}
-	 * <li>when the cartitem has a {@link BreakfastMappedItems} as product, the returned
+	 * <li>when the cart item has a {@link BreakfastMappedItems} as product, the returned
 	 * items will contain {@link mampf.catalog.BreakfastItem} as product
 	 * ({@link BreakfastMappedItems} is not a catalog-{@link Item})</li>
 	 *
-	 * @param cartitem to check
+	 * @param cartItem to check
 	 * @return a new instance of {@link List} of {@link CartItem}
 	 */
-	private List<CartItem> createCheckItems(CartItem cartitem) {
+	private List<CartItem> createCheckItems(CartItem cartItem) {
 
-		Item item = ((Item) cartitem.getProduct());
-		List<CartItem> checkitems = new ArrayList<>();
+		Item item = ((Item) cartItem.getProduct());
+		List<CartItem> checkItems = new ArrayList<>();
 		if (item.getDomain().equals(Item.Domain.MOBILE_BREAKFAST)) {
 			BreakfastMappedItems bfItem = ((BreakfastMappedItems) item);
-			checkitems.add(new Cart().addOrUpdateItem(bfItem.getBeverage(), cartitem.getQuantity()));
-			checkitems.add(new Cart().addOrUpdateItem(bfItem.getDish(), cartitem.getQuantity()));
+			checkItems.add(new Cart().addOrUpdateItem(bfItem.getBeverage(), cartItem.getQuantity()));
+			checkItems.add(new Cart().addOrUpdateItem(bfItem.getDish(), cartItem.getQuantity()));
 		} else {
-			checkitems.add(cartitem);
+			checkItems.add(cartItem);
 		}
-		return checkitems;
+		return checkItems;
 	}
 
 	/**
@@ -543,21 +543,21 @@ public class MampfOrderManager {
 	 * <li>otherwise (the inventorySnapshot has no item of this type,
 	 * or the amount of the requested amount is infinite) will accept the request</li>
 	 *
-	 * @param inventorySnapshot the calucated available items
-	 * @param checkitem         requested item and amount
+	 * @param inventorySnapshot the calculated available items
+	 * @param checkItem         requested item and amount
 	 * @return accepts the amount by returning a {@code empty} {@link Optional}, otherwise returns a
 	 * {@link Optional} of the inventorySnapshot {@link UniqueMampfItem}
 	 */
-	private Optional<UniqueMampfItem> checkForAmount(List<UniqueMampfItem> inventorySnapshot, CartItem checkitem) {
+	private Optional<UniqueMampfItem> checkForAmount(List<UniqueMampfItem> inventorySnapshot, CartItem checkItem) {
 		Optional<UniqueMampfItem> inventoryItem = inventorySnapshot.stream().filter(i ->
-				i.getProduct().equals(checkitem.getProduct())).findFirst();
-		Item catalogItem = ((Item) checkitem.getProduct());
+				i.getProduct().equals(checkItem.getProduct())).findFirst();
+		Item catalogItem = ((Item) checkItem.getProduct());
 
 
 		if (inventoryItem.isPresent() &&
 				(catalogItem.getCategory().equals(Category.STAFF)
 						|| !Inventory.infinity.contains(catalogItem.getCategory())) &&
-				(inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity()))) {
+				(inventoryItem.get().getQuantity().isLessThan(checkItem.getQuantity()))) {
 			return inventoryItem;
 		}
 		return Optional.empty();

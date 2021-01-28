@@ -352,17 +352,17 @@ public class OrderController {
 
 		if (reload.isPresent()) {
 			model.addAttribute("validations", validationsStr);
-			return buyCart(form.getDomainChoosen(), model, mampfCart, form, user.get());
+			return buyCart(form.getDomainChosen(), model, mampfCart, form, user.get());
 		}
 
 		validateCheckoutForm(form, result);
 
 		if (result.hasErrors()) {
 			model.addAttribute("validations", validationsStr);
-			return buyCart(form.getDomainChoosen(), model, mampfCart, form, user.get());
+			return buyCart(form.getDomainChosen(), model, mampfCart, form, user.get());
 		}
 
-		Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChoosen());
+		Map<Item.Domain, DomainCart> carts = mampfCart.getDomainItems(form.getDomainChosen());
 		Map<Item.Domain, List<String>> validations = orderManager.validateCarts(user.get().getUserAccount(), carts);
 
 		if (!validations.isEmpty()) {
@@ -373,7 +373,7 @@ public class OrderController {
 
 		if (result.hasErrors()) {
 			model.addAttribute("validations", validationsStr);
-			return buyCart(form.getDomainChoosen(), model, mampfCart, form, user.get());
+			return buyCart(form.getDomainChosen(), model, mampfCart, form, user.get());
 		}
 
 		orderManager.createOrders(carts, form, user.get());
@@ -435,7 +435,7 @@ public class OrderController {
 	 * @return buy_cart template
 	 */
 	private String buyCart(Item.Domain domain, Model model, MampfCart mampfCart, CheckoutForm form, User user) {
-		form.setDomainChoosen(domain);
+		form.setDomainChosen(domain);
 		Map<Item.Domain, DomainCart> domains = mampfCart.getDomainItems(domain);
 		model.addAttribute("canSubmit", domains.values().stream().allMatch(
 				cart -> (cart.getStartDate() != null && cart.getEndDate() != null)));

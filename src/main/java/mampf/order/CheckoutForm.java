@@ -32,9 +32,9 @@ public class CheckoutForm {
 	@NotEmpty()
 	private final String payMethod;
 
-	private Item.Domain domainChoosen;
+	private Item.Domain domainChosen;
 
-	private String generalError;
+	private final String generalError;
 
 	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:m");
@@ -58,14 +58,14 @@ public class CheckoutForm {
 	 */
 	public boolean hasValidData() {
 
-		if (domainChoosen == null) {
+		if (domainChosen == null) {
 			for (Item.Domain domain : getDomains()) {
 				if (!validateDomain(domain)) {
 					return false;
 				}
 			}
 		} else {
-			return validateDomain(domainChoosen);
+			return validateDomain(domainChosen);
 		}
 		return true;
 
@@ -196,11 +196,11 @@ public class CheckoutForm {
 		return allAddresses;
 	}
 
-	public Item.Domain getDomainChoosen() {
-		return domainChoosen;
+	public Item.Domain getDomainChosen() {
+		return domainChosen;
 	}
 
-	public void setDomainChoosen(Item.Domain domainChoosen) {
-		this.domainChoosen = domainChoosen;
+	public void setDomainChosen(Item.Domain domainChosen) {
+		this.domainChosen = domainChosen;
 	}
 }

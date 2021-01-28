@@ -272,7 +272,7 @@ class MampfOrderManagerTests {
         assertEquals(order.getEmployees().size(),4,"employees should be assigned");
         assertTrue(order.getEmployees().get(0).getBooked().contains(order));
         assertEquals(order.getStartDate(),form.getStartDateTime(Item.Domain.EVENTCATERING));
-        assertEquals(order.getAdress(),user.getAddress());
+        assertEquals(order.getAddress(),user.getAddress());
 
         // party:
         order = orders.stream().filter(o -> o.getDomain().equals(Item.Domain.PARTYSERVICE)).findFirst().get();
@@ -283,7 +283,7 @@ class MampfOrderManagerTests {
         // mb:
         order = orders.stream().filter(o -> o.getDomain().equals(Item.Domain.MOBILE_BREAKFAST)).findFirst().get();
         assertTrue(order instanceof MBOrder,"mb orders should be a instance of mborder");
-        assertEquals(order.getAdress(),userManager.findUserByUsername("dextermorgan").get().getAddress());
+        assertEquals(order.getAddress(),userManager.findUserByUsername("dextermorgan").get().getAddress());
         assertTrue(order.getOrderLines().get().anyMatch(ol -> ol.getProductName().equals("Kuchen")));
         assertTrue(order.getOrderLines().get().anyMatch(ol -> ol.getProductName().equals("Tee")));
         assertEquals(order.getOrderLines().toList().size(),2,"mb orders should have the breakfastitems as orderlines");

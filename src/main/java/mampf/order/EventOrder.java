@@ -37,15 +37,16 @@ import org.salespointframework.quantity.Quantity;
  * @author Konstii
  *
  */
+
 @Entity
 public class EventOrder extends MampfOrder {
 
 	
 	public static final Predicate<Product> productHasPrizePerHour = p->p instanceof StaffItem;
-	
+
 	/**
 	 * calculates the prize for the given timespan for a given prizePerHour. </br>
-	 * the timespan (minute differenc) will always be rounded up to the next hour.
+	 * the timespan (minute difference) will always be rounded up to the next hour.
 	 * @param fromDate timespan start
 	 * @param toDate timespan end
 	 * @param prizePerHour a {@link MonetaryAmount} for each hour
@@ -75,8 +76,8 @@ public class EventOrder extends MampfOrder {
 					  Item.Domain domain,
 					  LocalDateTime startDate,
 					  LocalDateTime endDate,
-					  String adress) {
-		super(account, paymentMethod,domain,startDate,endDate,adress);
+					  String address) {
+		super(account, paymentMethod,domain,startDate,endDate,address);
 
 	}
 

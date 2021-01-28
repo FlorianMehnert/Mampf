@@ -7,7 +7,6 @@ import mampf.order.EventOrder;
 import mampf.order.MampfOrder;
 import mampf.order.MampfOrderManager;
 import org.javamoney.moneta.Money;
-import org.salespointframework.catalog.Product;
 import org.salespointframework.order.OrderLine;
 import org.salespointframework.quantity.Quantity;
 import org.springframework.data.util.Pair;
@@ -28,8 +27,8 @@ import java.util.Optional;
 
 @Controller
 public class RevenueController {
-	private MampfOrderManager mampfOrderManager;
-	private MampfCatalog catalog;
+	private final MampfOrderManager mampfOrderManager;
+	private final MampfCatalog catalog;
 
 	public RevenueController(MampfOrderManager mampfOrderManager, MampfCatalog catalog) {
 		this.mampfOrderManager = mampfOrderManager;
@@ -126,7 +125,7 @@ public class RevenueController {
 	}
 
 	/**
-	 * checks wheater a given LocalDate {@param dateToCheck} is between {@param startDate} and {@param endDate}
+	 * checks weather a given LocalDate {@param dateToCheck} is between {@param startDate} and {@param endDate}
 	 * @param dateToCheck date which should be checked for
 	 * @param startDate the date which lies furthest in the past
 	 * @param endDate the date which lies furthest in the future
@@ -141,7 +140,7 @@ public class RevenueController {
 	/**
 	 * takes String and converts it to a LocalDate
 	 * @param dateString input String
-	 * @param isStartDate determins weather the output for a wrong dateString parsing is the momentary time or
+	 * @param isStartDate determines weather the output for a wrong dateString parsing is the momentary time or
 	 *                    now plus one month
 	 * @return parsed LocalDate
 	 */

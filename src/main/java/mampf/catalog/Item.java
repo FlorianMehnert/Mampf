@@ -41,16 +41,17 @@ public class Item extends Product {
 
 
 	@SuppressWarnings({"unused", "deprecation"})
-	public Item(){}
+	public Item() {
+	}
 
 	public Item(
-		String name,
-		Money price,
-		Domain domain,
-		Category category,
-		String description
-		){
-		super (name, price);
+			String name,
+			Money price,
+			Domain domain,
+			Category category,
+			String description
+	) {
+		super(name, price);
 
 		this.domain = domain;
 		this.category = category;
@@ -60,16 +61,17 @@ public class Item extends Product {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	@Override
 	public String toString() {
 		return "name: " + getName() + " price: " + getPrice() + " domain: " + getDomain() + " category: "
 				+ getCategory();
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public Domain getDomain() {
 		return this.domain;
 	}
