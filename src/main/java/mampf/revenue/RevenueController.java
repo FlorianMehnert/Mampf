@@ -94,17 +94,21 @@ public class RevenueController {
 	 * @param gains puts extracted information in gains
 	 */
 
-	private void calculateSumPerOrderLine(OrderLine orderLine, Map<Item, Pair<Quantity, MonetaryAmount>> gains, int duration) {
+	private void calculateSumPerOrderLine(OrderLine orderLine,
+										  Map<Item, Pair<Quantity, MonetaryAmount>> gains, int duration) {
 		Optional<Item> product = catalog.findById(orderLine.getProductIdentifier());
 		if(product.isPresent()) {
 			if(gains.containsKey(product.get())) {
-				Quantity newQuantity = gains.get(product.get()).getFirst().add(calculateNewQuantity(product.get(), orderLine, duration));
+				Quantity newQuantity = gains.get(product.get()).getFirst().add(calculateNewQuantity(product.get(),
+						orderLine, duration));
 				gains.put(product.get(), Pair.of(newQuantity, gains.get(product.get()).getSecond()));
 			}else {
 				if(product.get().getDomain() == Item.Domain.MOBILE_BREAKFAST) {
-					gains.put(product.get(), Pair.of(orderLine.getQuantity(), BreakfastItem.BREAKFAST_PRICE.divide(2)));
+					gains.put(product.get(),
+							Pair.of(orderLine.getQuantity(), BreakfastItem.BREAKFAST_PRICE.divide(2)));
 				}else{
-					gains.put(product.get(), Pair.of(calculateNewQuantity(product.get(), orderLine, duration), product.get().getPrice()));
+					gains.put(product.get(), Pair.of(calculateNewQuantity(product.get(), orderLine, duration),
+							product.get().getPrice()));
 				}
 			}
 		}
@@ -113,7 +117,8 @@ public class RevenueController {
 	private Quantity calculateNewQuantity(Item product, OrderLine orderLine, int duration) {
 		if(product.getCategory() == Item.Category.STAFF) {
 			Quantity quantityOfCurrentOrderLine = orderLine.getQuantity();
-			return Quantity.of(quantityOfCurrentOrderLine.getAmount().multiply(BigDecimal.valueOf(duration)).longValue());
+			return Quantity.of(quantityOfCurrentOrderLine.getAmount().
+					multiply(BigDecimal.valueOf(duration)).longValue());
 		}else{
 			return orderLine.getQuantity();
 		}

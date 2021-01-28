@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -94,12 +93,12 @@ public class CatalogController {
 	@PostMapping("/catalog/edit/{itemId}")
 	public String catalogEditItemPost(@PathVariable String itemId, @Valid @ModelAttribute("form") CatalogItemForm form) {
 		Optional<Item> item = this.catalog.findById(itemId);
-		if (!item.isPresent()) {
+		if (item.isEmpty()) {
 			return "catalog_editItem";
 		}
 		Item realItem = item.get();
 		Optional<UniqueMampfItem> inventoryItem = this.inventory.findByProduct(item.get());
-		if (!inventoryItem.isPresent()) {
+		if (inventoryItem.isEmpty()) {
 			return "catalog_editItem";
 		}
 		BigDecimal originalAmount = inventoryItem.get().getAmount();
@@ -172,7 +171,6 @@ public class CatalogController {
 				continue;
 			}
 
-			// TODO: Add internationalization for the category in the Util class
 			String currentCategory = Util.renderDomainName(currentItem.getCategory().toString());
 			if (categorizedItems.containsKey(currentCategory)) {
 				categorizedItems.get(currentCategory).add(currentItem);

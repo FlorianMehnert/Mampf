@@ -17,6 +17,7 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 
 	/**
 	 * iterates through all Items in Inventory and returns matches by name
+	 *
 	 * @param name String which is the matching parameter
 	 * @return UniqueMampfItem when there is a match or Optional.empty() for no match
 	 */
@@ -79,9 +80,9 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 	}
 
 	/**
-	 *
+	 * filters all inventory items by filter String and type
 	 * @param filter String for which should be filtered for
-	 * @param type determines category in which the seach takes place
+	 * @param type   determines category in which the search takes place
 	 * @return List which is sorted with filter, type and partially
 	 */
 	default List<UniqueMampfItem> findAllAndFilter(String filter, String type) {
@@ -90,28 +91,35 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		sortableList.sort(new SortByCategory());
 		switch (type) {
 			case "category":
-					sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().toString())).contains(filter));
+				sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().
+						toString())).contains(filter));
 				break;
 			case "amount":
-					try {
-						sortableList.removeIf(umi -> {
-							if ((!(Inventory.infinity.contains(umi.getCategory()))
-									&& (Inventory.infinityStrings.contains(filter)))
-									|| (!(Inventory.infinityStrings.contains(filter))
-									&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter))))
-								return true;
-							if (!Inventory.infinityStrings.contains(filter)) {
-								Integer.valueOf(filter);
-							}
-							return false;
-						});
-					} catch (NumberFormatException e) {
-						return new ArrayList<>();
-					}
+				filterByAmount(sortableList, filter);
 				break;
 			default: // case name
-					sortableList.removeIf(umi -> !Util.renderDomainName(umi.getItem().getName()).contains(filter));
+				sortableList.removeIf(umi -> !Util.renderDomainName(umi.getItem().getName()).contains(filter));
 				break;
+		}
+		return sortableList;
+	}
+
+	default List<UniqueMampfItem> filterByAmount(List<UniqueMampfItem> sortableList, String filter){
+		try {
+			sortableList.removeIf(umi -> {
+				if ((!(Inventory.infinity.contains(umi.getCategory()))
+						&& (Inventory.infinityStrings.contains(filter)))
+						|| (!(Inventory.infinityStrings.contains(filter))
+						&& umi.getQuantity().getAmount().intValue() != (Integer.parseInt(filter)))) {
+					return true;
+				}
+				if (!Inventory.infinityStrings.contains(filter)) {
+					Integer.valueOf(filter);
+				}
+				return false;
+			});
+		} catch (NumberFormatException e) {
+			return new ArrayList<>();
 		}
 		return sortableList;
 	}

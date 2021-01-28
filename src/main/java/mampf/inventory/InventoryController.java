@@ -99,7 +99,6 @@ public class InventoryController {
 		List<UniqueMampfItem> list = inventory.findAllAndFilter(word, type);
 		for (UniqueMampfItem item : list) {
 			String name = Item.categoryTranslations.get(item.getCategory().toString());
-			System.out.println(name);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
@@ -151,7 +150,6 @@ public class InventoryController {
 		ArrayList<Pair<UniqueMampfItem, String>> names = new ArrayList<>();
 		for (UniqueMampfItem item : inventory.findAllAndSort("")) {
 			String name = Item.categoryTranslations.get(item.getCategory().toString());
-			System.out.println(name);
 			Pair<UniqueMampfItem, String> pair = new Pair<>(item, name);
 			names.add(pair);
 		}
