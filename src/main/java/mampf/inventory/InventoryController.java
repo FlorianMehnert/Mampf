@@ -40,7 +40,6 @@ public class InventoryController {
 					  @RequestParam("number") String number,
 					  @RequestParam ("negate") String neg,
 					  RedirectAttributes redirectAttributes){
-		int convNumber;
 		String error = "error";
 		String add = "redirect:/inventory/add";
 		if(number.equals("")){
@@ -52,25 +51,28 @@ public class InventoryController {
 		} else if (number.length() > 4){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht größer als 9999 sein!");
 			return add;
-		} else{
-			convNumber = Integer.parseInt(number);
-			UniqueMampfItem currentItem = inventory.findByProduct(item).get();
-			UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
-			if (!Inventory.infinity.contains(currentItem.getCategory()) || currentItem.getCategory() != Item.Category.STAFF) {
-				inventory.delete(currentItem);
-				if(neg.equals("decr")){
-					if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))) {
-						newItem.decreaseMampfQuantity(convNumber);
-					}
-				}else {
-					if(!(currentItem.getQuantity().add(Quantity.of(convNumber)).isGreaterThan(Quantity.of(2147000000)))) {
-						newItem.increaseMampfQuantity(convNumber);
-					}
-				}
-				inventory.save(newItem);
-			}
 		}
+		infinity(number, item, neg);
 		return "redirect:/inventory/amount";
+	}
+
+	private void infinity(String number, Item item, String neg){
+		int convNumber = Integer.parseInt(number);
+		UniqueMampfItem currentItem = inventory.findByProduct(item).get();
+		UniqueMampfItem newItem = new UniqueMampfItem(currentItem.getItem(), currentItem.getQuantity());
+		if (!Inventory.infinity.contains(currentItem.getCategory()) || currentItem.getCategory() != Item.Category.STAFF) {
+			inventory.delete(currentItem);
+			if(neg.equals("decr")){
+				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))) {
+					newItem.decreaseMampfQuantity(convNumber);
+				}
+			}else {
+				if(!(currentItem.getQuantity().add(Quantity.of(convNumber)).isGreaterThan(Quantity.of(2147000000)))) {
+					newItem.increaseMampfQuantity(convNumber);
+				}
+			}
+			inventory.save(newItem);
+		}
 	}
 
 	/**
