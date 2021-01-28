@@ -25,12 +25,7 @@ import org.salespointframework.useraccount.UserAccount;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.salespointframework.catalog.ProductIdentifier;
@@ -109,7 +104,7 @@ public class MampfOrderManager {
 
 	/**
 	 * creates Validations for a {@link Map} of {@link Domain} and {@link DomainCart} for a user with
-	 * {@link userAccount}. </br>
+	 * {@link UserAccount}. </br>
 	 * a {@link DomainCart} is valid when:</br>
 	 * <ul>
 	 * <li>the requested items/employees are available </li>
@@ -136,25 +131,20 @@ public class MampfOrderManager {
 		for (Employee.Role role : Employee.Role.values()) {
 			baseEmp.put(role, employeeManagement.getEmployeeAmount(role));
 		}
-		for (Map.Entry<Domain, DomainCart> entry : carts.entrySet()) {
-			Domain domain = entry.getKey();
-			DomainCart cart = entry.getValue();
+		// cart should be updated correctly
+		// get available Items:
+		carts.forEach((domain, cart) -> {
 			LocalDateTime startDate = cart.getStartDate();
 			LocalDateTime endDate = cart.getEndDate();
-			// cart should be updated correctly
 			if (startDate == null || endDate == null) {
 				updateValidations(validations, domain, "fehlende zeitangaben");
-				continue;
+				return;
 			}
-
 			if (domain.equals(Domain.MOBILE_BREAKFAST) && !hasBookedMB(userAccount)) {
 				updateValidations(validations, domain, "nicht mehr aktuell, oder bereits bestellt");
-				continue;
+				return;
 			}
-
-			// get available Items:
 			List<UniqueMampfItem> inventorySnapshot = getFreeItems(baseInv, baseCarts, baseEmp, startDate, endDate);
-
 			for (CartItem cartitem : cart) {
 				// de-map mapper-cartitems:
 				for (CartItem checkitem : createCheckItems(cartitem)) {
@@ -175,7 +165,7 @@ public class MampfOrderManager {
 				}
 			}
 			baseCarts.add(cart);
-		}
+		});
 		return validations;
 	}
 
@@ -196,7 +186,8 @@ public class MampfOrderManager {
 			DomainCart cart = entry.getValue();
 
 			// get Dates:
-			LocalDateTime startDate = cart.getStartDate(), endDate = cart.getEndDate();
+			LocalDateTime startDate = cart.getStartDate();
+			LocalDateTime endDate = cart.getEndDate();
 			String address = form.getAddress(domain);
 			if (address == null || address.isEmpty()) {
 				address = user.getAddress();
@@ -391,9 +382,7 @@ public class MampfOrderManager {
 		List<UniqueMampfItem> res = new ArrayList<>();
 		itemMap.forEach((id, q) -> {
 			Optional<Item> catalogItem = catalog.findById(id);
-			if (catalogItem.isPresent()) {
-				res.add(new UniqueMampfItem(catalogItem.get(), q));
-			}
+			catalogItem.ifPresent(item -> res.add(new UniqueMampfItem(item, q)));
 		});
 		return res;
 	}
@@ -432,7 +421,7 @@ public class MampfOrderManager {
 	}
 
 	public Optional<MampfOrder> findById(String orderId) {
-		return orderManagement.findAll(Pageable.unpaged()).filter(order -> order.getId().getIdentifier().equals(
+		return orderManagement.findAll(Pageable.unpaged()).filter(order -> Objects.requireNonNull(order.getId()).getIdentifier().equals(
 				orderId)).get().findFirst();
 	}
 
@@ -564,20 +553,22 @@ public class MampfOrderManager {
 		Item catalogItem = ((Item) checkitem.getProduct());
 
 
-        if (inventoryItem.isPresent() &&
-            (catalogItem.getCategory().equals(Category.STAFF)
-					|| !Inventory.infinity.contains(catalogItem.getCategory()))&&
-            (inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity()))){
-            return inventoryItem;
-        }
-        return Optional.empty();
-    }
-    /**
-     * sums up every needed items of every (completed) {@link MampfOrder} for a given timespan 
-     * @param fromDate timespan start
-     * @param toDate timespan end
-     * @return a new instance of {@link Map} which maps all needed items as {@link ProductIdentifier} and {@link Quantity}
-     */
+		if (inventoryItem.isPresent() &&
+				(catalogItem.getCategory().equals(Category.STAFF)
+						|| !Inventory.infinity.contains(catalogItem.getCategory())) &&
+				(inventoryItem.get().getQuantity().isLessThan(checkitem.getQuantity()))) {
+			return inventoryItem;
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * sums up every needed items of every (completed) {@link MampfOrder} for a given timespan
+	 *
+	 * @param fromDate timespan start
+	 * @param toDate   timespan end
+	 * @return a new instance of {@link Map} which maps all needed items as {@link ProductIdentifier} and {@link Quantity}
+	 */
 
 	private void setPersonalBooked(EventOrder order, Map<Employee.Role, List<Employee>> personalLeft) {
 		Item item;
