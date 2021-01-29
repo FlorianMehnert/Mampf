@@ -23,7 +23,12 @@ public class MBOrder extends MampfOrder {
     private Set<DayOfWeek> weekDays;
     private LocalTime time;
 
-    @SuppressWarnings("unused")
+
+	/**
+	 * @deprecated
+	 */
+	@SuppressWarnings("unused")
+	@Deprecated
     public MBOrder() {
     }
 
@@ -32,7 +37,6 @@ public class MBOrder extends MampfOrder {
         super(account, paymentMethod, Item.Domain.MOBILE_BREAKFAST, startDate, endDate, bfItem.getAddress());
         this.time = bfItem.getBreakfastTime();
         this.weekDays = new HashSet<>(bfItem.getWeekDays());
-
     }
     /**
      * calculates the amount of breakfast dates for the given time spans and breakfast days.</br>

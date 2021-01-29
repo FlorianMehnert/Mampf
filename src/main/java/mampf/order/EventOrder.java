@@ -124,8 +124,7 @@ public class EventOrder extends MampfOrder {
 				EventOrder.calcPrizePerHour(getStartDate(), getEndDate(),
 				orderLine.getPrice()	
 				)); 
-			}
-			else{
+			} else{
 				total=total.add(orderLine.getPrice());
 			}
 		}	
@@ -144,8 +143,7 @@ public class EventOrder extends MampfOrder {
 			Money price;
 			if(productsWithPrizePerHour.contains(orderLine.getProductIdentifier().getIdentifier())) {
 				price=(Money)EventOrder.calcPrizePerHour(getStartDate(), getEndDate(),orderLine.getPrice());
-			}
-			else{
+			} else{
 				price=(Money)orderLine.getPrice();
 			}
 			stuff.put(orderLine,price);

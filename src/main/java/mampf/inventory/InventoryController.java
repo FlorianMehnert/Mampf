@@ -41,19 +41,17 @@ public class InventoryController {
 					  @RequestParam ("negate") String neg,
 					  RedirectAttributes redirectAttributes){
 		String error = "error";
-		String add = "redirect:/inventory/add";
 		if(number.equals("")){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht leer sein!");
-			return add;
 		} else if (Integer.parseInt(number) < 0){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht negativ sein!");
-			return add;
 		} else if (number.length() > 4){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht größer als 9999 sein!");
-			return add;
+		}else{
+			infinity(number, item, neg);
+			return "redirect:/inventory/amount";
 		}
-		infinity(number, item, neg);
-		return "redirect:/inventory/amount";
+		return "redirect:/inventory/add";
 	}
 
 	private void infinity(String number, Item item, String neg){

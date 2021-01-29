@@ -73,7 +73,7 @@ public class MampfOrderManager {
 	 * <li> the user should not already have booked mobile breakfast for the available breakfast Date</li>
 	 * </ul>
 	 *
-	 * @param userAccount
+	 * @param userAccount {@link UserAccount}
 	 * @return {@code true} if the user is able to buy the ordered mobile breakfast, otherwise {@code false}
 	 */
 	public boolean hasBookedMB(UserAccount userAccount) {
@@ -95,8 +95,7 @@ public class MampfOrderManager {
 		}
 		//the user already has ordered their choice:
 		return findByTimeSpan(Optional.of(userAccount), LocalDateTime.of(company.get().getBreakfastDate().get(),
-				LocalTime.MIN),
-				LocalDateTime.of(company.get().getBreakfastEndDate().get(), LocalTime.MIN)).stream().
+				LocalTime.MIN), LocalDateTime.of(company.get().getBreakfastEndDate().get(), LocalTime.MIN)).stream().
 				noneMatch(order -> order instanceof MBOrder && order.getAddress().equals(boss.get().getAddress()));
 
 	}
@@ -272,27 +271,7 @@ public class MampfOrderManager {
 				}
 
 				actionItem = Optional.empty();
-				for (UniqueMampfItem bI : actionItems) {
-					if (bI.getProduct().equals(resItem.getProduct())) {
-						actionItem = Optional.of(bI);
-						break;
-					}
-				}
-
-				if (actionItem.isEmpty()) {
-					continue;
-				}
-				// subtract:
-
-				if (actionItem.get().getCategory().equals(Category.STAFF)) {
-					Employee.Role role = ((StaffItem) actionItem.get().getProduct()).getType();
-					personalLeft.put(role, reduceValidationQuantity(personalLeft.get(role),
-							actionItem.get().getQuantity()));
-				} else if (!Inventory.infinity.contains(resItem.getCategory())) {
-					resItem.setQuantity(reduceValidationQuantity(resItem.getQuantity(),
-							actionItem.get().getQuantity()));
-				}
-
+				someLoopFunction(actionItems, resItem, actionItem, personalLeft);
 			}
 		}
 		/*----------------------------*/
@@ -302,6 +281,31 @@ public class MampfOrderManager {
 				forEach(j -> j.setQuantity(personalLeft.get(((StaffItem) j.getProduct()).getType())));
 
 		return res;
+	}
+
+
+
+	private void someLoopFunction(List<UniqueMampfItem> actionItems, UniqueMampfItem resItem, Optional<UniqueMampfItem> actionItem, Map<Employee.Role, Quantity> personalLeft){
+		for (UniqueMampfItem bI : actionItems) {
+			if (bI.getProduct().equals(resItem.getProduct())) {
+				actionItem = Optional.of(bI);
+				break;
+			}
+		}
+
+		if (actionItem.isEmpty()) {
+			return;
+		}
+		// subtract:
+
+		if (actionItem.get().getCategory().equals(Category.STAFF)) {
+			Employee.Role role = ((StaffItem) actionItem.get().getProduct()).getType();
+			personalLeft.put(role, reduceValidationQuantity(personalLeft.get(role),
+					actionItem.get().getQuantity()));
+		} else if (!Inventory.infinity.contains(resItem.getCategory())) {
+			resItem.setQuantity(reduceValidationQuantity(resItem.getQuantity(),
+					actionItem.get().getQuantity()));
+		}
 	}
 
 	/**
@@ -314,6 +318,7 @@ public class MampfOrderManager {
 	 * @return a new instance of {@link List} of {@link UniqueMampfItem}
 	 * every needed items with amount in the given timespan
 	 */
+
 	private List<UniqueMampfItem> getBookedItemsFromCart(List<DomainCart> baseCarts,
 														 LocalDateTime fromDate,
 														 LocalDateTime toDate) {
@@ -466,7 +471,7 @@ public class MampfOrderManager {
 	/**
 	 * creates, depending on payMethod the correct {@link PaymentMethod}:
 	 * <ul>
-	 * <li>"{@code Check}" will return a new {@link Cheque} with the Mampf-banking informations</li>
+	 * <li>"{@code Check}" will return a new {@link Cheque} with the Mampf-banking information</li>
 	 * <li>otherwise, returns a new {@link Cash}</li>
 	 * </ul>
 	 *
@@ -563,7 +568,7 @@ public class MampfOrderManager {
 	}
 
 	/**
-   * assignes {@link Employee} to order when orderlines contain STAFF-categorized-items:</br>
+   * assigns {@link Employee} to order when order lines contain STAFF-categorized-items:</br>
    * adds order to booked orders of {@link Employee}.</br>
    * adds {@link Employee} to order employees.
    * @param order 
@@ -598,7 +603,7 @@ public class MampfOrderManager {
 	 * creates a mobile breakfast order.</br>
 	 * <ul>
 	 * <li> adds chosen breakfast items as {@link OrderLine} to a {@link MBOrder}</li>
-	 * <li> adds mobile breakfast total prize as {@link ChargeLine} to a {@link MBOrder}</li>
+	 * <li> adds mobile breakfast total prize as {@link org.salespointframework.order.ChargeLine} to a {@link MBOrder}</li>
 	 * </ul>
 	 * @param bfCartItem a @{@link CartItem} which contains a {@link BreakfastMappedItems}
 	 * @param startDate start date of mobile breakfast
