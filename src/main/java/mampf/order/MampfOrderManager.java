@@ -155,7 +155,8 @@ public class MampfOrderManager {
 	 * @param domain {@link Domain}
 	 * @param inventorySnapshot temporary List of {@link UniqueMampfItem}
 	 */
-	private void iterateThroughCart(Cart cart, Map<Domain, List<String>> validations, Domain domain, List<UniqueMampfItem> inventorySnapshot){
+	private void iterateThroughCart(Cart cart, Map<Domain, List<String>> validations,
+									Domain domain, List<UniqueMampfItem> inventorySnapshot){
 		for (CartItem cartitem : cart) {
 			// de-map mapper-cart items:
 			for (CartItem cartItem : createCheckItems(cartitem)) {

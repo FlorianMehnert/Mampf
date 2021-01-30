@@ -362,17 +362,31 @@ public class OrderController {
 					"die Felder müssen ausgefüllt sein");
 		}
 
-		Map<String, List<String>> validationsStr = new HashMap<>();
+		Map<String, List<String>> validationsStrings = new HashMap<>();
 
 		if (reload.isPresent()) {
-			model.addAttribute("validations", validationsStr);
+			model.addAttribute("validations", validationsStrings);
 			return buyCart(form.getDomainChosen(), model, mampfCart, form, user.get());
 		}
-
 		validateCheckoutForm(form, result);
+		return buyPart(result, model, validationsStrings, form, mampfCart, user);
+	}
 
+	/**
+	 * part of {@link OrderController#buy(Model, Optional, CheckoutForm, Errors, Authentication, MampfCart)}.
+	 * @param result
+	 * @param model
+	 * @param validationsStrings
+	 * @param form
+	 * @param mampfCart
+	 * @param user
+	 * @return templates
+	 */
+
+	private String buyPart(Errors result, Model model, Map<String, List<String>> validationsStrings,
+						   CheckoutForm form, MampfCart mampfCart, Optional<User> user){
 		if (result.hasErrors()) {
-			model.addAttribute("validations", validationsStr);
+			model.addAttribute("validations", validationsStrings);
 			return buyCart(form.getDomainChosen(), model, mampfCart, form, user.get());
 		}
 
@@ -382,11 +396,11 @@ public class OrderController {
 		if (!validations.isEmpty()) {
 			result.rejectValue("generalError", "CheckoutForm.generalError.NoStuffLeft",
 					"Items konnten nicht validiert werden");
-			validations.forEach((domain, list) -> validationsStr.put(domain.name(), list));
+			validations.forEach((domain, list) -> validationsStrings.put(domain.name(), list));
 		}
 
 		if (result.hasErrors()) {
-			model.addAttribute("validations", validationsStr);
+			model.addAttribute("validations", validationsStrings);
 			return buyCart(form.getDomainChosen(), model, mampfCart, form, user.get());
 		}
 
