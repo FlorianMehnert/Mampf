@@ -146,20 +146,20 @@ public class RevenueController {
 	 */
 
 	private LocalDate parseDateStringIntoLocalDate(String dateString, boolean isStartDate) {
+		LocalDate date = LocalDate.now();
 		if(dateString == null) {
-			if(isStartDate) {
-				return LocalDate.now();
+			if(!isStartDate) {
+				date = LocalDate.now().plusMonths(1);
 			}
-			return LocalDate.now().plusMonths(1);
 		}else{
 			try {
-				return LocalDate.parse(dateString);
+				date = LocalDate.parse(dateString);
 			}catch (DateTimeParseException exception) {
-				if(isStartDate) {
-					return LocalDate.now();
+				if(!isStartDate) {
+					date = LocalDate.now().plusMonths(1);
 				}
-				return LocalDate.now().plusMonths(1);
 			}
 		}
+		return date;
 	}
 }
