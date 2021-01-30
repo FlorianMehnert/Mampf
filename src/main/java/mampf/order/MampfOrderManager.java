@@ -142,29 +142,38 @@ public class MampfOrderManager {
 				updateValidations(validations, domain, "nicht mehr aktuell, oder bereits bestellt");
 				return;
 			}
-			List<UniqueMampfItem> inventorySnapshot = getFreeItems(baseInv, baseCarts, baseEmp, startDate, endDate);
-			for (CartItem cartitem : cart) {
-				// de-map mapper-cart items:
-				for (CartItem cartItem : createCheckItems(cartitem)) {
-					Optional<Item> catalogItem = catalog.findById(cartItem.getProduct().getId());
-					if (catalogItem.isEmpty()) {
-						updateValidations(validations, domain, "Item nicht vorhanden:"
-								+ cartitem.getProductName());
-						continue;
-					}
-
-					Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, cartItem);
-					if (inventoryItem.isPresent()) {
-						String validationState = "Keine verfügbare Auswahl von '" + catalogItem.get().getName() + "' : " +
-								" verbleibende Anzahl: "
-								+ inventoryItem.get().getQuantity().getAmount();
-						updateValidations(validations, domain, validationState);
-					}
-				}
-			}
+			iterateThroughCart(cart, validations, domain, getFreeItems(baseInv, baseCarts, baseEmp, startDate, endDate));
 			baseCarts.add(cart);
 		});
 		return validations;
+	}
+
+	/**
+	 * used to reduce the complexity of {@link MampfOrderManager#validateCarts(UserAccount, Map)}
+	 * @param cart the function iterates through cart
+	 * @param validations used in updateValidations
+	 * @param domain {@link Domain}
+	 * @param inventorySnapshot temporary List of {@link UniqueMampfItem}
+	 */
+	private void iterateThroughCart(Cart cart, Map<Domain, List<String>> validations, Domain domain, List<UniqueMampfItem> inventorySnapshot){
+		for (CartItem cartitem : cart) {
+			// de-map mapper-cart items:
+			for (CartItem cartItem : createCheckItems(cartitem)) {
+				Optional<Item> catalogItem = catalog.findById(cartItem.getProduct().getId());
+				if (catalogItem.isEmpty()) {
+					updateValidations(validations, domain, "Item nicht vorhanden:"
+							+ cartitem.getProductName());
+					continue;
+				}
+				Optional<UniqueMampfItem> inventoryItem = checkForAmount(inventorySnapshot, cartItem);
+				if (inventoryItem.isPresent()) {
+					String validationState = "Keine verfügbare Auswahl von '" + catalogItem.get().getName() + "' : " +
+							" verbleibende Anzahl: "
+							+ inventoryItem.get().getQuantity().getAmount();
+					updateValidations(validations, domain, validationState);
+				}
+			}
+		}
 	}
 
 	/**
@@ -285,7 +294,8 @@ public class MampfOrderManager {
 
 
 
-	private void someLoopFunction(List<UniqueMampfItem> actionItems, UniqueMampfItem resItem, Optional<UniqueMampfItem> actionItem, Map<Employee.Role, Quantity> personalLeft){
+	private void someLoopFunction(List<UniqueMampfItem> actionItems, UniqueMampfItem resItem,
+								  Optional<UniqueMampfItem> actionItem, Map<Employee.Role, Quantity> personalLeft){
 		for (UniqueMampfItem bI : actionItems) {
 			if (bI.getProduct().equals(resItem.getProduct())) {
 				actionItem = Optional.of(bI);
@@ -599,6 +609,7 @@ public class MampfOrderManager {
 			}
 		}
 	}
+
 	/**
 	 * creates a mobile breakfast order.</br>
 	 * <ul>
