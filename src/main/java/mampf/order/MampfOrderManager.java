@@ -83,6 +83,18 @@ public class MampfOrderManager {
 		if (user.isEmpty()) {
 			return false;
 		}
+		
+		return hasBookedMBPart(user, userAccount);
+	}
+
+	/**
+	 * part of {@link MampfOrderManager#hasBookedMB(UserAccount)}
+	 * @param user {@link User}
+	 * @param userAccount {@link UserAccount}
+	 * @return {@code true} if the user is able to buy the ordered mobile breakfast, otherwise {@code false}
+	 */
+	
+	private boolean hasBookedMBPart(Optional<User> user, UserAccount userAccount){
 		//the user is no employee:
 		Optional<Company> company = userManagement.findCompany(user.get().getId());
 		if (company.isEmpty()) {
@@ -97,7 +109,6 @@ public class MampfOrderManager {
 		return findByTimeSpan(Optional.of(userAccount), LocalDateTime.of(company.get().getBreakfastDate().get(),
 				LocalTime.MIN), LocalDateTime.of(company.get().getBreakfastEndDate().get(), LocalTime.MIN)).stream().
 				noneMatch(order -> order instanceof MBOrder && order.getAddress().equals(boss.get().getAddress()));
-
 	}
 
 	/**
@@ -182,8 +193,8 @@ public class MampfOrderManager {
 	 * - sets staff to the orders (personal)
 	 *
 	 * @param carts chosen {@link DomainCart} mapped to {@link Domain}
-	 * @param form
-	 * @param user
+	 * @param form {@link CheckoutForm}
+	 * @param user {@link User}
 	 * @return a new instance of {@link List} of {@link MampfOrder}
 	 */
 	public List<MampfOrder> createOrders(Map<Item.Domain, DomainCart> carts, CheckoutForm form, User user) {
@@ -361,8 +372,8 @@ public class MampfOrderManager {
 	/**
 	 * subtracts sub from origin according to {@link Quantity} minima ({@code zero})
 	 *
-	 * @param origin
-	 * @param sub
+	 * @param origin {@link Quantity}
+	 * @param sub {@link Quantity}
 	 * @return origin - sub or {@link Quantity} of {@code zero}
 	 */
 	private Quantity reduceValidationQuantity(Quantity origin, Quantity sub) {
@@ -390,7 +401,7 @@ public class MampfOrderManager {
 	/**
 	 * converts {@link ProductIdentifier} and {@link Quantity} to a list of items
 	 *
-	 * @param itemMap
+	 * @param itemMap {@link Map}
 	 * @return a new instance of {@link List} of {@link UniqueMampfItem}
 	 */
 	public List<UniqueMampfItem> convertToInventoryItems(Map<ProductIdentifier, Quantity> itemMap) {
@@ -405,7 +416,7 @@ public class MampfOrderManager {
 	/**
 	 * creates and returns a list of every {@link MampfOrder} of a {@link UserAccount}
 	 *
-	 * @param account
+	 * @param account {@link UserAccount}
 	 * @return a new instance of {@link List} of {@link MampfOrder}
 	 */
 	public List<MampfOrder> findByUserAcc(UserAccount account) {
@@ -420,7 +431,7 @@ public class MampfOrderManager {
 	 * deletes a given {@link MampfOrder} from the {@link org.salespointframework.order.OrderManagement}
 	 * when order is a {@link EventOrder}, removes {@link Employee} assignments to the given order
 	 *
-	 * @param order
+	 * @param order {@link MampfOrder}
 	 */
 	public void deleteOrder(MampfOrder order) {
 		for (MampfOrder order_ : findAll()) {
@@ -445,7 +456,7 @@ public class MampfOrderManager {
 	 * returns every order for a given userAccount and timespan</br>
 	 * - if the userAccount is {@code empty} every order of every user will be chosen
 	 *
-	 * @param userAccount
+	 * @param userAccount {@link UserAccount}
 	 * @param fromDate    timespan start
 	 * @param toDate      timespan end
 	 * @return a {@link Streamable} of {@link MampfOrder}
@@ -488,7 +499,7 @@ public class MampfOrderManager {
 	 *
 	 * @param payMethod   a {@link CheckoutForm} attribute
 	 * @param userAccount purchaser
-	 * @return
+	 * @return {@link PaymentMethod}
 	 */
 	private PaymentMethod createPayMethod(String payMethod, UserAccount userAccount) {
 		PaymentMethod method = Cash.CASH;
@@ -502,7 +513,7 @@ public class MampfOrderManager {
 	/**
 	 * returns if the cart has a {@link CartItem} which has a {@link Item} with category {@link Category#STAFF}
 	 *
-	 * @param cart
+	 * @param cart {@link Cart}
 	 * @return {@code true} if so, else {@code false}
 	 */
 	private boolean hasStaff(Cart cart) {
@@ -582,8 +593,8 @@ public class MampfOrderManager {
    * assigns {@link Employee} to order when order lines contain STAFF-categorized-items:</br>
    * adds order to booked orders of {@link Employee}.</br>
    * adds {@link Employee} to order employees.
-   * @param order 
-   * @param personalLeft
+   * @param order {@link EventOrder}
+   * @param personalLeft {@link List}
    */
 	private void setPersonalBooked(EventOrder order, Map<Employee.Role, List<Employee>> personalLeft) {
 		Item item;
@@ -625,9 +636,9 @@ public class MampfOrderManager {
 	 * @param bfCartItem a @{@link CartItem} which contains a {@link BreakfastMappedItems}
 	 * @param startDate start date of mobile breakfast
 	 * @param endDate end date of mobile breakfast
-	 * @param form 
-	 * @param account
-	 * @return
+	 * @param form {@link CheckoutForm}
+	 * @param account {@link UserAccount}
+	 * @return {@link MBOrder}
 	 */
 	private MBOrder createOrderMB(CartItem bfCartItem, LocalDateTime startDate, LocalDateTime endDate,
 								  CheckoutForm form, UserAccount account) {
