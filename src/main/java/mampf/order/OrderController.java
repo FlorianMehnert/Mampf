@@ -222,8 +222,8 @@ public class OrderController {
 	 */
 	@PostMapping("/cart/add/mobile-breakfast")
 	public String orderMobileBreakfast(@LoggedIn Optional<UserAccount> userAccount, @Valid MobileBreakfastForm form,
-									   @ModelAttribute("mampfCart") MampfCart mampfCart, RedirectAttributes redirectAttributes) {
-
+									   @ModelAttribute("mampfCart") MampfCart mampfCart,
+									   RedirectAttributes redirectAttributes) {
 		String redirect = "redirect:/mobile-breakfast";
 		if (userAccount.isEmpty()) {
 			return "redirect:/login";
@@ -236,7 +236,7 @@ public class OrderController {
 		if (form.getDish() == null) {
 			errVal = "Nichts zum Essen ausgewählt";
 		}
-		if (form.getDays().values().stream().allMatch(v -> !v.booleanValue())) {
+		if (form.getDays().values().stream().noneMatch(v -> v.booleanValue())) {
 			errVal = "Keinen Wochentag ausgewählt";
 		}
 		if (!orderManager.hasBookedMB(userAccount.get())) {
@@ -247,18 +247,32 @@ public class OrderController {
 			return redirect;
 		}
 
+		return orderMobileBreakfastPart(userAccount, form, redirectAttributes, error, mampfCart);
+	}
+
+	/**
+	 * part of orderMobileBreakfast
+	 * @param userAccount
+	 * @param form
+	 * @param redirectAttributes
+	 * @param error
+	 * @param mampfCart
+	 * @return mobile-breakfast|cart dependent on the parameters above
+	 */
+
+	public String orderMobileBreakfastPart(Optional<UserAccount> userAccount, MobileBreakfastForm form,
+										   RedirectAttributes redirectAttributes, String error, MampfCart mampfCart){
 		User user = userManagement.findUserByUserAccount(userAccount.get().getId()).get();
 		Optional<Company> company = userManagement.findCompany(user.getId());
 		LocalDateTime startDate = LocalDateTime.of(company.get().getBreakfastDate().get(), LocalTime.of(0, 0));
 		LocalDateTime endDate = LocalDateTime.of(company.get().getBreakfastEndDate().get(), LocalTime.of(0, 0));
-
 		BreakfastMappedItems mbItem = new BreakfastMappedItems(startDate, endDate,
 				userManagement.findUserById(company.get().getBossId()).get().getAddress(),
 				form);
 
 		if (mbItem.getAmount() == 0) {
 			redirectAttributes.addFlashAttribute(error, "Die Bestellung beinhaltet keine Produkte");
-			return redirect;
+			return "redirect:/mobile-breakfast";
 		}
 
 		mampfCart.addToCart(mbItem, Quantity.of(mbItem.getAmount()));
