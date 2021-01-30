@@ -598,14 +598,19 @@ public class MampfOrderManager {
 
 			if (item.getCategory().equals(Item.Category.STAFF)) {
 				List<Employee> freeStaff = personalLeft.get(((StaffItem) item).getType());
-				Employee employee;
-				for (int i = 0; i < itemQuantity.getAmount().intValue(); i++) {
-					if (!freeStaff.isEmpty()) {
-						employee = freeStaff.remove(0);
-						employee.setBooked(order);
-						order.addEmployee(employee);
-					}
-				}
+				setPersonalBookedPart(itemQuantity, freeStaff, order);
+
+			}
+		}
+	}
+
+	private void setPersonalBookedPart(Quantity itemQuantity, List<Employee> freeStaff,
+									   EventOrder order){
+		for (int i = 0; i < itemQuantity.getAmount().intValue(); i++) {
+			if (!freeStaff.isEmpty()) {
+				Employee employee = freeStaff.remove(0);
+				employee.setBooked(order);
+				order.addEmployee(employee);
 			}
 		}
 	}
