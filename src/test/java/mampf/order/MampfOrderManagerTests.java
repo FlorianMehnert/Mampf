@@ -180,7 +180,7 @@ class MampfOrderManagerTests {
 
         d = catalog.findByDomain(Domain.RENT_A_COOK);
         orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.STAFF) && p.getName().equals(
-                "Koch/Köchin pro 10 Personen")).findFirst().get(), 6, cart);
+                "Koch/Köchin")).findFirst().get(), 6, cart);
 
     }
 
@@ -202,11 +202,11 @@ class MampfOrderManagerTests {
         orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.STAFF) && p.getName().equals(
                 "Service-Personal")).findFirst().get(), 4, cart);
         orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.STAFF) && p.getName().equals(
-                "Koch/Köchin pro 10 Personen")).findFirst().get(), 11, cart);
+                "Koch/Köchin")).findFirst().get(), 11, cart);
 
         d = catalog.findByDomain(Domain.RENT_A_COOK);
         orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.STAFF) && p.getName().equals(
-                "Koch/Köchin pro 10 Personen")).findFirst().get(), 6, cart);
+                "Koch/Köchin")).findFirst().get(), 6, cart);
         orderController.addItem(d.stream().filter(p -> p.getCategory().equals(Category.STAFF) && p.getName().equals(
                 "Service-Personal")).findFirst().get(), 7, cart);
     }

@@ -53,7 +53,7 @@ class CatalogDataInitializer implements DataInitializer {
 		mampfCatalog.save(new Item("Tischdecke", Money.of(5, "EUR"),
 				Item.Domain.EVENTCATERING, Item.Category.EQUIPMENT, "pro 4 Personen, 5€ Ausleihgebühr"));
 
-		mampfCatalog.save(new StaffItem("Koch/Köchin pro 10 Personen", Money.of(11.88, "EUR"),
+		mampfCatalog.save(new StaffItem("Koch/Köchin", Money.of(11.88, "EUR"),
 				Item.Domain.EVENTCATERING, Item.Category.STAFF, perPerson, Role.COOK));
 		mampfCatalog.save(new StaffItem("Service-Personal", Money.of(13.56, "EUR"),
 				Item.Domain.EVENTCATERING, Item.Category.STAFF, perFive, Role.SERVICE));

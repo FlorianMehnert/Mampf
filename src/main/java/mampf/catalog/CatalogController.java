@@ -71,7 +71,7 @@ public class CatalogController {
 	 * @param model
 	 * @return html-template
 	 */
-	@PreAuthorize("hasRole('Boss')")
+	// @PreAuthorize("hasRole('BOSS')")
 	@GetMapping("/catalog/create")
 	public String catalogCreate(Model model) {
 		model.addAttribute("domains", Item.Domain.values());
@@ -84,7 +84,7 @@ public class CatalogController {
 	 * @param form data of the form the user sends to the server
 	 * @return redirects to the inventory controller
 	 */
-	@PreAuthorize("hasRole('Boss')")
+	// @PreAuthorize("hasRole('BOSS')")
 	@PostMapping("/catalog/create")
 	public String catalogCreateItemPost(@Valid @ModelAttribute("form") CatalogItemForm form) {
 		Item newItem = new Item(form.getName(), Money.of(new BigDecimal(form.getPrice().replace(",", ".")), "EUR"),
@@ -101,7 +101,7 @@ public class CatalogController {
 	 * @param form data which is send to the server with all the data which shall be applied
 	 * @return if the request is invalid it returns the html-template for editing otherwise redirects to the inventory
 	 */
-	@PreAuthorize("hasRole('Boss')")
+	// @PreAuthorize("hasRole('BOSS')")
 	@PostMapping("/catalog/edit/{itemId}")
 	public String catalogEditItemPost(@PathVariable String itemId, @Valid @ModelAttribute("form") CatalogItemForm form) {
 		Optional<Item> item = this.catalog.findById(itemId);
@@ -135,7 +135,7 @@ public class CatalogController {
 	 * @param model empty model which will be applied data of the existing entry to render
 	 * @return html-template
 	 */
-	@PreAuthorize("hasRole('Boss')")
+	// @PreAuthorize("hasRole('BOSS')")
 	@GetMapping("/catalog/edit/{itemId}")
 	public String catalogEditItem(@PathVariable String itemId, Model model) {
 		Item item;
