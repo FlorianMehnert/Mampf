@@ -6,6 +6,9 @@ import org.salespointframework.catalog.Product;
 import javax.persistence.Entity;
 import java.util.Map;
 
+/**
+ * Represents each product of Mampf
+ */
 @Entity
 public class Item extends Product {
 

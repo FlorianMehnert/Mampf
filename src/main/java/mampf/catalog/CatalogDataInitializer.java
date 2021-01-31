@@ -8,6 +8,9 @@ import org.springframework.util.Assert;
 
 import mampf.employee.Employee.Role;
 
+/**
+ * Initializes a set of items and adds them to the catalog. It serves mainly development purposes.
+ */
 @Component
 @Order(20)
 class CatalogDataInitializer implements DataInitializer {
@@ -82,7 +85,7 @@ class CatalogDataInitializer implements DataInitializer {
 		mampfCatalog.save(new BreakfastItem("Tee", time,
 				Money.of(0, "EUR"), BreakfastItem.Type.BEVERAGE));
 
-		mampfCatalog.save(new StaffItem("Koch/Köchin pro 10 Personen",
+		mampfCatalog.save(new StaffItem("Koch/Köchin",
 				Money.of(11.88, "EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF, perPerson, Role.COOK));
 		mampfCatalog.save(new StaffItem("Service-Personal",
 				Money.of(13.56, "EUR"), Item.Domain.RENT_A_COOK, Item.Category.STAFF, perFive, Role.SERVICE));

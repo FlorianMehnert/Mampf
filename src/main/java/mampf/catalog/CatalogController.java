@@ -10,6 +10,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.javamoney.moneta.Money;
 import org.salespointframework.quantity.Quantity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +30,6 @@ import javax.validation.Valid;
 @Controller
 public class CatalogController {
 
-	// ! Quantity is not used so should be or deleted
-
 	@Autowired
 	private final MampfCatalog catalog;
 	private final Inventory inventory;
@@ -39,9 +38,6 @@ public class CatalogController {
 		this.catalog = catalog;
 		this.inventory = inventory;
 	}
-
-	// ? Probably not needed because user can choose domain from homepage or
-	// navigation
 
 	/**
 	 * Returns a site from which the user can choose one the domains, currently
@@ -68,12 +64,14 @@ public class CatalogController {
 		return "catalogIndex";
 	}
 
-	// @GetMapping("/catalog/edit")
-	// public String catalogEdit(Model model) {
-	// 	model.addAttribute("items", this.catalog.findAll());
-	// 	return "catalog_itemList";
-	// }
 
+	/**
+	 * This controller method returns the html-template with a form for creating a new entry in the catalog.
+	 * Which can only be done by the admin.
+	 * @param model
+	 * @return html-template
+	 */
+	@PreAuthorize("hasRole('Boss')")
 	@GetMapping("/catalog/create")
 	public String catalogCreate(Model model) {
 		model.addAttribute("domains", Item.Domain.values());
@@ -81,6 +79,12 @@ public class CatalogController {
 		return "catalog_createItem";
 	}
 
+	/**
+	 * Represents the Post-Controller for the entity creation of a new catalog item
+	 * @param form data of the form the user sends to the server
+	 * @return redirects to the inventory controller
+	 */
+	@PreAuthorize("hasRole('Boss')")
 	@PostMapping("/catalog/create")
 	public String catalogCreateItemPost(@Valid @ModelAttribute("form") CatalogItemForm form) {
 		Item newItem = new Item(form.getName(), Money.of(new BigDecimal(form.getPrice().replace(",", ".")), "EUR"),
@@ -91,6 +95,13 @@ public class CatalogController {
 		return "redirect:/inventory/name";
 	}
 
+	/**
+	 * Represents the post controller method which edits an existing entry in the catalog
+	 * @param itemId is the id of the item which shall be edited
+	 * @param form data which is send to the server with all the data which shall be applied
+	 * @return if the request is invalid it returns the html-template for editing otherwise redirects to the inventory
+	 */
+	@PreAuthorize("hasRole('Boss')")
 	@PostMapping("/catalog/edit/{itemId}")
 	public String catalogEditItemPost(@PathVariable String itemId, @Valid @ModelAttribute("form") CatalogItemForm form) {
 		Optional<Item> item = this.catalog.findById(itemId);
@@ -118,6 +129,13 @@ public class CatalogController {
 		return "redirect:/inventory/name";
 	}
 
+	/**
+	 * 
+	 * @param itemId is the id of the item which shall be edited
+	 * @param model empty model which will be applied data of the existing entry to render
+	 * @return html-template
+	 */
+	@PreAuthorize("hasRole('Boss')")
 	@GetMapping("/catalog/edit/{itemId}")
 	public String catalogEditItem(@PathVariable String itemId, Model model) {
 		Item item;
@@ -187,6 +205,11 @@ public class CatalogController {
 		return "catalog";
 	}
 
+	/**
+	 * Sends mobile breakfast site
+	 * @param model
+	 * @return html-template
+	 */
 	@GetMapping("/mobile-breakfast")
 	public String mobileBreakfast(Model model) {
 		Map<String, ArrayList<Item>> reorganizedItems = new HashMap<>();
@@ -207,6 +230,12 @@ public class CatalogController {
 		return "mobile-breakfast";
 	}
 
+	/**
+	 * Sends a detail site for an item depending on the item's id
+	 * @param model
+	 * @param item represents the item id
+	 * @return html-template name
+	 */
 	@GetMapping("/catalog/item/detail/{item}")
 	public String detail(Model model, @PathVariable Item item) {
 		assert item != null;

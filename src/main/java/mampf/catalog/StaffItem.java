@@ -5,6 +5,10 @@ import javax.persistence.Entity;
 import org.javamoney.moneta.Money;
 import mampf.employee.Employee.Role;
 
+/**
+ * Represents a particular form of an item which has {@param type} as an 
+ * additional value of type {@link Role} responsible for ordering personel.
+ */
 @Entity
 public class StaffItem extends Item {
 
