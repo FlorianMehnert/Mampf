@@ -10,6 +10,8 @@ import org.salespointframework.useraccount.UserAccount;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+
+import java.sql.Time;
 import java.time.*;
 import java.time.temporal.TemporalAmount;
 import java.util.*;
@@ -21,7 +23,6 @@ public class MBOrder extends MampfOrder {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<DayOfWeek> weekDays;
-    private LocalTime time;
 
 
 	/**
@@ -35,12 +36,11 @@ public class MBOrder extends MampfOrder {
     public MBOrder(UserAccount account, PaymentMethod paymentMethod, LocalDateTime startDate, LocalDateTime endDate,
             BreakfastMappedItems bfItem) {
         super(account, paymentMethod, Item.Domain.MOBILE_BREAKFAST, startDate, endDate, bfItem.getAddress());
-        this.time = bfItem.getBreakfastTime();
         this.weekDays = new HashSet<>(bfItem.getWeekDays());
     }
     /**
-     * calculates the amount of breakfast dates for the given time spans and breakfast days.</br>
-     * one breakfast Date is a {@link DayOfWeek} of weekDays with the given time.</br>
+     * calculates the amount of breakfast dates for the given breakfast days.</br>
+     * one breakfast Date is a {@link DayOfWeek} of weekDays.</br>
      * the amount of breakfast dates corresponds to the amount of overlapping breakfast
 	 * Dates with the needed-timespan.</br>
      *
@@ -50,11 +50,10 @@ public class MBOrder extends MampfOrder {
      * @param endDate duration-timespan end, the end Date of the mobile breakfast order
      * @param weekDays a {@link List} of {@link DayOfWeek} represents weekdays
 	 *                 where the user wants to have a breakfast meal
-     * @param time a {@link LocalDateTime} breakfast time
      * @return long
      */
     public static long getAmount(LocalDateTime fromDate, LocalDateTime toDate, LocalDateTime startDate,
-            LocalDateTime endDate, Collection<DayOfWeek> weekDays, LocalTime time) {
+            LocalDateTime endDate, Collection<DayOfWeek> weekDays) {
 
         long bfAmount = 0;
         if (!hasTimeOverlap(fromDate, toDate, startDate, endDate)) {
@@ -90,7 +89,7 @@ public class MBOrder extends MampfOrder {
         
         // 3) collect colliding bfDates
         for (LocalDate bfDate : bfDates) {
-            LocalDateTime bfDateTime = LocalDateTime.of(bfDate, time);
+            LocalDateTime bfDateTime = LocalDateTime.of(bfDate, LocalTime.of(7, 0));
             if (bfDateTime.isAfter(spanStartDate) && bfDateTime.isBefore(spanEndDate)) {
                 bfAmount++;
             }
@@ -104,18 +103,14 @@ public class MBOrder extends MampfOrder {
     public Map<ProductIdentifier,Quantity> getItems(LocalDateTime fromDate, LocalDateTime toDate){
     
         Map<ProductIdentifier,Quantity> res = new HashMap<>();
-        Quantity mbQuantity = Quantity.of(getAmount(fromDate, toDate, getStartDate(), getEndDate(), weekDays, time));
+        Quantity mbQuantity = Quantity.of(getAmount(fromDate, toDate, getStartDate(), getEndDate(), weekDays));
         getOrderLines().forEach(oL->res.put(oL.getProductIdentifier(), mbQuantity));
         return res;
     }
 
     // impl.:
     public String getDescription() {
-        return "Bestellung für Mobile Breakfast: je" + weekDays.toString() + " gegen " + time.toString() + " Uhr";
-    }
-
-    public LocalTime getTime() {
-        return time;
+        return "Bestellung für Mobile Breakfast: je" + weekDays.toString();
     }
 
     public Set<DayOfWeek> getWeekDays() {
