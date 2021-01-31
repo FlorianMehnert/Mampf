@@ -3,6 +3,8 @@ package mampf.inventory;
 import com.mysema.commons.lang.Pair;
 import mampf.Util;
 import mampf.catalog.Item;
+import mampf.order.MampfOrderManager;
+
 import org.salespointframework.quantity.Quantity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +24,12 @@ import java.util.List;
 public class InventoryController {
 
 	private final Inventory inventory;
-
-	InventoryController(Inventory inventory) {
+	private final MampfOrderManager mampfOrderManager;
+  
+	
+	InventoryController(Inventory inventory, MampfOrderManager mampfOrderManager) {
 		this.inventory = inventory;
+		this.mampfOrderManager = mampfOrderManager;
 	}
 
 
@@ -48,8 +55,8 @@ public class InventoryController {
 		} else if (number.length() > 4){
 			redirectAttributes.addFlashAttribute(error, "die Eingabe darf nicht größer als 9999 sein!");
 		}else{
-			infinity(number, item, neg);
-			return "redirect:/inventory/amount";
+		  infinity(number, item, neg);
+		  return "redirect:/inventory/amount";
 		}
 		return "redirect:/inventory/add";
 	}
@@ -62,7 +69,21 @@ public class InventoryController {
 			inventory.delete(currentItem);
 			if(neg.equals("decr")){
 				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))) {
+			    //reduce amount only when items aren't requested by orders
+		      LocalDateTime dateNow = LocalDateTime.now();
+		      long  orderedAmount = 0;
+		      List<BigDecimal> stuff = new ArrayList<>();
+		      mampfOrderManager.findAll().stream().filter(order->order.hasTimeOverlap(dateNow, dateNow) 
+		              || order.getStartDate().isAfter(dateNow)).forEach(
+		              order->{order.getOrderLines().filter(orderLine->orderLine.refersTo(item)).forEach(
+		                      orderLine->stuff.add(orderLine.getQuantity().getAmount()));});
+		      for(BigDecimal amount: stuff) {
+		          orderedAmount+=amount.longValue();
+		      }
+		      if(newItem.getAmount().longValue() - convNumber >= orderedAmount) {
 					newItem.decreaseMampfQuantity(convNumber);
+					}
+					
 				}
 			}else {
 				if(!(currentItem.getQuantity().add(Quantity.of(convNumber)).isGreaterThan(Quantity.of(2147000000)))) {
