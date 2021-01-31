@@ -44,6 +44,10 @@ public class User {
 		return Optional.ofNullable(company);
 	}
 
+	/**
+	 * Set the company of the user, but only if the user is the boss of a conpamy.
+	 * @param company The company to assoziate with the current user.
+	 */
 	public void setCompany(Company company) {
 		if(userAccount.hasRole(Role.of(UserRole.COMPANY.name()))) {
 			this.company = company;

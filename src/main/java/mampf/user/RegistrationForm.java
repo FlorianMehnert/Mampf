@@ -4,6 +4,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+/**
+ * Form for registering a new user. This does some basic validation.
+ * However additional validation is highly recommended.
+ */
 class RegistrationForm {
 
 	@NotEmpty(message = "{RegistrationForm.username.NotEmpty}") //

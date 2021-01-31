@@ -3,6 +3,9 @@ package mampf.user;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+/**
+ * Form for changing the password of an already existing user. It's used for basically validation.
+ */
 class ChangePasswordForm {
 
 	@NotEmpty(message = "{RegistrationForm.password.NotEmpty}") //
