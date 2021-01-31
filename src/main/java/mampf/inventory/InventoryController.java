@@ -68,22 +68,9 @@ public class InventoryController {
 		if (!Inventory.infinity.contains(currentItem.getCategory()) || currentItem.getCategory() != Item.Category.STAFF) {
 			inventory.delete(currentItem);
 			if(neg.equals("decr")){
-				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))) {
-			    //reduce amount only when items aren't requested by orders
-		      LocalDateTime dateNow = LocalDateTime.now();
-		      long  orderedAmount = 0;
-		      List<BigDecimal> stuff = new ArrayList<>();
-		      mampfOrderManager.findAll().stream().filter(order->order.hasTimeOverlap(dateNow, dateNow) 
-		              || order.getStartDate().isAfter(dateNow)).forEach(
-		              order->{order.getOrderLines().filter(orderLine->orderLine.refersTo(item)).forEach(
-		                      orderLine->stuff.add(orderLine.getQuantity().getAmount()));});
-		      for(BigDecimal amount: stuff) {
-		          orderedAmount+=amount.longValue();
-		      }
-		      if(newItem.getAmount().longValue() - convNumber >= orderedAmount) {
+				if(currentItem.getQuantity().isGreaterThanOrEqualTo(Quantity.of(convNumber))
+				   && checkOrderAmount(newItem.getAmount().longValue() - convNumber, item)) {
 					newItem.decreaseMampfQuantity(convNumber);
-					}
-					
 				}
 			}else {
 				if(!(currentItem.getQuantity().add(Quantity.of(convNumber)).isGreaterThan(Quantity.of(2147000000)))) {
@@ -93,7 +80,28 @@ public class InventoryController {
 			inventory.save(newItem);
 		}
 	}
-
+	/**
+	 * ordered items should not be removable from inventory.</br>
+	 * sums up amount of ordered items of item. </br>
+	 * compares ordered amount with left amount of item
+	 * @param leftAmount a number for the amount left =  inventoryAmount - subAmount
+	 * @param item a {@link Item} in the inventory
+	 * @return {@code true} when the inventory item quantity can be reduced
+	 */
+	private boolean checkOrderAmount(long leftAmount ,Item item) {
+	    LocalDateTime dateNow = LocalDateTime.now();
+      long  orderedAmount = 0;
+      List<BigDecimal> stuff = new ArrayList<>();
+      mampfOrderManager.findAll().stream().filter(order->order.hasTimeOverlap(dateNow, dateNow) 
+              || order.getStartDate().isAfter(dateNow)).forEach(
+              order->order.getOrderLines().filter(orderLine->orderLine.refersTo(item)).forEach(
+                     orderLine->stuff.add(orderLine.getQuantity().getAmount())));
+      for(BigDecimal amount: stuff) {
+          orderedAmount+=amount.longValue();
+      }
+      return leftAmount >= orderedAmount;
+	}
+	
 	/**
 	 * used to filter for specific Items based on {@param type} and {@param word}
 	 * @param model
