@@ -53,7 +53,6 @@ public class OrderController {
 	 */
 	public class BreakfastMappedItems extends Item {
 
-		private final LocalTime breakfastTime;
 		private List<DayOfWeek> weekDays = new ArrayList<>();
 		private final String address;
 		private final BreakfastItem beverage, dish;
@@ -85,19 +84,13 @@ public class OrderController {
 					weekDays.add(weekDay);
 				}
 			}
-
-			breakfastTime = form.getTime();
 			setDescription("vom " + startDate.toLocalDate() + " bis " + endDate.toLocalDate());
 			beverage = form.getBeverage();
 			dish = form.getDish();
 			this.address = address;
-			amount = MBOrder.getAmount(startDate, endDate, startDate, endDate, weekDays, breakfastTime);
+			amount = MBOrder.getAmount(startDate, endDate, startDate, endDate, weekDays);
 
 
-		}
-
-		public LocalTime getBreakfastTime() {
-			return breakfastTime;
 		}
 
 		public BreakfastItem getDish() {

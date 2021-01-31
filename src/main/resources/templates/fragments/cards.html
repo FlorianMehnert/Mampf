@@ -21,7 +21,6 @@
   <div class="m-card__desc m-text" th:text="${product.description}">ItemDesc</div>
   <div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.lib.Days).getFullNames(product.weekDays)}">
   </div>
-  <div class="m-card__desc m-text" th:text="'Uhrzeit:  '+${product.breakfastTime}">ItemDesc</div>
 </div>
 
 <div th:fragment="cart(item, hideForm)" class="m-card shadow">
@@ -109,7 +108,6 @@
       <div th:if="${_order instanceof T(mampf.order.MBOrder)}" class="m-card__section" th:remove="tag">
         <div class="m-card__desc m-text" th:text="'Wochentage: '+${T(mampf.lib.Days).getFullNames(_order.weekDays)}">
         </div>
-        <div class="m-card__desc m-text" th:text="'Uhrzeit:  '+${_order.time}">ItemDesc</div>
 
       </div>
       <h4 th:text="'Summe: '+${_order.getTotal()}"></h4>

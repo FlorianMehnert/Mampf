@@ -167,7 +167,7 @@ class MampfOrderManagerTests {
                 new MobileBreakfastForm(
                         (BreakfastItem) d.stream().filter(p -> p.getName().equals("Kuchen")).findFirst().get(),
                         (BreakfastItem) d.stream().filter(p -> p.getName().equals("Tee")).findFirst().get(), "true", "true",
-                        "false", "true", "true", LocalTime.of(7, 30).format(DateTimeFormatter.ISO_LOCAL_TIME)));
+                        "false", "true", "true"));
         
         cart.addToCart(mbItem, Quantity.of(mbItem.getAmount()));
         cart.updateMBCart(startDate, endDate);

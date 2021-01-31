@@ -18,7 +18,6 @@ public class MobileBreakfastForm {
 	private final boolean thursday;
 	private final boolean friday;
 
-	private final String time;
 
 	public MobileBreakfastForm(
 			BreakfastItem beverage,
@@ -27,8 +26,7 @@ public class MobileBreakfastForm {
 			String tuesday,
 			String wednesday,
 			String thursday,
-			String friday,
-			String time
+			String friday
 	) {
 		this.beverage = beverage;
 		this.dish = dish;
@@ -38,8 +36,6 @@ public class MobileBreakfastForm {
 		this.thursday = thursday != null;
 		this.friday = friday != null;
 
-		// hh:mm
-		this.time = time;
 	}
 
 	public BreakfastItem getBeverage() {
@@ -59,9 +55,4 @@ public class MobileBreakfastForm {
 		days.put("friday", this.friday);
 		return days;
 	}
-
-	public LocalTime getTime() {
-		return LocalTime.parse(this.time);
-	}
-
 }
