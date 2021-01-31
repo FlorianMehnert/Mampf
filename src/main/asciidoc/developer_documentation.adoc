@@ -273,6 +273,7 @@ a| * order.MampfOrderManager
 | springframework.security
 a| * mampf.WebSecurityConfiguration
 * order.OrderController
+* user.UserController
 
 | springframework.ui
 a| * catalog.CatalogController
@@ -293,6 +294,9 @@ a| * user.UserController
 | springframework.web
 a| * mampf.MampfWebConfiguration
 * order.OrderController
+
+| net.bytebuddy.utility.RandomString
+a| * user.Company
 
 |===
 
@@ -333,6 +337,7 @@ image:images/diagrams/package_user.svg[pkg user building block diagram]
 [options="header"]
 |===
 |Klasse/Enumeration |Description
+| Company | Diese Klasse wird benötigt, um alle Employees einer Firma für das Angebot Mobile-Breakfast in Verbindung zu stellen.
 | User | Diese Klasse wird benötigt, um den Salespoint-UserAccount um eine Verknüpfung zu Company zu erstellen.
 | UserController | Diese Klasse ist ein Spring-Controller, der alle Requests zum Registrieren und zum Anzeigen, bearbeiten, löschen von Users behandelt
 | UserDataInitializer | Eine Implementierung der Initialisierung, um erste Test-Daten beim Start der Anwendung zu generieren.

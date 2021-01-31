@@ -28,6 +28,15 @@ public class UserController {
 		this.userManagement = userManagement;
 	}
 
+	/**
+	 * Take the input of an filled and validated {@link RegistrationForm} and do some additional validation logic.
+	 * Reshow the registration form, if the validation fails.
+	 * Else create a new user.
+	 *
+	 * @param form   The registration form to handle the input from
+	 * @param result The Errors to bind them to the form.
+	 * @return Return the register view again or redirect to the start page.
+	 */
 	@PostMapping("/register")
 	public String registerNew(@Valid @ModelAttribute("form") RegistrationForm form, Errors result) {
 		for (User user : userManagement.findAll()) {
@@ -69,6 +78,14 @@ public class UserController {
 		return "register";
 	}
 
+	/**
+	 * List all users (only available if authenticated as BOSS)
+	 * Optional: filter the name, username and account for the given filter string.
+	 *
+	 * @param model Bind all data to the model
+	 * @param filter Optional: filter to apply to all users
+	 * @return view of all (filtered) users
+	 */
 	@GetMapping("/users")
 	@PreAuthorize("hasRole('BOSS')")
 	public String users(Model model, @RequestParam(required = false) String filter) {
@@ -94,6 +111,12 @@ public class UserController {
 		return "users";
 	}
 
+	/**
+	 * Test the given user if he matches the filter
+	 * @param user The user model to test for.
+	 * @param filter The filter to apply to the user.
+	 * @return boolean true if the user matches the filter
+	 */
 	private boolean userContainsFilterString(User user, String filter) {
 		return user.getUserAccount().getUsername().toLowerCase().contains(filter)
 				|| user.getUserAccount().getFirstname().toLowerCase().contains(filter)
@@ -113,6 +136,16 @@ public class UserController {
 		return "redirect:/";
 	}
 
+	/**
+	 * If the new password is valid, change it and log the user out.
+	 * @param model The model for the user details view.
+	 * @param passwordForm The {@link ChangePasswordForm} to validate
+	 * @param result Contains validation errors
+	 * @param authentication get the current user
+	 * @param httpServletRequest needed for logging the user out
+	 * @return the userdetails or the log in form
+	 * @throws ServletException
+	 */
 	@PostMapping("/change_password/")
 	@PreAuthorize("isAuthenticated()")
 	public String changePassword(Model model, @Valid @ModelAttribute("form") ChangePasswordForm passwordForm,

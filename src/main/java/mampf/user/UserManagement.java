@@ -119,9 +119,9 @@ public class UserManagement {
 	}
 
 	/**
-	 *
-	 * @param user 		user to change the password
-	 * @param password  the new password
+	 * Change the password of the given user
+	 * @param user 		{@link User} to change the password
+	 * @param password  the new {@link org.salespointframework.useraccount.Password.UnencryptedPassword}password
 	 */
 	public void changePassword(User user, Password.UnencryptedPassword password) {
 		userAccounts.changePassword(user.getUserAccount(), password);
@@ -130,7 +130,7 @@ public class UserManagement {
 	/**
 	 * Returns a {@link User} that matches the username
 	 * @param username 
-	 * @return 
+	 * @return {@link Optional<User>}
 	 */
 	public Optional<User> findUserByUsername(String username) {
 		for(User user: users.findAll()) {
@@ -141,6 +141,11 @@ public class UserManagement {
 		return Optional.empty();
 	}
 
+	/**
+	 * Returns a {@link User} that matches the {@link UserAccountIdentifier}
+	 * @param userAccountId {@link UserAccountIdentifier}
+	 * @return {@link Optional<User>}
+	 */
 	public Optional<User> findUserByUserAccount(UserAccountIdentifier userAccountId){
 		for(User user: users.findAll()) {
 			if(Objects.equals(user.getUserAccount().getId(), userAccountId)) {
@@ -148,8 +153,15 @@ public class UserManagement {
 			}
 		}
 		return Optional.empty();
-	} 
-	
+	}
+
+	/**
+	 * We don't want to delete users from our repository. That cause strange orders that can't be assigned to a user.
+	 *
+	 * Therefore we just block them, so they cant log in anymore.
+	 *
+	 * @param userId the userId of the user we want to block
+	 */
 	public void denyAuthenticationById(long userId) {
 		Optional<User> optionalUser= this.findUserById(userId);
 		if(optionalUser.isPresent()) {
@@ -160,6 +172,8 @@ public class UserManagement {
 			}
 		}
 	}
+
+
 	/**
 	 * a {@link User} tries to book mobile Breakfast for a company.
 	 * @param username
