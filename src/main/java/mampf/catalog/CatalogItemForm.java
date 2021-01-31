@@ -2,6 +2,9 @@ package mampf.catalog;
 
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * This class is used to validate data send by the client to edit items in the catalog.
+ */
 class CatalogItemForm {
 
 	@NotEmpty(message = "Item name cannot be null") //

@@ -4,14 +4,16 @@ import javax.persistence.Entity;
 
 import org.javamoney.moneta.Money;
 
+/**
+ * Represents a particular form of item which holds an additional type
+ */
 @Entity
 public class BreakfastItem extends Item {
+
 	public enum Type {
 		DISH, BEVERAGE
 	}
-
 	public static final Money BREAKFAST_PRICE = Money.of(4.99, "EUR");
-
 	private Type type;
 
 	@SuppressWarnings("unused")
@@ -28,7 +30,6 @@ public class BreakfastItem extends Item {
 
 		this.type = type;
 	}
-
 	public Type getType() {
 		return type;
 	}

@@ -356,7 +356,7 @@ public class MampfOrderManager {
 			if (((Item) firstItem.getProduct()).getDomain().equals(Domain.MOBILE_BREAKFAST)) {
 				BreakfastMappedItems bfItem = (BreakfastMappedItems) firstItem.getProduct();
 				Quantity mbQuantity = Quantity.of(MBOrder.getAmount(fromDate, toDate, cart.getStartDate(),
-						cart.getEndDate(), bfItem.getWeekDays(), bfItem.getBreakfastTime()));
+						cart.getEndDate(), bfItem.getWeekDays()));
 
 				cartItems.add(new UniqueMampfItem(bfItem.getBeverage(), mbQuantity));
 				cartItems.add(new UniqueMampfItem(bfItem.getDish(), mbQuantity));
