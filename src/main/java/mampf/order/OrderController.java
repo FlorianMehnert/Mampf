@@ -260,7 +260,7 @@ public class OrderController {
 	 * @return mobile-breakfast|cart dependent on the parameters above
 	 */
 
-	public String orderMobileBreakfastPart(Optional<UserAccount> userAccount, MobileBreakfastForm form,
+	private String orderMobileBreakfastPart(Optional<UserAccount> userAccount, MobileBreakfastForm form,
 										   RedirectAttributes redirectAttributes, String error, MampfCart mampfCart){
 		User user = userManagement.findUserByUserAccount(userAccount.get().getId()).get();
 		Optional<Company> company = userManagement.findCompany(user.getId());
