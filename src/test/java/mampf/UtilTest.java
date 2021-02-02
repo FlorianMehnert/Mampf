@@ -39,12 +39,12 @@ public class UtilTest {
 				+ Util.compareTwoToStrings(i1, i2) + " was returned", Util.compareTwoToStrings(i1, i2) < 0);
 		assertTrue("aa compared with a should return any int above 0 but "
 				+ Util.compareTwoToStrings(i2, i1) + " was returned", Util.compareTwoToStrings(i2, i1) > 0);
-		assertTrue("ab compared with a should return any int above 0 but "
-				+ Util.compareTwoToStrings(i3, i1) + " was returned", Util.compareTwoToStrings(i3, i1) > 0);
 		assertTrue("a compared with ab should return any int below 0 but "
 				+ Util.compareTwoToStrings(i1, i3) + " was returned", Util.compareTwoToStrings(i1, i3) < 0);
-		assertTrue("ab compared with aa should return anything above 0 but "
-				+ Util.compareTwoToStrings(i3, i2) + " was returned", Util.compareTwoToStrings(i3, i2) > 0);
+		assertTrue("ab compared with aa should return 1 but "
+				+ Util.compareTwoToStrings(i3, i2) + " was returned", Util.compareTwoToStrings(i3, i2) == 1);
+		assertTrue("aa compared with ab should return -1 but "
+				+ Util.compareTwoToStrings(i3, i2) + " was returned", Util.compareTwoToStrings(i2, i3) == -1);
 	}
 
 	String d1 = "";
@@ -62,6 +62,22 @@ public class UtilTest {
 		assertTrue(d4 + " should be " + Item.Domain.PARTYSERVICE, Util.parseDomainEnum(d4) == Item.Domain.PARTYSERVICE);
 		assertTrue(d5 + " should be " + Item.Domain.MOBILE_BREAKFAST, Util.parseDomainEnum(d5) == Item.Domain.MOBILE_BREAKFAST);
 		assertTrue(d6 + " should be " + Item.Domain.RENT_A_COOK, Util.parseDomainEnum(d6) == Item.Domain.RENT_A_COOK);
+	}
+
+	@Test
+	void renderDomainNameTest(){
+		assertTrue("renderDomainName should return an empty String when null is given",
+				Util.renderDomainName(null).equals(""));
+		assertTrue("renderDomainName should return an empty String when the given String has length 0",
+				Util.renderDomainName("").equals(""));
+	}
+
+	@Test
+	void listToStringTest(){
+		List<String> list = List.of("a", "b", "c");
+		assertTrue("some List should be propperly converted to a String using listToString method but returned "
+						+ Util.listToString(list)
+				, Util.listToString(list).equals("\na\nb\nc"));
 	}
 
 
