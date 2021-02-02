@@ -3,24 +3,33 @@
 // Sowohl positive als auch negative Anmerkungen werden gern gesehen und zur stetigen Verbesserung genutzt.
 // Versuchen Sie in dieser Auswertung also stets sowohl Positives wie auch Negatives zu erwähnen.
 
-**Von:**
+**Von:** Florian Mehnert
 
-**Gruppe:**
+**Gruppe:** 10
 
 == Was habe ich gelernt / was habe ich nicht gelernt?
 // Ausführung der positiven und negativen Erfahrungen, die im Softwarepraktikum gesammelt wurden
+Ich habe gelernt Webseiten mit Spring, Thymleaf und Salespoint zu programmieren
 
 == Welche Erfahrungen habe ich mit der Zusammenarbeit im Team gemacht?
 // Kurze Beschreibung der Zusammenarbeit im Team. Was lief gut? Was war verbesserungswürdig? Was würden Sie das nächste Mal anders machen?
+- gute Absprache mit Teammitgliedern möglich
+- es ist nie eine Situation aufgetreten, wo mehrere an einer Aufgabe unwissentlich voneinander gearbeitet haben
+- alle haben ähnlich viel beigetragen
+- es war schwierig, alle Teammitglieder nach den selben Standarts programmieren zu lassen (Sonarcube), da es uns nie möglich war die Regeln von Sonarcube in unserer Entwicklungsumgebung einzubinden
 
 == Welche Erfahrungen habe ich bei der Wiederverwendung von Bibliotheken/Frameworks (insbesondere SalesPoint) gemacht?
 // Einschätzung der Arbeit mit den bereitgestellten und zusätzlich genutzten Frameworks. Was War gut? Was war verbesserungswürdig?
+- beim Inventory kann man die Quantität der einzelnen UniqueItems nicht einfach ändern, sondern muss die entsprechenden Items löschen und mit einer anderen Quantität wieder hinzufügen
 
 == Welche Vorschläge zur weiteren Verbesserung des Softwarepraktikums gibt es?
 // Möglichst mit Beschreibung, warum die Umsetzung des von Ihnen angebrachten Vorschlages nötig ist.
+- Es sollte beschrieben sein, wie man Sonarcube direkt in IntelliJ und andere Entwicklungsumgebungen einbinden kann
+- an vielen Stellen in der Salespoint Dokumentation wäre es sinnvoll Beispiele zur Verwendung der Klassen hinzuzufügen
 
 == Feedback für den Tutor
 // Fühlten Sie sich durch den vom Lehrstuhl bereitgestellten Tutor gut betreut? Was war positiv? Was war verbesserungswürdig?
+Ich habe mich gut betreut gefühlt von Leo. Er konnte mir jederzeit meine Fragen zeitnah beantworten und es hat Spaß gemacht ihn als unseren Tutor zu haben.
 
 == Sonstiges und Anmerkungen
 // Welche Aspekte fanden in den oben genannten Punkten keine Erwähnung?
