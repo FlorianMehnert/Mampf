@@ -1,12 +1,9 @@
 package mampf.inventory;
 
-import mampf.Util;
 import mampf.catalog.Item;
 import mampf.catalog.MampfCatalog;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.Test;
-import org.salespointframework.catalog.ProductIdentifier;
-import org.salespointframework.inventory.InventoryItemIdentifier;
 import org.salespointframework.inventory.UniqueInventory;
 import org.salespointframework.quantity.Quantity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -93,14 +89,18 @@ class InventoryTest {
 	void addFoodItem() throws Exception {
 		List<UniqueMampfItem> list = inventory.findAll().toList();
 		for (UniqueMampfItem item : list) {
-			if (item.getQuantity().equals(Quantity.of(-1))) {
+			System.out.println(item.getQuantity());
+			if (Inventory.infinity.contains(item.getCategory())) {
 				this.mvc.perform(post("/inventory/add")
 						.param("item", String.valueOf(item.getProduct().getId()))
-						.param("number", "13")).andExpect(status().is3xxRedirection());
+						.param("number", "13")
+						.param("negate", "incr"))
+						.andExpect(status().is3xxRedirection())
+						.andExpect(header().string("Location", endsWith("/login")));
 
 				Money money = Money.of(5, "EUR");
 				Item item1 = new Item("NullItem", money, null, null, "");
-				assertTrue("nullCategory does not return \"\" for a Quantity of -1",
+				assertTrue("nullCategory does not return \"\" for some food item",
 						inventoryController.nullCategory(new UniqueMampfItem(item1, Quantity.of(1))).equals(""));
 			}
 		}
@@ -108,7 +108,6 @@ class InventoryTest {
 
 	@Test
 	void preventsPublicAccessForStockOverview() throws Exception {
-
 		mvc.perform(get("/inventory"))
 				.andExpect(status().isFound())
 				.andExpect(header().string(HttpHeaders.LOCATION, endsWith("/login")));
@@ -117,7 +116,6 @@ class InventoryTest {
 	@Test
 	@WithMockUser(username = "hansWurst", roles = "BOSS", password = "123")
 	void stockIsAccessibleForAdmin() throws Exception {
-
 		mvc.perform(get("/inventory"))
 				.andExpect(status().isOk());
 	}
