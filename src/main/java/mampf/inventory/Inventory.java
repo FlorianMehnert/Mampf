@@ -132,7 +132,7 @@ class SortByName implements Comparator<UniqueMampfItem> {
 	 */
 	@Override
 	public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-		int comp = Util.compareCategories(a.getProduct().getName(), b.getProduct().getName());
+		int comp = Util.compareTwoToStrings(a.getProduct().getName(), b.getProduct().getName());
 		if (comp == 0) {
 			comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
 		}
@@ -147,7 +147,7 @@ class SortByCategory implements Comparator<UniqueMampfItem> {
 	 */
 	@Override
 	public int compare(UniqueMampfItem a, UniqueMampfItem b) {
-		int comp = Util.compareCategories(a.getCategory(), b.getCategory());
+		int comp = Util.compareTwoToStrings(a.getCategory(), b.getCategory());
 		if (comp == 0) {
 			comp = a.getProduct().getPrice().compareTo(b.getProduct().getPrice());
 		}

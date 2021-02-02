@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import java.util.stream.Collectors;
+
 import mampf.catalog.Item.Domain;
 
 public class Util {
@@ -12,14 +13,26 @@ public class Util {
 	private Util() {
 	}
 
-	public static <T> int compareCategories(T a, T b) {
-		for (int i = 0; i < (java.lang.Math.max(a.toString().length(), b.toString().length())); i++) {
+	public static <T> int compareTwoToStrings(T a, T b) {
+		int minLength = java.lang.Math.min(a.toString().length(), b.toString().length()) - 1;
+		int maxLength = java.lang.Math.max(a.toString().length(), b.toString().length()) - 1;
+
+		for (int i = 0; i < minLength; i++) {
 			int dif = a.toString().getBytes()[i] - b.toString().getBytes()[i];
 			if (dif != 0) {
 				return dif;
 			}
 		}
-		return 0;
+		if (minLength < maxLength) {
+			if (a.toString().length() > b.toString().length()) {
+				return 1;
+			} else {
+				return -1;
+			}
+		} else {
+			return 0;
+		}
+
 	}
 
 	public static Domain parseDomainEnum(String domain) {
@@ -42,7 +55,7 @@ public class Util {
 				.collect(Collectors.joining(" "));
 	}
 
-	
+
 	public static <T> String listToString(List<T> list) {
 		StringBuilder output = new StringBuilder();
 		for (T item : list) {
