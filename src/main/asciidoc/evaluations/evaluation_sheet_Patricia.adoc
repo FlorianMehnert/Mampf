@@ -1,0 +1,43 @@
+= Persönliches Feedback eines Teammitgliedes des Softwarepraktikums 2020/21
+// Auch wenn der Bogen nicht anonymisiert ist, dürfen Sie gern Ihre Meinung offen kundtun.
+// Sowohl positive als auch negative Anmerkungen werden gern gesehen und zur stetigen Verbesserung genutzt.
+// Versuchen Sie in dieser Auswertung also stets sowohl Positives wie auch Negatives zu erwähnen.
+
+**Von: Patricia Crespo**
+
+**Gruppe: 10**
+
+== Was habe ich gelernt / was habe ich nicht gelernt?
+// Ausführung der positiven und negativen Erfahrungen, die im Softwarepraktikum gesammelt wurden
+Ich habe gelernt:
+* Mit SalesPoint, Spring und ThymeLeaf zu arbeiten.
+* Wie man eine Webseite von Grund auf neu erstellt und welche Schritte man durchlaufen muss (z.B. wie der Code funktioniert, welche Zusammenhänge gibt es zwischen Java-Code und HTML mithilfe von ThymeLeaf).
+* Mit IntelliJ besser zu arbeiten.
+* Geduldiger beim Codieren zu sein und mit Fehler umzugehen.
+
+Ich habe nicht gelernt:
+* Nicht vollständig, wie man Thymeleaf verwendet, um Frontend und Backend zu verbinden.
+
+== Welche Erfahrungen habe ich mit der Zusammenarbeit im Team gemacht?
+// Kurze Beschreibung der Zusammenarbeit im Team. Was lief gut? Was war verbesserungswürdig? Was würden Sie das nächste Mal anders machen?
+* Wir haben uns wöchentlich getroffen. Am Anfang haben wir zwischen uns die Aufgaben/Packages geteilt und danach hat jeweils an seine Aufgabe/Package gearbeitet.
+* Als ich auf ein Problem stieß, war meine Gruppe bereit zu helfen.
+* Kommunikation war sehr wichtig, insbesondere in diesen Corona Zeiten. Allerdings denke ich das diese nicht ganz gut war.
+* Im Allgemeinen habe ich sehr gute Erfahrungen mit meiner Gruppe in unsere Meetings und auch wenn ich Hilfe brauchte.
+
+== Welche Erfahrungen habe ich bei der Wiederverwendung von Bibliotheken/Frameworks (insbesondere SalesPoint) gemacht?
+// Einschätzung der Arbeit mit den bereitgestellten und zusätzlich genutzten Frameworks. Was War gut? Was war verbesserungswürdig?
+* Die Arbeit mit SalesPoint war ohne Vorauskenntnisse eine Herausforderung, da außerhalb der Dokumentation und der Videoshop Beispiel nur wenige Informationen vorhanden sind.
+* Ich musste zuerst noch ein bisschen mehr suchen und andere Kollegen fragen, damit es verständlich war.
+
+== Welche Vorschläge zur weiteren Verbesserung des Softwarepraktikums gibt es?
+// Möglichst mit Beschreibung, warum die Umsetzung des von Ihnen angebrachten Vorschlages nötig ist.
+* Es war sehr schwer in Spring, SalesPoint und Thymeleaf ohne Vorauskenntnisse hineinzugehen. Es wäre vielleicht besser, wenn ein kleiner Kurs vor dem Praktikum stattfindet, um diese drei besser zu verstehen.
+
+== Feedback für den Tutor
+// Fühlten Sie sich durch den vom Lehrstuhl bereitgestellten Tutor gut betreut? Was war positiv? Was war verbesserungswürdig?
+* Leo hat uns sehr viel geholfen: er hat alle unsere Fragen geantwortet und auch noch Hinweise für das Verbesserung des Projekts gegeben.
+* Ich will ihm für seine Hilfe und Unterstützung danken.
+
+== Sonstiges und Anmerkungen
+// Welche Aspekte fanden in den oben genannten Punkten keine Erwähnung?
