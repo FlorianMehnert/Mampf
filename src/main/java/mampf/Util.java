@@ -23,25 +23,27 @@ public class Util {
 				return dif;
 			}
 		}
+		int compAmount = 0;
 		if (minLength < maxLength) {
 			if (a.toString().length() > b.toString().length()) {
-				return 1;
+				compAmount = 1;
 			} else {
-				return -1;
+				compAmount = -1;
 			}
-		} else {
-			return 0;
 		}
-
+		return compAmount;
 	}
 
 	public static Domain parseDomainEnum(String domain) {
-		return Domain.valueOf(domain.toUpperCase().replace("-", "_"));
-	}
+		if(domain.equals("")){
+			return null;
+		}
+		try {
+			return Domain.valueOf(domain.toUpperCase().replace("-", "_"));
+		}catch (IllegalArgumentException iae){
+			return null;
+		}
 
-	public static Domain parseDomainName(String domain) {
-		String formatted = domain.toUpperCase().replace("\\s", "_");
-		return Domain.valueOf(formatted);
 	}
 
 	public static String renderDomainName(String domain) {
