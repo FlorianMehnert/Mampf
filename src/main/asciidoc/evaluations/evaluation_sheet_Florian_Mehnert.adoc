@@ -9,7 +9,7 @@
 
 == Was habe ich gelernt / was habe ich nicht gelernt?
 // Ausführung der positiven und negativen Erfahrungen, die im Softwarepraktikum gesammelt wurden
-Ich habe gelernt Webseiten mit Spring, Thymleaf und Salespoint zu programmieren
+Ich habe gelernt Webseiten mit Spring, Thymleaf und Salespoint zu programmieren.
 
 == Welche Erfahrungen habe ich mit der Zusammenarbeit im Team gemacht?
 // Kurze Beschreibung der Zusammenarbeit im Team. Was lief gut? Was war verbesserungswürdig? Was würden Sie das nächste Mal anders machen?
@@ -29,7 +29,9 @@ Ich habe gelernt Webseiten mit Spring, Thymleaf und Salespoint zu programmieren
 
 == Feedback für den Tutor
 // Fühlten Sie sich durch den vom Lehrstuhl bereitgestellten Tutor gut betreut? Was war positiv? Was war verbesserungswürdig?
-Ich habe mich gut betreut gefühlt von Leo. Er konnte mir jederzeit meine Fragen zeitnah beantworten und es hat Spaß gemacht ihn als unseren Tutor zu haben.
+Ich habe mich gut betreut gefühlt von Leo. Er konnte mir jederzeit meine Fragen zeitnah beantworten und es war eine schöne Erfahrung Leo als Tutor zu haben.
 
 == Sonstiges und Anmerkungen
 // Welche Aspekte fanden in den oben genannten Punkten keine Erwähnung?
+Ich bin sehr zufrieden mit meinem Team, da ich mich mit jedem über Programmierprobleme und sonstiges ausstauschen konnte.
+Mit StarUML, welches wir zur UML Modellierung benutzt haben bin ich eher unzufrieden, da dieses nicht flüssig läuft, nur sehr wenig dokumentiert wurde und auch das modifizieren nur über eigene Erweiterungen machbar ist.
