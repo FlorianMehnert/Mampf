@@ -1,0 +1,47 @@
+= Persönliches Feedback eines Teammitgliedes des Softwarepraktikums 2020/21
+// Auch wenn der Bogen nicht anonymisiert ist, dürfen Sie gern Ihre Meinung offen kundtun.
+// Sowohl positive als auch negative Anmerkungen werden gern gesehen und zur stetigen Verbesserung genutzt.
+// Versuchen Sie in dieser Auswertung also stets sowohl Positives wie auch Negatives zu erwähnen.
+
+**Von:** Yannik Weber
+
+**Gruppe:** 10
+
+== Was habe ich gelernt / was habe ich nicht gelernt?
+// Ausführung der positiven und negativen Erfahrungen, die im Softwarepraktikum gesammelt wurden
+- Ich habe viele neue Erfahrungen gesammelt, wie man im Team mit Spring, Thymeleaf und Salespoint Software entwickelt. Dabei habe ich den Umgang mit Spring und Salespoint erlernt.
+Außerdem habe ich eine mögliche Variante der Projektstrukturierung und Aufteilung der Verantwortlichkeit kennengelernt.
+Ich habe die Vorteile von Java, Hibernate und Thymeleaf kennengelernt und kann sie mit persönlichen Erfahrungen mit anderen Frameworks wie z.B. Laravel vergleichen.
+Das Einarbeiten in die Frameworks, die Arbeit im Team und das Entwickeln der Software hat mir große Freude bereitet.
+
+- Ich habe wenig darüber gelernt, wie ich gute Software schreiben kann. Ich hätte gerne mehr darüber gelernt, wodurch ich meinen Code verbessern kann.
+
+== Welche Erfahrungen habe ich mit der Zusammenarbeit im Team gemacht?
+// Kurze Beschreibung der Zusammenarbeit im Team. Was lief gut? Was war verbesserungswürdig? Was würden Sie das nächste Mal anders machen?
+- Die Arbeit im Team war sehr angenehm. So konnte man sehr schnell unterschiedliche Lösungsansätze vergleichen und sich für den Besten entscheiden.
+- Durch unterschiedlichstes Vorwissen konnte ich so auch einiges von meinen Team-Mitgliedern lernen.
+- Die Entwicklung mittels git im Team war überraschend einfach, so gab es nur sehr selten aufwändigere Merge conflicts.
+
+== Welche Erfahrungen habe ich bei der Wiederverwendung von Bibliotheken/Frameworks (insbesondere SalesPoint) gemacht?
+// Einschätzung der Arbeit mit den bereitgestellten und zusätzlich genutzten Frameworks. Was War gut? Was war verbesserungswürdig?
+- Insgesamt erscheint mir Salespoint etwas kompliziert. So wurde gerade im Bereich der Order sehr viel Energie und Zeit von einigen Team-Mitgliedern aufgewendet, um unsere Aufgabenstellung mit Salespoint zu erfüllen.
+Es lassen sich einfach zu viele Klassen nicht sinnvoll erweitern, als dass man Salespoint als rundherum gelungen ansehen könnte. Mir fehlt z.B. die Möglichkeit, eine Orderline um eine Quantity zu erweitern. Als Lösung bot sich dann nur an, die entsprechende Order zu erweitern und dort die jeweilige Summen-Methode zu überschreiben.
+Ich glaube, dass es Salespoint da an einigen Stellen etwas sehr kompliziert gestaltet. Auch andere Team-Mitglieder haben ähnliche Workarounds gehen müssen. Das finde ich etwas schade, da es schöner wäre, wenn am Ende ein gelungenes, klares Softwaredesign möglich wäre.
+- Spring erscheint mir deutlich hilfreicher, auch wenn es aufgrund der Größe des Framework anfangs ein bisschen unübersichtlich ist. Die Arbeit mit Spring hat mir Freude bereitet.
+- Die Verwendung von Hibernate empfand ich durchweg positiv. Es ließ sich so mit größtem Komfort und quasi keinem Aufwand arbeiten.
+
+== Welche Vorschläge zur weiteren Verbesserung des Softwarepraktikums gibt es?
+// Möglichst mit Beschreibung, warum die Umsetzung des von Ihnen angebrachten Vorschlages nötig ist.
+- Ich hätte mir erhofft, dass es öfter und viel intensiveres Feedback zu unserem eigenen Code gegeben hätte. Sowohl die Benutzung von Design Patterns als auch zum Code-Style.
+Der Einsatz von Sonarcube ist an dieser Stelle schon sehr hilfreich, ersetzt aber meiner Meinung nach nicht konstruktive Kritik und Feedback. Für mich wäre das etwas sehr grundlegendes gewesen, was ich mir gewünscht hätte. So habe ich jetzt im dritten Semester (Diplom) bisher nur von einer einzigen Person im Spielepraktikum ein sehr hilfreiches, konstruktives Feedback zu meinem Code bekommen.
+- Als kleinerer Punkt wäre es sehr schön, wenn es eine direkte Konfigurationsdatei für Sonarlint gäbe, damit gleich beim Schreiben von Code entsprechende hinweise kommen.
+- In unserem Team gab es am Anfang einen unterschiedlichen Kenntnisstand und unterschiedliche Erfahrungen mit der Arbeit mit Frameworks.
+Allgemein wäre es da sicher sehr hilfreich gewesen, vorher eine kleinere Einführung in den Umgang mit allen Tools (Git) und in die grundlegenden Konzepte von Spring und Thymeleaf zu gestalten.
+
+
+== Feedback für den Tutor
+// Fühlten Sie sich durch den vom Lehrstuhl bereitgestellten Tutor gut betreut? Was war positiv? Was war verbesserungswürdig?
+- Leo hat sämtliche unserer Fragen schnell, verständlich und unkompliziert beantwortet. Die Meetings mit ihm waren konstruktiv und angenehm.
+
+== Sonstiges und Anmerkungen
+// Welche Aspekte fanden in den oben genannten Punkten keine Erwähnung?
