@@ -477,20 +477,6 @@ public class MampfOrderManager {
 	}
 
 	/**
-	 * (junit) testing purpose
-	 */
-	public OrderManagement<MampfOrder> getOrderManagement() {
-		return orderManagement;
-	}
-
-	/**
-	 * testing purpose
-	 */
-	public MampfCatalog getCatalog() {
-		return catalog;
-	}
-
-	/**
 	 * creates, depending on payMethod the correct {@link PaymentMethod}:
 	 * <ul>
 	 * <li>"{@code Check}" will return a new {@link Cheque} with the Mampf-banking information</li>

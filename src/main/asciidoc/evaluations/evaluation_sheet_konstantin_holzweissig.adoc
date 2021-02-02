@@ -1,0 +1,49 @@
+= Persönliches Feedback eines Teammitgliedes des Softwarepraktikums 2020/21
+// Auch wenn der Bogen nicht anonymisiert ist, dürfen Sie gern Ihre Meinung offen kundtun.
+// Sowohl positive als auch negative Anmerkungen werden gern gesehen und zur stetigen Verbesserung genutzt.
+// Versuchen Sie in dieser Auswertung also stets sowohl Positives wie auch Negatives zu erwähnen.
+
+**Von:** Konstantin Holzweißig
+
+**Gruppe:** 10
+
+== Was habe ich gelernt / was habe ich nicht gelernt?
+// Ausführung der positiven und negativen Erfahrungen, die im Softwarepraktikum gesammelt wurden
+- Ich habe gelernt Webseiten mit Spring, Thymleaf und Salespoint zu programmieren
+
+== Welche Erfahrungen habe ich mit der Zusammenarbeit im Team gemacht?
+// Kurze Beschreibung der Zusammenarbeit im Team. Was lief gut? Was war verbesserungswürdig? Was würden Sie das nächste Mal anders machen?
+- Ich war überrascht wie motiviert/kreativ meine Teammitglieder gewesen sind
+- gute Absprache mit Teammitgliedern möglich
+- Teamarbeit war/ist für mich eine Herausforderung
+
+== Welche Erfahrungen habe ich bei der Wiederverwendung von Bibliotheken/Frameworks (insbesondere SalesPoint) gemacht?
+// Einschätzung der Arbeit mit den bereitgestellten und zusätzlich genutzten Frameworks. Was War gut? Was war verbesserungswürdig?
+- SalesPoint war einfach zu handhaben. Viele Komponenten ließen sich ohne weitere Probleme nutzen.
+- SalesPoint: Open Source-verfügbarkeit war sehr hilfreich.
+- Salespoint Klassen wie CartItem/OrderLine ließen sich eher schlecht modifizieren.
+- SalesPoint: Bestellungen mit Items mit Stundenpreis waren eher schlecht implementierbar. 
+- Spring: sehr hilfreich
+- Spring: hibernate bereitete aufgrund von Kenntnismangel/fehlenden Hintergrundinformationen viele Probleme.
+- Thymeleaf: sehr praktisch und hilfreich.
+- Thymeleaf: bereitete aufgrund von Kenntnismangel viele Probleme die sich meist schlecht analysieren liesen.
+- Oftmals konnte man nicht seine eigene Idee zur Lösung eines Problemes direkt umsetzen. (stattdessen ist man eher damit beschäftigt gewesen den code/die dokumentationen zu analysieren.)
+
+== Welche Vorschläge zur weiteren Verbesserung des Softwarepraktikums gibt es?
+// Möglichst mit Beschreibung, warum die Umsetzung des von Ihnen angebrachten Vorschlages nötig ist.
+- Es sollte beschrieben sein, wie man Sonarcube direkt in Eclipse und andere Entwicklungsumgebungen einbinden kann. SonarLint war keine wirklich gute Alternative.
+- UML Standards waren eher vage. Z.b. war unklar was konkret eher wichtig / unwichtig sein soll/kann. Ich hatte das Gefühl, dass die Erfahrungen, die ich mit UML in Softwaretechnologie 1 gemacht habe, nicht sinnvoll und praktisch gewesen sind. Es fehlten konkrete Angaben wie und nach welchen Regeln die Diagramme gezeichnet werden sollen. 
+Die demo-projekte haben diesen Effekt eher verstärkt. Unklar war mir vorallem was das Diagramm beinhalten muss und was nicht/optional.
+
+== Feedback für den Tutor
+// Fühlten Sie sich durch den vom Lehrstuhl bereitgestellten Tutor gut betreut? Was war positiv? Was war verbesserungswürdig?
+- sympatisch,entspannt
+- Er konnte mir jederzeit meine Fragen zeitnah beantworten und es hat Spaß gemacht ihn als unseren Tutor zu haben.
+
+== Sonstiges und Anmerkungen
+// Welche Aspekte fanden in den oben genannten Punkten keine Erwähnung?
+- die demo-projekte vom Lehrstuhl waren sehr hilfreich um die Frameworks besser verstehen zu können.
+- Das Softwarepraktikum war unglaublich Zeit und Nerven-aufwendig.
+- Das Praktikum bestand aus (meiner meinung nach) unnötig vielen "extrakomponenten". (z.b. fand ich folgende Aspekte "überladen" bzw. "aufwendig zu verstehen": Frameworks/testumgebung/code-quality-checker/versioncontrol/github-nutzung/inversion of control/umlprogramm-nutzung/pflichtenheft/javadoc/uml diagramme).
+- StarUml ist kein gutes UML-Modellierungs tool.
+

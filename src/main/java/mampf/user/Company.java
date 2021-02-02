@@ -23,7 +23,7 @@ public class Company {
     @OneToMany
     private List<User> employees = new ArrayList<>();
 
-    private LocalDate breakfastDate = null; // use of optional gives hibernate error...
+    private LocalDate breakfastDate = null;
     private final String accessCode;
 
     private @Id @GeneratedValue long id;

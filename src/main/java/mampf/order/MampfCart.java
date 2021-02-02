@@ -166,7 +166,7 @@ public class MampfCart {
 
 		Item.Domain domain = ((Item) cartItem.getProduct()).getDomain();
 		Cart domainCart = getDomainCart(domain);
-		if (domainCart == null || CheckoutForm.domainsWithoutForm.contains(domain.name())) {
+		if (domainCart == null || (CheckoutForm.domainsWithoutForm.contains(domain.name())&& itemAmount> 0)) {
 			return;
 		}
 
