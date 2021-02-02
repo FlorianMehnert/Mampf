@@ -9,13 +9,15 @@
 
 == Was habe ich gelernt / was habe ich nicht gelernt?
 // Ausführung der positiven und negativen Erfahrungen, die im Softwarepraktikum gesammelt wurden
-Ich habe gelernt:
+Ich habe gelernt: 
+
 * Mit SalesPoint, Spring und ThymeLeaf zu arbeiten.
 * Wie man eine Webseite von Grund auf neu erstellt und welche Schritte man durchlaufen muss (z.B. wie der Code funktioniert, welche Zusammenhänge gibt es zwischen Java-Code und HTML mithilfe von ThymeLeaf).
 * Mit IntelliJ besser zu arbeiten.
 * Geduldiger beim Codieren zu sein und mit Fehler umzugehen.
 
 Ich habe nicht gelernt:
+
 * Nicht vollständig, wie man Thymeleaf verwendet, um Frontend und Backend zu verbinden.
 
 == Welche Erfahrungen habe ich mit der Zusammenarbeit im Team gemacht?
