@@ -20,23 +20,16 @@
             <div class="input-group">
                 <label for="type"></label>
                 <select class="form-control float-right" style="position:relative; left: -3px; width: 110px" id="type"
-                        th:value="${type}" name="type" th:if="${type.equals('name')}">
-                    <option value="name">Name</option>
-                    <option value="category">Kategorie</option>
-                    <option value="amount">Anzahl</option>
-                </select>
-                <select class="form-control float-right" style="position:relative; left: -3px; width: 110px" id="type"
-                        th:value="${type}" name="type" th:if="${type.equals('category')}">
-                    <option value="category">Kategorie</option>
-                    <option value="name">Name</option>
-                    <option value="amount">Anzahl</option>
-                </select>
-                <select class="form-control float-right" style="position:relative; left: -3px; width: 110px" id="type"
-                        th:value="${type}" name="type" th:if="${type.equals('amount')}">
-                    <option value="amount">Anzahl</option>
-                    <option value="name">Name</option>
-                    <option value="category">Kategorie</option>
-
+                        th:value="${type}" name="type">
+                    <option value="name" th:if="!${(type.equals('category') || type.equals('amount'))}">Name</option>
+                    <option value="category" th:if="!${(type.equals('category') || type.equals('amount'))}">Kategorie</option>
+                    <option value="amount" th:if="!${(type.equals('category') || type.equals('amount'))}">Anzahl</option>
+                    <option value="category" th:if="${(type.equals('category'))}">Kategorie</option>
+                    <option value="name" th:if="${(type.equals('category'))}">Name</option>
+                    <option value="amount" th:if="${(type.equals('category'))}">Anzahl</option>
+                    <option value="name" th:if="${(type.equals('amount'))}">Name</option>
+                    <option value="amount" th:if="${(type.equals('amount'))}">Anzahl</option>
+                    <option value="category" th:if="${(type.equals('amount'))}">Kategorie</option>
                 </select>
                 <label for="word"></label><input id="word" class="form-inline" name="word" th:value="${filter}"
                                                  placeholder="Suchen...">

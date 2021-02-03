@@ -169,6 +169,7 @@ public class InventoryController {
 			names.add(pair);
 		}
 		model.addAttribute("names", names);
+		model.addAttribute("type", "name");
 		return "inventory";
 	}
 
@@ -201,6 +202,7 @@ public class InventoryController {
 			names.add(pair);
 		}
 		model.addAttribute("names", names);
+		model.addAttribute("type", "name");
 		return "inventory";
 	}
 }
