@@ -19,9 +19,9 @@ Die individuell erfasste Zeit beinhaltet auch das Lesen von Dokumentationen, Bes
 |10  |9 Stunden   |10 Stunden    |8 Stunden    |10 Stunden    |9 Stunden  |1,25 Stunden
 |11  |10 Stunden   |13 Stunden    |10 Stunden    |12 Stunden    |9 Stunden    |1 Stunde
 |12  |13 Stunden   |12 Stunden    |12 Stunden    |10 Stunden    |12 Stunden    |0,5 Stunden
-| Summe pro Student | ... | 144 Stunden | 188 Stunden | ... | 131 Stunden |
+| Summe pro Student | ... | 144 Stunden | ... | 188 Stunden | 131 Stunden |
 | Arbeitsstunden pro Woche pro Student:
-| ... | 12 Stunden| 15 Stunden | ... | 10 Stunden |
+| ... | 12 Stunden| ... | 15 Stunden  | 10 Stunden |
 |===
 
 Bitte tragen Sie am Ende des Praktikums noch folgende weitere Werte ein:
