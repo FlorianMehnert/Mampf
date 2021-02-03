@@ -91,8 +91,7 @@ public interface Inventory extends UniqueInventory<UniqueMampfItem> {
 		sortableList.sort(new SortByCategory());
 		switch (type) {
 			case "category":
-				sortableList.removeIf(umi -> !(Util.renderDomainName(umi.getItem().getCategory().
-						toString())).contains(filter));
+				sortableList.removeIf(umi -> !(Item.categoryTranslations.get(umi.getCategory().toString())).contains(filter));
 				break;
 			case "amount":
 				filterByAmount(sortableList, filter);
